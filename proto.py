@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Sep  6 19:14:20 2017
+Created on Sat Sep  9 17:32:06 2017
 
-@author: Lenovo
+@author: Ladislav
 """
 
 import copy
@@ -64,10 +64,20 @@ def normalize(cube):
     return list(map(lambda x: mapping[x], cube))
 
 
+# cube input
+cube1 = [1,1,2,
+          1,1,2,
+           0,0,0,
+         1,1,0,
+          1,1,0,
+           0,0,0,
+         0,0,0,
+          0,0,0,
+           0,0,0]
+cube1 = normalize(cube1)
+
 
 # breadth-first explore puzzle from given bandage state
-cube1 = [1,1] + [i+2 for i in range(25)]
-cube1 = normalize([1,1,2,1,1,2,0,0,0,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0])
 verts, edges, tovisit = [], [], []
 full2int, int2full = {}, {}
 counter = 0
@@ -91,27 +101,37 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import matplotlib.pyplot as plt
 
-def draw_block(ax, at, size):
+def draw_block(ax, at, size, c):
     x0, y0, z0, x, y, z = *at, *size
-    c = 0
     xs = np.asarray([0,x-c,x-c,x-c,x-c,x-c,x-c,0,0,0,0,0,x-c,x-c,0,0])
     ys = np.asarray([0,0,0,0,y-c,y-c,y-c,y-c,y-c,y-c,0,0,0,y-c,y-c,0])
     zs = np.asarray([0,0,z-c,0,0,z-c,0,0,z-c,0,0,z-c,z-c,z-c,z-c,z-c])
-    ax.plot(xs + x0, ys + y0, zs + z0, color="blue")
+    if x == y == z == 1:
+        color = (0.7, 0.7, 0.7, 0.4)
+    else:
+        color = (0, 0, 1)
+    ax.plot(xs + x0, ys + y0, zs + z0, color=color)
 
 
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-x = np.asarray([0,0.9,0.9,0,0,0,0.9,0.9,0,0])
-y = np.asarray([0,0,0.9,0.9,0,0,0,0.9,0.9,0])
-z = np.asarray([0,0,0,0,0,0.9,0.9,0.9,0.9,0.9])
-#ax.plot(x, y, z, color="blue")
-#ax.set_xticks([0,1,2])
-#ax.set_yticks([0,1,2])
-#ax.set_zticks([0,1,2])
-[draw_block(ax, (i,j,k), (1,1,1)) for i in range(3) for j in range(3) for k in range(3)]
+def ternary(dec):
+    res = []
+    n = dec
+    while n > 0:
+        res.insert(0, n % 3)
+        n = n // 3
+    return [0]*(3 - len(res)) + res
 
-def draw_cube(cube):
-    pass
 
-plt.show()
+def draw_cube(cube, margin=0):
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    rev = cube[::-1]
+    blocks = set(cube)
+    for block in blocks:
+        x0, y0, z0 = ternary(cube.index(block))
+        x1, y1, z1 = ternary(len(cube) - 1 - rev.index(block))
+        x, y, z = min(x0, x1), min(y0, y1), min(z0, z1)
+        draw_block(ax, (x, y, z), (1 + abs(x1 - x0), 1 + abs(y1 - y0), 1 + abs(z1 - z0)), margin)
+    plt.show()
+
+# do second method with matplotlib lines lines2D
