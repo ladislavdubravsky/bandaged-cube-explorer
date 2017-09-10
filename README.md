@@ -16,7 +16,7 @@ A bandaged cube can be modelled as a [groupoid](https://en.wikipedia.org/wiki/Gr
   <br> Picture 2 - the solved bandage shape for the Picture 1 cube
 </p>
 
-Sequences of single physical face turns on a bandaged puzzle cannot in general be composed. However, turn sequences that both start and end in a same bandage shape can always be composed. Set of all such turn sequences together with their composition forms a group, the isotropy group of the given bandage shape. It can be shown that any two bandage shape isotropy groups are isomorphic, therefore we can talk about a well-defined group for a given bandaged cube.
+The morphisms - sequences of single physical face turns on the puzzle - cannot in general be composed. However, those turn sequences that both start and end in a same bandage shape can always be composed. Set of all such turn sequences together with their composition forms a group, the isotropy group of the given bandage shape. It can be shown that any two bandage shape isotropy groups are isomorphic, therefore we can talk about a well-defined group for a given bandaged cube.
 
 Bandage shape objects together with the generating morphisms form a graph, the bandaged cube graph (pic. 3). One approach to the solution process for a bandaged cube is as follows.
 
