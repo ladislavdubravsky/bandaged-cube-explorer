@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Sep  9 17:32:06 2017
+BANDAGED CUBE EXPLORER
 
-@author: Ladislav
+@author: Ladislav Dubravský
 """
 
 import copy
@@ -35,6 +35,8 @@ def turn(face, cube):
     """ Do a single face turn and return the new cube. """
     facecontent = [cube[i] for i in range(27) if i in face]
     turned = _rotate(facecontent)
+    if face[0] == 2: # right face, rotate clockwise as conventional
+        turned = _rotate(_rotate(turned))
     newcube = copy.deepcopy(cube) # consider list(cube)
     for i, fi in enumerate(face):
         newcube[fi] = turned[i]
@@ -113,8 +115,24 @@ def do(cube, moves):
     """ Execute a move sequence in standard notation on given cube and return
     result. If impossible return index of first impossible turn. """
     res = copy.deepcopy(cube)
-    
+    for i, move in enumerate(moves.split()):
+        face = FACES[move[0]]
+        if not turnable(face, cube):
+            raise Exception(" ".join(["Face", move, "at move number",
+                                      str(i + 1), "cannot be turned!"]))
+        if move in ["U", "D", "R", "L", "F", "B"]:
+            res = turn(face, res)
+        if move in ["U2", "D2", "R2", "L2", "F2", "B2"]:
+            res = turn(face, turn(face, res))
+        if move in ["U'", "D'", "R'", "L'", "F'", "B'"]:
+            res = turn(face, turn(face, turn(face, res)))
     return res
+
+
+def distance(s1, s2):
+    """ Modified Hamming distance to measure similarity of strings representing
+    cubie relationship with its various neighbors. """
+    return sum(c1 != c2 for c1, c2 in zip(s1, s2))
 
 
 # cube input
@@ -139,30 +157,28 @@ mixed = [   0,0,0,
 verts, edges, labels, i2c, c2i = explore(cube1)
 g = nx.Graph(edges)
 
-shortest_path(g, mixed, cube1, labels)
-
-#pos = nx.spring_layout(g)
-#nx.draw_networkx_edges(g, pos, width=1, alpha=0.5)
-#nx.draw_networkx_edge_labels(g, pos, labels, font_size=8)
-# https://networkx.github.io/documentation/networkx-1.9/examples/drawing/labels_and_colors.html
+shortest_path(g, mixed, cube1, labels, c2i)
 
 pred, dist = nx.dijkstra_predecessor_and_distance(g, 0)
 for k, v in dist.items():
     if v == 16:
         print(k)
 
-cen = nx.closeness_centrality(g)
-c = max(cen.values())
-for k, v in cen.items():
-    if v > c - 0.01:
-        print(k)
+# number of shapes at given distance
+for i in range(20):
+    print(i, ":", len(list(filter(lambda x: dist[x] == i, verts))))
 
-# eccentricity, radius
+
+# graph drawing - probably easiest to fall back to Mathematica for really nice graphs
+# pos = nx.spring_layout(g)
+# nx.draw_networkx_edges(g, pos, width=1, alpha=0.5)
+# nx.draw_networkx_edge_labels(g, pos, labels, font_size=8)
+# https://networkx.github.io/documentation/networkx-1.9/examples/drawing/labels_and_colors.html
 
 
 # GRAPHICS - DISPLAY BANDAGE SHAPE
-#import matplotlib as mpl
-#from mpl_toolkits.mplot3d import Axes3D
+# import matplotlib as mpl
+# from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -178,7 +194,7 @@ def _ternary(dec):
     return [0]*(3 - len(res)) + res
 
 
-def _draw_block(ax, at, size, alpha, color):
+def _draw_block(ax, at, size, alpha, color, lwidth):
     """ Construct a 3d block object and append it to the passed AxesSubplot
     object to be drawn later.
         For opaque (alpha=1) drawing, we need to take care of not drawing
@@ -195,14 +211,13 @@ def _draw_block(ax, at, size, alpha, color):
                   [x0,     y0 + y, z0 + z]])
 
     faces = []
-    
     if x0 + x == 3: # always draw global right face
         faces.append([V[1], V[5], V[6], V[2]])
-    if y0 == 0: # always draw global front face
+    if y0 == 0:     # always draw global front face
         faces.append([V[0], V[1], V[5], V[4]])
     if z0 + z == 3: # always draw global up face
         faces.append([V[4], V[5], V[6], V[7]])
-    if alpha < 1: # if transparency is wanted, draw all sides for any block
+    if alpha < 1:   # if transparency, draw all sides for any block
         faces = [[V[0], V[1], V[2], V[3]], # down
                  [V[4], V[5], V[6], V[7]], # up
                  [V[1], V[5], V[6], V[2]], # right
@@ -210,51 +225,47 @@ def _draw_block(ax, at, size, alpha, color):
                  [V[0], V[1], V[5], V[4]], # front
                  [V[2], V[6], V[7], V[3]]] # back
 
-    collection = Poly3DCollection(faces, linewidths=3, edgecolors="black")
+    collection = Poly3DCollection(faces, linewidths=lwidth, edgecolors="black")
     collection.set_facecolor((*color, alpha))
-    #collection.set_edgecolor((1, 1, 1, 0.1))
+    # collection.set_edgecolor((1, 1, 1, 0.1))
     ax.add_collection3d(collection)
 
 
-def draw_cube(cube, alpha=1, color=(1, 1, 1)):
-    """ Draw given bandage shape in given color (r, g, b), 0 <= r, g, b <= 1
-    and transparency 0 <= alpha <= 1. """
-    fig = plt.figure(figsize=(7, 7))
-    ax = fig.gca(projection='3d')
-    ax.set_axis_off()
-    ax.axis("scaled")
-    ax.set_xlim3d(0, 3)
-    ax.set_ylim3d(0, 3)
-    ax.set_zlim3d(0, 3)
-   
-    # rotate so that "code graphic" for cube input matches drawing orientation
-    rcube = list(itemgetter(24,15,6,21,12,3,18,9,0,25,16,7,22,13,4,\
-                            19,10,1,26,17,8,23,14,5,20,11,2)(cube))
-    rev = rcube[::-1]
-   
-    # deprecated: sorting blocks trying to affect drawing order
-    # blocks = map(itemgetter(-1),
-    #              sorted([(len(list(v)), k) for k, v in groupby(sorted(cube1))]))
-    blocks = set(cube)
-   
-    for block in blocks:
-        # swap "rev" and "rcube" to get backview - might add as an option later
-        x0, y0, z0 = _ternary(rcube.index(block))
-        x1, y1, z1 = _ternary(len(rcube) - 1 - rev.index(block))
-        x, y, z = min(x0, x1), min(y0, y1), min(z0, z1)
-        _draw_block(ax, (x, y, z), (1 + abs(x1 - x0), 1 + abs(y1 - y0),
-            1 + abs(z1 - z0)), alpha, color)
-    plt.show()
-
-
-def _draw_block_old(ax, at, size, c):
-    """ Draw wireframe of block. Deprecated as subsumed in new draw_block. """
-    x0, y0, z0, x, y, z = *at, *size
-    xs = np.asarray([0,x-c,x-c,x-c,x-c,x-c,x-c,0,0,0,0,0,x-c,x-c,0,0])
-    ys = np.asarray([0,0,0,0,y-c,y-c,y-c,y-c,y-c,y-c,0,0,0,y-c,y-c,0])
-    zs = np.asarray([0,0,z-c,0,0,z-c,0,0,z-c,0,0,z-c,z-c,z-c,z-c,z-c])
-    if x == y == z == 1:
-        color = (0.4, 0.4, 0.4, 0.2)
+def draw_cubes(cubes, alpha=1, color=(1, 1, 1), size=4, linewidth=2, ncol=3):
+    """ Draw one or several bandage shapes in a grid layout.
+    0 <= alpha <= 1: transparency
+    color = (r, g, b), 0 <= r, g, b <= 1: color
+    size: size of one cube drawing
+    linewidth: line width
+    ncol: number of figures per row """
+    if not hasattr(cubes[0], "__len__"): # if single cube is input
+        cubes_ = [cubes]
     else:
-        color = (0, 0, 1)
-    ax.plot(xs + x0, ys + y0, zs + z0, color=color) 
+        cubes_ = cubes
+
+    cnt = len(cubes_)
+    fig = plt.figure(figsize=((ncol * size, (cnt // ncol + 1)*size)))
+    for i, cube in enumerate(cubes_):
+        # rotate so that "code graphic" for cube input matches drawing orientation
+        rcube = list(itemgetter(24, 15, 6, 21, 12, 3, 18, 9,  0,
+                                25, 16, 7, 22, 13, 4, 19, 10, 1,
+                                26, 17, 8, 23, 14, 5, 20, 11, 2)(cube))
+        rev = rcube[::-1]
+        blocks = set(cube)
+   
+        ax = fig.add_subplot(cnt // ncol + 1, ncol, 1 + i, projection="3d")
+        ax.set_axis_off()
+        ax.axis("scaled")
+        ax.set_xlim3d(0, 3)
+        ax.set_ylim3d(0, 3)
+        ax.set_zlim3d(0, 3)
+        for block in blocks:
+            # swap "rev" and "rcube" for backview - maybe add an option later
+            x0, y0, z0 = _ternary(rcube.index(block))
+            x1, y1, z1 = _ternary(len(rcube) - 1 - rev.index(block))
+            x, y, z = min(x0, x1), min(y0, y1), min(z0, z1)
+            _draw_block(ax, (x, y, z), (1 + abs(x1 - x0), 1 + abs(y1 - y0),
+                1 + abs(z1 - z0)), alpha, color, linewidth)
+
+    plt.subplots_adjust(wspace=0, hspace=0)
+    plt.show()
