@@ -98,8 +98,8 @@ def shortest_path(g, scrambled, solved, labels, c2i):
     solved, where scrambled and solved are bandage shapes represented by
     cubelists. Output is in standard move notation. """
     path = nx.dijkstra_path(g,
-                            c2i[tuple(normalize(mixed))],
-                            c2i[tuple(normalize(cube1))])
+                            c2i[tuple(normalize(scrambled))],
+                            c2i[tuple(normalize(solved))])
     path = zip(path, path[1:])
     res = ["dummy"]
     for e in path:
@@ -129,13 +129,31 @@ def do(cube, moves):
     return res
 
 
-def distance(s1, s2):
-    """ Modified Hamming distance to measure similarity of strings representing
-    cubie relationship with its various neighbors. """
-    return sum(c1 != c2 for c1, c2 in zip(s1, s2))
+def nbrrep(cube):
+    """ Turns a standard cubelist into a list of neighborhood connectivity
+    vectors for cubies. """
+    ncube = normalize(cube)
+    res = []
+    for i, b in enumerate(ncube):
+        vector = []
+        vector.append(1 if i % 3 < 2  and cube[i] == cube[i+1] else 0) # R
+        vector.append(1 if i % 3 > 0  and cube[i] == cube[i-1] else 0) # L
+        vector.append(1 if i % 9 < 6  and cube[i] == cube[i+3] else 0) # F
+        vector.append(1 if i % 9 > 2  and cube[i] == cube[i-3] else 0) # B
+        vector.append(1 if     i < 18 and cube[i] == cube[i+9] else 0) # D
+        vector.append(1 if     i > 8  and cube[i] == cube[i-9] else 0) # U
+        res.append(vector)
+    return res
 
 
-# cube input
+def similarity(nbrcube1, nbrcube2):
+    """ Hamming distance based similarity of nbrreps of cubelists. """
+    flat1 = [y for x in nbrcube1 for y in x]
+    flat2 = [y for x in nbrcube2 for y in x]
+    return (sum(c1 == c2 for c1, c2 in zip(flat1, flat2)) - 54) / (162 - 54)
+
+
+# cube input and construct graph
 cube1 = [   1,1,0,
            1,1,0,
           0,0,0,
@@ -157,16 +175,23 @@ mixed = [   0,0,0,
 verts, edges, labels, i2c, c2i = explore(cube1)
 g = nx.Graph(edges)
 
+# basic help: get moves to solve shape
 shortest_path(g, mixed, cube1, labels, c2i)
 
-pred, dist = nx.dijkstra_predecessor_and_distance(g, 0)
-for k, v in dist.items():
-    if v == 16:
-        print(k)
-
 # number of shapes at given distance
+pred, dist = nx.dijkstra_predecessor_and_distance(g, 0)
 for i in range(20):
     print(i, ":", len(list(filter(lambda x: dist[x] == i, verts))))
+
+[nbrrep(i2c[x]) for x in filter(lambda x: dist[x] == 16, verts)]
+
+# correlate turn distances from solved shape
+distcomp = zip(*[[dist[v], similarity(nbrrep(i2c[v]), nbrrep(i2c[0]))] for v in verts])
+plt.scatter(*distcomp)
+
+# clustering / classification on all nbrreps
+# http://scikit-learn.org/stable/modules/tree.html
+from sklearn import tree
 
 
 # graph drawing - probably easiest to fall back to Mathematica for really nice graphs
@@ -177,8 +202,6 @@ for i in range(20):
 
 
 # GRAPHICS - DISPLAY BANDAGE SHAPE
-# import matplotlib as mpl
-# from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
