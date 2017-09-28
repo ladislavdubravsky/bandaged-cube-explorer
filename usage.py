@@ -6,8 +6,8 @@ Usage example.
 # 0. import libraries we'll be using
 import matplotlib.pyplot as plt
 import networkx as nx
-import core as c
-from graphics import draw_cubes
+import bce.core as c
+from bce.graphics import draw_cubes
 
 # 1. define a bandage shape - alcatraz puzzle solved shape
 alca =  [   6,6,0,
@@ -61,11 +61,20 @@ farthest = [i2c[v] for v in verts if dist[v] == 16]
 draw_cubes(farthest)
 c.shortest_path(g, alca, farthest[1], labels, c2i)
 
+nx.eccentricity(g, c2i[tuple(farthest[1])])
+
 # 8. explore stabilizer / feature chain lengths
 f1 = [v for v in verts if i2c[v][c.F] == i2c[v][c.DF]]
 p = nx.shortest_path_length(g)
 plt.hist([min([p[u][v] for v in f1]) for u in verts], bins=7)
 draw_cubes([i2c[u] for u in verts if min([p[u][v] for v in f1]) == 7])
+
+chain = lambda v: [i2c[v][c.F]  == i2c[v][c.DF],
+                   i2c[v][c.R]  == i2c[v][c.DR],
+                   i2c[v][c.FL] == i2c[v][c.DFL],
+                   i2c[v][c.FR] == i2c[v][c.DFR],
+                   i2c[v][c.BR] == i2c[v][c.DBR]]
+[min([p[u][v] for v in f1]) for u in verts]
 
 """ Why is Belt Road easier than Alcatraz?
 The reason is: it has small-step stabilizer chains.

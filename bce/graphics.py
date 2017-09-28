@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from operator import itemgetter
+from . import core
 
 
 def _ternary(dec):
@@ -74,6 +75,7 @@ def draw_cubes(cubes, alpha=1, color=(1, 1, 1), size=4, linewidth=2, ncol=3):
     cnt = len(cubes_)
     fig = plt.figure(figsize=((ncol * size, (cnt // ncol + 1)*size)))
     for i, cube in enumerate(cubes_):
+        cube = core.normalize(cube)
         # rotate so that "code graphic" for cube input matches drawing orientation
         rcube = list(itemgetter(24, 15, 6, 21, 12, 3, 18, 9,  0,
                                 25, 16, 7, 22, 13, 4, 19, 10, 1,
