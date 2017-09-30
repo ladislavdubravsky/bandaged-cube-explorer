@@ -4,7 +4,6 @@ Usage example.
 """
 
 # 0. import libraries we'll be using
-import matplotlib.pyplot as plt
 import networkx as nx
 import bce.core as c
 from bce.graphics import draw_cubes
@@ -50,31 +49,66 @@ pred, dist = nx.dijkstra_predecessor_and_distance(g, 0)
 for i in range(max(dist.values()) + 1):
     print(i, ":", len(list(filter(lambda x: dist[x] == i, verts))))
 
-# note however the solved shape is chosen the best way it could be!
+# 7. note however the solved shape is chosen the best way it could be!
 nx.diameter(g)
 nx.radius(g)
 [v for v in verts if nx.eccentricity(g, v) == 16]
 draw_cubes([i2c[v] for v in verts if nx.eccentricity(g, v) == 28])
 
-# 7. draw the farthest three shapes and find a path to one of them
+# 8. draw the farthest three shapes and find a path to one of them
 farthest = [i2c[v] for v in verts if dist[v] == 16]
 draw_cubes(farthest)
 c.shortest_path(g, alca, farthest[1], labels, c2i)
 
 nx.eccentricity(g, c2i[tuple(farthest[1])])
 
-# 8. explore stabilizer / feature chain lengths
-f1 = [v for v in verts if i2c[v][c.F] == i2c[v][c.DF]]
-p = nx.shortest_path_length(g)
-plt.hist([min([p[u][v] for v in f1]) for u in verts], bins=7)
-draw_cubes([i2c[u] for u in verts if min([p[u][v] for v in f1]) == 7])
+# 9. shortest paths are too hard - explore stabilizer / feature chains
+def layers_distance(g, layers, dist=None):
+    """ Calculates the largest shortest distance between a vertex from
+    layer[i] and a vertex from layer[i + 1] in graph g, for all consecutive
+    layer pairs.
+    If dictionary of distances dist is not supplied, it is calculated as
+    nx.shortest_path_length(g).
+    This function is typically called to assess feasibility of cube solving
+    via a particular stabilizer chain / feature chain. """
+    if not dist:
+        d = nx.shortest_path_length(g)
+    else:
+        d = dist
+    return [max(min(d[i][j] for j in layers[n + 1]) for i in layers[n])
+        for n in range(len(layers) - 1)]
+# tallying, e.g. collections Counter
 
-chain = lambda v: [i2c[v][c.F]  == i2c[v][c.DF],
-                   i2c[v][c.R]  == i2c[v][c.DR],
-                   i2c[v][c.FL] == i2c[v][c.DFL],
-                   i2c[v][c.FR] == i2c[v][c.DFR],
-                   i2c[v][c.BR] == i2c[v][c.DBR]]
-[min([p[u][v] for v in f1]) for u in verts]
+# define a stabilizer chain
+v0 = set(verts)
+v1 = {v for v in verts if i2c[v][c.F]  == i2c[v][c.DF]}
+v2 = {v for v in v1    if i2c[v][c.R]  == i2c[v][c.DR]}
+v3 = {v for v in v2    if i2c[v][c.FL] == i2c[v][c.DFL]}
+v4 = {v for v in v3    if i2c[v][c.BR] == i2c[v][c.DBR]}
+v5 = {v for v in v4    if i2c[v][c.FR] == i2c[v][c.DFR]}
+
+# calculate maximum number of moves (QTM) in each solution step
+d = nx.shortest_path_length(g)
+layers_distance(g, [v0, v1, v2, v3, v4, v5], dist=d)
+
+# explore the worst cases
+wc = [[i2c[u], i2c[v]] for u in v4-v5 for v in v5 if d[u][v] == 10]
+draw_cubes(wc[7], size=3)
+c.shortest_path(g, wc[4][0], wc[4][1], labels, c2i)
+
+wc = [[i2c[u], i2c[v]] for u in v3-v4 for v in v4 if d[u][v] == 10]
+draw_cubes(wc[7], size=3)
+c.shortest_path(g, wc[4][0], wc[4][1], labels, c2i)
+
+# go back and try a different feature chain - will it be better?
+v1 = {v for v in verts if i2c[v][c.F] == i2c[v][c.DF] or i2c[v][c.R] == i2c[v][c.DR]}
+v2 = {v for v in v1    if i2c[v][c.F] == i2c[v][c.DF] and i2c[v][c.R] == i2c[v][c.DR]}
+v3 = {v for v in v2    if i2c[v][c.FL] == i2c[v][c.DFL] or i2c[v][c.BR] == i2c[v][c.DBR]}
+v4 = {v for v in v3    if i2c[v][c.FL] == i2c[v][c.DFL] and i2c[v][c.BR] == i2c[v][c.DBR]}
+v5 = {v for v in v4    if i2c[v][c.FR] == i2c[v][c.DFR]}
+layers_distance(g, [v0, v1, v2, v3, v4, v5], dist=d)
+
+# think about less boilerplate for defining chains
 
 """ Why is Belt Road easier than Alcatraz?
 The reason is: it has small-step stabilizer chains.
