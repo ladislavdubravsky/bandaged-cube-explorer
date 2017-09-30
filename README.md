@@ -1,4 +1,6 @@
 # bandaged-cube-explorer
+* [Introduction](README.md#Introduction)
+
 ## Introduction
 A bandaged cube is a 3x3 Rubik’s cube, where several sets of cubies have been fused together to form larger solid blocks (pic. 1). These blocks will prevent various faces from being turned at various times; as a result, bandaged puzzles can be much harder to solve than non-blocking ones. A bandaged cube is a type of a [twisty puzzle](http://www.google.com/images?q=twisty+puzzles).
 
@@ -16,7 +18,7 @@ A bandaged cube can be modelled as a [groupoid](https://en.wikipedia.org/wiki/Gr
   <br> Picture 2 - the solved bandage shape for the Picture 1 cube
 </p>
 
-The morphisms - sequences of single physical face turns on the puzzle - cannot in general be composed. However, those turn sequences that both start and end in a same bandage shape can always be composed. Set of all such turn sequences together with their composition forms a group, the isotropy group of the given bandage shape. It can be shown that any two bandage shape isotropy groups are isomorphic, therefore we can talk about a well-defined group for a given bandaged cube.
+Sequences of single physical face turns on the puzzle cannot in general be composed. However, those turn sequences that both start and end in a same bandage shape can always be composed. Set of all such turn sequences together with their composition forms a group, the isotropy group of the given bandage shape. It can be shown that any two bandage shape isotropy groups are isomorphic, therefore we can talk about a well-defined group for a given bandaged cube.
 
 Bandage shape objects together with the generating morphisms form a graph, the bandaged cube graph (pic. 3). One approach to the solution process for a bandaged cube is as follows.
 
@@ -34,16 +36,15 @@ Bandage shape objects together with the generating morphisms form a graph, the b
   <br> Picture 4 - a bandaged cube, that is in its solved bandage shape, but not solved
 </p>
 
-Python code in this repository focuses on the graph-navigating part of the solution process. In human solving, the enjoyability follows from being able to form at most a small set of rules for proceeding forward, using visuospatial recognition and imagination and ad-hoc logic.
+Python code in this repository focuses on the graph-navigating part of the solution process. In human solving, the enjoyability follows from being able to form at most a small set of rules for proceeding forward, using visuospatial recognition and imagination and ad-hoc logic. Harder bandaged puzzles don’t seem straightforwardly amenable to such approach though.
 
-However, harder bandaged puzzles don’t seem straightforwardly amenable to such approach. This code can help by:
-1. Finding a shortest path between two bandage shapes, if it exists (which it does if one of the shapes is a result of a legal scrambling process of the cube started from the other shape). This is helpful, but not satisfactory in itself, as we mentioned that solvers desire a humanly recallable solution process, best without the aid of a computer (we do not expect this to be possible in general). Thus:
-2. (TODO) Deduce/mine some more general rules useful for navigating a given bandage shape graph.
+## Purpose of this project
+To provide an exploration and prototyping platform for understanding bandaged 3x3 cubes. To aid human solvers in their struggles and to help me write my [blogs](https://ldubravsky.wordpress.com/).
 
+## Usage
 #### Bandage shape model in code
 Until we’re in need of efficiency increase, we represent a bandage shape as a list of length 27 – a cubelist. This is a 0..26-indexed list, and ternary representations of its indices correspond to coordinate triplets for unit cubies in a 3x3x3 cube (even if there is no central cubie in the physical cube). The list elements are numbers coming from range 1..(number of bandage shape blocks). Cubelist indices containing an identic cubelist element represent a single bandaged block. It follows the indices should form a geometric cuboid in their ternary representation. For a unique bandage shape representation, we also demand of cubelist elements to be increasing in the order of their first occurrence in the cubelist reading order (this gets taken care of under the hood).
 
 For convenience, however, zeros can also be used in a cubelist. Any zero represents an isolated 1x1x1 cubie. Thus you can input e.g. the standard Rubik’s cube as ```[0]*27``` instead of its proper representation as ```list(range(1, 28))``` (to which it’ll get normalized under the hood).
 
-
-## Usage
+#### Example script usage.py
