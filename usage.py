@@ -22,6 +22,8 @@ alca =  [   6,6,0,
 draw_cubes(alca)
 draw_cubes(alca, alpha=0.25, size=6)
 
+draw_cubes(c.do(alca, "F R2"))
+
 # 3. explore the puzzle and store results
 verts, edges, labels, i2c, c2i = c.explore(alca)
 g = nx.Graph(edges)
