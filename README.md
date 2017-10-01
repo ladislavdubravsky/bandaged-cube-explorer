@@ -40,7 +40,7 @@ To provide an exploration and prototyping platform for understanding bandaged 3x
 
 ## Usage
 #### General
-You need to have a Python interpreter installed together with packages such as numpy, matplotlib or networkx - these come bundled with distributions such as WinPython.
+You need to have a Python interpreter installed together with packages such as numpy, matplotlib or networkx - these come bundled with distributions such as WinPython. After that you need to place the project files somewhere the interpreter can see them, for example to a location on your PYTHONPATH environment variable.
 
 #### Bandage shape model in code
 Until we’re in need of efficiency increase, we represent a bandage shape as a list of length 27 – a cubelist. This is a 0..26-indexed list, and ternary representations of its indices correspond to coordinate triplets for unit cubies in a 3x3x3 cube (even if there is no central cubie in the physical cube). The list elements are numbers coming from range 1..(number of bandage shape blocks). Cubelist indices containing an identic cubelist element represent a single bandaged block. It follows the indices should form a geometric cuboid in their ternary representation. For a unique bandage shape representation, we also demand of cubelist elements to be increasing in the order of their first occurrence in the cubelist reading order (this gets taken care of under the hood).
@@ -48,3 +48,4 @@ Until we’re in need of efficiency increase, we represent a bandage shape as a 
 For convenience, however, zeros can also be used in a cubelist. Any zero represents an isolated 1x1x1 cubie. Thus you can input e.g. the standard Rubik’s cube as ```[0]*27``` instead of its proper representation as ```list(range(1, 28))``` (to which it’ll get normalized under the hood).
 
 #### Example script usage.py
+Follow the usage.py script to see some examples of existing functionality use.
