@@ -3,7 +3,6 @@
 Usage example.
 """
 
-# 0. import libraries we'll be using
 import networkx as nx
 import bce.core as c
 from bce.graphics import draw_cubes
@@ -63,22 +62,6 @@ c.shortest_path(g, alca, farthest[1], labels, c2i)
 nx.eccentricity(g, c2i[tuple(farthest[1])])
 
 # 9. shortest paths are too hard - explore stabilizer / feature chains
-def layers_distance(g, layers, dist=None):
-    """ Calculates the largest shortest distance between a vertex from
-    layer[i] and a vertex from layer[i + 1] in graph g, for all consecutive
-    layer pairs.
-    If dictionary of distances dist is not supplied, it is calculated as
-    nx.shortest_path_length(g).
-    This function is typically called to assess feasibility of cube solving
-    via a particular stabilizer chain / feature chain. """
-    if not dist:
-        d = nx.shortest_path_length(g)
-    else:
-        d = dist
-    return [max(min(d[i][j] for j in layers[n + 1]) for i in layers[n])
-        for n in range(len(layers) - 1)]
-# tallying, e.g. collections Counter
-
 # define a stabilizer chain
 v0 = set(verts)
 v1 = {v for v in verts if i2c[v][c.F]  == i2c[v][c.DF]}
@@ -86,31 +69,30 @@ v2 = {v for v in v1    if i2c[v][c.R]  == i2c[v][c.DR]}
 v3 = {v for v in v2    if i2c[v][c.FL] == i2c[v][c.DFL]}
 v4 = {v for v in v3    if i2c[v][c.BR] == i2c[v][c.DBR]}
 v5 = {v for v in v4    if i2c[v][c.FR] == i2c[v][c.DFR]}
+layers = [v0, v1, v2, v3, v4, v5]
 
 # calculate maximum number of moves (QTM) in each solution step
 d = nx.shortest_path_length(g)
-layers_distance(g, [v0, v1, v2, v3, v4, v5], dist=d)
+c.layers_distance(g, layers, dist=d)
+c.layers_distance(g, layers, dist=d, tally=True)
 
 # explore the worst cases
-wc = [[i2c[u], i2c[v]] for u in v4-v5 for v in v5 if d[u][v] == 10]
-draw_cubes(wc[7], size=3)
-c.shortest_path(g, wc[4][0], wc[4][1], labels, c2i)
+wc = [u for u in v2 - v3 if c.dist_to_next_layer(g, u, layers, d) == 12]
+draw_cubes([i2c[u] for u in wc], size=3)
+c.path_to_next_layer(g, wc[0], layers, d, labels, c2i)
 
-wc = [[i2c[u], i2c[v]] for u in v3-v4 for v in v4 if d[u][v] == 10]
-draw_cubes(wc[7], size=3)
-c.shortest_path(g, wc[4][0], wc[4][1], labels, c2i)
-
-# go back and try a different feature chain - will it be better?
+# try a more general feature chain - will it be better?
 v1 = {v for v in verts if i2c[v][c.F] == i2c[v][c.DF] or i2c[v][c.R] == i2c[v][c.DR]}
 v2 = {v for v in v1    if i2c[v][c.F] == i2c[v][c.DF] and i2c[v][c.R] == i2c[v][c.DR]}
 v3 = {v for v in v2    if i2c[v][c.FL] == i2c[v][c.DFL] or i2c[v][c.BR] == i2c[v][c.DBR]}
 v4 = {v for v in v3    if i2c[v][c.FL] == i2c[v][c.DFL] and i2c[v][c.BR] == i2c[v][c.DBR]}
 v5 = {v for v in v4    if i2c[v][c.FR] == i2c[v][c.DFR]}
-layers_distance(g, [v0, v1, v2, v3, v4, v5], dist=d)
+layers = [v0, v1, v2, v3, v4, v5]
+c.layers_distance(g, layers, dist=d, tally=True)
 
-# think about less boilerplate for defining chains
+# explore the worst cases
+wc = [u for u in v3 - v4 if c.dist_to_next_layer(g, u, layers, d) == 9]
+draw_cubes([i2c[u] for u in wc], size=3)
+c.path_to_next_layer(g, wc[0], layers, d, labels, c2i)
 
-""" Why is Belt Road easier than Alcatraz?
-The reason is: it has small-step stabilizer chains.
-I.e., mostly any shape can be solved piece by piece using short algorithms.
-"""
+# TODO: think about less boilerplate for defining chains

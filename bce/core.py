@@ -5,6 +5,7 @@ Core functions for bandaged cube exploration.
 
 import copy
 import networkx as nx
+from collections import Counter
 
 
 UBL = 0
@@ -34,6 +35,7 @@ DR  = 23
 DFL = 24
 DF  = 25
 DFR = 26
+
 
 FACES = {"L": [a*9 + b*3 + c for a in (0,1,2) for b in (0,1,2) for c in (0,)],
          "R": [a*9 + b*3 + c for a in (0,1,2) for b in (0,1,2) for c in (2,)],
@@ -117,14 +119,14 @@ def explore(initcube):
     return verts, edges, edgelabels, int2cube, cube2int
 
 
-def shortest_path(g, scrambled, solved, labels, c2i):
+def shortest_path(g, mixed, solved, labels, c2i):
     """ Given graph g, its edge labels labels and a cube2int dictionary, all as
-    returned by the explore function, output shortest path from scrambled to
-    solved, where scrambled and solved are bandage shapes represented by
-    cubelists. Output is in standard move notation. """
-    path = nx.dijkstra_path(g,
-                            c2i[tuple(normalize(scrambled))],
-                            c2i[tuple(normalize(solved))])
+    returned by the explore function, output shortest path from mixed to
+    solved, where mixed and solved are bandage shapes represented by
+    cubelists or integers. Output is in standard move notation. """
+    vfrom = mixed if type(mixed) == int else c2i[tuple(normalize(mixed))]
+    vto = solved if type(solved) == int else c2i[tuple(normalize(solved))]
+    path = nx.dijkstra_path(g, vfrom, vto)
     path = zip(path, path[1:])
     res = ["dummy"]
     for e in path:
@@ -138,7 +140,7 @@ def shortest_path(g, scrambled, solved, labels, c2i):
 
 def do(cube, moves):
     """ Execute a move sequence in standard notation on given cube and return
-    result. If impossible return index of first impossible turn. """
+    result. If impossible return the index of first impossible turn. """
     res = copy.deepcopy(cube)
     for i, move in enumerate(moves.split()):
         # do x, y, z, x', ... moves
@@ -153,6 +155,46 @@ def do(cube, moves):
         if move in ["U'", "D'", "R'", "L'", "F'", "B'"]:
             res = turn(face, turn(face, turn(face, res)))
     return res
+
+
+def layers_distance(g, layers, dist=None, tally=False):
+    """ Calculates either the largest shortest distance, or a full distribution
+    of distances (if tally=True), between a vertex from layer[i] and a vertex
+    from layer[i + 1] in graph g, for all consecutive layer pairs.
+    If dictionary of distances dist is not supplied, it is calculated as
+    nx.shortest_path_length(g).
+    This function is typically called to assess feasibility of cube solving
+    via a particular stabilizer chain / feature chain. """
+    d = nx.shortest_path_length(g) if not dist else dist
+    fnc = Counter if tally else max
+    return [fnc(min(d[i][j] for j in layers[n + 1])
+                for i in layers[n] - layers[n + 1])
+                for n in range(len(layers) - 1)]
+
+
+def path_to_next_layer(g, v, layers, dist, labels, c2i):
+    """ For a graph, its vertex and layering, output shortest path from vertex
+    to the next layer. """
+    try:
+        ind = [v in layer for layer in layers].index(False)
+    except ValueError:
+        print("Vertex lies in final layer!")
+        return
+    mindist = min(dist[v][w] for w in layers[ind])
+    verts = [w for w in layers[ind] if dist[v][w] == mindist]
+    return shortest_path(g, v, verts[0], labels, c2i)
+
+    
+def dist_to_next_layer(g, v, layers, dist):
+    """ For a graph, its vertex and layering, output vertex distance from its
+    current layer to the next layer. dist is a pre-computed graph distances
+    dictionary, e.g. by dist = nx.shortest_path_length(g). """
+    try:
+        ind = [v in layer for layer in layers].index(False)
+    except ValueError:
+        print("Vertex lies in final layer!")
+        return
+    return min(dist[v][w] for w in layers[ind])
 
 
 def nbrrep(cube):
