@@ -145,7 +145,7 @@ def do(cube, moves):
     for i, move in enumerate(moves.split()):
         # do x, y, z, x', ... moves
         face = FACES[move[0]]
-        if not turnable(face, cube):
+        if not turnable(face, res):
             raise Exception(" ".join(["Face", move, "at move number",
                                       str(i + 1), "cannot be turned!"]))
         if move in ["U", "D", "R", "L", "F", "B"]:
