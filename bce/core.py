@@ -4,6 +4,7 @@ Core functions for bandaged cube exploration.
 """
 
 import copy
+import re
 import networkx as nx
 from collections import Counter
 
@@ -38,10 +39,13 @@ DFR = 26
 
 
 FACES = {"L": [a*9 + b*3 + c for a in (0,1,2) for b in (0,1,2) for c in (0,)],
+         "M": [a*9 + b*3 + c for a in (0,1,2) for b in (0,1,2) for c in (1,)],
          "R": [a*9 + b*3 + c for a in (0,1,2) for b in (0,1,2) for c in (2,)],
          "B": [a*9 + b*3 + c for a in (0,1,2) for b in (0,) for c in (0,1,2)],
+         "S": [a*9 + b*3 + c for a in (0,1,2) for b in (1,) for c in (0,1,2)],
          "F": [a*9 + b*3 + c for a in (0,1,2) for b in (2,) for c in (0,1,2)],
          "U": [a*9 + b*3 + c for a in (0,) for b in (0,1,2) for c in (0,1,2)],
+         "E": [a*9 + b*3 + c for a in (1,) for b in (0,1,2) for c in (0,1,2)],
          "D": [a*9 + b*3 + c for a in (2,) for b in (0,1,2) for c in (0,1,2)]}
 
 
@@ -62,7 +66,7 @@ def turn(face, cube):
     """ Do a single face turn and return the new cube. """
     facecontent = [cube[i] for i in range(27) if i in face]
     turned = _rotate(facecontent)
-    if face[0] == 2: # right face, rotate clockwise as conventional
+    if face[0] in [1, 2]: # if R or M face, rotate clockwise as conventional!
         turned = _rotate(_rotate(turned))
     newcube = copy.deepcopy(cube) # consider list(cube)
     for i, fi in enumerate(face):
@@ -105,7 +109,7 @@ def explore(initcube):
         cube = tovisit.pop(0)
         verts.append(cube2int[tuple(cube)])
         for facename, face in FACES.items():
-            if turnable(face, cube):
+            if facename in "UDRLFB" and turnable(face, cube):
                 new = turn(face, cube)
                 if tuple(new) not in cube2int:
                     tovisit.append(new)
@@ -140,20 +144,31 @@ def shortest_path(g, mixed, solved, labels, c2i):
 
 def do(cube, moves):
     """ Execute a move sequence in standard notation on given cube and return
-    result. If impossible return the index of first impossible turn. """
-    res = copy.deepcopy(cube)
-    for i, move in enumerate(moves.split()):
-        # do x, y, z, x', ... moves
-        face = FACES[move[0]]
+    result. If impossible because of bandaging raises exception. """
+    res = normalize(copy.deepcopy(cube))
+    # unravel X2s and X's
+    moves = re.sub("([UDRLFBESMxyz])2", r"\1 \1", moves)
+    moves = re.sub("([UDRLFBESMxyz])'", r"\1 \1 \1", moves)
+    for move in moves.split():
+        if move == "x":
+            res = turn(FACES["R"], res)
+            res = turn(FACES["M"], res)
+            res = turn(FACES["L"], turn(FACES["L"], turn(FACES["L"], res)))
+        if move == "y":
+            res = turn(FACES["F"], res)
+            res = turn(FACES["S"], res)
+            res = turn(FACES["B"], res)
+        if move == "z":
+            res = turn(FACES["U"], res)
+            res = turn(FACES["E"], res)
+            res = turn(FACES["D"], res)
+
+        if move not in "UDRLFBESM":
+            continue
+        face = FACES[move]
         if not turnable(face, res):
-            raise Exception(" ".join(["Face", move, "at move number",
-                                      str(i + 1), "cannot be turned!"]))
-        if move in ["U", "D", "R", "L", "F", "B"]:
-            res = turn(face, res)
-        if move in ["U2", "D2", "R2", "L2", "F2", "B2"]:
-            res = turn(face, turn(face, res))
-        if move in ["U'", "D'", "R'", "L'", "F'", "B'"]:
-            res = turn(face, turn(face, turn(face, res)))
+            raise Exception(" ".join(["Face", move, "cannot be turned!"]))
+        res = turn(face, res)
     return res
 
 

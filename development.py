@@ -1,7 +1,30 @@
 # -*- coding: utf-8 -*-
 
+import networkx as nx
+import pandas as pd
+import bce.core as c
+from bce.graphics import draw_cubes
+
+alca =  [   6,6,0,
+           6,6,0,
+          0,0,0,
+            7,7,5,
+           7,7,4,
+          1,2,3,
+            7,7,5,
+           7,7,4,
+          1,2,3   ]
+
+verts, edges, labels, i2c, c2i = c.explore(alca)
+g = nx.Graph(edges)
+
+pred, dist = nx.dijkstra_predecessor_and_distance(g, 0)
+len([v for v in verts if dist[v] < 7])
+smaller = [" ".join([str(e[0]), str(e[1]), labels[e]]) for e in edges
+           if dist[e[0]] < 7 and dist[e[1]] < 7]
+
 # correlate turn distances from solved shape
-distcomp = zip(*[[dist[v], similarity(nbrrep(i2c[v]), nbrrep(i2c[0]))] for v in verts])
+distcomp = zip(*[[dist[v], c.similarity(c.nbrrep(i2c[v]), c.nbrrep(i2c[0]))] for v in verts])
 plt.scatter(*distcomp)
 
 # clustering / classification on all nbrreps
