@@ -54,7 +54,7 @@ for i in range(max(dist.values()) + 1):
 nx.diameter(g)
 nx.radius(g)
 [v for v in verts if nx.eccentricity(g, v) == 16]
-draw_cubes([i2c[v] for v in verts if nx.eccentricity(g, v) == 28])
+draw_cubes([i2c[v] for v in verts if nx.eccentricity(g, v) == 28], ncol=4)
 
 # 8. draw the farthest three shapes and find a path to one of them
 farthest = [i2c[v] for v in verts if dist[v] == 16]
@@ -81,7 +81,7 @@ c.layers_distance(g, layers, dist=d, tally=True)
 # explore the worst cases
 wc = [u for u in v2 - v3 if c.dist_to_next_layer(g, u, layers, d) > 9]
 draw_cubes([i2c[u] for u in wc], size=3)
-c.path_to_next_layer(g, wc[1], layers, d, labels, c2i)
+c.path_to_next_layer(g, wc[0], layers, d, labels, c2i)
 
 # try a more general feature chain - will it be better?
 v1 = {v for v in verts if i2c[v][c.F] == i2c[v][c.DF] or i2c[v][c.R] == i2c[v][c.DR]}
