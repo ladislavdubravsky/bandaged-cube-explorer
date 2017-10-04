@@ -5,23 +5,22 @@ import pandas as pd
 import bce.core as c
 from bce.graphics import draw_cubes
 
-alca =  [   6,6,0,
-           6,6,0,
-          0,0,0,
-            7,7,5,
-           7,7,4,
-          1,2,3,
-            7,7,5,
-           7,7,4,
-          1,2,3   ]
+cube =  [   1,1,9,
+           2,2,9,
+          3,3,0,
+            10,10,8,
+           10,10,8,
+          4,5,6,
+            10,10,7,
+           10,10,7,
+          4,5,6   ]
 
-verts, edges, labels, i2c, c2i = c.explore(alca)
+verts, edges, labels, i2c, c2i = c.explore(cube)
 g = nx.Graph(edges)
 
 pred, dist = nx.dijkstra_predecessor_and_distance(g, 0)
-len([v for v in verts if dist[v] < 7])
-smaller = [" ".join([str(e[0]), str(e[1]), labels[e]]) for e in edges
-           if dist[e[0]] < 7 and dist[e[1]] < 7]
+for i in range(max(dist.values()) + 1):
+    print(i, ":", len(list(filter(lambda x: dist[x] == i, verts))))
 
 # correlate turn distances from solved shape
 distcomp = zip(*[[dist[v], c.similarity(c.nbrrep(i2c[v]), c.nbrrep(i2c[0]))] for v in verts])
@@ -38,3 +37,7 @@ from sklearn import tree
 # nx.draw_networkx_edge_labels(g, pos, labels, font_size=8)
 # https://networkx.github.io/documentation/networkx-1.9/examples/drawing/labels_and_colors.html
 
+c.to_dbrecord(cube)
+db = pd.read_csv(r"C:\Python\bandaged-cube-explorer\puzzles\database.csv", index_col=0)
+cube = [int(i) for i in db.loc["Bicube Fuse", "Shape"].split(".")]
+draw_cubes([cube, c.do(read, "x2 z'")])

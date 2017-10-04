@@ -62,7 +62,7 @@ def _rotate(fc):
     return [fc[6], fc[3], fc[0], fc[7], fc[4], fc[1], fc[8], fc[5], fc[2]]
 
 
-def turn(face, cube):
+def turn(face, cube, fullperm=False):
     """ Do a single face turn and return the new cube. """
     facecontent = [cube[i] for i in range(27) if i in face]
     turned = _rotate(facecontent)
@@ -71,23 +71,25 @@ def turn(face, cube):
     newcube = copy.deepcopy(cube) # consider list(cube)
     for i, fi in enumerate(face):
         newcube[fi] = turned[i]
-    return normalize(newcube)
+    return newcube if fullperm else normalize(newcube)
 
 
-def normalize(cube):
-    """ Normalize a cubelist to get unique bandage shape representation. """
+def normalize(cube, keepzeros=False):
+    """ Normalize a cubelist to get unique bandage shape representation. You
+    don't normally need to be calling this. """
     # handle zeros, which represent non-connected cubies, first
-    blockno = 1 + max([1] + cube)
-    for i, v in enumerate(cube):
-        if v == 0:
-            cube[i] = blockno
-            blockno += 1
+    if not keepzeros:
+        blockno = 1 + max([1] + cube)
+        for i, v in enumerate(cube):
+            if v == 0:
+                cube[i] = blockno
+                blockno += 1
 
     # now re-number blocks in reading order
     blockno = 1
-    mapping = {}
+    mapping = {0: 0}
     for v in cube:
-        if v in mapping:
+        if v in mapping or v == 0:
             continue
         else:
             mapping[v] = blockno
@@ -95,9 +97,10 @@ def normalize(cube):
     return list(map(lambda x: mapping[x], cube))
 
 
-def explore(initcube):
+def explore(initcube, fullperm=False):
     """ Breadth-first explore puzzle from given bandage state. """
-    norm = normalize(initcube)
+    norm = copy.deepcopy(initcube)
+    norm = norm if fullperm else normalize(norm)
     verts, edges, tovisit = [], [], [norm]
     edgelabels = {}
     cube2int, int2cube = {}, {} # bijection for short repre of cube as int
@@ -110,7 +113,7 @@ def explore(initcube):
         verts.append(cube2int[tuple(cube)])
         for facename, face in FACES.items():
             if facename in "UDRLFB" and turnable(face, cube):
-                new = turn(face, cube)
+                new = turn(face, cube, fullperm=fullperm)
                 if tuple(new) not in cube2int:
                     tovisit.append(new)
                     counter += 1
@@ -234,3 +237,53 @@ def similarity(nbrcube1, nbrcube2):
     flat1 = [y for x in nbrcube1 for y in x]
     flat2 = [y for x in nbrcube2 for y in x]
     return (sum(c1 == c2 for c1, c2 in zip(flat1, flat2)) - 54) / (162 - 54)
+
+
+def to_dbrecord(cube):
+    """ Transform a cube into a database.csv record. Most notably calculate
+    the multiplicity of the various bandaged block types so that nice
+    database searches by filtering on them can be done. """
+    norm = copy.deepcopy(cube)
+    norm = normalize(norm)
+    shape = ".".join(str(i) for i in normalize(cube, keepzeros=True))
+    pair = clock = bar = bigclock = quad = fuse2 = slab = cblock = fuse3 = 0
+    bigblock = 0
+    for blockno in range(1, max(norm)):
+        no = norm.count(blockno) # number of cubies in this block
+        inds = [i for i, block in enumerate(norm) if block == blockno]
+        spans_center = any([i in [4, 10, 12, 14, 16, 22] for i in inds])
+        if no == 2 and not spans_center:
+            pair += 1
+        if no == 2 and spans_center:
+            clock += 1
+        if no == 3 and not spans_center:
+            clock += 1
+        if no == 3 and spans_center:
+            bigclock += 1
+        if no == 4 and not spans_center:
+            quad += 1
+        if no == 4 and spans_center:
+            fuse2 += 1
+        if no == 6 and not spans_center:
+            slab += 1
+        if no == 6 and spans_center:
+            cblock += 1
+        if no == 8:
+            fuse3 += 1
+        if no == 12:
+            bigblock += 1
+    return ",".join(["NameMe!", shape, *[str(i) for i in (pair, clock, bar,
+                     bigclock, quad, fuse2, slab, cblock, fuse3, bigblock)],
+                     "Sources..."])
+
+"""
+   0  1  2
+  3  4  5
+ 6  7  8
+    9 10 11
+  12 13 14
+ 15 16 17
+    18 19 20
+  21 22 23
+ 24 25 26
+"""
