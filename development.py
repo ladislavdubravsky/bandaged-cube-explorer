@@ -15,7 +15,7 @@ cube =  [   1,1,9,
            10,10,7,
           4,5,6   ]
 
-verts, edges, labels, i2c, c2i = c.explore(cube)
+verts, edges, labels, i2c, c2i = c.explore(cube, fullperm=True)
 g = nx.Graph(edges)
 
 pred, dist = nx.dijkstra_predecessor_and_distance(g, 0)

@@ -251,22 +251,23 @@ def to_dbrecord(cube):
     for blockno in range(1, max(norm) + 1):
         no = norm.count(blockno) # number of cubies in this block
         inds = [i for i, block in enumerate(norm) if block == blockno]
-        spans_center = any([i in [4, 10, 12, 14, 16, 22] for i in inds])
-        if no == 2 and not spans_center:
+        spans_facecenter = any([i in [4, 10, 12, 14, 16, 22] for i in inds])
+        spans_core = 13 in inds
+        if no == 2 and not spans_facecenter:
             pair += 1
-        if no == 2 and spans_center:
+        if no == 2 and spans_facecenter:
             clock += 1
-        if no == 3 and not spans_center:
-            clock += 1
-        if no == 3 and spans_center:
+        if no == 3 and not spans_facecenter:
+            bar += 1
+        if no == 3 and spans_facecenter:
             bigclock += 1
-        if no == 4 and not spans_center:
+        if no == 4 and not spans_core:
             quad += 1
-        if no == 4 and spans_center:
+        if no == 4 and spans_core:
             fuse2 += 1
-        if no == 6 and not spans_center:
+        if no == 6 and not spans_core:
             slab += 1
-        if no == 6 and spans_center:
+        if no == 6 and spans_core:
             cblock += 1
         if no == 8:
             fuse3 += 1
