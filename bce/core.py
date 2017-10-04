@@ -248,7 +248,7 @@ def to_dbrecord(cube):
     shape = ".".join(str(i) for i in normalize(cube, keepzeros=True))
     pair = clock = bar = bigclock = quad = fuse2 = slab = cblock = fuse3 = 0
     bigblock = 0
-    for blockno in range(1, max(norm)):
+    for blockno in range(1, max(norm) + 1):
         no = norm.count(blockno) # number of cubies in this block
         inds = [i for i, block in enumerate(norm) if block == blockno]
         spans_center = any([i in [4, 10, 12, 14, 16, 22] for i in inds])

@@ -39,5 +39,5 @@ from sklearn import tree
 
 c.to_dbrecord(cube)
 db = pd.read_csv(r"C:\Python\bandaged-cube-explorer\puzzles\database.csv", index_col=0)
-cube = [int(i) for i in db.loc["Bicube Fuse", "Shape"].split(".")]
-draw_cubes([cube, c.do(read, "x2 z'")])
+cube = [int(i) for i in db.loc["Alcatraz", "Shape"].split(".")]
+draw_cubes([cube, c.do(cube, "x2 z'")])
