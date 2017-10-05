@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import csv
 import networkx as nx
 import pandas as pd
 import bce.core as c
@@ -15,7 +16,7 @@ cube =  [   1,1,9,
            10,10,7,
           4,5,6   ]
 
-verts, edges, labels, i2c, c2i = c.explore(cube, fullperm=True)
+verts, edges, labels, i2c, c2i = c.explore(cube, fullperm=False)
 g = nx.Graph(edges)
 
 pred, dist = nx.dijkstra_predecessor_and_distance(g, 0)
@@ -31,11 +32,9 @@ plt.scatter(*distcomp)
 from sklearn import tree
 
 
-# graph drawing - probably easiest to fall back to Mathematica for really nice graphs
-# pos = nx.spring_layout(g)
-# nx.draw_networkx_edges(g, pos, width=1, alpha=0.5)
-# nx.draw_networkx_edge_labels(g, pos, labels, font_size=8)
-# https://networkx.github.io/documentation/networkx-1.9/examples/drawing/labels_and_colors.html
+with open(r"C:\temp\graph.csv", "w") as f:
+    writer = csv.writer(f)
+    writer.writerows([[e[0], e[1], labels[e]] for e in edges])
 
 c.to_dbrecord(cube)
 db = pd.read_csv(r"C:\Python\bandaged-cube-explorer\puzzles\database.csv", index_col=0)
