@@ -1,3 +1,4 @@
 Name,Shape,Pair(112),Clock(112),Bar(113),BigClock(113),Quad(22),Fuse2(22),Slab(223),CBlock(223),Fuse3(222),BigBlock(223),Sources
 Alcatraz,1.1.0.1.1.0.0.0.0.2.2.3.2.2.4.5.6.7.2.2.3.2.2.4.5.6.7,3,2,0,0,1,0,0,0,1,0,https://ldubravsky.wordpress.com/2015/03/22/bandaged-3x3s-alcatraz/
-Bicube Fuse,1.1.2.3.3.2.4.4.0.5.5.6.5.5.6.7.8.9.5.5.10.5.5.10.7.8.9,6,3,0,0,0,0,0,0,1,0,Sources...
+Bicube Fuse,1.1.2.3.3.2.4.4.0.5.5.6.5.5.6.7.8.9.5.5.10.5.5.10.7.8.9,6,3,0,0,0,0,0,0,1,0,https://ldubravsky.wordpress.com/2017/10/09/bandaged-3x3s-the-bicube-fuse/
+Shark Fin Soup,1.1.2.1.1.2.3.3.0.4.4.5.4.4.5.6.6.0.7.7.8.7.7.8.9.9.0,4,2,0,0,2,1,0,0,0,0,http://twistypuzzles.com/~sandy/forum/viewtopic.php?f=15&t=29899&start=0

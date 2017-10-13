@@ -95,6 +95,14 @@ def draw_cubes(cubes, alpha=1, color=(1, 1, 1), size=4, linewidth=2, ncol=3):
             x0, y0, z0 = _ternary(rcube.index(block))
             x1, y1, z1 = _ternary(len(rcube) - 1 - rev.index(block))
             x, y, z = min(x0, x1), min(y0, y1), min(z0, z1)
+#            if rcube.index(block) == 14 or rev.index(block) == 26-14:
+#                color=(1,1,0)
+#            elif rcube.index(block) == 22 or rev.index(block) == 26-22:
+#                color=(1,0.647,0)
+#            elif rcube.index(block) == 10 or rev.index(block) == 26-10:
+#                color=(0,1,0)
+#            else:
+#                color=(1,1,1)
             _draw_block(ax, (x, y, z), (1 + abs(x1 - x0), 1 + abs(y1 - y0),
                 1 + abs(z1 - z0)), alpha, color, linewidth)
 

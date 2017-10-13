@@ -6,18 +6,32 @@ import pandas as pd
 import bce.core as c
 from bce.graphics import draw_cubes
 
-cube =  [   1,1,9,
-           2,2,9,
+# shark fin soup
+cube =  [   1,1,2,
+           1,1,2,
           3,3,0,
-            10,10,8,
-           10,10,8,
-          4,5,6,
-            10,10,7,
-           10,10,7,
-          4,5,6   ]
+            4,4,5,
+           4,4,5,
+          6,6,0,
+            7,7,8,
+           7,7,8,
+          9,9,0   ]
 
-verts, edges, labels, i2c, c2i = c.explore(cube, fullperm=False)
+# 1x1x2 maxout
+cube =  [   1,1,4,
+           2,2,4,
+          3,3,0,
+            10,12,5,
+           10,0,5,
+          9,8,7,
+            11,12,6,
+           11,0,6,
+          9,8,7   ]
+
+verts, edges, labels, i2c, c2i = c.explore(c.normalize(cube), fullperm=False)
 g = nx.Graph(edges)
+
+draw_cubes([i2c[i] for i in range(121)], ncol=15, size=1)
 
 pred, dist = nx.dijkstra_predecessor_and_distance(g, 0)
 for i in range(max(dist.values()) + 1):
@@ -32,11 +46,14 @@ plt.scatter(*distcomp)
 from sklearn import tree
 
 
-with open(r"C:\temp\graph.csv", "w") as f:
-    writer = csv.writer(f)
-    writer.writerows([[e[0], e[1], labels[e]] for e in edges])
+c2i[tuple([  4,4,6,
+           2,2,6,
+          3,3,0,
+            10,10,8,
+           10,10,8,
+          7,5,1,
+            10,10,9,
+           10,10,9,
+          7,5,1])] # 2385
+c.shortest_path(g, 2385, 0, labels, c2i)
 
-c.to_dbrecord(cube)
-db = pd.read_csv(r"C:\Python\bandaged-cube-explorer\puzzles\database.csv", index_col=0)
-cube = [int(i) for i in db.loc["Alcatraz", "Shape"].split(".")]
-draw_cubes([cube, c.do(cube, "x2 z'")])

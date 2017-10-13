@@ -74,9 +74,10 @@ def turn(face, cube, fullperm=False):
     return newcube if fullperm else normalize(newcube)
 
 
-def normalize(cube, keepzeros=False):
+def normalize(cubelist, keepzeros=False):
     """ Normalize a cubelist to get unique bandage shape representation. You
     don't normally need to be calling this. """
+    cube = copy.deepcopy(cubelist)
     # handle zeros, which represent non-connected cubies, first
     if not keepzeros:
         blockno = 1 + max([1] + cube)
