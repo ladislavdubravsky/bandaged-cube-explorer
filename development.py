@@ -28,8 +28,23 @@ cube =  [   1,1,4,
            11,0,6,
           9,8,7   ]
 
+
+cube = [  2, 2, 10,
+         3, 3, 10,
+        4, 4, 0,
+          1, 1, 9,
+         1, 1, 9,
+        5, 6, 7,
+          1, 1, 8,
+         1, 1, 8,
+        5, 6, 7]
+
 verts, edges, labels, i2c, c2i = c.explore(c.normalize(cube), fullperm=False)
 g = nx.Graph(edges)
+
+with open(r"C:\temp\graph_good.csv", "w") as f:
+    writer = csv.writer(f)
+    writer.writerows([[e[0], e[1], labels[e]] for e in edges])
 
 draw_cubes([i2c[i] for i in range(121)], ncol=15, size=1)
 
