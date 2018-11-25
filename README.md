@@ -21,7 +21,7 @@ Bandage shape objects together with the generating morphisms form a graph, the b
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/ladislavdubravsky/bandaged-cube-explorer/master/pics/bcfuse.png">
-  <br> Picture 3 - the bandaged cube graph of some bandaged cube. The six different colors code the corresponding six cube faces.
+  <br> Picture 3 - the bandaged cube graph of some bandaged cube
 </p>
 
 1. Find for any bandage shape a turn sequence to transform it into the solved bandage shape *S*. While the bandage shape is now correct, it's likely that the colored stickers don't yet form monochromatic faces, as same dimension blocks can often be permuted and 1x1x1 cubies also flipped or twisted (pic. 4).
