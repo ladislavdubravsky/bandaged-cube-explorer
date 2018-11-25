@@ -20,7 +20,7 @@ Sequences of single physical face turns on the puzzle cannot in general be compo
 Bandage shape objects together with the generating morphisms form a graph, the bandaged cube graph (pic. 3). One approach to the solution process for a bandaged cube is as follows.
 
 <p align="center">
-  <img src="https://ladislavdubravsky.files.wordpress.com/2015/07/diamond2.png">
+  <img src="https://raw.githubusercontent.com/ladislavdubravsky/bandaged-cube-explorer/master/pics/bcfuse.png">
   <br> Picture 3 - the bandaged cube graph of some bandaged cube. The six different colors code the corresponding six cube faces.
 </p>
 
@@ -36,11 +36,11 @@ Bandage shape objects together with the generating morphisms form a graph, the b
 Python code in this repository focuses on the graph-navigating part of the solution process. In human solving, the enjoyability follows from being able to form at most a small set of rules for proceeding forward, using visuospatial recognition and imagination and ad-hoc logic. Harder bandaged puzzles don’t seem straightforwardly amenable to such approach though.
 
 ## Purpose of this project
-To provide an exploration and prototyping platform for understanding bandaged 3x3 cubes. To aid human solvers in their endeavors and to help me write my [blogs](https://ladislavdubravsky.wordpress.com/).
+To provide an exploration and prototyping platform for understanding bandaged 3x3 cubes. Aid solvers in their endeavors and help me write my [blogs](https://ladislavdubravsky.wordpress.com/).
 
 ## Usage
 #### General
-You need to have a Python interpreter installed together with packages such as numpy, matplotlib or networkx - these come bundled with distributions such as WinPython. After that you need to place the project files somewhere the interpreter can see them, for example to a location on your PYTHONPATH environment variable.
+You need to have Python installed together with packages such as numpy, matplotlib or networkx - these come bundled with distributions such as WinPython. After that you need to place the project files somewhere the interpreter can see them, for example to a location on your PYTHONPATH environment variable.
 
 #### Bandage shape model in code
 Until we’re in need of efficiency increase, we represent a bandage shape as a list of length 27 – a cubelist. This is a 0..26-indexed list, and ternary representations of its indices correspond to coordinate triplets for unit cubies in a 3x3x3 cube (even if there is no central cubie in the physical cube). The list elements are numbers coming from range 1..(number of bandage shape blocks). Cubelist indices containing an identic cubelist element represent a single bandaged block. It follows the indices should form a geometric cuboid in their ternary representation. For a unique bandage shape representation, we also demand of cubelist elements to be increasing in the order of their first occurrence in the cubelist reading order (this gets taken care of under the hood).
