@@ -122,7 +122,7 @@ def explore(initcube, fullperm=False):
                     int2cube[counter] = new
                 newedge = (cube2int[tuple(cube)], cube2int[tuple(new)])
                 edges.append(newedge)
-                edgelabels[newedge] = facename
+                edgelabels[newedge] = edgelabels.get(newedge,"")+facename
 
     return verts, edges, edgelabels, int2cube, cube2int
 
