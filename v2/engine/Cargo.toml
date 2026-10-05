@@ -7,3 +7,7 @@ publish = false
 
 [lib]
 name = "bandaged_cube_engine"
+
+[[bench]]
+name = "layouts"
+harness = false
