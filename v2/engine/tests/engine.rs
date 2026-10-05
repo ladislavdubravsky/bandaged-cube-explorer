@@ -1,7 +1,7 @@
 use bandaged_cube_engine::{
     Amount, AxisMajor, BandageSpec, BondLayout, BondShape, CubeState, Face, LegacySparse, Move,
     Partition, Tuned,
-    explore::explore,
+    explore::{explore, explore_with_limit},
     fixtures,
     geometry::{BONDS, CORNER_CELLS, CORNER_FACES, EDGE_CELLS, EDGE_FACES, coordinates},
     parse_moves,
@@ -111,13 +111,15 @@ fn exhaustive_legacy_components_match_independent_partition_bfs() {
         }
         assert_eq!(seen.len(), fixture.shapes, "{}", fixture.name);
         assert_eq!(arcs, fixture.clockwise_arcs);
-        let graph = explore(
-            BondShape::<AxisMajor>::from_partition(&fixture.partition),
-            100_000,
-        );
+        let initial = BondShape::<AxisMajor>::from_partition(&fixture.partition);
+        let graph = explore(initial);
         assert!(graph.complete);
         assert_eq!(graph.vertices.len(), fixture.shapes);
         assert_eq!(graph.arcs.len(), fixture.clockwise_arcs);
+        let exactly_limited = explore_with_limit(initial, fixture.shapes);
+        assert!(exactly_limited.complete);
+        assert_eq!(exactly_limited.vertices, graph.vertices);
+        assert_eq!(exactly_limited.arcs, graph.arcs);
         assert_eq!(
             graph.qtm_distances(0).into_iter().flatten().max().unwrap(),
             fixture.eccentricity_qtm
@@ -166,10 +168,8 @@ fn connected_random_partitions_and_layout_conversions() {
 
 #[test]
 fn distinct_unbandaged_loops_and_resource_limit() {
-    let graph = explore(
-        BondShape::<AxisMajor>::from_partition(&Partition::singletons()),
-        1,
-    );
+    let initial = BondShape::<AxisMajor>::from_partition(&Partition::singletons());
+    let graph = explore(initial);
     assert!(graph.complete);
     assert_eq!(graph.vertices.len(), 1);
     assert_eq!(graph.arcs.len(), 6);
@@ -177,12 +177,16 @@ fn distinct_unbandaged_loops_and_resource_limit() {
         assert_eq!((a, b), (0, 0));
         assert!(!CubeState::SOLVED.turn(movement).is_solved());
     }
-    let graph = explore(
+    let limited = explore_with_limit(initial, 1);
+    assert!(limited.complete);
+    assert_eq!(limited.arcs, graph.arcs);
+    let graph = explore_with_limit(
         BondShape::<AxisMajor>::from_partition(&fixtures::legacy()[0].partition),
         1,
     );
     assert!(!graph.complete);
     assert_eq!(graph.vertices.len(), 1);
+    assert!(graph.arcs.iter().all(|&(a, b, _)| a == 0 && b == 0));
     for face in Face::ALL {
         assert!(
             !BondShape::<AxisMajor>::from_partition(&Partition::fully_bandaged()).is_turnable(face)

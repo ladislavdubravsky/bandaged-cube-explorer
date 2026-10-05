@@ -12,6 +12,8 @@ The harness calibrates repetition counts, warms the workloads, interleaves the c
 
 Inputs are all 3,508 reachable shapes from Alcatraz, Bicube Fuse, and Shark Fin Soup. Each mixed-legality pass tests all six faces, yielding 21,048 queries. The turn corpus contains the 5,184 legal clockwise actions. Successor generation tests all faces and computes allowed successors; the BFS workload constructs all three complete graphs including labeled arcs and self-loops.
 
+Recorded runs used the harness in commit `7438492`, with a 100,000-vertex cap that none of these fixtures reached. The current harness explores without a cap; rerun it to measure the current code.
+
 `Tuned` currently has exactly the same positions as `LegacySparse`: the heuristic did not improve its seed. Those rows serve as a duplicate control. They should not be interpreted as a third independent design.
 
 ## Native compilation results

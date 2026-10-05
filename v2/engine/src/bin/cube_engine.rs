@@ -6,7 +6,10 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
         Some("fixtures") if args.len() == 1 => {
             for fixture in fixtures::legacy() {
                 let initial: BondShape = BondShape::from_partition(&fixture.partition);
-                let graph = explore(initial, 100_000);
+                let graph = explore(initial);
+                if !graph.complete {
+                    return Err(format!("{}: shape exploration is incomplete", fixture.name).into());
+                }
                 let max = graph.qtm_distances(0).into_iter().flatten().max().unwrap();
                 println!(
                     "{}: {} shapes, {} clockwise arcs, solved eccentricity {} QTM, complete={}",

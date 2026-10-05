@@ -129,7 +129,7 @@ Provide a CLI for importing puzzles, inspecting legal moves, exploring a reachab
 
 Retain distinct labeled edges and self-loops, with their induced colored permutations. The ordinary unbandaged cube has one shape vertex, but its face turns still generate the entire cube group. Collapsing those actions would destroy the information needed for colored solving.
 
-Replace all-pairs distance calculations for feature stages with reverse multi-source BFS from each target set. Add limits, cancellation, checkpointing when needed, and clear reporting of incomplete exploration. Begin with versioned puzzle records and exports recording the model, metric, symmetry convention, and completeness status.
+Replace all-pairs distance calculations for feature stages with reverse multi-source BFS from each target set. Explore complete components by default. Any resource limits must be explicitly requested, with clear reporting of incomplete exploration; add cancellation and checkpointing when needed. Begin with versioned puzzle records and exports recording the model, metric, symmetry convention, and completeness status.
 
 Completion criterion: the existing shape-analysis workflows can be reproduced through a documented CLI/library, with basic shape rendering or galleries and deterministic exports.
 

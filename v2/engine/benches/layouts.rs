@@ -93,7 +93,7 @@ fn add<L: BondLayout>(cases: &mut Vec<Case>, corpus: &[BondShape<AxisMajor>]) {
         run: Box::new(move || {
             let mut out = 0;
             for &shape in black_box(&initial) {
-                let graph = explore(shape, 100_000);
+                let graph = explore(shape);
                 assert!(graph.complete);
                 out += (graph.vertices.len() + graph.arcs.len()) as u64;
             }
@@ -260,10 +260,7 @@ fn main() {
     let corpus: Vec<_> = fixtures::legacy()
         .into_iter()
         .flat_map(|fixture| {
-            let graph = explore(
-                BondShape::<AxisMajor>::from_partition(&fixture.partition),
-                100_000,
-            );
+            let graph = explore(BondShape::<AxisMajor>::from_partition(&fixture.partition));
             assert!(graph.complete);
             assert_eq!(graph.vertices.len(), fixture.shapes);
             assert_eq!(graph.arcs.len(), fixture.clockwise_arcs);

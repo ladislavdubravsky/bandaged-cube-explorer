@@ -17,6 +17,8 @@ cargo run --release --bin cube_engine -- replay Alcatraz "F R2"
 
 The fixture command explores the existing CSV puzzles and reports reachable shape counts, labeled clockwise arcs, and solved-shape eccentricity in QTM. Reverse traversal supplies inverse turns when calculating distances. Parallel move actions and self-loops are retained.
 
+`explore(initial)` runs until the entire reachable shape component is discovered, without a vertex limit. Bounded experiments must explicitly call `explore_with_limit(initial, max_vertices)` and check the returned `complete` flag. The CLI requires complete exploration before reporting counts or distances.
+
 The replay command starts from the recorded solved state, applies checked moves, and prints both the resulting shape and colored state. Invalid notation and blocked moves produce an error. These are initial engine tools; the larger exploration interface and colored solver remain subsequent roadmap work.
 
 ## Representations
