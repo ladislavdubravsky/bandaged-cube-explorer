@@ -1,0 +1,9 @@
+[package]
+name = "bandaged-cube-engine"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+publish = false
+
+[lib]
+name = "bandaged_cube_engine"

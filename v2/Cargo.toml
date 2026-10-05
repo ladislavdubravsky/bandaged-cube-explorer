@@ -1,0 +1,9 @@
+[workspace]
+members = ["engine"]
+resolver = "3"
+
+[profile.release]
+debug = 1
+
+[profile.bench]
+debug = 1
