@@ -15,9 +15,37 @@ v2/.venv/bin/python -m pip install './v2/python[all]'
 ```
 
 Use `./v2/python` without extras for a dependency-free Python interface. The
-`plots` extra installs matplotlib; `graph` installs NetworkX; `all` includes both.
+`plots` extra installs matplotlib; `graph` installs NetworkX; `notebooks` adds
+matplotlib and the IPython kernel; `all` includes all three.
 These adapters import their dependencies only when used. The package distribution
 is named `bandaged-cube-explorer-v2`; its import name is `bce_v2`.
+
+## Play in VS Code
+
+Open the repository root in VS Code and install the recommended Python, Python
+Environments, and Jupyter extensions. The workspace settings select `v2/.venv`
+and activate it in new terminals, including an existing terminal when the
+Python extension starts. Environment creation and package installation above
+are a one-time setup; opening the project does not reinstall packages.
+
+Open [Alcatraz.ipynb](../examples/Alcatraz.ipynb) for the main research example.
+It has editable cells for the bandage list, scramble, full colored replay,
+QTM/HTM shape exploration and solutions, inline galleries, and saved records.
+Select the Python environment at `v2/.venv` in the notebook's **Select Kernel**
+menu if prompted. VS Code remembers the selected notebook kernel. A separate
+Jupyter server is unnecessary.
+
+After adding these settings to an already-open workspace, run **Developer:
+Reload Window** and open a new terminal. If VS Code has previously remembered a
+different interpreter, choose `v2/.venv` once with **Python: Select Interpreter**.
+The notebook kernel picker is separate from terminal environment selection.
+
+For an existing installation made before notebook support was added, install
+the kernel without activating a shell:
+
+```sh
+v2/.venv/bin/python -m pip install 'ipykernel>=6'
+```
 
 ## Development
 
@@ -149,7 +177,8 @@ graph.save("shapes.json")
 
 The renderer shows bandage shapes and returns a matplotlib figure. It draws
 actual cell surfaces, including connected noncuboid blocks, and supports
-transparent views. It does not display sticker colors.
+transparent views. It does not display sticker colors. The
+[Alcatraz notebook](../examples/Alcatraz.ipynb) displays example galleries inline.
 
 Version-1 puzzle JSON records include reference labels and the validated move
 witness needed to reproduce full colors. Loading checks conventions and replays

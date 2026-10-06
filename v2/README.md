@@ -11,6 +11,11 @@ python3 -m venv v2/.venv
 v2/.venv/bin/python -m pip install './v2/python[all]'
 ```
 
+Open [Alcatraz.ipynb](examples/Alcatraz.ipynb) in VS Code for an interactive
+research session with inline galleries. The workspace settings select
+`v2/.venv` and activate terminals automatically. Install the recommended Python
+and Jupyter extensions and choose the `v2/.venv` notebook kernel once if prompted.
+
 The Python package is the primary research interface. Feature-chain and distance-layer experiments remain milestone-six work.
 
 The engine models connected partitions of the legacy 27-cell grid, including its virtual core, and the six outer faces of an ordinary fixed-center 3×3 cube. It supports quarter turns, half turns, and inverses in standard Singmaster notation. Noncuboid connected blocks are allowed; the narrower enumeration family in the roadmap is a separate concern.
