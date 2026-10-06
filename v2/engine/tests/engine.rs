@@ -1,7 +1,7 @@
 use bandaged_cube_engine::{
     Amount, AxisMajor, BandageSpec, BondLayout, BondShape, CubeState, Face, LegacySparse, Move,
     Partition, Tuned,
-    explore::{explore, explore_with_limit},
+    explore::{Metric, ShapeGraph, explore, explore_with_limit, explore_with_options},
     fixtures,
     geometry::{BONDS, CORNER_CELLS, CORNER_FACES, EDGE_CELLS, EDGE_FACES, coordinates},
     parse_moves,
@@ -195,7 +195,7 @@ fn distinct_unbandaged_loops_and_resource_limit() {
 }
 
 #[test]
-fn notation_and_legacy_directions() {
+fn standard_move_notation() {
     for movement in Move::ALL {
         assert_eq!(movement.to_string().parse::<Move>().unwrap(), movement);
         assert_eq!(movement.inverse().inverse(), movement);
@@ -204,37 +204,141 @@ fn notation_and_legacy_directions() {
     for invalid in ["X", "r", "R3", "R2'", "R garbage", "", "é"] {
         assert!(invalid.parse::<Move>().is_err());
     }
-    assert_eq!(
-        Move::clockwise(Face::B).legacy_to_standard(),
-        Move::new(Face::B, Amount::Counterclockwise)
-    );
-    assert_eq!(
-        Move::clockwise(Face::U).legacy_to_standard(),
-        Move::clockwise(Face::U)
-    );
-    // Independent legacy 3x3 matrix rotation. Explicitly map B/D to standard inverses.
-    for face in Face::ALL {
-        let mut cell_labels: [u8; 27] = std::array::from_fn(|i| i as u8);
-        let selected: Vec<usize> = (0..27).filter(|&i| face.contains(i as u8)).collect();
-        let source = selected.iter().map(|&i| cell_labels[i]).collect::<Vec<_>>();
-        let order = if face == Face::R {
-            [2, 5, 8, 1, 4, 7, 0, 3, 6]
-        } else {
-            [6, 3, 0, 7, 4, 1, 8, 5, 2]
-        };
-        for (dest, &index) in selected.iter().zip(&order) {
-            cell_labels[*dest] = source[index];
+}
+
+#[test]
+fn metric_distances_and_shortest_move_witnesses() {
+    let mut labels = [0; 27];
+    labels[0] = 1;
+    labels[1] = 1;
+    let initial = BondShape::<AxisMajor>::from_partition(&Partition::from_legacy(labels).unwrap());
+    let half_turn = Move::new(Face::U, Amount::Half);
+    let target = initial.try_turn(half_turn).unwrap();
+    let qtm = explore_with_options(initial, Metric::Qtm, None);
+    let htm = explore_with_options(initial, Metric::Htm, None);
+    assert!(qtm.complete && htm.complete);
+    assert_eq!(qtm.metric, Metric::Qtm);
+    assert_eq!(htm.metric, Metric::Htm);
+    assert_eq!(qtm.vertices.len(), htm.vertices.len());
+    assert_eq!(htm.arcs.len(), 3 * qtm.arcs.len());
+    assert!(qtm.arcs.iter().all(|arc| arc.2.amount == Amount::Clockwise));
+    let qtm_target = qtm
+        .vertices
+        .iter()
+        .position(|&shape| shape == target)
+        .unwrap();
+    let htm_target = htm
+        .vertices
+        .iter()
+        .position(|&shape| shape == target)
+        .unwrap();
+    assert_eq!(qtm.distances(0)[qtm_target], Some(2));
+    assert_eq!(htm.distances(0)[htm_target], Some(1));
+    assert_eq!(htm.qtm_distances(0)[htm_target], Some(2));
+    for graph in [&qtm, &htm] {
+        // Independently derive distances from stored arcs, rather than sharing
+        // the move-successor traversal used by distances and shortest_path.
+        let mut adjacency = vec![Vec::new(); graph.vertices.len()];
+        for &(source, target, _) in &graph.arcs {
+            adjacency[source].push(target);
+            if graph.metric == Metric::Qtm {
+                adjacency[target].push(source);
+            }
         }
-        for (dest, &home) in cell_labels.iter().enumerate() {
+        let mut expected = vec![None; graph.vertices.len()];
+        expected[0] = Some(0);
+        let mut pending = VecDeque::from([0]);
+        while let Some(source) = pending.pop_front() {
+            for &target in &adjacency[source] {
+                if expected[target].is_none() {
+                    expected[target] = Some(expected[source].unwrap() + 1);
+                    pending.push_back(target);
+                }
+            }
+        }
+        let distances = graph.distances(0);
+        assert_eq!(distances, expected);
+        for (id, &destination) in graph.vertices.iter().enumerate() {
+            let path = graph.shortest_path(0, id).unwrap();
+            assert_eq!(path.len(), distances[id].unwrap());
             assert_eq!(
-                bandaged_cube_engine::geometry::destination(
-                    home,
-                    Move::clockwise(face).legacy_to_standard()
-                ) as usize,
-                dest
+                path.into_iter()
+                    .fold(initial, |shape, movement| shape.try_turn(movement).unwrap()),
+                destination
             );
         }
+        assert_eq!(graph.shortest_path(0, 0), Some(Vec::new()));
+        assert_eq!(graph.shortest_path(0, graph.vertices.len()), None);
+        assert_eq!(graph.shortest_path(graph.vertices.len(), 0), None);
+        assert!(
+            graph
+                .distances(graph.vertices.len())
+                .iter()
+                .all(Option::is_none)
+        );
     }
+}
+
+#[test]
+fn partial_graph_distances_use_only_represented_move_endpoints() {
+    let mut labels = [0; 27];
+    labels[0] = 1;
+    labels[1] = 1;
+    let initial = BondShape::<AxisMajor>::from_partition(&Partition::from_legacy(labels).unwrap());
+    let half_turn = Move::new(Face::U, Amount::Half);
+    let target = initial.try_turn(half_turn).unwrap();
+    // The intermediate U-quarter-turn shape is deliberately absent. A half turn
+    // is one legal HTM action, but QTM cannot route through an omitted vertex.
+    let mut graph = ShapeGraph {
+        vertices: vec![initial, target],
+        arcs: vec![(0, 1, half_turn), (1, 0, half_turn)],
+        metric: Metric::Htm,
+        complete: false,
+    };
+    assert_eq!(graph.distances(0), vec![Some(0), Some(1)]);
+    assert_eq!(graph.shortest_path(0, 1), Some(vec![half_turn]));
+    assert_eq!(graph.qtm_distances(0), vec![Some(0), None]);
+    graph.metric = Metric::Qtm;
+    assert_eq!(graph.distances(0), vec![Some(0), None]);
+    assert_eq!(graph.shortest_path(0, 1), None);
+    for metric in [Metric::Qtm, Metric::Htm] {
+        let limited = explore_with_options(initial, metric, Some(2));
+        assert!(!limited.complete);
+        assert_eq!(limited.vertices.len(), 2);
+        assert!(limited.arcs.iter().all(|&(a, b, _)| a < 2 && b < 2));
+        let repeated = explore_with_options(initial, metric, Some(2));
+        assert_eq!(limited.vertices, repeated.vertices);
+        assert_eq!(limited.arcs, repeated.arcs);
+        let unbandaged = explore_with_options(
+            BondShape::<AxisMajor>::from_partition(&Partition::singletons()),
+            metric,
+            Some(1),
+        );
+        assert!(unbandaged.complete);
+        assert_eq!(
+            unbandaged.arcs.len(),
+            if metric == Metric::Qtm { 6 } else { 18 }
+        );
+    }
+}
+
+#[test]
+fn colored_state_owns_its_bandage_specification() {
+    let partition = fixtures::legacy()[0].partition;
+    let mut state = {
+        let specification = BandageSpec::new(partition);
+        specification.solved_state()
+    };
+    assert_eq!(state.specification().home(), &partition);
+    let movement = Move::ALL
+        .into_iter()
+        .find(|m| state.is_turnable(m.face))
+        .unwrap();
+    let original = state;
+    state.try_turn(movement).unwrap();
+    assert!(state.check_shape());
+    state.try_turn(movement.inverse()).unwrap();
+    assert_eq!(state, original);
 }
 
 #[test]

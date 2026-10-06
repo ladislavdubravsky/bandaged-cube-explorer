@@ -119,7 +119,7 @@ impl CubeState {
 }
 
 /// Immutable membership by solved home-cell identity, including the virtual core.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct BandageSpec {
     home: Partition,
 }
@@ -131,9 +131,9 @@ impl BandageSpec {
     pub const fn home(&self) -> &Partition {
         &self.home
     }
-    pub fn solved_state(&self) -> BandagedState<'_> {
+    pub fn solved_state(&self) -> BandagedState {
         BandagedState {
-            spec: self,
+            spec: *self,
             cube: CubeState::SOLVED,
             shape: BondShape::from_partition(&self.home),
         }
@@ -148,15 +148,19 @@ impl BandageSpec {
 }
 
 /// Constructed at solved state and advanced only through legal turns.
+/// Owns its specification so it can outlive the value used to construct it.
 /// Arbitrary colored-state import needs an additional rigid-block validation API.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct BandagedState<'a> {
-    spec: &'a BandageSpec,
+pub struct BandagedState {
+    spec: BandageSpec,
     cube: CubeState,
     shape: BondShape,
 }
 
-impl BandagedState<'_> {
+impl BandagedState {
+    pub const fn specification(&self) -> &BandageSpec {
+        &self.spec
+    }
     pub const fn cube(&self) -> &CubeState {
         &self.cube
     }

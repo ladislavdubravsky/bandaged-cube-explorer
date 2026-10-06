@@ -8,9 +8,10 @@ pub struct Fixture {
     pub eccentricity_qtm: usize,
 }
 
-/// Parse the existing CSV without modifying it or adding runtime dependencies.
+/// Parse a frozen snapshot of the legacy CSV, bundled with the engine crate.
+/// The original database remains unchanged and no runtime file access is needed.
 pub fn legacy() -> Vec<Fixture> {
-    include_str!("../../../puzzles/database.csv")
+    include_str!("../data/fixtures.csv")
         .lines()
         .skip(1)
         .zip([(1449, 2048, 16), (121, 168, 7), (1938, 2968, 20)])

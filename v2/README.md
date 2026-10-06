@@ -15,11 +15,11 @@ cargo run --release --bin cube_engine -- fixtures
 cargo run --release --bin cube_engine -- replay Alcatraz "F R2"
 ```
 
-The fixture command explores the existing CSV puzzles and reports reachable shape counts, labeled clockwise arcs, and solved-shape eccentricity in QTM. Reverse traversal supplies inverse turns when calculating distances. Parallel move actions and self-loops are retained.
+The fixture command explores a bundled snapshot of the existing CSV puzzles and reports reachable shape counts, labeled clockwise arcs, and solved-shape eccentricity in QTM. Reverse traversal supplies inverse turns when calculating distances. Parallel move actions and self-loops are retained. The snapshot lets packaged builds run independently of the old project.
 
-`explore(initial)` runs until the entire reachable shape component is discovered, without a vertex limit. Bounded experiments must explicitly call `explore_with_limit(initial, max_vertices)` and check the returned `complete` flag. The CLI requires complete exploration before reporting counts or distances.
+`explore(initial)` runs until the entire reachable shape component is discovered, without a vertex limit. Bounded experiments must explicitly call `explore_with_limit(initial, max_vertices)` and check the returned `complete` flag. `explore_with_options` also supports HTM, storing all 18 legal actions. Graph distances and shortest paths use the declared metric and retain move witnesses. The Rust fixture CLI requires complete exploration before reporting counts or distances.
 
-The replay command starts from the recorded solved state, applies checked moves, and prints both the resulting shape and colored state. Invalid notation and blocked moves produce an error. These are initial engine tools; the larger exploration interface and colored solver remain subsequent roadmap work.
+The replay command starts from the recorded solved state, applies checked moves, and prints both the resulting shape and colored state. Invalid notation and blocked moves produce an error. Colored solving remains milestone-four work.
 
 ## Representations
 
@@ -29,7 +29,7 @@ The replay command starts from the recorded solved state, applies checked moves,
 | `BondShape<L>` | Canonical adjacency equality in a declared bit layout | 8 bytes |
 | `CubeState` | Corner identities/twists and edge identities/flips | 40 bytes |
 | `BandageSpec` | Immutable membership by solved home-cell identity | A partition |
-| `BandagedState` | A colored state and matching cached shape, borrowed from its specification | Reference plus state values |
+| `BandagedState` | A colored state, owned specification, and matching cached shape | Specification plus state values |
 
 `Partition::from_legacy` treats each input zero as a separate singleton and normalizes internal labels to `1..k`. It rejects disconnected blocks. `Partition::footprints` supplies derived `u32` occupancy masks for inspection and comparison.
 
@@ -39,13 +39,13 @@ All layouts in this implementation retain the full grid's 54 adjacency edges. A 
 
 The default layout is `LegacySparse`, carrying forward the original enumerator's 48 shell positions and assigning six previously unused positions to core bonds. `AxisMajor` is the straightforward comparison layout. `Tuned` is an experimental candidate read from `engine/layouts/tuned.txt`; the first search found no better assignment, so it currently equals `LegacySparse`. Its benchmark rows are a duplicate control, not evidence for a third distinct layout.
 
-Bit positions follow the canonical bond list in [geometry.rs](engine/src/geometry.rs): strides 9, 3, then 1, each with ascending source cell. The associated `POSITIONS` array maps that order to physical bit positions. Raw words are layout-specific; a future persistence format must record a stable layout identifier or export an explicit canonical representation.
+Bit positions follow the canonical bond list in [geometry.rs](engine/src/geometry.rs): strides 9, 3, then 1, each with ascending source cell. The associated `POSITIONS` array maps that order to physical bit positions. Raw words are layout-specific; exports should use a stable layout identifier or an explicit canonical representation.
 
 ## Move and color conventions
 
 Cell indices preserve the old formula `down * 9 + front * 3 + right`. Physical coordinates are right, back, and up, centered at zero. A clockwise turn is viewed from outside its face. Center positions and the virtual core stay fixed, but a rotating face's center still belongs to its moving layer for bandage legality.
 
-The Python code's `B` and `D` quarter turns have the opposite direction from standard Singmaster notation. `Move::legacy_to_standard` converts parsed legacy moves explicitly. Standard and legacy half turns agree. Slice turns, wide turns, and whole-cube frame operations are not accepted by the current parser.
+All v2 interfaces use standard Singmaster notation, including `B` and `D`. There is no legacy direction conversion or block-label permutation mode. Slice turns, wide turns, and whole-cube frame operations are not accepted by the current parser.
 
 `CubeState` uses corner order `URF UFL ULB UBR DFR DLF DBL DRB` and edge order `UR UF UL UB DR DF DL DB FR FL BL BR`, with the standard orientation convention. `try_new` checks identities, orientation sums, and matching permutation parity. Center markings and center spin are outside this ordinary-cube representation. [Reference conventions](https://kociemba.org/math/CubeDefs.htm).
 
@@ -100,7 +100,7 @@ On x86-64 with BMI2, the harness also tests `PEXT` plus six lookup tables. It ve
 
 ## Verification coverage
 
-The integration suite checks every reachable shape of Alcatraz, Bicube Fuse, and Shark Fin Soup against an independent partition BFS, and compares all 18 moves across the three layouts. It also covers randomized connected partitions, closure validation, core anchoring, move/inverse identities, rejected moves, self-loop preservation, and interrupted exploration.
+The integration suite checks every reachable shape of Alcatraz, Bicube Fuse, and Shark Fin Soup against an independent partition BFS, and compares all 18 moves across the three layouts. It also covers randomized connected partitions, closure validation, core anchoring, move/inverse identities, rejected moves, self-loop preservation, bounded exploration, QTM/HTM path replay and optimality against an independent graph BFS, and owned colored states.
 
 Colored turns are checked against independent standard quarter-turn tables and a separate geometric sticker simulation over 1,200 random moves. Legal bandaged walks of 600 moves per fixture check cache agreement, ordinary cube invariants, and complete inverse replay.
 

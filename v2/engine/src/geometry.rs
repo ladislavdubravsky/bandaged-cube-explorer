@@ -115,13 +115,6 @@ impl Move {
             _ => 1,
         }
     }
-    /// Legacy B and D quarter turns run opposite to standard Singmaster.
-    pub const fn legacy_to_standard(self) -> Self {
-        match self.face {
-            Face::B | Face::D => self.inverse(),
-            _ => self,
-        }
-    }
     pub const ALL: [Self; 18] = {
         let mut result = [Self::clockwise(Face::U); 18];
         let mut i = 0;
