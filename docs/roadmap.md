@@ -1,8 +1,8 @@
 # Bandaged cube explorer roadmap
 
-Tentative roadmap, 5 October 2026. Rust has been chosen and the first representations and move engine are implemented in [v2](../v2/README.md). Later milestones and broader puzzle definitions remain proposals.
+Tentative roadmap, 5 October 2026. The Rust model and move engine, Python research interface, and initial shape tools are implemented in [v2](../v2/README.md). Colored solving, enumeration, human strategies, and broader puzzle definitions remain later work.
 
-The replacement uses a Rust library and command-line application, developed alongside the existing Python project. Build shape exploration, colored solving, and enumeration on a precise model and verified move engine; use their results to develop human solving methods and an atlas of bandaged puzzles. Keep the general theory in view while making the first implementation specific to 3×3 cubes.
+The replacement uses a Rust computational library with a Python research interface and a thin command-line application, developed alongside the existing Python project. Build shape exploration, colored solving, and enumeration on a precise model and verified move engine; use their results to develop human solving methods and an atlas of bandaged puzzles. Keep the general theory in view while making the first implementation specific to 3×3 cubes.
 
 ## Preserve the existing project
 
@@ -17,7 +17,7 @@ The existing design has substantial value:
 - [The examples](../usage.py) develop recognizable feature chains, measure distances between stages, and display difficult cases. These are a useful starting point for human solving methods.
 - [The renderer](../bce/graphics.py) and [puzzle database](../puzzles/database.csv) supply galleries, transparent views, and three named fixtures.
 
-An important boundary: `fullperm=True` preserves block labels; it does not track all cubie identities, corner twists, edge flips, or stickers. A complete colored solver requires an additional state representation.
+The replacement tracks complete corner and edge identities and orientations. It does not carry forward the old block-label permutation mode or incorrect move directions: all v2 interfaces use standard Singmaster notation.
 
 Read-only runs of the existing exploration code produced these migration baselines. Distances use an undirected graph of quarter turns, with reverse traversal interpreted as an inverse turn.
 
@@ -35,7 +35,7 @@ Rust is a good fit for compact state values, bit operations, large searches, and
 
 Start with one library crate organized into modules and a thin CLI in a `v2/` Cargo workspace. Split out additional crates when their boundaries become useful. Keep parsing, rendering, persistence, and language bindings outside the move and search kernels. Prefer safe Rust and precomputed tables initially; introduce more specialized operations only after measurement. [Cargo workspace documentation](https://doc.rust-lang.org/book/ch14-03-cargo-workspaces.html).
 
-Python can remain a convenient research interface later. A separate PyO3 binding layer, packaged with maturin, would expose the Rust implementation without making the core depend on Python. Expose substantial operations such as exploring a component or solving a batch, so Python calls do not dominate computation. [PyO3 documentation](https://pyo3.rs/), [maturin documentation](https://www.maturin.rs/).
+Python is the primary research interface beginning in milestone three. A separate PyO3 binding layer, packaged with maturin, exposes the Rust implementation without making the core depend on Python. Accept ordinary Python lists for bandage definitions; keep experiments, notebook inspection, and plotting convenient in Python. Expose substantial operations such as exploring a component or solving a batch, so Python calls do not dominate computation. [PyO3 documentation](https://pyo3.rs/), [maturin documentation](https://www.maturin.rs/).
 
 Interactive graphics can use a browser frontend, with a native service or eventually a WebAssembly build of the core. Select that interface after the move engine and export formats exist.
 
@@ -125,13 +125,13 @@ Completion criterion: the new engine reproduces all three legacy shape baselines
 
 ### Third milestone Shape exploration and a usable replacement
 
-Provide a CLI for importing puzzles, inspecting legal moves, exploring a reachable shape component, finding a shape solution, and exporting results. Use queues and compact values, dense vertex IDs, and lazy successor generation when storing a graph is unnecessary.
+Provide a documented Python library for defining and importing puzzles, inspecting legal moves, replaying legal moves with full colors, exploring a reachable shape component, finding a shortest shape solution, and exporting results. Accept inline 27-cell lists, named fixtures, and versioned puzzle records. Keep a thin CLI for repeatable batch operations. Use queues and compact values, dense vertex IDs, and lazy successor generation when storing a graph is unnecessary.
 
 Retain distinct labeled edges and self-loops, with their induced colored permutations. The ordinary unbandaged cube has one shape vertex, but its face turns still generate the entire cube group. Collapsing those actions would destroy the information needed for colored solving.
 
-Replace all-pairs distance calculations for feature stages with reverse multi-source BFS from each target set. Explore complete components by default. Any resource limits must be explicitly requested, with clear reporting of incomplete exploration; add cancellation and checkpointing when needed. Begin with versioned puzzle records and exports recording the model, metric, symmetry convention, and completeness status.
+Support explicit QTM and HTM shape paths. Explore complete components by default. Any resource limits must be explicitly requested, with clear reporting of incomplete exploration; add cancellation and checkpointing when needed. Begin with versioned puzzle records and deterministic exports recording the model, metric, symmetry convention, and completeness status. Save colored states through a reference specification and a legal move witness until arbitrary colored import is validated in milestone four.
 
-Completion criterion: the existing shape-analysis workflows can be reproduced through a documented CLI/library, with basic shape rendering or galleries and deterministic exports.
+Completion criterion: Python users can define a puzzle in a list, replay moves, inspect its shapes and legal moves, explore it, obtain replayable shortest shape solutions, render basic shapes or galleries, and save reproducible results. Named legacy fixtures retain their verified counts and QTM distances. Feature chains, distance-layer experiments, and human strategy analysis belong to milestone six.
 
 ### Fourth milestone Solve colored puzzles
 
@@ -162,7 +162,7 @@ Completion criterion: a reproducible enumeration for a precisely declared family
 
 ### Sixth milestone Human solving methods and visual exploration
 
-Turn the existing feature-chain experiments into an explicit strategy system. Candidate features include recognizable block locations, available faces, restored bandage relations, and short algorithms with useful effects. Seek a small number of stages with simple recognition, limited branching, and short worst-case routes to the next stage.
+Turn the existing feature-chain and distance-layer experiments into an explicit strategy system. Replace all-pairs distance calculations for feature stages with reverse multi-source BFS from each target set. Candidate features include recognizable block locations, available faces, restored bandage relations, and short algorithms with useful effects. Seek a small number of stages with simple recognition, limited branching, and short worst-case routes to the next stage.
 
 For each proposed rule, record its recognition condition, legal setup, action, intended progress, and exceptions. Specify whether earlier features must hold throughout an algorithm or only at stage boundaries. Measure coverage and worst-case distances exhaustively on tractable shape components; distinguish these guarantees from sampled colored-state evidence. A geometric stage need not preserve an algebraic subgroup, so keep feature chains and stabilizer chains distinct.
 
@@ -194,10 +194,10 @@ An abstract permutation group alone is insufficient to define bandaging. We also
 
 A general model is a graph of legal invertible transitions, together with their permutation or geometric actions. Its legal paths, modulo cancellation of a move followed by its inverse, form a groupoid; when appropriate, further identify paths with the same source, target, and induced permutation. Alternatively, the generators act as partial bijections and generate an inverse monoid. Two words with the same ambient permutation can have different legal domains, so a partial action of the whole ambient group is not automatic. Isotropy groups at different shapes are conjugate within a connected component.
 
-Test the abstraction on another cube size with different center or inner-layer behavior before treating it as settled. Add Python bindings when the library interface is stable enough for notebooks and external experimentation. These two follow-on tasks can proceed independently.
+Test the abstraction on another cube size with different center or inner-layer behavior before treating it as settled. Extend the Python research interface to the shared model when it is useful for external experimentation.
 
-Completion criterion: a second puzzle model uses the shared search and analysis machinery, and Python users can run substantive operations through the Rust core.
+Completion criterion: a second puzzle model uses the shared search and analysis machinery and is accessible through the Python interface.
 
 ## Proposed immediate scope
 
-The first implementation in `v2/` now provides connected partitions of the legacy 27-cell grid, 54-bond shape encodings, complete ordinary colored cube states, and checked outer-face moves. Tests reproduce the three legacy components and check independent sticker behavior. Initial measurements select the portable sparse layout for the default engine; the straightforward layout and tuning candidate remain available for comparisons. Larger workloads and future puzzle models can refine that choice. Full enumeration, solver sophistication, and the visual atlas follow from this foundation.
+The implementation in `v2/` provides connected partitions of the legacy 27-cell grid, 54-bond shape encodings, complete ordinary colored cube states, and checked outer-face moves. Its Python research interface adds direct list input, QTM/HTM shape exploration and shortest paths, basic galleries, optional NetworkX views, and reproducible records. Tests reproduce the three legacy components and check independent sticker behavior. Initial measurements select the portable sparse layout for the default engine; the straightforward layout and tuning candidate remain available for comparisons. Larger workloads and future puzzle models can refine that choice. Colored solving, enumeration, human strategies, and the visual atlas follow from this foundation.

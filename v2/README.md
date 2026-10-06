@@ -1,6 +1,17 @@
-# Rust cube representations and move engine
+# Rust cube engine and Python research interface
 
-This is the first implementation of the replacement, developed alongside the original Python project. It uses only Rust's standard library. The old code, examples, database, and images remain unchanged.
+This replacement is developed alongside the original Python project. The computational engine uses only Rust's standard library. A separate PyO3 extension supplies the `bce_v2` Python research interface, packaged with maturin. The old project remains a reference.
+
+## Use from Python
+
+See the [Python guide](python/README.md) for installation, inline bandage definitions, full colored replay, QTM/HTM shape solutions, galleries, optional NetworkX views, and deterministic records. From the repository root:
+
+```sh
+python3 -m venv v2/.venv
+v2/.venv/bin/python -m pip install './v2/python[all]'
+```
+
+The Python package is the primary research interface. Feature-chain and distance-layer experiments remain milestone-six work.
 
 The engine models connected partitions of the legacy 27-cell grid, including its virtual core, and the six outer faces of an ordinary fixed-center 3×3 cube. It supports quarter turns, half turns, and inverses in standard Singmaster notation. Noncuboid connected blocks are allowed; the narrower enumeration family in the roadmap is a separate concern.
 
@@ -19,7 +30,7 @@ The fixture command explores a bundled snapshot of the existing CSV puzzles and 
 
 `explore(initial)` runs until the entire reachable shape component is discovered, without a vertex limit. Bounded experiments must explicitly call `explore_with_limit(initial, max_vertices)` and check the returned `complete` flag. `explore_with_options` also supports HTM, storing all 18 legal actions. Graph distances and shortest paths use the declared metric and retain move witnesses. The Rust fixture CLI requires complete exploration before reporting counts or distances.
 
-The replay command starts from the recorded solved state, applies checked moves, and prints both the resulting shape and colored state. Invalid notation and blocked moves produce an error. Colored solving remains milestone-four work.
+The replay command starts from the recorded solved state, applies checked moves, and prints both the resulting shape and colored state. Invalid notation and blocked moves produce an error. The Python package and its batch CLI provide the larger shape exploration interface; colored solving remains milestone-four work.
 
 ## Representations
 
@@ -39,7 +50,7 @@ All layouts in this implementation retain the full grid's 54 adjacency edges. A 
 
 The default layout is `LegacySparse`, carrying forward the original enumerator's 48 shell positions and assigning six previously unused positions to core bonds. `AxisMajor` is the straightforward comparison layout. `Tuned` is an experimental candidate read from `engine/layouts/tuned.txt`; the first search found no better assignment, so it currently equals `LegacySparse`. Its benchmark rows are a duplicate control, not evidence for a third distinct layout.
 
-Bit positions follow the canonical bond list in [geometry.rs](engine/src/geometry.rs): strides 9, 3, then 1, each with ascending source cell. The associated `POSITIONS` array maps that order to physical bit positions. Raw words are layout-specific; exports should use a stable layout identifier or an explicit canonical representation.
+Bit positions follow the canonical bond list in [geometry.rs](engine/src/geometry.rs): strides 9, 3, then 1, each with ascending source cell. The associated `POSITIONS` array maps that order to physical bit positions. Raw words are layout-specific; Python persistence exports canonical labels rather than raw bond words.
 
 ## Move and color conventions
 

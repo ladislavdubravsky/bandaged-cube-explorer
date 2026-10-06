@@ -1,0 +1,14 @@
+[package]
+name = "bandaged-cube-python"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+publish = false
+
+[lib]
+name = "_native"
+crate-type = ["cdylib"]
+
+[dependencies]
+bandaged-cube-engine = { path = "../engine" }
+pyo3 = { version = "0.29.3", features = ["extension-module", "abi3-py310"] }

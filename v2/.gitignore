@@ -1,1 +1,6 @@
 /target/
+.venv/
+*.so
+*.pyd
+*.egg-info/
+dist/

@@ -1,5 +1,6 @@
 [workspace]
-members = ["engine"]
+members = ["engine", "python"]
+default-members = ["engine"]
 resolver = "3"
 
 [profile.release]

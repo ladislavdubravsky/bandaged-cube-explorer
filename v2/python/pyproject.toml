@@ -1,0 +1,23 @@
+[build-system]
+requires = ["maturin>=1.8,<2"]
+build-backend = "maturin"
+
+[project]
+name = "bandaged-cube-explorer-v2"
+version = "0.1.0"
+description = "Python research interface to the verified Rust bandaged cube engine"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+plots = ["matplotlib>=3.7"]
+graph = ["networkx>=3.0"]
+all = ["matplotlib>=3.7", "networkx>=3.0"]
+
+[project.scripts]
+bce-v2 = "bce_v2.__main__:main"
+
+[tool.maturin]
+bindings = "pyo3"
+module-name = "bce_v2._native"
+python-source = "python"
