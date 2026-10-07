@@ -3,6 +3,7 @@
 
 mod bonds;
 mod colored;
+pub mod colored_search;
 pub mod enumeration;
 pub mod explore;
 pub mod fixtures;
@@ -22,6 +23,7 @@ pub enum Error {
     DisconnectedBlock(u8),
     InvalidBonds,
     InvalidColoredState(&'static str),
+    InvalidBandagedState(&'static str),
 }
 
 impl std::fmt::Display for Error {
@@ -35,6 +37,7 @@ impl std::fmt::Display for Error {
                 f.write_str("bond bits are unused or do not encode a closed connected partition")
             }
             Self::InvalidColoredState(reason) => write!(f, "invalid colored cube: {reason}"),
+            Self::InvalidBandagedState(reason) => write!(f, "invalid bandaged cube: {reason}"),
         }
     }
 }

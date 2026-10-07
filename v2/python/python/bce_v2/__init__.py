@@ -123,10 +123,11 @@ class Shape(Sequence):
 
 
 class State:
-    """A colored cube with fixed bandage membership and a legal replay witness.
+    """An immutable colored cube with fixed reference bandage membership.
 
-    Construct from the puzzle's solved reference shape, then use apply() to
-    scramble it. Arbitrary colored-state import is not supported.
+    Construct solved and apply legal turns, or import validated cubies/facelets.
+    Imported states satisfy ordinary cube and rigid-block constraints; legal
+    reachability from solved is a separate question for solve_colored().
     """
 
     __slots__ = ("_native", "_moves")
@@ -153,6 +154,51 @@ class State:
         object.__setattr__(result, "_moves", moves)
         return result
 
+    @classmethod
+    def from_cubies(cls, specification=None, *, corners, twists, edges, flips):
+        """Import Kociemba-ordered cubies, checking cube and rigid-block validity.
+
+        This does not establish reachability under the bandaging. The imported
+        state has no replay witness, so scramble is None.
+        """
+        def entries(values, name, length, bound):
+            values = list(values)
+            if len(values) != length:
+                raise ValueError(f"{name} requires {length} entries")
+            for value in values:
+                if isinstance(value, bool) or not isinstance(value, int):
+                    raise TypeError(f"{name} entries must be integers")
+                if not 0 <= value < bound:
+                    raise ValueError(f"{name} entry out of range")
+            return values
+        if isinstance(specification, State):
+            specification = specification.specification
+        initial = shape(Shape() if specification is None else specification)
+        native = _native.State.from_cubies(
+            initial.labels, entries(corners, "corners", 8, 8),
+            entries(twists, "twists", 8, 3), entries(edges, "edges", 12, 12),
+            entries(flips, "flips", 12, 2))
+        return cls._from_native(native, None)
+
+    @classmethod
+    def from_facelets(cls, facelets, specification=None):
+        """Import 54 URFDLB facelets (nine per face, read row by row).
+
+        Face letters name colors relative to fixed matching centers. Check
+        ordinary-cube and rigid-block validity, independently of reachability.
+        """
+        if not isinstance(facelets, str):
+            raise TypeError("facelets must be a 54-character string")
+        if isinstance(specification, State):
+            specification = specification.specification
+        initial = shape(Shape() if specification is None else specification)
+        return cls._from_native(_native.State.from_facelets(initial.labels, facelets), None)
+
+    @property
+    def facelets(self):
+        """54 face letters in standard URFDLB order with fixed centers."""
+        return self._native.facelets
+
     @property
     def shape(self):
         return Shape(self._native.shape)
@@ -162,9 +208,20 @@ class State:
         return Shape(self._native.specification)
 
     @property
+    def hex_id(self):
+        """Stable, collision-free ID for reference bandages and colored cubies.
+
+        Uses the fixed URFDLB center frame and ignores replay history. Format
+        v1 has 54 lowercase hex digits: 14 for the reference AxisMajor bonds,
+        then eight corner bytes (3*identity + twist) and twelve edge bytes
+        (2*identity + flip), both in Kociemba order.
+        """
+        return self._native.hex_id
+
+    @property
     def scramble(self):
-        """The validated sequence from the solved reference state."""
-        return " ".join(self._moves)
+        """Validated solved-to-state witness, or None for an imported state."""
+        return None if self._moves is None else " ".join(self._moves)
 
     @property
     def corners(self):
@@ -195,7 +252,8 @@ class State:
 
     def apply(self, moves):
         native = self._native.apply(moves)
-        return self._from_native(native, self._moves + tuple(moves.split()))
+        witness = None if self._moves is None else self._moves + tuple(moves.split())
+        return self._from_native(native, witness)
 
     def _key(self):
         return (self.specification, tuple(self.corners), tuple(self.twists),
@@ -208,6 +266,10 @@ class State:
         return hash(self._key())
 
     def __repr__(self):
+        if self._moves is None:
+            return (f"State.from_cubies({self.specification.labels!r}, "
+                    f"corners={self.corners!r}, twists={self.twists!r}, "
+                    f"edges={self.edges!r}, flips={self.flips!r})")
         return f"State({self.specification.labels!r}).apply({self.scramble!r})"
 
 
@@ -251,6 +313,44 @@ def explore(initial, *, metric="QTM", max_vertices=None):
     from .graph import ShapeGraph
     return ShapeGraph(_native.explore(shape(initial)._native, metric=metric,
                                      max_vertices=max_vertices))
+
+
+def explore_colored(initial, *, metric="QTM", max_states=None):
+    """Explore full colored states by exact BFS in a fixed frame.
+
+    No implicit cap. An explicit cap returns a partial graph with complete=False;
+    retained paths alone do not prove global optimality or unreachability.
+    """
+    if not isinstance(initial, State):
+        raise TypeError("colored exploration requires a State")
+    _positive_limit(max_states, "max_states")
+    from .colored import ColoredGraph
+    return ColoredGraph(_native.explore_colored(initial._native, metric=metric,
+                                                max_states=max_states))
+
+
+def solve_colored(initial, *, target=None, metric="QTM", algorithm="bidirectional",
+                  max_states=None, max_depth=None):
+    """Return an exact shortest colored solution, unreachability, or a cutoff.
+
+    The default target is solved with the same reference bandage specification.
+    QTM uses quarter/inverse turns, HTM also uses unit-cost half turns. Algorithm
+    is 'bfs' or 'bidirectional'. max_depth bounds total solution cost, including
+    zero; max_states bounds stored search records (both sides for bidirectional).
+    There are no implicit limits. A cutoff never establishes unreachability.
+    """
+    if not isinstance(initial, State) or (target is not None and not isinstance(target, State)):
+        raise TypeError("colored solving requires State inputs")
+    _positive_limit(max_states, "max_states")
+    if max_depth is not None:
+        if isinstance(max_depth, bool) or not isinstance(max_depth, int):
+            raise TypeError("max_depth must be a nonnegative integer or None")
+        if max_depth < 0:
+            raise ValueError("max_depth must be nonnegative")
+    from .colored import SearchResult
+    return SearchResult(**_native.solve_colored(
+        initial._native, target=None if target is None else target._native,
+        metric=metric, algorithm=algorithm, max_states=max_states, max_depth=max_depth))
 
 
 def _positive_limit(value, name):
@@ -331,13 +431,20 @@ def close_implicit(initial, *, core_bonds=False, max_vertices=None):
 
 
 def draw_cubes(cubes, **kwargs):
-    """Draw a shape or gallery with the optional matplotlib extra."""
+    """Draw 3D shapes or colored States, optionally from opposite corners."""
     from .graphics import draw_cubes as draw
     return draw(cubes, **kwargs)
 
 
+def draw_net(state, **kwargs):
+    """Draw all colored stickers and current face bandages as an unfolded net."""
+    from .graphics import draw_net as draw
+    return draw(state, **kwargs)
+
+
 from .persistence import load_puzzle, save_puzzle, save_graph  # noqa: E402
 from .graph import ShapeGraph  # noqa: E402
+from .colored import ColoredGraph, SearchResult  # noqa: E402
 from .signatures import (  # noqa: E402
     BLOCK_TYPES, Block, BlockType, block_signature, classify_blocks, format_signature,
 )

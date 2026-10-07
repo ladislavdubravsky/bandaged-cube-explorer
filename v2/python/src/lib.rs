@@ -9,7 +9,8 @@ use std::{
 };
 
 use bandaged_cube_engine::{
-    BandageSpec, BandagedState, BondShape, DefaultLayout, Error, Face, Move, Partition,
+    BandageSpec, BandagedState, BondShape, CubeState, DefaultLayout, Error, Face, Move, Partition,
+    colored_search::{ColoredGraph, SearchAlgorithm, SearchOptions, SearchStatus},
     enumeration::{CuboidFamily, EnumerationModel, ScanOptions},
     explore::{Metric, ShapeGraph, explore_with_options},
     fixtures,
@@ -162,6 +163,53 @@ impl PyState {
         })
     }
 
+    #[staticmethod]
+    fn from_cubies(
+        labels: Vec<u8>,
+        corners: Vec<u8>,
+        twists: Vec<u8>,
+        edges: Vec<u8>,
+        flips: Vec<u8>,
+    ) -> PyResult<Self> {
+        fn array<const N: usize>(values: Vec<u8>, name: &str) -> PyResult<[u8; N]> {
+            values
+                .try_into()
+                .map_err(|_| input_error(format!("{name} requires {N} entries")))
+        }
+        let cube = CubeState::try_new(
+            array(corners, "corners")?,
+            array(twists, "twists")?,
+            array(edges, "edges")?,
+            array(flips, "flips")?,
+        )
+        .map_err(engine_error)?;
+        Ok(Self {
+            inner: BandageSpec::new(partition(labels)?)
+                .state_from_cube(cube)
+                .map_err(engine_error)?,
+        })
+    }
+
+    #[staticmethod]
+    fn from_facelets(labels: Vec<u8>, facelets: &str) -> PyResult<Self> {
+        let cube = CubeState::from_facelets(facelets).map_err(engine_error)?;
+        Ok(Self {
+            inner: BandageSpec::new(partition(labels)?)
+                .state_from_cube(cube)
+                .map_err(engine_error)?,
+        })
+    }
+
+    #[getter]
+    fn facelets(&self) -> String {
+        self.inner.cube().to_facelets()
+    }
+
+    #[getter]
+    fn hex_id(&self) -> String {
+        self.inner.hex_id()
+    }
+
     #[getter]
     fn shape(&self) -> PyShape {
         PyShape {
@@ -230,6 +278,203 @@ impl PyState {
             self.inner.cube().flips(),
         )
     }
+}
+
+fn search_metric(metric: &str) -> PyResult<Metric> {
+    match metric.to_ascii_uppercase().as_str() {
+        "QTM" => Ok(Metric::Qtm),
+        "HTM" => Ok(Metric::Htm),
+        _ => Err(input_error("metric must be QTM or HTM")),
+    }
+}
+
+fn move_string(path: Vec<Move>) -> String {
+    path.into_iter()
+        .map(|movement| movement.to_string())
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+/// Exact shortest colored solution, retaining explicit cutoff outcomes.
+#[pyfunction]
+#[pyo3(signature = (state, target = None, metric = "QTM", algorithm = "bidirectional",
+                    max_states = None, max_depth = None))]
+fn solve_colored<'py>(
+    py: Python<'py>,
+    state: &PyState,
+    target: Option<&PyState>,
+    metric: &str,
+    algorithm: &str,
+    max_states: Option<usize>,
+    max_depth: Option<usize>,
+) -> PyResult<Bound<'py, PyDict>> {
+    let metric = search_metric(metric)?;
+    let algorithm = match algorithm.to_ascii_lowercase().as_str() {
+        "bfs" => SearchAlgorithm::Bfs,
+        "bidirectional" => SearchAlgorithm::Bidirectional,
+        _ => return Err(input_error("algorithm must be bfs or bidirectional")),
+    };
+    positive_limit(max_states, "max_states")?;
+    let initial = state.inner;
+    let target = target.map(|value| value.inner);
+    let result = py
+        .detach(|| {
+            bandaged_cube_engine::colored_search::solve(
+                initial,
+                target,
+                SearchOptions {
+                    metric,
+                    algorithm,
+                    max_states,
+                    max_depth,
+                },
+            )
+        })
+        .map_err(input_error)?;
+    let output = PyDict::new(py);
+    output.set_item(
+        "status",
+        match result.status {
+            SearchStatus::Solved => "solved",
+            SearchStatus::Unreachable => "unreachable",
+            SearchStatus::LimitReached => "limit_reached",
+        },
+    )?;
+    output.set_item("solution", result.solution.map(move_string))?;
+    output.set_item("distance", result.distance)?;
+    output.set_item("visited", result.visited)?;
+    output.set_item("expanded", result.expanded)?;
+    output.set_item("stop_reason", result.stop_reason)?;
+    output.set_item(
+        "metric",
+        match metric {
+            Metric::Qtm => "QTM",
+            Metric::Htm => "HTM",
+        },
+    )?;
+    output.set_item(
+        "algorithm",
+        match algorithm {
+            SearchAlgorithm::Bfs => "bfs",
+            SearchAlgorithm::Bidirectional => "bidirectional",
+        },
+    )?;
+    output.set_item("optimal", result.status == SearchStatus::Solved)?;
+    Ok(output)
+}
+
+#[pyclass(name = "ColoredGraph", module = "bce_v2._native", frozen)]
+struct PyColoredGraph {
+    inner: ColoredGraph,
+    ids: HashMap<CubeState, usize>,
+}
+
+impl PyColoredGraph {
+    fn check_vertex(&self, vertex: usize) -> PyResult<()> {
+        if vertex < self.inner.states.len() {
+            Ok(())
+        } else {
+            Err(input_error("vertex ID is outside this colored graph"))
+        }
+    }
+}
+
+#[pymethods]
+impl PyColoredGraph {
+    fn state(&self, vertex: usize) -> PyResult<PyState> {
+        self.check_vertex(vertex)?;
+        Ok(PyState {
+            inner: self.inner.states[vertex],
+        })
+    }
+
+    #[getter]
+    fn states(&self) -> Vec<PyState> {
+        self.inner
+            .states
+            .iter()
+            .map(|&inner| PyState { inner })
+            .collect()
+    }
+
+    #[getter]
+    fn arcs(&self) -> Vec<(usize, usize, String)> {
+        self.inner
+            .arcs
+            .iter()
+            .map(|&(source, target, movement)| (source, target, movement.to_string()))
+            .collect()
+    }
+
+    #[getter]
+    fn complete(&self) -> bool {
+        self.inner.complete
+    }
+
+    #[getter]
+    fn metric(&self) -> &'static str {
+        match self.inner.metric {
+            Metric::Qtm => "QTM",
+            Metric::Htm => "HTM",
+        }
+    }
+
+    fn __len__(&self) -> usize {
+        self.inner.states.len()
+    }
+
+    fn vertex_id(&self, state: &PyState) -> PyResult<usize> {
+        if state.inner.specification() != self.inner.states[0].specification() {
+            return Err(input_error("state has a different bandage specification"));
+        }
+        self.ids
+            .get(state.inner.cube())
+            .copied()
+            .ok_or_else(|| input_error("state is absent from this colored graph"))
+    }
+
+    fn distances(&self, py: Python<'_>, start: usize) -> PyResult<Vec<Option<usize>>> {
+        self.check_vertex(start)?;
+        Ok(py.detach(|| self.inner.distances(start)))
+    }
+
+    fn shortest_path(
+        &self,
+        py: Python<'_>,
+        start: usize,
+        target: usize,
+    ) -> PyResult<Option<String>> {
+        self.check_vertex(start)?;
+        self.check_vertex(target)?;
+        Ok(py
+            .detach(|| self.inner.shortest_path(start, target))
+            .map(move_string))
+    }
+}
+
+#[pyfunction]
+#[pyo3(signature = (state, metric = "QTM", max_states = None))]
+fn explore_colored(
+    py: Python<'_>,
+    state: &PyState,
+    metric: &str,
+    max_states: Option<usize>,
+) -> PyResult<PyColoredGraph> {
+    let metric = search_metric(metric)?;
+    positive_limit(max_states, "max_states")?;
+    let initial = state.inner;
+    py.detach(|| {
+        let inner =
+            bandaged_cube_engine::colored_search::explore_colored(initial, metric, max_states)
+                .map_err(input_error)?;
+        let ids = inner
+            .states
+            .iter()
+            .enumerate()
+            .map(|(id, state)| (*state.cube(), id))
+            .collect();
+        Ok(PyColoredGraph { inner, ids })
+    })
 }
 
 /// A reachable shape component with labeled moves and an explicit search metric.
@@ -547,11 +792,14 @@ fn _native(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_class::<PyShape>()?;
     module.add_class::<PyState>()?;
     module.add_class::<PyShapeGraph>()?;
+    module.add_class::<PyColoredGraph>()?;
     module.add(
         "BlockedMoveError",
         module.py().get_type::<BlockedMoveError>(),
     )?;
     module.add_function(wrap_pyfunction!(explore, module)?)?;
+    module.add_function(wrap_pyfunction!(explore_colored, module)?)?;
+    module.add_function(wrap_pyfunction!(solve_colored, module)?)?;
     module.add_function(wrap_pyfunction!(fixture_names, module)?)?;
     module.add_function(wrap_pyfunction!(fixture, module)?)?;
     module.add_function(wrap_pyfunction!(count_partitions, module)?)?;

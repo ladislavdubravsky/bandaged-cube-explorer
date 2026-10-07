@@ -4,7 +4,7 @@ This replacement is developed alongside the original Python project. The computa
 
 ## Use from Python
 
-See the [Python guide](python/README.md) for installation, inline bandage definitions, full colored replay, QTM/HTM shape solutions, galleries, optional NetworkX views, and deterministic records. From the repository root:
+See the [Python guide](python/README.md) for installation, inline bandage definitions, validated colored input, exact QTM/HTM colored solutions and exploration, shape solutions, galleries, optional NetworkX views, and deterministic records. From the repository root:
 
 ```sh
 python3 -m venv v2/.venv
@@ -23,7 +23,7 @@ signature with its class count. The [signature guide](../docs/block-signatures.m
 explains the 1,735 full-atlas signatures, 1,732 filtered signatures, and types
 distinguishing center/core placement, including 221Core, 321Core, and BigClock.
 
-The Python package is the primary research interface. Feature-chain and distance-layer experiments remain milestone-six work.
+The Python package is the primary research interface. [ColoredSolving.ipynb](examples/ColoredSolving.ipynb) includes exact colored distance profiles and farthest-state views. Feature chains and human strategy experiments remain milestone-six work.
 
 The engine models connected partitions of the legacy 27-cell grid, including its virtual core, and the six outer faces of an ordinary fixed-center 3×3 cube. It supports quarter turns, half turns, and inverses in standard Singmaster notation. Noncuboid connected blocks are allowed; the narrower enumeration family in the roadmap is a separate concern.
 
@@ -33,7 +33,7 @@ closure. The default omits core bonds and admits connected boxes with the core
 removed, including a seven-shell-cubie corner 2×2×2 block. There are 312,238,908
 such spatial partitions and 13,016,719 proper-rotation classes before legal
 turns. See [the enumeration model and research](../docs/enumeration.md) and
-[measurements](benchmark-results/enumeration.md). Colored solving is deferred.
+[measurements](benchmark-results/enumeration.md). Exact direct colored solving is available for tractable cases.
 
 The complete behavioral atlas contains 7,073 classes, or **4,857** after
 identifying mirror pairs and excluding permanently frozen or one-axis puzzles.
@@ -58,7 +58,7 @@ The fixture command explores a bundled snapshot of the existing CSV puzzles and 
 
 `explore(initial)` runs until the entire reachable shape component is discovered, without a vertex limit. Bounded experiments must explicitly call `explore_with_limit(initial, max_vertices)` and check the returned `complete` flag. `explore_with_options` also supports HTM, storing all 18 legal actions. Graph distances and shortest paths use the declared metric and retain move witnesses. The Rust fixture CLI requires complete exploration before reporting counts or distances.
 
-The replay command starts from the recorded solved state, applies checked moves, and prints both the resulting shape and colored state. Invalid notation and blocked moves produce an error. The Python package and its batch CLI provide the larger shape exploration interface; colored solving remains milestone-four work.
+The replay command starts from the recorded solved state, applies checked moves, and prints both the resulting shape and colored state. Invalid notation and blocked moves produce an error. The Python package and its batch CLI provide colored input, exploration, and exact direct solving, as well as shape exploration.
 
 ## Representations
 
@@ -88,7 +88,7 @@ All v2 interfaces use standard Singmaster notation, including `B` and `D`. There
 
 `CubeState` uses corner order `URF UFL ULB UBR DFR DLF DBL DRB` and edge order `UR UF UL UB DR DF DL DB FR FL BL BR`, with the standard orientation convention. `try_new` checks identities, orientation sums, and matching permutation parity. Center markings and center spin are outside this ordinary-cube representation. [Reference conventions](https://kociemba.org/math/CubeDefs.htm).
 
-`BandageSpec::solved_state` constructs a matching `BandagedState`. A successful checked turn updates colors and bonds together; a blocked move leaves the state unchanged. In debug builds, the cached shape is also compared against a fresh derivation from piece identities and the specification. Arbitrary colored-state import into a bandaged puzzle will require additional rigid-block and reachability checks; that interface is not inferred from ordinary cube validity alone.
+`BandageSpec::solved_state` constructs a matching `BandagedState`. A successful checked turn updates colors and bonds together; a blocked move leaves the state unchanged. In debug builds, the cached shape is also compared against a fresh derivation from piece identities and the specification. `CubeState::from_facelets` and `to_facelets` use standard 54-character URFDLB order. `BandageSpec::state_from_cube` checks that every fused block shares one proper spatial rotation of its home positions and sticker directions. This includes unmarked fixed centers, core bonds, and noncuboid blocks. Ordinary cube validity and rigid compatibility do not establish bandaged reachability.
 
 ```rust
 use bandaged_cube_engine::{BandageSpec, Partition, parse_moves};
@@ -103,6 +103,35 @@ assert!(!state.cube().is_solved());
 ```
 
 QTM assigns half turns cost two and other face turns cost one; HTM assigns each parsed face move cost one. The engine generates all 18 moves directly, rather than executing an inverse as three separate quarter turns.
+
+## Exact colored search
+
+`colored_search::solve(initial, target, options)` performs BFS or bidirectional
+BFS on full colored states, checking bandage legality at every step. `None`
+target selects solved with the initial reference specification; an explicit
+target must have exactly the same specification. `SearchOptions::default()`
+selects bidirectional QTM without an implicit cap. Successful results contain a
+shortest executable move witness and distance. `Unreachable` means a component
+was exhausted; `LimitReached` means an explicit `max_states` or `max_depth`
+prevented a conclusion. Depth bounds include zero and apply to total solution
+cost. State caps count stored records, including both bidirectional roots.
+
+Bidirectional search expands complete frontier layers from the smaller side.
+Before a meeting, the visited sets are disjoint balls of radii a and b, so the
+target distance exceeds a+b. A meeting in the next layer has distance a+b+1,
+which proves optimality. A memory cutoff in a partial layer reports a cutoff.
+
+`colored_search::explore_colored(initial, metric, max_states)` retains a complete
+colored component unless a positive explicit cap omits reachable states. It
+stores every directed unit-cost action (quarter/inverse in QTM, also half turns
+in HTM), including parallel actions and self-loops. Distances and paths in a
+partial graph describe only retained vertices. The search key is `CubeState`:
+the specification is fixed and determines the cached shape, while orientations
+remain part of the key. No spatial symmetry quotient is used.
+
+These searches are intended for tractable components and short solutions.
+Memory-conscious larger searches and the shape-loop group solver remain future
+milestone-four work.
 
 ## Generated kernels and tuning
 
@@ -143,4 +172,14 @@ The integration suite checks every reachable shape of Alcatraz, Bicube Fuse, and
 
 Colored turns are checked against independent standard quarter-turn tables and a separate geometric sticker simulation over 1,200 random moves. Legal bandaged walks of 600 moves per fixture check cache agreement, ordinary cube invariants, and complete inverse replay.
 
-Verified fixture totals are 1,449 / 121 / 1,938 shapes, 2,048 / 168 / 2,968 clockwise arcs, and solved QTM eccentricities 16 / 7 / 20 respectively. These results concern uncolored shapes; the engine retains colors without enumerating their much larger state spaces.
+Verified fixture totals are 1,449 / 121 / 1,938 shapes, 2,048 / 168 / 2,968 clockwise arcs, and solved QTM eccentricities 16 / 7 / 20 respectively. These baselines concern uncolored shapes; colored components are explored separately with explicit completeness reporting.
+
+Colored import tests replay 4,800 legal steps across legacy fixtures, noncuboid
+blocks, core bonds, and the unbandaged cube, and compare exported facelets with
+independent geometric sticker transport over 1,000 random words. Search tests
+compare all-pairs optimal distances on four- and sixteen-state colored
+components with an independent ordinary-cube BFS, replay every returned path,
+and check state/depth caps, orientation-only differences, and geometrically valid
+unreachable imports. Python integration tests cover both metrics and algorithms
+on generated short scrambles of every named fixture, persistence, graph exports,
+and CLI outcomes.

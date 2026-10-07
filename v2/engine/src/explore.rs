@@ -19,7 +19,7 @@ impl Metric {
             .filter(move |movement| self == Self::Htm || movement.amount == Amount::Clockwise)
     }
 
-    fn unit_moves(self) -> impl Iterator<Item = Move> {
+    pub(crate) fn unit_moves(self) -> impl Iterator<Item = Move> {
         Move::ALL
             .into_iter()
             .filter(move |movement| self == Self::Htm || movement.amount != Amount::Half)

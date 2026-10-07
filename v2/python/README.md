@@ -1,7 +1,7 @@
 # Python research interface
 
 `bce_v2` keeps puzzle definitions and experiments in Python and runs checked
-moves, shape exploration, and shortest-path search in Rust. It accepts ordinary
+moves, shape and colored exploration, and exact constrained search in Rust. It accepts ordinary
 27-cell lists and includes Alcatraz, Bicube Fuse, and Shark Fin Soup as named
 fixtures. The computational core has no Python dependency.
 
@@ -167,8 +167,8 @@ print(solution, restored.is_solved)
 ```
 
 A shape solution restores bandage geometry. Its remaining colors are available
-in `restored`; `is_solved` checks the full colored cube. Colored solving belongs
-to milestone four.
+in `restored`; `is_solved` checks the full colored cube. Use `solve_colored` below
+to solve the colors as well.
 
 `Shape` is an immutable sequence of normalized labels. Each zero in an input
 list becomes its own singleton; equal positive labels denote one connected
@@ -196,9 +196,157 @@ immutable reference bandage membership. Read these through `corners`, `twists`,
 `edges`, `flips`, and `specification`. Corners use order
 `URF UFL ULB UBR DFR DLF DBL DRB`, edges use
 `UR UF UL UB DR DF DL DB FR FL BL BR`, with the standard orientation convention.
-Centers are fixed and unmarked. States start solved and advance through checked
-legal moves. Arbitrary colored-state input requires the additional validation
-planned for milestone four.
+Centers are fixed and unmarked. States can start solved and advance through
+checked legal moves, or be imported with the validation described below.
+
+## Import and solve colored puzzles
+
+```python
+scrambled = c.State(c.fixture("Alcatraz")).apply("F R2")
+result = c.solve_colored(scrambled, metric="HTM")
+assert result.status == "solved"
+assert result.optimal and result.distance == 2
+assert scrambled.apply(result.solution).is_solved
+print(result.solution)  # R2 F'
+
+# Both import forms retain the reference bandage membership, not merely shape.
+imported = c.State.from_cubies(
+    scrambled.specification, corners=scrambled.corners, twists=scrambled.twists,
+    edges=scrambled.edges, flips=scrambled.flips)
+scanned = c.State.from_facelets(scrambled.facelets, scrambled.specification)
+assert imported == scanned == scrambled
+assert imported.scramble is None
+```
+
+`State.from_cubies(specification=None, *, corners, twists, edges, flips)` uses
+the orders above. `State.from_facelets(facelets, specification=None)` accepts
+exactly 54 uppercase face letters, nine per face in `URFDLB` order, each face
+read row by row while viewed from outside. Letters name colors relative to the
+fixed centers, which must match their face letters. `state.facelets` exports
+the same format. A specification may be a `Shape`, 27-cell list, or `State`;
+passing a `State` preserves its reference membership. Omitting the specification
+means the unbandaged cube.
+
+Looking directly at a face also requires fixing its top edge: keep B at the top
+of U, F at the top of D, and U at the top of R/F/L/B. The numbered net in
+[ColoredSolving.ipynb](../examples/ColoredSolving.ipynb) shows the complete input
+order. Inspect the colored scramble with the existing 3D renderer:
+
+```python
+c.draw_cubes(imported, colors=True, views=("UFR", "BLD"))
+```
+
+These two orthographic views look directly at opposite corners and together
+show all 54 stickers. They are related by a half-turn about the line through
+the FL and BR edge centers, with camera roll included. U is above F/R in the
+first view; D is above L/B in the second. Center letters identify the faces,
+and thick black outlines preserve the current bandage geometry. Thin lines
+divide stickers within a fused block.
+
+Colors are optional: omit `colors` for the original uncolored shape drawing.
+The default palette is U white, R red, F green, D yellow, L orange, and B blue;
+pass a mapping instead of `True` to override colors, for example
+`colors={"U": "yellow", "D": "white"}`. `views="BLD"` selects just the back
+corner, and `ncol` controls gallery columns. `draw_net(state)` remains available
+for an unfolded view. Rendering uses the optional `plots` extra.
+
+Imports check cubie identities, orientation ranges and sums, matching permutation
+parity, and rigid-block compatibility. Every fused block must share one proper
+rotation mapping its reference positions and sticker directions to the current
+configuration. Position checks alone would miss a twisted cubie inside a glued
+block. This validation supports connected noncuboid blocks and core bonds;
+fixed center stickers are unmarked. It does **not** establish reachability by
+legal bandaged turns. Imported states and their subsequent replays have
+`scramble is None`, rather than a claimed solved-to-state witness.
+
+`solve_colored` defaults to bidirectional BFS and the solved state of the same
+reference specification. Set `algorithm="bfs"` for one-way BFS or pass
+`target=another_state` for a different exact colored target. Both inputs must
+have the same reference specification. Search keys include identities and
+orientations; no symmetry quotient is applied. Only legal face moves are
+generated. QTM solutions use quarter/inverse turns; HTM also permits unit-cost
+half turns. Both algorithms guarantee shortest successful solutions in the
+declared metric. Bidirectional BFS expands complete layers from the smaller
+frontier, avoiding the need to enumerate a whole component for a short solution.
+
+`SearchResult` is immutable and has `status`, `solution`, `distance`, `metric`,
+`algorithm`, `optimal`, `visited`, `expanded`, and `stop_reason` fields.
+`to_dict()` returns a JSON-compatible copy. Outcomes are explicit:
+
+- `solved`: a replayable shortest move string, possibly empty, and its cost.
+- `unreachable`: complete component exhaustion proves no solution exists.
+- `limit_reached`: an explicit state or depth bound prevented a conclusion;
+  `solution` and `distance` are `None`, and `stop_reason` names the bound.
+
+Limits are optional; there is no implicit state or depth cap. These exact
+searches target tractable cases and short solutions. For a bounded experiment:
+
+```python
+result = c.solve_colored(imported, max_states=100_000, max_depth=12)
+if result.status == "solved":
+    assert imported.apply(result.solution).is_solved
+elif result.status == "limit_reached":
+    print(result.stop_reason)
+```
+
+`max_states` is positive and counts stored search records, including both roots
+and both frontiers for bidirectional search. `max_depth` is nonnegative and
+bounds the **total** solution cost, including zero. `optimal` is true only for
+`solved`. A cutoff does not imply unreachability. Larger memory-conscious
+searches and the shape-loop group solver remain future work.
+
+## Explore colored components
+
+```python
+# Only U can turn. The bandage shape stays constant, but colors have four states.
+one_face = c.State(c.Shape([0] * 9 + [1] * 18))
+colored = c.explore_colored(one_face, metric="QTM")
+assert colored.complete and len(colored) == 4
+assert len(colored.arcs) == 8
+for state in colored:
+    path = colored.shortest_path(state, one_face)
+    assert state.apply(path) == one_face
+
+partial = c.explore_colored(scrambled, max_states=100)
+print(partial.complete, partial.metric, partial.distances())
+colored.save("colors.json")
+```
+
+`ColoredGraph` exposes `states`, `arcs`, `complete`, `metric`, `vertex_id`,
+`distances(start=0)`, and `shortest_path(start=0, target=0)`, along with iteration,
+indexing, `to_dict`, `to_json`, `save`, and optional `to_networkx` adapters.
+Vertex arguments accept integer IDs or `State` values. States carry their
+reference specification and full cubies; exported graph states have no scramble
+witness. Paths supply executable transports between graph vertices. A missing
+retained path returns `None`.
+
+Use `state.hex_id` for a stable, collision-free colored-state identifier.
+It includes the reference bandages and cubie permutations and orientations in
+the fixed URFDLB center frame, independent of replay history or graph ordering.
+Format v1 is 54 lowercase hex digits: 14 for the reference AxisMajor bonds,
+then eight corner bytes (`3 * identity + twist`) and twelve edge bytes
+(`2 * identity + flip`), both in Kociemba order. Whole-cube rotations are not
+merged. `Shape.rotation_key` instead identifies uncolored shapes up to rotation.
+
+Colored arcs retain **all directed unit-cost moves**: quarter and inverse turns
+in QTM, plus half turns in HTM. This differs from the shape graph's clockwise
+QTM storage convention. Parallel actions and self-loops are preserved. Complete
+exploration has no implicit cap. An explicit positive `max_states` marks the
+graph incomplete only when a reachable state is omitted; hitting the exact
+component size still reports `complete=True`. Partial-graph paths and distances
+describe the retained vertices and cannot establish global optimality or
+unreachability. Graph exports are inspection artifacts, not imported proofs.
+
+The colored-solving notebook also builds a table of shortest distances from
+solved and displays states at maximum distance. On a complete graph, use
+`distances = colored.distances(c.State(specification))` and
+`Counter(distances)` from Python's `collections` module for the counts. Select
+farthest vertices by their distance and inspect them with `colored[vertex]`.
+The notebook shows each example's `hex_id` and a shortest sequence from solved
+using `colored.shortest_path(solved, vertex)`. Integer and slice indexing
+fetch only selected states, while `colored.states`
+materializes the entire Python cache. Complete exploration is required for an
+exact distance profile and a global maximum from solved.
 
 ## Explore and inspect
 
@@ -259,12 +407,17 @@ graph.save("shapes.json")
 
 The renderer shows bandage shapes and returns a matplotlib figure. It draws
 actual cell surfaces, including connected noncuboid blocks, and supports
-transparent views. It does not display sticker colors. The
+transparent views. `draw_cubes` also displays colored stickers with `colors=True`
+for `State` inputs and supports opposite UFR/BLD views. `draw_net(state)` provides
+an unfolded alternative. The
 [Alcatraz notebook](../examples/Alcatraz.ipynb) displays example galleries inline.
 
 Version-1 puzzle JSON records include reference labels and the validated move
 witness needed to reproduce full colors. Loading checks conventions and replays
-the moves through the Rust engine. Version-1 graph exports include normalized
+the moves through the Rust engine. Imported colored states use version-2 puzzle
+records with reference labels and validated cubie arrays; loading repeats both
+ordinary-cube and rigid-block checks without asserting reachability. Existing
+version-1 records remain supported. Version-1 shape graph exports include normalized
 shapes and all stored labeled arcs. Both formats record the model
 `full-grid-27-fixed-centers`, standard notation, metric, and symmetry `none`;
 graph exports also record `complete`. JSON output is deterministic for the same
@@ -275,8 +428,8 @@ to obtain trusted search results.
 metric remain record metadata; choose the metric explicitly when recomputing a
 search. Python exploration and CLI searches default to QTM.
 
-Feature chains, distance-layer experiments, and human strategy helpers are
-deferred to milestone six.
+Feature chains and human strategy helpers remain milestone-six work; basic
+colored distance profiles and farthest-state inspection are available now.
 
 ## Batch commands
 
@@ -288,10 +441,18 @@ bce-v2 fixtures
 bce-v2 inspect 'Alcatraz'
 bce-v2 replay 'Alcatraz' 'F R2'
 bce-v2 solve 'Alcatraz' 'F R2' --metric HTM
+bce-v2 solve-colored 'Alcatraz' 'F R2' --metric HTM --max-states 100000
+bce-v2 solve-colored imported.json --algorithm bfs --max-depth 8
+bce-v2 explore-colored imported.json --max-states 100 --output /tmp/colors.json
 bce-v2 explore 'Alcatraz' --output /tmp/alcatraz-graph.json
 bce-v2 render 'Alcatraz' --alpha 0.35 --output /tmp/alcatraz.png
 ```
 
-`python -m bce_v2` provides the same commands. A bounded `explore` prints
-`complete: false`, exports that status, and exits with code 2. Invalid inputs
-exit with code 1. Shape solutions report whether the replay also solved colors.
+`python -m bce_v2` provides the same commands. `solve` continues to solve shapes;
+`solve-colored` solves full colored states and accepts an optional additional
+scramble, algorithm, metric, state/depth bounds, and `--target` fixture or puzzle
+record. `explore-colored` accepts an optional `--moves` scramble, metric, state
+cap, and export path. Solved or complete results exit with code 0; bounded
+incomplete results exit with code 2; proven colored unreachability exits with
+code 3. Invalid inputs exit with code 1. Shape solutions report whether the
+replay also solved colors.

@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import sys
 
-from . import State, explore, fixture, fixture_names, load_puzzle
+from . import State, explore, explore_colored, fixture, fixture_names, load_puzzle, solve_colored
 
 
 def _state(puzzle: str) -> State:
@@ -19,23 +19,32 @@ def _state(puzzle: str) -> State:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="bce-v2", description="Explore bandaged cube shapes with standard face moves."
+        prog="bce-v2", description="Explore and solve bandaged cube shapes and colored states."
     )
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("fixtures", help="list bundled puzzle names")
 
-    for command in ("inspect", "replay", "explore", "solve", "render"):
+    for command in ("inspect", "replay", "explore", "solve", "render", "solve-colored", "explore-colored"):
         sub = commands.add_parser(command)
         sub.add_argument("puzzle", help="bundled name or versioned puzzle JSON file")
         if command in ("replay", "solve"):
             sub.add_argument("moves", help="standard move sequence, for example 'F R2'")
-        elif command in ("inspect", "render"):
+        elif command == "solve-colored":
+            sub.add_argument("moves", nargs="?", default="", help="optional legal scramble")
+            sub.add_argument("--algorithm", choices=("bfs", "bidirectional"), default="bidirectional")
+            sub.add_argument("--max-depth", type=int, default=None)
+            sub.add_argument("--target", help="optional target fixture or puzzle JSON file")
+        elif command in ("inspect", "render", "explore-colored"):
             sub.add_argument("--moves", default="")
-        if command in ("explore", "solve"):
+        if command in ("explore", "solve", "solve-colored", "explore-colored"):
             sub.add_argument("--metric", type=str.upper, choices=("QTM", "HTM"), default="QTM")
         if command == "explore":
             sub.add_argument("--max-vertices", type=int, default=None)
             sub.add_argument("--output", type=Path, help="write a deterministic graph JSON export")
+        if command in ("solve-colored", "explore-colored"):
+            sub.add_argument("--max-states", type=int, default=None)
+        if command == "explore-colored":
+            sub.add_argument("--output", type=Path, help="write a colored graph JSON export")
         if command == "render":
             sub.add_argument("--output", type=Path, required=True)
             sub.add_argument("--alpha", type=float, default=1.0)
@@ -47,7 +56,7 @@ def main(argv: list[str] | None = None) -> int:
             return 0
 
         state = _state(args.puzzle)
-        if args.command in ("inspect", "replay", "render", "solve"):
+        if args.command in ("inspect", "replay", "render", "solve", "solve-colored", "explore-colored"):
             state = state.apply(args.moves)
 
         if args.command in ("inspect", "replay"):
@@ -57,6 +66,7 @@ def main(argv: list[str] | None = None) -> int:
                 "twists": state.twists,
                 "edges": state.edges,
                 "flips": state.flips,
+                "facelets": state.facelets,
                 "legal_moves": state.legal_moves,
                 "colored_solved": state.is_solved,
             }
@@ -72,6 +82,21 @@ def main(argv: list[str] | None = None) -> int:
             }
             print(json.dumps(result, sort_keys=True))
             return 0 if graph.complete else 2
+        elif args.command == "explore-colored":
+            graph = explore_colored(state, metric=args.metric, max_states=args.max_states)
+            if args.output is not None:
+                graph.save(args.output)
+            result = {"states": len(graph), "arcs": len(graph.arcs),
+                      "metric": graph.metric, "complete": graph.complete}
+            print(json.dumps(result, sort_keys=True))
+            return 0 if graph.complete else 2
+        elif args.command == "solve-colored":
+            result = solve_colored(
+                state, target=None if args.target is None else _state(args.target),
+                metric=args.metric, algorithm=args.algorithm,
+                max_states=args.max_states, max_depth=args.max_depth)
+            print(json.dumps(result.to_dict(), sort_keys=True))
+            return {"solved": 0, "limit_reached": 2, "unreachable": 3}[result.status]
         elif args.command == "solve":
             graph = explore(state.specification, metric=args.metric)
             solution = graph.shortest_path(state.shape, state.specification)
