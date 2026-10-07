@@ -1,0 +1,53 @@
+{
+  "schema": "bandaged-cube-atlas-analysis-v1",
+  "model": "shell-cuboids",
+  "core_bonds": false,
+  "implicit_bonds": true,
+  "complete": true,
+  "source_classes": 7073,
+  "achiral_classes": 2647,
+  "chiral_pairs": 2213,
+  "expanded_closed_vertices": 7858798,
+  "dead_end_filter": "one-axis",
+  "filtered_mirror_classes": 4857,
+  "counts": {
+    "none": {
+      "proper_rotations": 7073,
+      "rotations_and_reflections": 4860
+    },
+    "frozen": {
+      "proper_rotations": 7072,
+      "rotations_and_reflections": 4859
+    },
+    "one-axis": {
+      "proper_rotations": 7070,
+      "rotations_and_reflections": 4857
+    },
+    "unchanging-shape": {
+      "proper_rotations": 7065,
+      "rotations_and_reflections": 4852
+    }
+  },
+  "seconds": 33.686617,
+  "source_file": "2026-10-06-shell-puzzles.csv",
+  "source_sha256": "f4c668e1dc1db88278aa1600128b01a6f6d162ea178502a1fc62f4914d37de14",
+  "representatives_file": "2026-10-06-shell-puzzles-no-mirrors-or-dead-ends.csv",
+  "representatives_sha256": "ccd06cec2fea2b34e13dccb5d3da1eeb5e54fd1e7248bb5a50cf5831a843246d",
+  "pairs_file": "2026-10-06-shell-mirror-pairs.csv",
+  "pairs_sha256": "5313e5614aa25dd08f931553eddb8b52680c9aa8d621f7730104ce9bb7bd64e4",
+  "validation_report_file": "2026-10-06-shell-mirror-validation.json",
+  "validation_report_sha256": "40e7020b1b58c189a9940ff652f47e0140bc0e7857965b5ab87e71d52adfc1e9",
+  "validation": [
+    "source identifiers and normalized labels",
+    "pair-map exact coverage",
+    "mirror involution",
+    "mirror-invariant mobility and component sizes",
+    "achiral and chiral orbit totals",
+    "all four exact mobility filters",
+    "filtered orbit minima and unchanged source rows",
+    "sampled independent geometric reflection and complete component exploration",
+    "source manifest filename and SHA-256 checksum",
+    "pairs manifest filename and SHA-256 checksum",
+    "representatives manifest filename and SHA-256 checksum"
+  ]
+}

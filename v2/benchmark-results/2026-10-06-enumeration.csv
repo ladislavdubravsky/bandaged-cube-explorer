@@ -1,0 +1,6 @@
+operation,model,implicit_bonds,seeds_scanned,raw_components,expanded_vertices,raw_rotation_keys,closed_rotation_keys,classes,largest_component,complete,stop_reason,random_seed,seconds
+generate,shell-cuboids,false,100000,0,0,0,0,0,0,false,seed-limit,,0.052126
+prefix,shell-cuboids,false,100000,9358,2044119,1318838,1318838,9358,84584,false,seed-limit,,9.288128
+prefix,shell-cuboids,true,100000,9358,2044119,1318838,1252150,1540,84584,false,seed-limit,,16.476923
+sample,shell-cuboids,true,10000,7535,6536780,4074519,3964494,2056,92176,false,sample,1,59.036852
+complete,shell-cuboids,true,312238908,3498007,16184768,13016719,4998868,7073,92176,true,,,822.819070

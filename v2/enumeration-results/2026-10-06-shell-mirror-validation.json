@@ -1,0 +1,100 @@
+{
+  "source_classes_checked": 7073,
+  "mirror_pairs_checked": 2213,
+  "achiral_classes_checked": 2647,
+  "derived_counts": {
+    "none": {
+      "proper_rotations": 7073,
+      "rotations_and_reflections": 4860
+    },
+    "frozen": {
+      "proper_rotations": 7072,
+      "rotations_and_reflections": 4859
+    },
+    "one-axis": {
+      "proper_rotations": 7070,
+      "rotations_and_reflections": 4857
+    },
+    "unchanging-shape": {
+      "proper_rotations": 7065,
+      "rotations_and_reflections": 4852
+    }
+  },
+  "selected_dead_end_filter": "one-axis",
+  "filtered_rows_checked": 4857,
+  "complete_component_graph_checks": [
+    {
+      "class_id": "00000000000000",
+      "mirror_class_id": "00000000000000",
+      "fixed_frame_vertices": 1
+    },
+    {
+      "class_id": "00000000000002",
+      "mirror_class_id": "00000000000002",
+      "fixed_frame_vertices": 4
+    },
+    {
+      "class_id": "00000000000028",
+      "mirror_class_id": "00000000000028",
+      "fixed_frame_vertices": 16
+    },
+    {
+      "class_id": "000050410cdb64",
+      "mirror_class_id": "0000a1041a5b49",
+      "fixed_frame_vertices": 16
+    },
+    {
+      "class_id": "00000000000683",
+      "mirror_class_id": "00000000000683",
+      "fixed_frame_vertices": 64
+    },
+    {
+      "class_id": "0000000000566e",
+      "mirror_class_id": "00000000005d2b",
+      "fixed_frame_vertices": 64
+    },
+    {
+      "class_id": "00000000001eaf",
+      "mirror_class_id": "00000000001eaf",
+      "fixed_frame_vertices": 256
+    },
+    {
+      "class_id": "00000001cec88f",
+      "mirror_class_id": "000000047a92a7",
+      "fixed_frame_vertices": 256
+    },
+    {
+      "class_id": "00000001040c6f",
+      "mirror_class_id": "00000001040c6f",
+      "fixed_frame_vertices": 1020
+    },
+    {
+      "class_id": "000000811d49cb",
+      "mirror_class_id": "000000811d4dc9",
+      "fixed_frame_vertices": 1017
+    },
+    {
+      "class_id": "00000000080002",
+      "mirror_class_id": "00000000080002",
+      "fixed_frame_vertices": 1
+    },
+    {
+      "class_id": "00000000480082",
+      "mirror_class_id": "00000000480082",
+      "fixed_frame_vertices": 1
+    }
+  ],
+  "checks": [
+    "source identifiers and normalized labels",
+    "pair-map exact coverage",
+    "mirror involution",
+    "mirror-invariant mobility and component sizes",
+    "achiral and chiral orbit totals",
+    "all four exact mobility filters",
+    "filtered orbit minima and unchanged source rows",
+    "sampled independent geometric reflection and complete component exploration",
+    "source manifest filename and SHA-256 checksum",
+    "pairs manifest filename and SHA-256 checksum",
+    "representatives manifest filename and SHA-256 checksum"
+  ]
+}

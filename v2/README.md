@@ -20,6 +20,22 @@ The Python package is the primary research interface. Feature-chain and distance
 
 The engine models connected partitions of the legacy 27-cell grid, including its virtual core, and the six outer faces of an ordinary fixed-center 3×3 cube. It supports quarter turns, half turns, and inverses in standard Singmaster notation. Noncuboid connected blocks are allowed; the narrower enumeration family in the roadmap is a separate concern.
 
+Milestone five adds exact cuboid-cover counting and generation, 24 proper
+rotations, legal-motion classification, and optional complete implicit-bond
+closure. The default omits core bonds and admits connected boxes with the core
+removed, including a seven-shell-cubie corner 2×2×2 block. There are 312,238,908
+such spatial partitions and 13,016,719 proper-rotation classes before legal
+turns. See [the enumeration model and research](../docs/enumeration.md) and
+[measurements](benchmark-results/enumeration.md). Colored solving is deferred.
+
+The complete behavioral atlas contains 7,073 classes, or **4,857** after
+identifying mirror pairs and excluding permanently frozen or one-axis puzzles.
+[Both datasets](enumeration-results/README.md) include representatives and
+originating seeds. The `analyze_atlas` CLI postprocesses the original atlas using
+all 48 spatial symmetries and complete-component mobility checks; its
+`--dead-ends` policies are `none`, `frozen`, `one-axis` (default), and
+`unchanging-shape`.
+
 ## Run the engine
 
 From this directory:

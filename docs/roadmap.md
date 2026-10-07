@@ -1,6 +1,6 @@
 # Bandaged cube explorer roadmap
 
-Tentative roadmap, 5 October 2026. The Rust model and move engine, Python research interface, and initial shape tools are implemented in [v2](../v2/README.md). Colored solving, enumeration, human strategies, and broader puzzle definitions remain later work.
+Roadmap updated 6 October 2026. The Rust model and move engine, Python research interface, and initial shape tools are implemented in [v2](../v2/README.md). Milestone four (colored solving) is deferred at the user's request; milestone five's default shell enumeration is complete, with 7,073 behavioral classes, or **4,857** after identifying mirror pairs and excluding permanently frozen or one-axis puzzles. Its APIs support exact partition generation/counting, proper rotations, motion classification, and optional implicit-bond closure; an atlas postprocessor handles mirrors and named mobility filters. See [the enumeration investigation](enumeration.md) for definitions, proofs, old-code reconciliation, and measured results. Human strategies and broader puzzle mechanics remain later work.
 
 The replacement uses a Rust computational library with a Python research interface and a thin command-line application, developed alongside the existing Python project. Build shape exploration, colored solving, and enumeration on a precise model and verified move engine; use their results to develop human solving methods and an atlas of bandaged puzzles. Keep the general theory in view while making the first implementation specific to 3×3 cubes.
 
@@ -53,7 +53,7 @@ The specification stays fixed while the state changes. Two different colored sta
 
 The explorer documents cuboid blocks on a 27-cell lattice, including a virtual core. The [enumerator's definitions](https://github.com/ladislavdubravsky/bandaged-cubes-enumerator/blob/master/README.md) narrow the target further to partitions obtained by repeatedly cutting a block with a face plane, excluding size-two blocks containing the core. A broader shell-cubie model would permit arbitrary connected groups of the 26 shell cubies; physical realizability still depends on the declared mechanics.
 
-Proposed first enumeration target: reconstruct the earlier cut-generated family and verify its assumptions. Treat connected noncuboid bandages as a subsequent, explicitly named family. This gives us a reproducible starting point without limiting the underlying kernel to cuboids.
+The first enumeration target is now all partitions into connected cuboid shell footprints, allowing a box with its virtual core omitted. Invisible core bonds are excluded by default; an explicit parameter admits full 27-cell cuboids. Strict cuboids with singleton core are a separate comparison family, since they would exclude a seven-shell-cell corner 2×2×2 block. The old cut-generated family is retained only as a research comparison. Hull completion preserves every legal outer-face word, proving that every connected bandage specification has a representative in the cuboid family for behavioral equivalence. It does not identify their raw geometric specifications.
 
 Document center behavior, the virtual core, permitted connectivity, and move sets. A core cell fused to a center can impose a constraint; removing that cell is not automatically a valid conversion. Initially use the six outer faces in a fixed frame, with QTM and HTM as explicit metrics. Treat whole-cube reorientation as a frame operation; add slices and wide turns only with a defined mechanical model.
 
@@ -68,7 +68,7 @@ Document center behavior, the virtual core, permitted connectivity, and move set
 | Behavioral equivalence | Do different bandage specifications impose the same legal behavior, for example because some additional bonds are implicit? |
 | Transition-system isomorphism | Are the move graphs equivalent under a declared rule for preserving or renaming move labels and permutation actions? |
 
-Use proper rotations as the proposed default for geometric enumeration. Report motion classes separately. The old C++ `filter_rotations` also explores reachable face turns, so its result is a quotient by motion as well as rotation. [Filtering implementation](https://github.com/ladislavdubravsky/bandaged-cubes-enumerator/blob/master/cubes/main.cpp#L66).
+Use the 24 proper rotations for the baseline geometric enumeration and identify legal-motion components up to those rotations for puzzle classification. Optional dynamic implicit closure additionally identifies behaviorally redundant specifications. The requested filtered atlas adds reflection equivalence and excludes components whose union of turnable face axes has size at most one; the complete component is checked, retaining puzzles that later unlock another axis. Preserve the original atlas and record these policies explicitly in each export. The old C++ `filter_rotations` also explores reachable face turns, so its result is a quotient by motion as well as rotation. [Filtering implementation](https://github.com/ladislavdubravsky/bandaged-cubes-enumerator/blob/master/cubes/main.cpp#L66).
 
 ## Use several representations with explicit conversions
 
@@ -135,6 +135,8 @@ Completion criterion: Python users can define a puzzle in a list, replay moves, 
 
 ### Fourth milestone Solve colored puzzles
 
+Deferred as of 6 October 2026. Colored solving is not a dependency of milestone five; the complete labeled shape graph supplies all transports needed to compute implicit adjacent bonds.
+
 Accept colored cubie or sticker input together with bandage membership. Check ordinary cube validity separately from reachability under the bandaging: a valid ordinary cube configuration may still be unreachable for this puzzle. Use scrambles generated by legal moves as reliable positive fixtures.
 
 Develop two complementary approaches:
@@ -150,15 +152,31 @@ Completion criterion: replayable colored solutions for the named fixtures and ge
 
 ### Fifth milestone Enumerate and classify the chosen family
 
-This can proceed in parallel with colored solving once the engine is verified. Reconstruct the old split rules, seeds, and treatment of implicit bonds. Implement a transparent baseline generator and deterministic symmetry canonicalization before canonical augmentation, parallel workers, or distributed runs.
+This proceeds before colored solving on the verified engine. Implemented in `v2`: exact-cover counting and streaming generation; all 24 proper rotations with stable AxisMajor canonical keys; complete seed/component classification; and optional exact implicit adjacent-bond closure using backward separation propagation through every labeled arc and self-loop. Python and Rust interfaces expose core-bond and closure parameters. Explicit resource limits report partial coverage and never credit incomplete components.
 
-Avoid scanning all `2^48` raw shell-bond subsets. Generate admitted partitions directly, normalize their representations, and prove that every intended class is reached. For a wider connected-block family, design a separate generator with connectivity and duplicate prevention built into its construction.
+The default shell run exhausted all 312,238,908 partitions: 13,016,719 proper-
+rotation classes, 3,498,007 motion/rotation classes, and 7,073 classes with
+implicit closure. It took 13 minutes 43 seconds and 308.35 MiB peak RSS.
+[All behavioral representatives](../v2/enumeration-results/README.md) are retained
+with originating seeds, stable IDs, metadata, and independent validation. The
+core-inclusive parameter is implemented; its complete class scan is a separate
+run rather than an earlier-milestone dependency.
+
+The mirror/mobility postprocessor checks every closed component and matches
+mirror partners through legal motion, rather than only comparing stored
+reference shapes. Its complete run visited 7,858,798 vertices in 33.687 seconds:
+2,647 classes are equivalent to their mirrors and 2,213 mirror pairs merge,
+giving 4,860 classes. The agreed dead-end filter removes the fused shell and
+two slab puzzles, leaving **4,857**. The filtered atlas, full partner map,
+counts for alternative mobility policies, and file checksums are retained.
+
+Avoid scanning all `2^48` raw shell-bond subsets. Generate admitted partitions directly by choosing the block covering the first uncovered cell. Hull completion proves behavioral representative coverage for all connected outer-face bandages, and the exact-cover recurrence proves duplicate-free coverage of admitted partitions. Independent Bell-partition, layer-transfer, and Burnside calculations reproduce the counts. Default shell partitions number 312,238,908, or 13,016,719 under proper rotations before legal turns; core-inclusive cuboids number 701,898,882, or 29,255,694 under rotations.
 
 Publish counts at each reduction step: generated partitions, geometric rotation classes, reachable motion classes, and any behavioral quotient. Retain representatives and transformation witnesses. Small exhaustive instances and independent algorithms should check completeness and deduplication.
 
-The old `enumerate_analytic()` currently evaluates to 6,473,251 while its comment records 6,399,617. Neither should be treated as a verified final class count. Recover and reconcile the derivation before adopting a golden total. [Analytic function](https://github.com/ladislavdubravsky/bandaged-cubes-enumerator/blob/master/cubes/enumerator.py#L55).
+The old `enumerate_analytic()` evaluates to 6,473,251 while its comment records 6,399,617. It mixes selected first cuts and special core-bar treatment, and performs no dynamic closure or puzzle-class quotient. An exact repaired inclusion-exclusion recurrence counts all guillotine partitions (369,362,176 full-grid partitions), still fewer than all cuboid covers. The [enumeration investigation](enumeration.md) and two standalone `v2/research/` checks preserve the derivations. The referenced forum post denied access; the public code was audited directly.
 
-Completion criterion: a reproducible enumeration for a precisely declared family and equivalence, with evidence of completeness, stable identifiers, and resource measurements. Expanding to all connected bandages is a further milestone whose feasibility needs measurement.
+Completion criterion: a reproducible enumeration for a precisely declared family and equivalence, with evidence of completeness, stable identifiers, and resource measurements. Behavioral representatives of all connected outer-face bandages are covered by the hull argument; enumerating their distinct raw noncuboid geometries is a separate larger family.
 
 ### Sixth milestone Human solving methods and visual exploration
 
@@ -180,7 +198,7 @@ Build cover relations, symmetry-orbit comparisons, mobility statistics, shape-co
 
 Do not infer that unlabeled shape graphs or their isotropy groups simply nest. For example, a fully glued U layer returns to its own shape under `U`; refining it to one glued corner-edge pair allows `U` but changes that pair's footprint. Coarsening maps on shape quotients also require enough retained block correspondence to be well-defined.
 
-Investigate implicit bonds as a closure operation separately from geometric normalization. Prove extensivity, monotonicity, idempotence, and preservation of legal behavior before using closure to merge enumeration classes. Validate it against colored transports and loops, since revisiting the same shape can conceal a different cubie arrangement.
+Implicit adjacent bonds are now implemented in milestone five separately from geometric normalization. The complete labeled shape graph supports exact separation tracking through every transport and loop; its surviving adjacencies preserve every legal word. Tests cover extensivity, idempotence, projection, independent identified-position searches, and an old DFS counterexample. Monotonicity holds for partitions of the same identified reference cubies because coarsening shrinks the legal-word language. Nonadjacent co-motion and other mechanical models remain separate questions.
 
 The groupoid offers a useful counting result: for a complete reachable shape component in a fixed frame, with a colored representation on which the ambient permutation action has trivial stabilizer at the solved state, the number of reachable colored states equals the number of shapes times the order of the reference isotropy group. Check these hypotheses before applying the formula to symmetry quotients or variants with ignored markings.
 
@@ -200,4 +218,4 @@ Completion criterion: a second puzzle model uses the shared search and analysis 
 
 ## Proposed immediate scope
 
-The implementation in `v2/` provides connected partitions of the legacy 27-cell grid, 54-bond shape encodings, complete ordinary colored cube states, and checked outer-face moves. Its Python research interface adds direct list input, QTM/HTM shape exploration and shortest paths, basic galleries, optional NetworkX views, and reproducible records. Tests reproduce the three legacy components and check independent sticker behavior. Initial measurements select the portable sparse layout for the default engine; the straightforward layout and tuning candidate remain available for comparisons. Larger workloads and future puzzle models can refine that choice. Colored solving, enumeration, human strategies, and the visual atlas follow from this foundation.
+The implementation in `v2/` provides connected partitions, 54-bond shape encodings, complete ordinary colored cube states, checked outer-face moves, Python research tools, and an exact enumeration baseline. Milestone four is deferred and the default milestone-five shell run is complete; its settings exclude invisible bonds, include proper rotations and legal motion, and optionally merge every implicit adjacent bond. Enumeration research, the full behavioral atlas, and resource measurements are recorded separately from the old project. Checkpoint resume, parallelization, core-inclusive class enumeration, human strategies, colored solving, and visual atlas tools can extend this foundation.
