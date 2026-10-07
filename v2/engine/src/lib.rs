@@ -3,10 +3,13 @@
 
 mod bonds;
 mod colored;
+pub mod enumeration;
 pub mod explore;
 pub mod fixtures;
 pub mod geometry;
+pub mod implicit;
 mod partition;
+pub mod symmetry;
 
 pub use bonds::{AxisMajor, BondLayout, BondShape, DefaultLayout, LegacySparse, Tuned};
 pub use colored::{BandageSpec, BandagedState, CubeState};

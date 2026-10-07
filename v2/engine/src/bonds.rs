@@ -41,6 +41,15 @@ pub struct BondShape<L: BondLayout = DefaultLayout> {
 }
 
 impl<L: BondLayout> BondShape<L> {
+    /// Internal construction after a transformation proven to preserve partitions.
+    pub(crate) fn from_valid_bits(bits: u64) -> Self {
+        debug_assert!(Self::from_bits(bits).is_ok());
+        Self {
+            bits,
+            layout: PhantomData,
+        }
+    }
+
     pub fn from_partition(partition: &Partition) -> Self {
         let mut bits = 0;
         for (i, [a, b]) in BONDS.into_iter().enumerate() {
