@@ -5,12 +5,12 @@ from pathlib import Path
 import sqlite3
 
 from . import Shape
-from .signatures import BLOCK_TYPES
+from .signatures import BLOCK_TYPES, SINGLETON_TYPES
 
 
 def _types(code):
     if code == "211":
-        return ("Clock", "Pair")
+        return tuple(block.code for block in BLOCK_TYPES if block.dimensions == (2, 1, 1))
     if code not in {block.code for block in BLOCK_TYPES}:
         raise ValueError(f"unknown block type {code!r}")
     return (code,)
@@ -34,9 +34,9 @@ class PuzzleAtlas:
         self.connection = sqlite3.connect(Path(path).resolve().as_uri() + "?mode=ro", uri=True)
         self.connection.row_factory = sqlite3.Row
         try:
-            if (self.connection.execute("PRAGMA user_version").fetchone()[0] != 1
-                    or self.metadata.get("schema") != "bandaged-cube-block-signatures-v1"):
-                raise ValueError("unsupported block-signature atlas schema")
+            if (self.connection.execute("PRAGMA user_version").fetchone()[0] != 2
+                    or self.metadata.get("schema") != "bandaged-cube-block-signatures-v2"):
+                raise ValueError("unsupported block-signature atlas schema; rebuild the signature database")
         except Exception:
             self.close()
             raise
@@ -81,7 +81,7 @@ class PuzzleAtlas:
         if only is not None:
             if isinstance(only, str):
                 raise TypeError("only must be a sequence of types, e.g. ('211',)")
-            allowed = sorted({"111"}.union(*(set(_types(code)) for code in only)))
+            allowed = sorted(set(SINGLETON_TYPES).union(*(set(_types(code)) for code in only)))
             placeholders = ",".join("?" for _ in allowed)
             clauses.append("NOT EXISTS (SELECT 1 FROM blocks b WHERE b.puzzle_id = p.id "
                            f"AND b.block_type NOT IN ({placeholders}))")
@@ -96,7 +96,8 @@ class PuzzleAtlas:
     def select(self, *, contains=None, only=None, signature=None):
         """Select by minimum block counts, allowed types, and/or exact signature.
 
-        '211' matches both Clock and Pair. Remaining 111 blocks are always
+        '211' matches both Clock and Pair. Other names match exact variants,
+        e.g. '221' excludes '221Core', and '311' excludes 'BigClock'. Singletons are always
         allowed by only. Examples: contains={'222': 1}, only=('211',),
         signature='2x221 Clock 2xPair'. These constraints can be combined.
         """
@@ -129,9 +130,10 @@ class PuzzleAtlas:
         return maximum, [row for row in rows if row["block_count"] == maximum]
 
     def signature_counts(self):
-        """List every signature and its puzzle count, including singleton ranges."""
+        """List every signature, its puzzle count, and the implied singleton count."""
         return self.query(
-            "SELECT signature, COUNT(*) AS puzzles, MIN(singletons) AS singletons_min, "
+            "SELECT signature, COUNT(*) AS puzzles, MIN(singletons) AS singletons, "
+            "MIN(singletons) AS singletons_min, "
             f"MAX(singletons) AS singletons_max FROM {self._view} "
             "GROUP BY signature ORDER BY puzzles DESC, signature")
 

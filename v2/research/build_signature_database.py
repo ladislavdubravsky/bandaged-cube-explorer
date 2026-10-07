@@ -22,7 +22,8 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 CREATE TABLE block_types (
     code TEXT PRIMARY KEY, dimensions TEXT NOT NULL, box_volume INTEGER NOT NULL,
-    name TEXT NOT NULL, description TEXT NOT NULL, display_order INTEGER NOT NULL
+    name TEXT NOT NULL, description TEXT NOT NULL, display_order INTEGER NOT NULL,
+    centers INTEGER, core_position INTEGER CHECK(core_position IN (0, 1))
 );
 CREATE TABLE puzzles (
     id TEXT PRIMARY KEY, mirror_id TEXT NOT NULL,
@@ -38,6 +39,7 @@ CREATE TABLE blocks (
     puzzle_id TEXT NOT NULL REFERENCES puzzles(id), label INTEGER NOT NULL,
     block_type TEXT NOT NULL REFERENCES block_types(code), cubies INTEGER NOT NULL,
     corners INTEGER NOT NULL, edges INTEGER NOT NULL, centers INTEGER NOT NULL,
+    cores INTEGER NOT NULL CHECK(cores IN (0, 1)),
     core_hole INTEGER NOT NULL CHECK(core_hole IN (0, 1)),
     PRIMARY KEY(puzzle_id, label)
 );
@@ -96,7 +98,7 @@ def inventory(blocks):
     nonsingletons = {block.code: counts[block.code] for block in c.BLOCK_TYPES
                      if block.code != "111" and counts[block.code]}
     details = Counter((block.type, block.cubies, block.corners, block.edges,
-                       block.centers, block.core_hole) for block in blocks)
+                       block.centers, block.cores, block.core_hole) for block in blocks)
     details = [[*key, count] for key, count in sorted(details.items())]
     return (c.format_signature(nonsingletons),
             json.dumps(nonsingletons, separators=(",", ":")),
@@ -171,10 +173,10 @@ def build(results, database_path, counts_path, manifest_path, *, check_turns=Tru
     try:
         with sqlite3.connect(temporary_path) as connection:
             connection.executescript(SCHEMA)
-            connection.execute("PRAGMA user_version = 1")
-            connection.executemany("INSERT INTO block_types VALUES (?, ?, ?, ?, ?, ?)", [
+            connection.execute("PRAGMA user_version = 2")
+            connection.executemany("INSERT INTO block_types VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [
                 (block.code, "".join(map(str, block.dimensions)), block.volume,
-                 block.name, block.description, order)
+                 block.name, block.description, order, block.centers, block.core_position)
                 for order, block in enumerate(c.BLOCK_TYPES)])
             for key, row in source.items():
                 labels = list(map(int, row["representative_labels"].split()))
@@ -185,7 +187,8 @@ def build(results, database_path, counts_path, manifest_path, *, check_turns=Tru
                 require(sum(block.cubies for block in blocks) == 26, "shell cubie count mismatch")
                 require(sum(block.corners for block in blocks) == 8
                         and sum(block.edges for block in blocks) == 12
-                        and sum(block.centers for block in blocks) == 6, "cubie-kind totals mismatch")
+                        and sum(block.centers for block in blocks) == 6
+                        and sum(block.cores for block in blocks) == 0, "cubie-kind totals mismatch")
                 signature = inventory(blocks)
                 signatures[key] = signature
                 if check_turns:
@@ -207,14 +210,18 @@ def build(results, database_path, counts_path, manifest_path, *, check_turns=Tru
                     key, mirror, int(key <= mirror), axes, pair["ever_faces"],
                     int(pair["fixed_frame_vertices"]), int(row["raw_component_vertices"]),
                     *signature, row["representative_labels"], row["seed_labels"]))
-                connection.executemany("INSERT INTO blocks VALUES (?,?,?,?,?,?,?,?)", [
+                connection.executemany("INSERT INTO blocks VALUES (?,?,?,?,?,?,?,?,?)", [
                     (key, block.label, block.type, block.cubies, block.corners,
-                     block.edges, block.centers, int(block.core_hole)) for block in blocks])
+                     block.edges, block.centers, block.cores, int(block.core_hole)) for block in blocks])
             require(set(filtered) <= set(source), "filtered atlas contains unknown IDs")
             for key, signature in signatures.items():
                 require(signature == signatures[pairs[key]["mirror_class_id"]],
                         f"mirror partners have different inventories: {key}")
             summaries = {cohort: summarize(connection, cohort) for cohort in COHORTS}
+            require(not connection.execute(
+                "SELECT signature FROM puzzles GROUP BY signature "
+                "HAVING MIN(singletons) != MAX(singletons)").fetchall(),
+                "position-aware signatures must determine remaining singleton counts")
             expected_policies = {"all": ("none", "proper_rotations"),
                                  "mirror": ("none", "rotations_and_reflections"),
                                  "mobile": ("one-axis", "proper_rotations"),
@@ -223,12 +230,16 @@ def build(results, database_path, counts_path, manifest_path, *, check_turns=Tru
                 require(summaries[cohort]["puzzles"] == mirror_manifest["counts"][policy][field],
                         f"cohort count mismatch: {cohort}")
             metadata = {
-                "schema": "bandaged-cube-block-signatures-v1", "core_bonds": False,
+                "schema": "bandaged-cube-block-signatures-v2", "core_bonds": False,
                 "implicit_bonds": True, "model": "shell-cuboids",
-                "signature": "nonsingleton bounding-box types; 211 split into Clock and Pair",
+                "signature": "nonsingleton types distinguished by dimensions and center/core content",
                 "singletons": "explicit physical 111 count; ghost core excluded",
+                "signatures_determine_singletons": True,
                 "detailed_signature_fields": ["type", "cubies", "corners", "edges",
-                                              "centers", "core_hole", "multiplicity"],
+                                              "centers", "cores", "core_hole", "multiplicity"],
+                "block_types": [{"code": block.code, "dimensions": list(block.dimensions),
+                                 "centers": block.centers, "core_position": block.core_position}
+                                for block in c.BLOCK_TYPES],
                 "source_files": {key: {"file": path.name, "sha256": digest(path)}
                                  for key, path in sources.items()},
                 "cohorts": summaries, "legal_successors_checked": checked_turns,

@@ -1,4 +1,176 @@
 {
+  "block_types": [
+    {
+      "centers": 6,
+      "code": "333",
+      "core_position": true,
+      "dimensions": [
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "centers": 5,
+      "code": "332",
+      "core_position": true,
+      "dimensions": [
+        3,
+        3,
+        2
+      ]
+    },
+    {
+      "centers": 4,
+      "code": "322",
+      "core_position": true,
+      "dimensions": [
+        3,
+        2,
+        2
+      ]
+    },
+    {
+      "centers": 1,
+      "code": "331",
+      "core_position": false,
+      "dimensions": [
+        3,
+        3,
+        1
+      ]
+    },
+    {
+      "centers": 4,
+      "code": "331Core",
+      "core_position": true,
+      "dimensions": [
+        3,
+        3,
+        1
+      ]
+    },
+    {
+      "centers": 3,
+      "code": "222",
+      "core_position": true,
+      "dimensions": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "centers": 1,
+      "code": "321",
+      "core_position": false,
+      "dimensions": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "centers": 3,
+      "code": "321Core",
+      "core_position": true,
+      "dimensions": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "centers": 1,
+      "code": "221",
+      "core_position": false,
+      "dimensions": [
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "centers": 2,
+      "code": "221Core",
+      "core_position": true,
+      "dimensions": [
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "centers": 0,
+      "code": "311",
+      "core_position": false,
+      "dimensions": [
+        3,
+        1,
+        1
+      ]
+    },
+    {
+      "centers": 2,
+      "code": "311Core",
+      "core_position": true,
+      "dimensions": [
+        3,
+        1,
+        1
+      ]
+    },
+    {
+      "centers": 1,
+      "code": "BigClock",
+      "core_position": false,
+      "dimensions": [
+        3,
+        1,
+        1
+      ]
+    },
+    {
+      "centers": 1,
+      "code": "211Core",
+      "core_position": true,
+      "dimensions": [
+        2,
+        1,
+        1
+      ]
+    },
+    {
+      "centers": 1,
+      "code": "Clock",
+      "core_position": false,
+      "dimensions": [
+        2,
+        1,
+        1
+      ]
+    },
+    {
+      "centers": 0,
+      "code": "Pair",
+      "core_position": false,
+      "dimensions": [
+        2,
+        1,
+        1
+      ]
+    },
+    {
+      "centers": null,
+      "code": "111",
+      "core_position": null,
+      "dimensions": [
+        1,
+        1,
+        1
+      ]
+    }
+  ],
   "cohorts": {
     "all": {
       "containing_222": 339,
@@ -19,8 +191,8 @@
         }
       ],
       "puzzles": 7073,
-      "signatures": 931,
-      "signatures_with_singletons": 1245
+      "signatures": 1735,
+      "signatures_with_singletons": 1735
     },
     "filtered": {
       "containing_222": 238,
@@ -35,8 +207,8 @@
         }
       ],
       "puzzles": 4857,
-      "signatures": 928,
-      "signatures_with_singletons": 1242
+      "signatures": 1732,
+      "signatures_with_singletons": 1732
     },
     "mirror": {
       "containing_222": 238,
@@ -51,8 +223,8 @@
         }
       ],
       "puzzles": 4860,
-      "signatures": 931,
-      "signatures_with_singletons": 1245
+      "signatures": 1735,
+      "signatures_with_singletons": 1735
     },
     "mobile": {
       "containing_222": 339,
@@ -73,19 +245,20 @@
         }
       ],
       "puzzles": 7070,
-      "signatures": 928,
-      "signatures_with_singletons": 1242
+      "signatures": 1732,
+      "signatures_with_singletons": 1732
     }
   },
   "core_bonds": false,
   "database_file": "2026-10-07-shell-signatures.sqlite3",
-  "database_sha256": "314078efce3fb476afb4ced6f584105998339248fd4e6df85d789ba12490c719",
+  "database_sha256": "e7475ddce963ff860118fd24d588a350685c581eecfeb149a44a0964ea0e7106",
   "detailed_signature_fields": [
     "type",
     "cubies",
     "corners",
     "edges",
     "centers",
+    "cores",
     "core_hole",
     "multiplicity"
   ],
@@ -93,10 +266,11 @@
   "legal_successors_checked": 16013,
   "mirror_inventories_checked": 7073,
   "model": "shell-cuboids",
-  "schema": "bandaged-cube-block-signatures-v1",
-  "signature": "nonsingleton bounding-box types; 211 split into Clock and Pair",
+  "schema": "bandaged-cube-block-signatures-v2",
+  "signature": "nonsingleton types distinguished by dimensions and center/core content",
   "signature_counts_file": "2026-10-07-shell-signatures.csv",
-  "signature_counts_sha256": "01e6234c750952a427470a309fb77017718f401c257f7b223a59f5ed79d114f7",
+  "signature_counts_sha256": "c2946c66e9c0d3a187c5f544d67e7f046bd1c978ad81c4296f938fccd50940d9",
+  "signatures_determine_singletons": true,
   "singletons": "explicit physical 111 count; ghost core excluded",
   "source_files": {
     "atlas": {
