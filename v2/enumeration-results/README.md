@@ -13,12 +13,15 @@ bond closure. Both the original atlas and a filtered atlas are retained.
 Block inventories are stored in the derived
 [signature database](2026-10-07-shell-signatures.sqlite3), with all four atlas
 cohorts, exact physical block records, and stable puzzle IDs. The
-[signature CSV](2026-10-07-shell-signatures.csv) lists all **931** dimension
-signatures and their puzzle counts; **928** occur in the filtered atlas.
+[signature CSV](2026-10-07-shell-signatures.csv) lists all **1,735** block
+signatures and their puzzle counts; **1,732** occur in the filtered atlas.
+Types distinguish center/core placement: 221Core, 321Core, 331Core, and
+BigClock accompany the original types. All singleton cubies remain 111.
 The [signature manifest](2026-10-07-shell-signatures.json) records provenance
 and checksums. Explore counts, exact inventories, maximum-domino puzzles, and
 galleries in [PuzzleSignatures.ipynb](../examples/PuzzleSignatures.ipynb).
-See [definitions and the omitted-core distinction](../../docs/block-signatures.md).
+Schema version two replaces dimension-only signatures. See
+[the type catalogue and omitted-core distinction](../../docs/block-signatures.md).
 
 The mirror quotient alone has 4,860 classes: 2,647 classes equivalent to their
 own mirrors and 2,213 mirror pairs. The mobility filter removes exactly three:

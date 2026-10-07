@@ -8,29 +8,38 @@ change `COHORT` to `"all"` for all 7,073 classes.
 
 ## Types and signatures
 
-A numeric type gives the sorted dimensions of the block's axis-aligned bounding
-box. All dimensions are in `1..3`, so there are ten possible dimension triples.
-Splitting `211` into Clock and Pair gives eleven inventory types:
+A block type gives its sorted box dimensions **and** its center/core placement.
+The catalogue has fifteen shell types and two additional core-enabled types.
+All singleton cubies remain 111, as requested; only larger blocks are split.
 
 | Type | Dimensions | Physical shell cubies | Meaning |
 | --- | --- | ---: | --- |
 | `333` | 3×3×3 | 26 | Fully fused shell |
 | `332` | 3×3×2 | 17 | Two fused layers |
 | `322` | 3×2×2 | 11 | BigBlock |
-| `331` | 3×3×1 | 8 or 9 | Fully fused layer |
+| `331` | 3×3×1 | 9 | Outer layer; one center |
+| `331Core` | 3×3×1 | 8 | Middle layer; four centers |
 | `222` | 2×2×2 | 7 | Corner box with the core omitted |
-| `321` | 3×2×1 | 5 or 6 | Rectangle |
-| `221` | 2×2×1 | 3 or 4 | Rectangle |
-| `311` | 3×1×1 | 3 | Straight bar |
+| `321` | 3×2×1 | 6 | Outer rectangle; one center |
+| `321Core` | 3×2×1 | 5 | Middle rectangle; three centers |
+| `221` | 2×2×1 | 4 | Outer rectangle; one center |
+| `221Core` | 2×2×1 | 3 | Middle rectangle; two centers |
+| `311` | 3×1×1 | 3 | Straight bar without a center |
+| `BigClock` | 3×1×1 | 3 | Straight bar through one center |
+| `311Core` | 3×1×1 | Core-enabled only | Two opposite centers joined through the core |
 | `Clock` | 2×1×1 | 2 | Contains a face center |
 | `Pair` | 2×1×1 | 2 | Contains no face center |
+| `211Core` | 2×1×1 | Core-enabled only | One face center joined to the core |
 | `111` | 1×1×1 | 1 | Unfused physical cubie |
 
-The dimension signature counts nonsingleton types. A count of one has no prefix;
+The signature counts these position-aware nonsingleton types. A count of one has no prefix;
 larger multiplicities use `2x221`, for example `2x221 Clock 2xPair`. Types appear
 largest first by bounding-box volume, then dimensions. `322` retains its numeric
 identifier, while BigBlock is recorded as its name. The unbandaged cube displays
-as `111 only`. A query for numeric `211` combines Clock and Pair.
+as `111 only`. A query for numeric `211` combines Clock and Pair in the shell
+atlas. Other type names match exactly: `221` excludes `221Core`, and `311`
+excludes BigClock. SQL queries can use `block_inventory.dimensions` to combine
+all variants of a size deliberately.
 
 These are signatures of the **implicitly closed representative**, not its
 originating explicit glue recipe. The physical blocks of that representative
@@ -42,28 +51,37 @@ between mirror partners. Different puzzle classes can share a signature.
 ## The omitted core and finer inventories
 
 In this shell model a cuboid means a connected box footprint with the virtual
-core omitted. A 221 in an outer face has four cubies and one center; a 221
-crossing the middle has three cubies and two centers. Consequently, dimensional
-types alone do **not** always imply how many 111 cubies remain. Each puzzle stores
-its exact singleton count, and grouped results expose its minimum and maximum.
-The ghost core itself is never counted as a singleton.
+core omitted. `Core` names distinguish positions whose box contains the core;
+they do not enable invisible bonds. Thus 221Core has three physical cubies and
+321Core has five. The core-enabled versions have four and six respectively.
+
+222, 322, 332, and 333 each have just one center/core pattern, so their numeric
+names remain unchanged despite always enclosing the core position. A shell
+projection of 211Core is just a singleton; a shell projection of 311Core is two
+disconnected opposite centers. They therefore occur only with core bonds enabled.
+
+These distinctions replace the previous dimension-only grouping. Every larger
+type now determines its physical cubie count and composition in the chosen model,
+so each signature **does imply** the number of remaining 111 cubies. Grouped
+results expose this as `singletons`; minimum and maximum checks always agree.
+The ghost core itself is never counted as a shell singleton.
 
 Every block also stores its actual cubie count, corner count, edge count, center
-count, and core-hole flag. The detailed signature groups these records by
-`(type, cubies, corners, edges, centers, core_hole)`, retaining multiplicities,
-including singleton kinds. This is a useful refinement without introducing new
-names for every footprint variant.
+count, actual core count, and core-hole flag. The detailed signature groups these
+records by `(type, cubies, corners, edges, centers, cores, core_hole)`, retaining
+multiplicities, including singleton kinds. No further signature distinctions arise
+in this atlas: remaining singleton kinds follow from the larger blocks.
 
 | Inventory model | All classes | Filtered classes |
 | --- | ---: | ---: |
 | Puzzle classes | 7,073 | 4,857 |
-| Dimension signatures, omitting 111 | 931 | 928 |
-| Dimension signatures plus exact 111 count | 1,245 | 1,242 |
+| Position-aware signatures, omitting 111 | 1,735 | 1,732 |
+| Position-aware signatures plus exact 111 count | 1,735 | 1,732 |
 | Detailed cubie-kind signatures | 1,735 | 1,732 |
 
 Mirror identification preserves the set of signatures. Removing the three
 dead-end puzzles removes three signatures. No filtered puzzle contains `333`,
-`332`, or `331` after implicit closure.
+`332`, `331`, or `331Core` after implicit closure.
 
 ## Example answers
 
@@ -90,7 +108,7 @@ The original certified CSVs and checksums remain unchanged.
 
 The [complete signature CSV](../v2/enumeration-results/2026-10-07-shell-signatures.csv)
 lists every human-readable signature, machine-readable counts, puzzle totals for
-all four cohorts, and singleton ranges. The [manifest](../v2/enumeration-results/2026-10-07-shell-signatures.json)
+all four cohorts, and implied singleton counts. The [manifest](../v2/enumeration-results/2026-10-07-shell-signatures.json)
 records file checksums, source provenance, definitions, cohort totals, and
 verification counts. The notebook displays every signature in the selected
 cohort in a scrollable table; no rows are truncated.
@@ -129,7 +147,10 @@ inventory agreement for every mirror partner. It also checks the full inventory
 after all 16,013 legal clockwise successors of saved representatives. Regression
 tests cover core-hole variants, all spatial rotations, an independent coordinate
 reflection, legal walks, aggregate query answers, every persisted inventory,
-and SQLite integrity and foreign keys.
+and SQLite integrity and foreign keys. An exhaustive catalogue test covers all
+206 admitted shell footprints and all 216 full-grid boxes, confirming that every
+nonsingleton type is one spatial block orbit under proper rotations. Schema
+version two prevents older dimension-only databases from being used silently.
 
 ## Follow-up questions
 
@@ -139,8 +160,8 @@ and SQLite integrity and foreign keys.
   and the number of reachable shapes? Shape counts alone do not measure colored
   solving difficulty.
 - Which signatures admit only self-mirror classes, only chiral pairs, or both?
-- Would center/corner/edge incidence and core-hole variants make useful named
-  subtypes for 221, 311, and 321?
+- How differently do 221 and 221Core, 321 and 321Core, or 311 and BigClock affect
+  mobility and possible inventories?
 - Which inventories are impossible from cubie counts or packing constraints,
   before considering implicit closure and legal-turn equivalence?
 - How do minimal explicit glue recipes differ from the effective block signature

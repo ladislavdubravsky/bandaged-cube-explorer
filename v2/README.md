@@ -20,8 +20,8 @@ and Jupyter extensions and choose the `v2/.venv` notebook kernel once if prompte
 non-isomorphic atlas by block inventory. Its saved SQLite database supports
 queries such as puzzles containing a 222, maximum domino-only puzzles, and every
 signature with its class count. The [signature guide](../docs/block-signatures.md)
-explains the 931 full-atlas signatures, 928 filtered signatures, and exact
-physical refinements for blocks whose box includes the omitted core.
+explains the 1,735 full-atlas signatures, 1,732 filtered signatures, and types
+distinguishing center/core placement, including 221Core, 321Core, and BigClock.
 
 The Python package is the primary research interface. Feature-chain and distance-layer experiments remain milestone-six work.
 

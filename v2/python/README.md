@@ -73,13 +73,17 @@ with c.PuzzleAtlas(path) as atlas:
     print(c.format_signature(c.block_signature(example)))  # 5xClock 7xPair
 ```
 
-`211` combines Clock (contains a face center) and Pair (does not). `only` always
-allows singleton 111 cubies. Numeric dimensions are sorted longest first; output
-orders types by box volume. `classify_blocks` returns exact physical cubie and
-center/corner/edge counts as well. It rejects noncuboid footprints. Shell boxes
-can have a core hole, so the coarse signature does not always determine the
-singleton count; that count is stored separately. The [signature guide](../../docs/block-signatures.md)
-documents all types, refinements, and data provenance.
+Types distinguish center/core placement: `221Core`, `321Core`, and `331Core`
+are separate from their outer variants; a center-containing 311 is `BigClock`.
+The optional core-enabled model also admits `211Core` and `311Core`.
+`211` combines Clock and Pair in the shell atlas; other names match exact types.
+`only` always allows remaining 111 cubies, including free centers. Numeric
+dimensions are sorted longest first; output orders types by box volume.
+`classify_blocks` also returns exact physical cubie and center/corner/edge/core
+counts and rejects noncuboid footprints. These position-aware signatures
+determine the remaining singleton count. The [signature guide](../../docs/block-signatures.md)
+documents all seventeen types and data provenance. Restart an existing notebook
+kernel after updating the package to load the new definitions.
 
 ## Install
 

@@ -171,10 +171,11 @@ two slab puzzles, leaving **4,857**. The filtered atlas, full partner map,
 counts for alternative mobility policies, and file checksums are retained.
 
 Block inventories are now stored in a derived SQLite atlas with stable class
-IDs, all four symmetry/mobility cohorts, numeric dimensions, and the Clock/Pair
-split for 211. There are 931 dimension signatures in the full atlas and 928 in
-the filtered atlas. Physical cubie counts and center/corner/edge membership
-refine shell boxes containing a core hole. The
+IDs, all four symmetry/mobility cohorts, and types distinguishing dimensions and
+center/core placement: Clock/Pair, BigClock, 221Core, 321Core, and 331Core.
+There are 1,735 block signatures in the full atlas and 1,732 in the filtered
+atlas. All singleton cubies remain 111; each signature implies their remaining
+count. The optional core-enabled model also admits 211Core and 311Core. The
 [block-signature guide](block-signatures.md) and
 [exploration notebook](../v2/examples/PuzzleSignatures.ipynb) provide queries,
 complete signature counts, and galleries.
