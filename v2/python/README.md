@@ -5,6 +5,52 @@ moves, shape exploration, and shortest-path search in Rust. It accepts ordinary
 27-cell lists and includes Alcatraz, Bicube Fuse, and Shark Fin Soup as named
 fixtures. The computational core has no Python dependency.
 
+## Enumeration
+
+Exact partition counts, cuboid generation, motion classes up to 24 proper cube
+rotations, and optional implicit-bond closure are available in the same package.
+Invisible core bonds are excluded by default. A cuboid can contain a hole at the
+core, so the seven visible cubies of a corner 2×2×2 block remain admissible.
+
+```python
+import bce_v2 as c
+
+counts = c.count_partitions()
+assert counts["partitions"] == 312_238_908
+assert counts["rotation_classes"] == 13_016_719
+full_grid = c.count_partitions(core_bonds=True)
+
+shapes = c.cuboid_partitions(limit=100)
+scan = c.enumerate_puzzles(max_seeds=100_000, implicit_bonds=True)
+assert not scan["complete"]
+print(scan["progress"])
+representatives = [c.Shape(r["labels"]) for r in scan["representatives"]]
+
+windmill = c.Shape([1, 1, 4, 2, 5, 4, 2, 3, 3] + [0] * 18)
+closed = c.close_implicit(windmill)
+canonical = closed.canonical()
+key = canonical.rotation_key
+rotated = canonical.rotated(7)  # indices 0..23; 0 is identity
+```
+
+`enumerate_puzzles()` explores the entire family unless explicit limits are
+supplied. `max_component_vertices` stops the scan at an incomplete component,
+which contributes no class. `close_implicit(..., max_vertices=...)` raises
+`ValueError` if that limit prevents complete exploration. `core_bonds=True`
+allows all 27 cells; `strict_core_singleton=True` selects literal cuboids avoiding
+the core as a comparison model. These two flags cannot both be enabled.
+
+Count and scan reports are JSON-compatible dictionaries. Scan representatives
+include `id` (minimum AxisMajor hexadecimal key), `labels`, `seed_labels`, and
+`raw_component_vertices`. Record the model, symmetry, and closure settings along
+with an ID. Mirror images and immobile puzzles are retained. The existing puzzle
+and graph persistence formats keep their fixed-frame meaning.
+
+The [enumeration investigation](../../docs/enumeration.md) explains representative
+completeness, the exact counting method, dead ends, and the legacy analytic
+function; [measurements](../benchmark-results/enumeration.md) distinguish partial
+prefix counts from complete enumeration results.
+
 ## Install
 
 From the repository root, with Python 3.10+ and Rust 1.85+ installed:

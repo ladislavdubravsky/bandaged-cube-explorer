@@ -10,10 +10,18 @@ use std::{
 
 use bandaged_cube_engine::{
     BandageSpec, BandagedState, BondShape, DefaultLayout, Error, Face, Move, Partition,
+    enumeration::{CuboidFamily, EnumerationModel, ScanOptions},
     explore::{Metric, ShapeGraph, explore_with_options},
-    fixtures, parse_moves,
+    fixtures,
+    implicit::{CoreBonds, implicit_closure},
+    parse_moves,
+    symmetry::{Rotation, canonical_key, canonicalize, rotate},
 };
-use pyo3::{exceptions::PyValueError, prelude::*, types::PyList};
+use pyo3::{
+    exceptions::PyValueError,
+    prelude::*,
+    types::{PyDict, PyList},
+};
 
 pyo3::create_exception!(_native, BlockedMoveError, PyValueError);
 
@@ -96,6 +104,27 @@ impl PyShape {
             inner = inner.try_turn(movement).map_err(engine_error)?;
         }
         Ok(Self { inner })
+    }
+
+    #[getter]
+    fn rotation_key(&self) -> String {
+        format!("{:014x}", canonical_key(self.inner))
+    }
+
+    fn canonical(&self) -> Self {
+        Self {
+            inner: canonicalize(self.inner).0.reencode(),
+        }
+    }
+
+    fn rotated(&self, rotation: usize) -> PyResult<Self> {
+        let rotation = Rotation::ALL
+            .get(rotation)
+            .copied()
+            .ok_or_else(|| input_error("rotation index must be in 0..24"))?;
+        Ok(Self {
+            inner: rotate(self.inner, rotation),
+        })
     }
 
     fn __repr__(&self) -> String {
@@ -345,6 +374,174 @@ fn fixture(name: &str) -> PyResult<PyShape> {
         .ok_or_else(|| input_error(format!("unknown fixture {name:?}")))
 }
 
+fn enumeration_model(core_bonds: bool, strict_core_singleton: bool) -> PyResult<EnumerationModel> {
+    if core_bonds && strict_core_singleton {
+        return Err(input_error(
+            "core_bonds and strict_core_singleton cannot both be true",
+        ));
+    }
+    Ok(if core_bonds {
+        EnumerationModel::FullCuboids
+    } else if strict_core_singleton {
+        EnumerationModel::StrictCoreSingletonCuboids
+    } else {
+        EnumerationModel::ShellCuboids
+    })
+}
+
+fn positive_limit(limit: Option<usize>, name: &str) -> PyResult<()> {
+    if limit == Some(0) {
+        return Err(input_error(format!("{name} must be positive")));
+    }
+    Ok(())
+}
+
+/// Count the entire chosen cuboid family and its proper-rotation orbits.
+#[pyfunction]
+#[pyo3(signature = (core_bonds = false, strict_core_singleton = false))]
+fn count_partitions(
+    py: Python<'_>,
+    core_bonds: bool,
+    strict_core_singleton: bool,
+) -> PyResult<Bound<'_, PyDict>> {
+    let model = enumeration_model(core_bonds, strict_core_singleton)?;
+    let count = py.detach(|| CuboidFamily::new(model).count());
+    let result = PyDict::new(py);
+    result.set_item("model", model.name())?;
+    result.set_item("core_bonds", core_bonds)?;
+    result.set_item("strict_core_singleton", strict_core_singleton)?;
+    result.set_item("symmetry", "proper-rotations")?;
+    result.set_item("partitions", count.partitions)?;
+    result.set_item("rotation_classes", count.rotation_classes)?;
+    result.set_item("fixed_by_rotation", count.fixed_by_rotation.to_vec())?;
+    result.set_item("placements", count.placements)?;
+    result.set_item("memo_states", count.memo_states)?;
+    Ok(result)
+}
+
+/// Collect an explicitly bounded, deterministic prefix of cuboid partitions.
+#[pyfunction]
+#[pyo3(signature = (limit, core_bonds = false, strict_core_singleton = false))]
+fn cuboid_partitions(
+    py: Python<'_>,
+    limit: usize,
+    core_bonds: bool,
+    strict_core_singleton: bool,
+) -> PyResult<Vec<PyShape>> {
+    positive_limit(Some(limit), "limit")?;
+    let model = enumeration_model(core_bonds, strict_core_singleton)?;
+    Ok(py.detach(|| {
+        CuboidFamily::new(model)
+            .partitions()
+            .take(limit)
+            .map(|inner| PyShape { inner })
+            .collect()
+    }))
+}
+
+/// Scan without implicit resource limits; explicit limits return partial reports.
+#[pyfunction]
+#[pyo3(signature = (core_bonds = false, implicit_bonds = false, max_seeds = None,
+                    max_component_vertices = None, strict_core_singleton = false))]
+fn enumerate_puzzles(
+    py: Python<'_>,
+    core_bonds: bool,
+    implicit_bonds: bool,
+    max_seeds: Option<usize>,
+    max_component_vertices: Option<usize>,
+    strict_core_singleton: bool,
+) -> PyResult<Bound<'_, PyDict>> {
+    positive_limit(max_seeds, "max_seeds")?;
+    positive_limit(max_component_vertices, "max_component_vertices")?;
+    let model = enumeration_model(core_bonds, strict_core_singleton)?;
+    let options = ScanOptions {
+        implicit_bonds,
+        max_seeds,
+        max_component_vertices,
+    };
+    let scan = py.detach(|| {
+        bandaged_cube_engine::enumeration::enumerate(&CuboidFamily::new(model), options, |_| {})
+    });
+    let result = PyDict::new(py);
+    result.set_item("model", model.name())?;
+    result.set_item("core_bonds", core_bonds)?;
+    result.set_item("strict_core_singleton", strict_core_singleton)?;
+    result.set_item("implicit_bonds", implicit_bonds)?;
+    result.set_item("symmetry", "proper-rotations")?;
+    result.set_item("equivalence", "legal-motion-and-rotation")?;
+    result.set_item("max_seeds", max_seeds)?;
+    result.set_item("max_component_vertices", max_component_vertices)?;
+    result.set_item("complete", scan.complete)?;
+    result.set_item("stop_reason", scan.stop_reason)?;
+    let progress = PyDict::new(py);
+    progress.set_item("seeds_scanned", scan.progress.seeds_scanned)?;
+    progress.set_item(
+        "raw_components_explored",
+        scan.progress.raw_components_explored,
+    )?;
+    progress.set_item(
+        "expanded_shape_vertices",
+        scan.progress.expanded_shape_vertices,
+    )?;
+    progress.set_item(
+        "raw_rotation_keys_seen",
+        scan.progress.raw_rotation_keys_seen,
+    )?;
+    progress.set_item(
+        "closed_rotation_keys_seen",
+        scan.progress.closed_rotation_keys_seen,
+    )?;
+    progress.set_item("classes", scan.progress.classes)?;
+    progress.set_item("largest_component", scan.progress.largest_component)?;
+    result.set_item("progress", progress)?;
+    let representatives = PyList::empty(py);
+    for class in scan.representatives {
+        let record = PyDict::new(py);
+        record.set_item("id", format!("{:014x}", class.representative.bits()))?;
+        record.set_item(
+            "labels",
+            PyList::new(
+                py,
+                class.representative.to_partition().labels().iter().copied(),
+            )?,
+        )?;
+        record.set_item(
+            "seed_labels",
+            PyList::new(py, class.seed.to_partition().labels().iter().copied())?,
+        )?;
+        record.set_item("raw_component_vertices", class.raw_component_vertices)?;
+        representatives.append(record)?;
+    }
+    result.set_item("representatives", representatives)?;
+    Ok(result)
+}
+
+/// Add every implicit adjacency after complete fixed-frame exploration.
+#[pyfunction]
+#[pyo3(signature = (shape, core_bonds = false, max_vertices = None))]
+fn close_implicit(
+    py: Python<'_>,
+    shape: &PyShape,
+    core_bonds: bool,
+    max_vertices: Option<usize>,
+) -> PyResult<PyShape> {
+    positive_limit(max_vertices, "max_vertices")?;
+    let initial = shape.inner;
+    let core_bonds = if core_bonds {
+        CoreBonds::Include
+    } else {
+        CoreBonds::Exclude
+    };
+    py.detach(|| {
+        let graph = explore_with_options(initial, Metric::Qtm, max_vertices);
+        implicit_closure(&graph, core_bonds)
+            .map(|closed| PyShape {
+                inner: closed.reference_shape(),
+            })
+            .map_err(input_error)
+    })
+}
+
 #[pymodule(gil_used = false)]
 fn _native(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_class::<PyShape>()?;
@@ -357,5 +554,9 @@ fn _native(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_function(wrap_pyfunction!(explore, module)?)?;
     module.add_function(wrap_pyfunction!(fixture_names, module)?)?;
     module.add_function(wrap_pyfunction!(fixture, module)?)?;
+    module.add_function(wrap_pyfunction!(count_partitions, module)?)?;
+    module.add_function(wrap_pyfunction!(cuboid_partitions, module)?)?;
+    module.add_function(wrap_pyfunction!(enumerate_puzzles, module)?)?;
+    module.add_function(wrap_pyfunction!(close_implicit, module)?)?;
     Ok(())
 }

@@ -85,6 +85,23 @@ class Shape(Sequence):
         """Apply a checked sequence in standard notation, returning a Shape."""
         return Shape(self._native.apply(moves))
 
+    @property
+    def rotation_key(self):
+        """Stable hexadecimal key identifying the 24 proper rotation variants."""
+        return self._native.rotation_key
+
+    def canonical(self):
+        """Return the least bond encoding among the 24 proper rotations."""
+        return Shape(self._native.canonical())
+
+    def rotated(self, rotation):
+        """Return one of the 24 proper spatial rotations; index 0 is identity."""
+        if isinstance(rotation, bool) or not isinstance(rotation, int):
+            raise TypeError("rotation must be an integer in 0..24")
+        if rotation < 0 or rotation >= 24:
+            raise ValueError("rotation must be an integer in 0..24")
+        return Shape(self._native.rotated(rotation))
+
     def __len__(self):
         return 27
 
@@ -236,6 +253,83 @@ def explore(initial, *, metric="QTM", max_vertices=None):
                                      max_vertices=max_vertices))
 
 
+def _positive_limit(value, name):
+    if value is not None:
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise TypeError(f"{name} must be a positive integer or None")
+        if value <= 0:
+            raise ValueError(f"{name} must be positive")
+
+
+def _boolean(value, name):
+    if not isinstance(value, bool):
+        raise TypeError(f"{name} must be a bool")
+
+
+def _enumeration_options(core_bonds, strict_core_singleton):
+    _boolean(core_bonds, "core_bonds")
+    _boolean(strict_core_singleton, "strict_core_singleton")
+    if core_bonds and strict_core_singleton:
+        raise ValueError("core_bonds and strict_core_singleton cannot both be true")
+
+
+def count_partitions(*, core_bonds=False, strict_core_singleton=False):
+    """Count all cuboid partitions and proper-rotation classes exactly.
+
+    By default a cuboid occupies its shell cells and leaves the virtual core
+    independent. Set core_bonds=True for cuboids of the full 27-cell grid, or
+    strict_core_singleton=True to require full cuboids avoiding the core.
+    The returned dictionary includes the 24 Burnside fixed-point counts.
+    """
+    _enumeration_options(core_bonds, strict_core_singleton)
+    return _native.count_partitions(core_bonds=core_bonds,
+                                    strict_core_singleton=strict_core_singleton)
+
+
+def cuboid_partitions(*, limit, core_bonds=False, strict_core_singleton=False):
+    """Return an explicitly bounded, deterministic prefix as a list of Shapes."""
+    _enumeration_options(core_bonds, strict_core_singleton)
+    _positive_limit(limit, "limit")
+    if limit is None:
+        raise TypeError("limit must be a positive integer")
+    return [Shape(value) for value in _native.cuboid_partitions(
+        limit, core_bonds=core_bonds, strict_core_singleton=strict_core_singleton)]
+
+
+def enumerate_puzzles(*, core_bonds=False, implicit_bonds=False, max_seeds=None,
+                      max_component_vertices=None, strict_core_singleton=False):
+    """Classify cuboid partitions by legal face turns and proper rotations.
+
+    This scans the entire family unless explicit limits are supplied. A limit
+    produces complete=False and a stop_reason; partial components do not enter
+    the class count. Set implicit_bonds=True to identify behaviorally redundant
+    adjacent bonds as well. Representatives are JSON-compatible records with
+    labels, seed_labels, a stable hexadecimal id, and raw_component_vertices.
+    """
+    _enumeration_options(core_bonds, strict_core_singleton)
+    _boolean(implicit_bonds, "implicit_bonds")
+    _positive_limit(max_seeds, "max_seeds")
+    _positive_limit(max_component_vertices, "max_component_vertices")
+    return _native.enumerate_puzzles(
+        core_bonds=core_bonds, implicit_bonds=implicit_bonds,
+        max_seeds=max_seeds, max_component_vertices=max_component_vertices,
+        strict_core_singleton=strict_core_singleton)
+
+
+def close_implicit(initial, *, core_bonds=False, max_vertices=None):
+    """Add every admitted implicit adjacency, returning a Shape.
+
+    Exploration must finish before closure can be established. An explicit
+    vertex limit that cuts the component short raises ValueError. The default
+    model requires the virtual core to be an independent cell.
+    """
+    _boolean(core_bonds, "core_bonds")
+    _positive_limit(max_vertices, "max_vertices")
+    return Shape(_native.close_implicit(shape(initial)._native,
+                                       core_bonds=core_bonds,
+                                       max_vertices=max_vertices))
+
+
 def draw_cubes(cubes, **kwargs):
     """Draw a shape or gallery with the optional matplotlib extra."""
     from .graphics import draw_cubes as draw
@@ -248,5 +342,6 @@ from .graph import ShapeGraph  # noqa: E402
 __all__ = [
     "Shape", "State", "ShapeGraph", "BlockedMoveError", "CELL_NAMES",
     "shape", "normalize", "do", "fixture", "fixture_names", "explore",
+    "count_partitions", "cuboid_partitions", "enumerate_puzzles", "close_implicit",
     "draw_cubes", "load_puzzle", "save_puzzle", "save_graph",
 ] + list(CELL_NAMES)
