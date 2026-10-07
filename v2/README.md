@@ -16,6 +16,13 @@ research session with inline galleries. The workspace settings select
 `v2/.venv` and activate terminals automatically. Install the recommended Python
 and Jupyter extensions and choose the `v2/.venv` notebook kernel once if prompted.
 
+[PuzzleSignatures.ipynb](examples/PuzzleSignatures.ipynb) explores the complete
+non-isomorphic atlas by block inventory. Its saved SQLite database supports
+queries such as puzzles containing a 222, maximum domino-only puzzles, and every
+signature with its class count. The [signature guide](../docs/block-signatures.md)
+explains the 931 full-atlas signatures, 928 filtered signatures, and exact
+physical refinements for blocks whose box includes the omitted core.
+
 The Python package is the primary research interface. Feature-chain and distance-layer experiments remain milestone-six work.
 
 The engine models connected partitions of the legacy 27-cell grid, including its virtual core, and the six outer faces of an ordinary fixed-center 3×3 cube. It supports quarter turns, half turns, and inverses in standard Singmaster notation. Noncuboid connected blocks are allowed; the narrower enumeration family in the roadmap is a separate concern.

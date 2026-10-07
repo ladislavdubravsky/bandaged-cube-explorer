@@ -1,6 +1,6 @@
 # Bandaged cube explorer roadmap
 
-Roadmap updated 6 October 2026. The Rust model and move engine, Python research interface, and initial shape tools are implemented in [v2](../v2/README.md). Milestone four (colored solving) is deferred at the user's request; milestone five's default shell enumeration is complete, with 7,073 behavioral classes, or **4,857** after identifying mirror pairs and excluding permanently frozen or one-axis puzzles. Its APIs support exact partition generation/counting, proper rotations, motion classification, and optional implicit-bond closure; an atlas postprocessor handles mirrors and named mobility filters. See [the enumeration investigation](enumeration.md) for definitions, proofs, old-code reconciliation, and measured results. Human strategies and broader puzzle mechanics remain later work.
+Roadmap updated 7 October 2026. The Rust model and move engine, Python research interface, and initial shape tools are implemented in [v2](../v2/README.md). Milestone four (colored solving) is deferred at the user's request; milestone five's default shell enumeration is complete, with 7,073 behavioral classes, or **4,857** after identifying mirror pairs and excluding permanently frozen or one-axis puzzles. Its APIs support exact partition generation/counting, proper rotations, motion classification, and optional implicit-bond closure; an atlas postprocessor handles mirrors and named mobility filters. See [the enumeration investigation](enumeration.md) for definitions, proofs, old-code reconciliation, and measured results. Human strategies and broader puzzle mechanics remain later work.
 
 The replacement uses a Rust computational library with a Python research interface and a thin command-line application, developed alongside the existing Python project. Build shape exploration, colored solving, and enumeration on a precise model and verified move engine; use their results to develop human solving methods and an atlas of bandaged puzzles. Keep the general theory in view while making the first implementation specific to 3×3 cubes.
 
@@ -169,6 +169,15 @@ reference shapes. Its complete run visited 7,858,798 vertices in 33.687 seconds:
 giving 4,860 classes. The agreed dead-end filter removes the fused shell and
 two slab puzzles, leaving **4,857**. The filtered atlas, full partner map,
 counts for alternative mobility policies, and file checksums are retained.
+
+Block inventories are now stored in a derived SQLite atlas with stable class
+IDs, all four symmetry/mobility cohorts, numeric dimensions, and the Clock/Pair
+split for 211. There are 931 dimension signatures in the full atlas and 928 in
+the filtered atlas. Physical cubie counts and center/corner/edge membership
+refine shell boxes containing a core hole. The
+[block-signature guide](block-signatures.md) and
+[exploration notebook](../v2/examples/PuzzleSignatures.ipynb) provide queries,
+complete signature counts, and galleries.
 
 Avoid scanning all `2^48` raw shell-bond subsets. Generate admitted partitions directly by choosing the block covering the first uncovered cell. Hull completion proves behavioral representative coverage for all connected outer-face bandages, and the exact-cover recurrence proves duplicate-free coverage of admitted partitions. Independent Bell-partition, layer-transfer, and Burnside calculations reproduce the counts. Default shell partitions number 312,238,908, or 13,016,719 under proper rotations before legal turns; core-inclusive cuboids number 701,898,882, or 29,255,694 under rotations.
 
