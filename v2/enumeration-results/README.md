@@ -10,6 +10,16 @@ bond closure. Both the original atlas and a filtered atlas are retained.
 | [Original](2026-10-06-shell-puzzles.csv) | 7,073 | Mirror images and dead ends retained |
 | [Filtered](2026-10-06-shell-puzzles-no-mirrors-or-dead-ends.csv) | **4,857** | Mirror pairs identified; frozen and permanently one-axis puzzles excluded |
 
+Block inventories are stored in the derived
+[signature database](2026-10-07-shell-signatures.sqlite3), with all four atlas
+cohorts, exact physical block records, and stable puzzle IDs. The
+[signature CSV](2026-10-07-shell-signatures.csv) lists all **931** dimension
+signatures and their puzzle counts; **928** occur in the filtered atlas.
+The [signature manifest](2026-10-07-shell-signatures.json) records provenance
+and checksums. Explore counts, exact inventories, maximum-domino puzzles, and
+galleries in [PuzzleSignatures.ipynb](../examples/PuzzleSignatures.ipynb).
+See [definitions and the omitted-core distinction](../../docs/block-signatures.md).
+
 The mirror quotient alone has 4,860 classes: 2,647 classes equivalent to their
 own mirrors and 2,213 mirror pairs. The mobility filter removes exactly three:
 the fused shell, a full face attached to a thickness-two slab, and three full
@@ -74,4 +84,5 @@ Validate the retained files from the repository root:
 ```sh
 v2/.venv/bin/python v2/research/validate_enumeration.py v2/enumeration-results/2026-10-06-shell-puzzles.csv
 v2/.venv/bin/python v2/research/validate_mirror_analysis.py v2/enumeration-results/2026-10-06-shell-mirror-analysis.json
+v2/.venv/bin/python v2/research/build_signature_database.py
 ```

@@ -1,0 +1,123 @@
+{
+  "cohorts": {
+    "all": {
+      "containing_222": 339,
+      "detailed_signatures": 1735,
+      "maximum_domino_only_blocks": 12,
+      "maximum_domino_only_puzzles": [
+        {
+          "dominoes": 12,
+          "id": "0000100071df00",
+          "signature": "5xClock 7xPair",
+          "singletons": 2
+        },
+        {
+          "dominoes": 12,
+          "id": "0000100073de00",
+          "signature": "5xClock 7xPair",
+          "singletons": 2
+        }
+      ],
+      "puzzles": 7073,
+      "signatures": 931,
+      "signatures_with_singletons": 1245
+    },
+    "filtered": {
+      "containing_222": 238,
+      "detailed_signatures": 1732,
+      "maximum_domino_only_blocks": 12,
+      "maximum_domino_only_puzzles": [
+        {
+          "dominoes": 12,
+          "id": "0000100071df00",
+          "signature": "5xClock 7xPair",
+          "singletons": 2
+        }
+      ],
+      "puzzles": 4857,
+      "signatures": 928,
+      "signatures_with_singletons": 1242
+    },
+    "mirror": {
+      "containing_222": 238,
+      "detailed_signatures": 1735,
+      "maximum_domino_only_blocks": 12,
+      "maximum_domino_only_puzzles": [
+        {
+          "dominoes": 12,
+          "id": "0000100071df00",
+          "signature": "5xClock 7xPair",
+          "singletons": 2
+        }
+      ],
+      "puzzles": 4860,
+      "signatures": 931,
+      "signatures_with_singletons": 1245
+    },
+    "mobile": {
+      "containing_222": 339,
+      "detailed_signatures": 1732,
+      "maximum_domino_only_blocks": 12,
+      "maximum_domino_only_puzzles": [
+        {
+          "dominoes": 12,
+          "id": "0000100071df00",
+          "signature": "5xClock 7xPair",
+          "singletons": 2
+        },
+        {
+          "dominoes": 12,
+          "id": "0000100073de00",
+          "signature": "5xClock 7xPair",
+          "singletons": 2
+        }
+      ],
+      "puzzles": 7070,
+      "signatures": 928,
+      "signatures_with_singletons": 1242
+    }
+  },
+  "core_bonds": false,
+  "database_file": "2026-10-07-shell-signatures.sqlite3",
+  "database_sha256": "314078efce3fb476afb4ced6f584105998339248fd4e6df85d789ba12490c719",
+  "detailed_signature_fields": [
+    "type",
+    "cubies",
+    "corners",
+    "edges",
+    "centers",
+    "core_hole",
+    "multiplicity"
+  ],
+  "implicit_bonds": true,
+  "legal_successors_checked": 16013,
+  "mirror_inventories_checked": 7073,
+  "model": "shell-cuboids",
+  "schema": "bandaged-cube-block-signatures-v1",
+  "signature": "nonsingleton bounding-box types; 211 split into Clock and Pair",
+  "signature_counts_file": "2026-10-07-shell-signatures.csv",
+  "signature_counts_sha256": "01e6234c750952a427470a309fb77017718f401c257f7b223a59f5ed79d114f7",
+  "singletons": "explicit physical 111 count; ghost core excluded",
+  "source_files": {
+    "atlas": {
+      "file": "2026-10-06-shell-puzzles.csv",
+      "sha256": "f4c668e1dc1db88278aa1600128b01a6f6d162ea178502a1fc62f4914d37de14"
+    },
+    "atlas_manifest": {
+      "file": "2026-10-06-shell-summary.json",
+      "sha256": "bccf29abbe550d0540b58fb1317148be2d0e2d9fb3e7171edde3c037a39c08f6"
+    },
+    "filtered_atlas": {
+      "file": "2026-10-06-shell-puzzles-no-mirrors-or-dead-ends.csv",
+      "sha256": "ccd06cec2fea2b34e13dccb5d3da1eeb5e54fd1e7248bb5a50cf5831a843246d"
+    },
+    "mirror_manifest": {
+      "file": "2026-10-06-shell-mirror-analysis.json",
+      "sha256": "a30bf6c0762a8e38278041cc0ec994cec0560f67e800b425a7f600c73da1c7f8"
+    },
+    "mirror_pairs": {
+      "file": "2026-10-06-shell-mirror-pairs.csv",
+      "sha256": "5313e5614aa25dd08f931553eddb8b52680c9aa8d621f7730104ce9bb7bd64e4"
+    }
+  }
+}
