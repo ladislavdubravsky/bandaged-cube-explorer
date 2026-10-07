@@ -54,9 +54,11 @@ prefix counts from complete enumeration results.
 ## Block signatures and the puzzle atlas
 
 Open [PuzzleSignatures.ipynb](../examples/PuzzleSignatures.ipynb) for the complete
-non-isomorphic puzzle atlas grouped by block type. Its default is the 4,857-class
-filtered atlas; switch to `cohort="all"` for all 7,073 classes. Queries run against
-the retained SQLite database without enumeration or additional dependencies.
+non-isomorphic puzzle atlas grouped by block type. The notebook defaults to all
+7,073 behavioral classes; set `COHORT = "filtered"` for the 4,857-class filtered
+atlas. Both cohorts merge implicit bonds. Queries run against the retained
+SQLite database without enumeration or additional dependencies. The Python
+`PuzzleAtlas` constructor defaults to `cohort="filtered"`, as in this example:
 
 ```python
 from pathlib import Path

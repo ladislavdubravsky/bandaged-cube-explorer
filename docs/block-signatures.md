@@ -2,9 +2,10 @@
 
 7 October 2026. [PuzzleSignatures.ipynb](../v2/examples/PuzzleSignatures.ipynb)
 explores the complete class atlas by block inventory, with saved tables and
-galleries. Select the `v2/.venv` kernel. Its default cohort is the 4,857-class
-atlas identifying mirrors and excluding permanently frozen or one-axis puzzles;
-change `COHORT` to `"all"` for all 7,073 classes.
+galleries. Select the `v2/.venv` kernel. Its default `"all"` cohort contains all
+7,073 behavioral classes, retaining mirror pairs and dead ends. Change `COHORT`
+to `"filtered"` for the 4,857-class atlas identifying mirrors and excluding
+permanently frozen or one-axis puzzles. Both cohorts merge implicit bonds.
 
 ## Types and signatures
 
@@ -99,6 +100,22 @@ The maximum-domino puzzles have signature `5xClock 7xPair`, with two remaining
 are a mirror pair. Twelve is an independent geometric upper bound: every shell
 domino contains one of the twelve edge cubies and one corner or center. The
 atlas supplies the attainable maximum among behavioral classes.
+
+### Why only one puzzle contains a 332 block
+
+A `332` block prevents every face turn except the remaining outer face. All
+nine cubies of that face therefore move together under every legal move word,
+even if none of them is explicitly glued. Implicit-bond closure fuses the face
+into a `331` block. Any bandaging confined to that face consequently has the
+same closed signature, `332 331`, and belongs to the same behavioral class
+(`15455fedffdfef`).
+
+An exhaustive check of the 322 rectangular partitions of a fixed 3×3 face
+confirms that all close to this class. Before implicit closure they give 87
+distinct classes under legal turns and proper rotations. The `"all"` cohort
+retains their one shared behavioral class; `"filtered"` subsequently removes
+it as permanently one-axis. Thus `"all"` includes every behavioral class, while
+continuing to identify explicit bandagings with the same implicit closure.
 
 ## Stored data and queries
 
