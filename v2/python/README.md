@@ -51,6 +51,36 @@ completeness, the exact counting method, dead ends, and the legacy analytic
 function; [measurements](../benchmark-results/enumeration.md) distinguish partial
 prefix counts from complete enumeration results.
 
+## Block signatures and the puzzle atlas
+
+Open [PuzzleSignatures.ipynb](../examples/PuzzleSignatures.ipynb) for the complete
+non-isomorphic puzzle atlas grouped by block type. Its default is the 4,857-class
+filtered atlas; switch to `cohort="all"` for all 7,073 classes. Queries run against
+the retained SQLite database without enumeration or additional dependencies.
+
+```python
+from pathlib import Path
+import bce_v2 as c
+
+path = Path("v2/enumeration-results/2026-10-07-shell-signatures.sqlite3")
+with c.PuzzleAtlas(path) as atlas:
+    print(len(atlas.containing("222")))  # 238
+    maximum, puzzles = atlas.maximum("211", only=("211",))  # 12, one class
+    counts = atlas.signature_counts()  # every signature and its puzzle count
+    exact = atlas.select(signature="2x221 Clock 2xPair")
+    example = atlas.shape(puzzles[0]["id"])
+    print(c.block_signature(example, include_singletons=True))
+    print(c.format_signature(c.block_signature(example)))  # 5xClock 7xPair
+```
+
+`211` combines Clock (contains a face center) and Pair (does not). `only` always
+allows singleton 111 cubies. Numeric dimensions are sorted longest first; output
+orders types by box volume. `classify_blocks` returns exact physical cubie and
+center/corner/edge counts as well. It rejects noncuboid footprints. Shell boxes
+can have a core hole, so the coarse signature does not always determine the
+singleton count; that count is stored separately. The [signature guide](../../docs/block-signatures.md)
+documents all types, refinements, and data provenance.
+
 ## Install
 
 From the repository root, with Python 3.10+ and Rust 1.85+ installed:

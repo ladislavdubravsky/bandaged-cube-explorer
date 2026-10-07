@@ -338,10 +338,16 @@ def draw_cubes(cubes, **kwargs):
 
 from .persistence import load_puzzle, save_puzzle, save_graph  # noqa: E402
 from .graph import ShapeGraph  # noqa: E402
+from .signatures import (  # noqa: E402
+    BLOCK_TYPES, Block, BlockType, block_signature, classify_blocks, format_signature,
+)
+from .atlas import PuzzleAtlas  # noqa: E402
 
 __all__ = [
     "Shape", "State", "ShapeGraph", "BlockedMoveError", "CELL_NAMES",
     "shape", "normalize", "do", "fixture", "fixture_names", "explore",
     "count_partitions", "cuboid_partitions", "enumerate_puzzles", "close_implicit",
+    "BLOCK_TYPES", "Block", "BlockType", "block_signature", "classify_blocks", "format_signature",
+    "PuzzleAtlas",
     "draw_cubes", "load_puzzle", "save_puzzle", "save_graph",
 ] + list(CELL_NAMES)
