@@ -85,11 +85,14 @@ dead-end puzzles removes three signatures. No filtered puzzle contains `333`,
 
 ## Example answers
 
-| Question | All classes | Filtered classes |
+Among puzzles made only of `211` blocks and `111` cubies, the maximum number of
+`211` blocks **per puzzle** is **12** in both cohorts. The following table counts
+**puzzle classes** satisfying each condition:
+
+| Condition | All classes | Filtered classes |
 | --- | ---: | ---: |
 | Contain at least one 222 | 339 | 238 |
-| Maximum 211 count, allowing only 211 and 111 | 12 | 12 |
-| Classes reaching that maximum | 2 | 1 |
+| Contain twelve 211 blocks, with only 111 cubies remaining | 2 | 1 |
 
 The maximum-domino puzzles have signature `5xClock 7xPair`, with two remaining
 111 cubies. The two full-atlas classes (`0000100071df00` and `0000100073de00`)
