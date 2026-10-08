@@ -426,7 +426,8 @@ sticker permutations and move witnesses. Read the
 composition, inversion, powers, and export details. Both analysis notebooks
 show the reference inventory and decorate each reduced generator. Restore an
 off-root scramble's shape before interpreting it as an action on reference
-slots. Quotient and kernel factorization remain a subsequent delivery.
+slots. The opt-in quotient/kernel strategy below uses these actions for
+placement followed by orientation correction.
 
 ## Solve scrambles with shape loops
 
@@ -451,7 +452,8 @@ if result.status == "solved":
 result = c.solve_colored_loops(imported, timeout=60, max_expanded_moves=100_000)
 ```
 
-`LoopSolver(initial, *, gap_executable="gap", timeout=None)` accepts a `Shape`,
+`LoopSolver(initial, *, gap_executable="gap", timeout=None,
+factorization="sticker")` accepts a `Shape`,
 27-cell list, `State` specification, complete `ShapeGraph`, `LoopGenerators`, or
 `IsotropyAnalysis`. A graph uses vertex zero as its reference; a loop set or
 analysis uses its `root_shape`. Supplying an existing analysis avoids repeating
@@ -460,16 +462,19 @@ GAP group analysis, but the shape graph is re-explored from that reference.
 timeout=None, max_expanded_moves=None)` checks that the state uses that same
 specification. `solve_colored_loops` accepts the same solve options and an
 optional `solver=existing_solver`; otherwise it constructs a solver with the
-specified GAP executable.
+specified GAP executable. Pass `factorization="quotient_kernel"` to this
+convenience entry point to select the quotient strategy, or reuse a prepared
+solver already configured for it.
 
 A prepared solver reuses its complete shape graph and stable reduced algorithm
 library. Each solve requiring a nontrivial loop correction still launches a
 fresh GAP factorization subprocess; GAP stabilizer chains are not cached
 between solves.
 
-The solver starts with a deterministic reduced subset of the original witnessed
-loops. For each scramble it greedily chooses a smaller candidate subgroup that
-still contains the residual permutation before factorization. This favors
+The default `sticker` strategy starts with a deterministic reduced subset of
+the original witnessed loops. For each scramble it greedily chooses a smaller
+candidate subgroup that still contains the residual permutation before
+factorization. This favors
 fewer distinct base algorithms; an algorithm and its inverse share an ID. It
 does not prove minimum algorithm count or shortest physical move length. The
 stable library makes algorithm references reusable across scrambles.
@@ -488,6 +493,52 @@ only; shape restoration remains the separate `shape_solution` field.
 `gap_version` record the algebra backend. The result is a computational
 scramble solution; a reusable human method also needs recognition and
 application rules.
+
+To factor block placement separately from the remaining orientation action,
+select the opt-in quotient/kernel strategy:
+
+```python
+solver = c.LoopSolver(analysis, factorization="quotient_kernel", timeout=60)
+structure = solver.block_structure
+assert structure.group_order == structure.quotient_order * structure.kernel_order
+for algorithm in structure.basis:
+    print(algorithm.id, algorithm.turn_sequence, algorithm.block_action.notation)
+    print("Order:", algorithm.order)
+
+result = solver.solve(imported, metric="HTM", max_expanded_moves=100_000)
+if result.status == "solved":
+    assert imported.apply(result.solution).is_solved
+    print(result.placement_expression, result.kernel_expression)
+```
+
+`block_structure` is computed lazily and reused. It records the exact isotropy
+order `|H|`, footprint-permutation quotient order `|P|`, and footprint-fixing
+kernel order `|K|`, with `|H| = |P| * |K|`. `c.analyze_block_structure(reference,
+...)` also computes this structure from a puzzle, complete graph, loop set, or
+isotropy analysis without preparing a solver.
+
+After shape restoration, this strategy tests and factors the inverse block
+permutation and lifts that word through the original `L` loops. It then tests
+and corrects the residual in the actual abelian kernel. These membership tests
+establish exact reachability, and the lifted full sticker action is verified. The
+independent cyclic kernel basis has witnessed `K0`, `K1`, ... algorithms with
+`order`, `steps`, `expression`, `turn_sequence`, `permutation`, and
+`block_action`. Their `htm_length` counts displayed face turns; `qtm_length`
+counts unsimplified original-loop expansion. The kernel includes rotations
+within symmetric fused footprints, and retains coupling between physical
+orientation coordinates.
+
+Results expose `factorization`, `placement_steps`, `kernel_steps`,
+`placement_expression`, `kernel_expression`, `quotient_order`, `kernel_order`,
+and the used `kernel_algorithms`. `placement_algorithms` retains the original
+witnesses needed to replay the placement stage on its own, even if their
+references cancel when flattening the whole correction. The existing `steps`, `expression`, and
+`algorithms` still express the whole correction through original witnessed
+loops for replay compatibility. The expansion limit preserves both compact
+stages. The default `sticker` strategy remains available, and neither strategy
+promises a shortest physical solution or minimum algorithm repertoire. See
+the [block-action guide](../../docs/block-actions.md#block-placement-and-abelian-kernel-correction)
+for the model proof, reference orders, and basis semantics.
 
 Outcomes are explicit:
 
@@ -513,10 +564,120 @@ preparation, and excludes shape exploration. Passing `timeout=None` to a
 prepared solver's `solve` uses its preparation-time timeout. A GAP timeout or
 backend failure raises an error and never proves unreachability.
 
-This is the first general factorization baseline. Block quotient and abelian
-correction methods, exact `H/Q` tables, macro mining, and dedicated human-memory
-optimization remain followups. The direct `solve_colored` API retains its
+Both general sticker factorization and block quotient/abelian correction are
+available. Bounded algorithm discovery and two solution views are also available
+below. Exact quotient tables, further discovery improvements, and dedicated
+human-memory optimization remain followups. The direct `solve_colored` API retains its
 shortest-path guarantees.
+
+## Discover algorithms and compare solution views
+
+Build a bounded research library of root loops and structured compositions
+without changing the baseline solver:
+
+```python
+library = c.discover_loop_algorithms(
+    analysis, max_seed_loops=12, rounds=2, max_candidates=500,
+    max_algorithms=64, max_htm_length=96,
+)
+for algorithm in library.shortest[:8]:
+    print(algorithm.turn_sequence, algorithm.block_action.notation)
+for algorithm in library.structured[:12]:
+    print(algorithm.structured_turn_sequence, algorithm.block_action.notation)
+
+options = solver.solve_options(
+    imported, library=library, metric="HTM", max_states=500, max_depth=3,
+)
+for option in (options.shortest_found, options.most_structured):
+    if option.status == "solved":
+        assert imported.apply(option.solution).is_solved
+        print(option.shape_solution, option.structured_turn_sequence)
+```
+
+The immutable `LoopAlgorithm` records expose IDs, expression trees, simplified
+turn sequences, exact block actions, HTM/QTM lengths, affected-block `support`,
+kernel membership, and structural scores. Every legal base loop is reusable,
+without a turn threshold. Discovery considers powers, commutators, conjugates,
+nested constructions, and transfers through actual reference-bandage
+symmetries. Power proposals prioritize footprint-permutation order and include
+all nontrivial proper divisors of full action order, subject to budgets.
+Taking an inverse or assigning an opaque name does not improve description
+cost. A linear literal is retained as an alternative when cheaper than its
+construction, with its original-loop witness preserved.
+
+`shortest` favors physical length. Lower `structured` score tuples start with
+total affected-block count, then the largest constituent application's
+affected-block count, followed by shared memory and description cost and
+physical length. For equal-effect solutions, the constituent count favors
+localized intermediate applications. `support` includes blocks twisted in place. Both physical and
+structured representatives can be retained for the same exact action.
+`library.to_dict()` exports witnessed records. `library.metadata` exposes
+limits, seed/candidate/round counts, pruning and limit flags, `symmetry_count`,
+`symmetry_transfer_count`, and `exhaustive=False`.
+
+`algorithm.structured_turn_sequence` renders physical construction notation:
+`(R U)3` repeats a group, `[A, B]` is a commutator, and `[S: A]` is conjugation,
+with nesting retained. Inverse words are reversed and inverted: `R U` becomes
+`U' R'`, and its negative third power becomes `(U' R')3`. Single-face powers
+use `R2`/`R'`. `expression.render()` retains original loop IDs;
+`expression.render_moves(generators)` substitutes physical turns.
+`turn_sequence` remains the expanded face-turn word for replay. Both notebooks
+show only Turn sequence, Block action, HTM length, and Affected blocks in their
+algorithm tables, with one shortest ranking and one structured ranking.
+
+`LoopExpression.rotated(rotation_word, body)` displays a regrip transfer such
+as `x (A) x'`. Only proper rotations preserving the actual reference bandage
+shape are admitted; a root with no nonidentity symmetry supplies no transfers.
+Bicube Fuse has two nonidentity reference-shape symmetries and Shark Fin Soup
+has one. Both notebook roots, Alcatraz and Most Signatures Cube, have zero,
+so their tables contain no regrip transfers. Colored markings need not stay
+fixed under the setup because the frame is
+restored. Regrips are not HTM face turns. `expression.expanded_moves(generators)`
+and algorithm witnesses contain legal face turns; `State.apply` keeps its
+existing face-only parser. `loop_steps()` rejects rotated trees,
+whose transferred word need not use named original loops. Expression exports
+retain the rotation word, and remembered definitions reuse the body.
+`symmetry_count` counts nonidentity bandage symmetries;
+`symmetry_transfer_count` counts evaluated transfers.
+
+Expressions combine legal loops at one reference shape. A commutator
+`[A, B]` executes `A B A^-1 B^-1`; conjugating body `A` by legal setup loop `S`
+executes `S A S^-1`. The kernel is abelian but need not be central: kernel
+algorithms commute with each other, while a placement-loop conjugation can
+change a kernel action.
+
+`solve_options` searches the supplied library within state/depth budgets and
+also factors through up to 24 discovered macros from each ranking plus the
+original reduced generators. These retain the full group, and enriched GAP
+factorizations can exceed search depth. Each GAP call respects the prepared
+solver's timeout; the existing solve remains a fallback. Each option exposes
+status, separate shape restoration, loop expression and `structured_expression`
+tree, loop-stage `structured_turn_sequence`, full executable `solution`,
+physical lengths, and used algorithms. `algorithm_count` counts distinct
+remembered leaves, folding inverses together; `original_loop_count` counts
+witness IDs in `base_algorithms`. The ordinary `LoopSolution.algorithm_count`
+still counts original loops. These counts do not prove minimum human repertoire.
+
+The full solution includes shape restoration and is legally replay-checked.
+Notebook solution tables show the option, shape restoration when needed,
+loop-stage Turn sequence, full HTM length, and Remembered algorithms.
+`source` remains available in the API for baseline, direct discovered,
+bounded-search, and enriched-factorization provenance. The ordinary `solve`
+API is unchanged. `options.to_dict()`, `to_json()`, and `save(path)` export both
+trees, witnesses, source labels, and search metadata. `options.library_metadata`
+copies the discovery limits and counts, even with a default library.
+
+Discovery bounds seeds, rounds, candidates, library size, and witness length.
+State limits apply separately to each solve objective; GAP calls use the
+per-call timeout. Options retain `searched_states`, `search_complete`,
+`stop_reason`, and `candidate_stop_reasons`. Optional enrichment timeouts or
+expansion cutoffs preserve the verified baseline; baseline GAP failure still
+raises. Both options have `optimal=False`. “Shortest found” compares available
+candidates without proving global optimality; structured scoring estimates
+localized, reusable descriptions without proving human memorability.
+See the [discovery guide](../../docs/block-actions.md#bounded-algorithm-discovery-and-two-solution-views)
+for conventions and guarantees. Exact quotient tables and human recognition,
+application, and coverage rules remain future work.
 
 ## Explore colored components
 
@@ -667,6 +828,7 @@ bce-v2 solve 'Alcatraz' 'F R2' --metric HTM
 bce-v2 solve-colored 'Alcatraz' 'F R2' --metric HTM --max-states 100000
 bce-v2 solve-colored imported.json --algorithm bfs --max-depth 8
 bce-v2 solve-loops 'Alcatraz' 'F R2' --metric HTM --timeout 60
+bce-v2 solve-loops 'Alcatraz' 'F R2' --factorization quotient_kernel --metric HTM --timeout 60
 bce-v2 solve-loops imported.json --max-expanded-moves 100000 --output /tmp/solution.json
 bce-v2 explore-colored imported.json --max-states 100 --output /tmp/colors.json
 bce-v2 explore 'Alcatraz' --output /tmp/alcatraz-graph.json
@@ -692,6 +854,8 @@ runtime in seconds. `--output` also saves the emitted deterministic JSON.
 `solve-loops` solves a fixture scramble or imported state through shape
 restoration and GAP loop factorization. It accepts an optional additional
 scramble, `--metric`, `--gap-executable`, `--timeout`, `--max-expanded-moves`,
-and `--output`. JSON includes the ordered loop powers and only the algorithms
-they use. Solved, unreachable, and expansion-limited results exit with codes
+`--factorization sticker|quotient_kernel`, and `--output`. The default is
+`sticker`. JSON includes the ordered loop powers and only the algorithms they
+use; quotient mode also records placement and kernel stages and the used
+kernel algorithms. Solved, unreachable, and expansion-limited results exit with codes
 0, 3, and 2 respectively; backend failures exit with code 1.

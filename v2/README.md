@@ -164,8 +164,8 @@ symmetric fused blocks. The Python API provides `loops.block_inventory`,
 `analysis.block_inventory`, and `generator.block_action`; deterministic exports
 retain both block descriptions and the authoritative sticker permutations.
 See the [block-action guide](../docs/block-actions.md) for notation and frames.
-This delivery leaves the existing solver in place; block quotient and kernel
-factorization follow separately.
+An opt-in quotient/kernel solver uses the same exact actions for block
+placement followed by abelian orientation correction.
 
 ## General loop-factorization solver
 
@@ -193,11 +193,28 @@ returning `limit_reached` before expansion. Exact membership failure proves
 `unreachable`; backend errors remain errors.
 
 The batch interface is `bce-v2 solve-loops PUZZLE [MOVES]`, with metric, GAP
-executable, timeout, expansion limit, and JSON output options. See the
+executable, timeout, expansion limit, `--factorization sticker|quotient_kernel`,
+and JSON output options. See the
 [Python loop-solving guide](python/README.md#solve-scrambles-with-shape-loops).
-Block quotient and abelian correction methods, exact `H/Q` tables, macro mining,
-and reusable human recognition rules remain followups. Direct colored search
-retains its existing shortest-path guarantees.
+The opt-in `factorization="quotient_kernel"` strategy first factors reference
+block placement, lifts that word through original loops, and corrects the
+remaining action in the footprint-fixing abelian kernel. A lazy
+`solver.block_structure` exposes exact isotropy, quotient, and kernel orders,
+and a witnessed independent cyclic basis. Results retain separate placement
+and kernel expressions alongside the complete expression in original loop IDs.
+The original `sticker` factorization remains the default. Both notebooks show
+the decomposition and kernel algorithms with legal replay checks.
+
+`c.discover_loop_algorithms(analysis)` now mines a bounded library of powers,
+commutators, and conjugates, preserving nested expressions and verified short
+literal turn sequences. It retains separate shortest and structured witnesses
+for each selected effect. `solver.solve_options(state, library=library)` compares
+the baseline, bounded searches, and enriched GAP factorizations, exposing both
+`shortest_found` and `most_structured`. The notebooks show both views, their
+physical lengths, remembered leaves, original witnesses, and resource limits.
+These rankings are heuristic; they do not prove shortest physical solutions or
+human memorability. Exact quotient tables and reusable recognition rules remain
+followups. Direct colored search retains its existing shortest-path guarantees.
 
 ## Generated kernels and tuning
 

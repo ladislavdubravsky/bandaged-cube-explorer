@@ -61,6 +61,8 @@ def main(argv: list[str] | None = None) -> int:
                              help="extract complete loop generators without running GAP")
             sub.add_argument("--output", type=Path, help="write deterministic isotropy JSON")
         if command == "solve-loops":
+            sub.add_argument("--factorization", choices=("sticker", "quotient_kernel"),
+                             default=None, help="factor stickers directly or place blocks then correct rotations")
             sub.add_argument("--max-expanded-moves", type=int, default=None,
                              help="cap unsimplified QTM expansion while retaining the loop expression")
             sub.add_argument("--output", type=Path, help="write the structured loop solution JSON")
@@ -114,9 +116,12 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(result.to_dict(), sort_keys=True))
             return {"solved": 0, "limit_reached": 2, "unreachable": 3}[result.status]
         elif args.command == "solve-loops":
+            factorization_options = ({"factorization": args.factorization}
+                                     if args.factorization is not None else {})
             solution = solve_colored_loops(
                 state, metric=args.metric, gap_executable=args.gap_executable,
-                timeout=args.timeout, max_expanded_moves=args.max_expanded_moves)
+                timeout=args.timeout, max_expanded_moves=args.max_expanded_moves,
+                **factorization_options)
             result = solution.to_dict()
             if args.output is not None:
                 args.output.write_text(json.dumps(result, sort_keys=True, indent=2) + "\n")

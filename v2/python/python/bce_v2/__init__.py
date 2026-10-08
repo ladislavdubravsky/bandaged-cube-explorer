@@ -466,6 +466,14 @@ from .block_actions import (  # noqa: E402
     BlockAction, BlockInventory, BlockSlot, block_inventory, cell_name,
 )
 from .loop_solver import LoopSolution, LoopSolver, LoopStep, solve_colored_loops  # noqa: E402
+from .block_solver import (  # noqa: E402
+    BlockStructure, KernelAlgorithm, KernelStep, analyze_block_structure,
+)
+from .loop_algorithms import (  # noqa: E402
+    AlgorithmLibrary, LoopAlgorithm, LoopExpression, discover_loop_algorithms,
+)
+from .loop_rotations import bandage_symmetries  # noqa: E402
+from .loop_algorithm_solver import AlgorithmSolution, LoopSolutionOptions  # noqa: E402
 
 __all__ = [
     "Shape", "State", "ShapeGraph", "BlockedMoveError", "CELL_NAMES",
@@ -477,5 +485,9 @@ __all__ = [
     "isotropy_loops", "analyze_isotropy",
     "BlockAction", "BlockInventory", "BlockSlot", "block_inventory", "cell_name",
     "LoopSolver", "LoopSolution", "LoopStep", "solve_colored_loops",
+    "BlockStructure", "KernelAlgorithm", "KernelStep", "analyze_block_structure",
+    "LoopExpression", "LoopAlgorithm", "AlgorithmLibrary", "discover_loop_algorithms",
+    "bandage_symmetries",
+    "AlgorithmSolution", "LoopSolutionOptions",
     "draw_cubes", "load_puzzle", "save_puzzle", "save_graph",
 ] + list(CELL_NAMES)

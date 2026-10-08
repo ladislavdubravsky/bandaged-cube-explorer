@@ -6,7 +6,7 @@ well as their original 48-sticker permutations and legal move witnesses. The
 [Most Signatures Cube](../v2/examples/MostSignaturesCube.ipynb) notebooks show
 reference inventories and one-line decorated cycles beside each reduced
 generator. Block actions require no GAP installation; GAP is needed for the
-existing exact group analysis and general loop solver.
+exact group analysis and both loop-factorization strategies.
 
 ## Reference identities and slots
 
@@ -155,10 +155,10 @@ for generator in analysis.generators:
 including `R R` and `R' R'` as `R2`, and cancels inverse turns. The original
 legal witness remains `generator.moves`; `generator.qtm_length` retains its
 unsimplified quarter-turn cost. `generator.htm_length` counts the displayed
-sequence's face turns, including each half turn as one. Both notebooks show
-Turn sequence immediately after Generator ID, followed by Block action and
-both move lengths, and replay-check both versions against the same sticker
-action.
+sequence's face turns, including each half turn as one. Algorithm tables in
+both notebooks show Turn sequence, Block action, HTM length, and Affected
+blocks. They replay-check both witnesses against the same sticker action;
+original IDs and QTM costs remain available through the API and exports.
 
 For a separate reference, use `c.BlockInventory(reference)` or
 `c.block_inventory(reference)`. Inputs can be a shape, 27-cell list, state
@@ -191,19 +191,81 @@ generator record adds `block_action`. With move witnesses included, generator
 records also include `turn_sequence` and `htm_length`; `include_moves=False`
 omits `moves`, `turn_sequence`, and `htm_length` without expanding witnesses.
 Existing fields remain intact. Loop-solution algorithms also retain their
-block actions alongside their
-sticker permutations and legal witnesses. Omitting move expansion with
+block actions alongside their sticker permutations and legal witnesses. Omitting move expansion with
 `include_moves=False` does not remove the block actions. Existing group counts
 remain exact integers in Python and decimal strings in JSON.
 
-## Subsequent solving delivery
+## Block placement and abelian kernel correction
 
-This delivery describes actions; it leaves the existing GAP sticker
-factorization solver in place. A later solver will project the isotropy group
-`H` to its action `P` on reference footprints and correct the lifted word in
-the kernel `K`, with `|H| = |P| * |K|`. It must preserve executable witnesses,
-subgroup constraints, and the coupling between coordinates. It must not
-assume independent block orbits or a split extension.
+The opt-in `quotient_kernel` strategy is implemented alongside the default
+`sticker` factorization. It projects the isotropy group `H` to its action `P`
+on reference footprints, lifts a placement word through the original legal
+loops, and corrects the remaining action in the footprint-fixing kernel `K`.
+The exact orders satisfy `|H| = |P| * |K|`. Exact quotient membership followed
+by residual kernel membership establishes reachability. The lifted word is
+verified against the full sticker action, retaining physical subgroup
+constraints and the coupling between coordinates without assuming independent
+block orbits or a split extension.
+
+```python
+solver = c.LoopSolver(analysis, factorization="quotient_kernel", timeout=60)
+structure = solver.block_structure  # Computed lazily and reused.
+assert structure.group_order == structure.quotient_order * structure.kernel_order
+for algorithm in structure.basis:
+    print(algorithm.id, algorithm.turn_sequence, algorithm.block_action.notation)
+    print(algorithm.order, algorithm.expression)
+
+result = solver.solve(imported, metric="HTM", max_expanded_moves=100_000)
+if result.status == "solved":
+    assert imported.apply(result.solution).is_solved
+    print(result.shape_solution)
+    print(result.placement_expression, result.kernel_expression)
+```
+
+`c.analyze_block_structure(reference, ...)` also computes the structure without
+preparing a solver, accepting the same puzzle, loop-set, and isotropy-analysis
+references used by the loop interfaces. A complete graph can select its root
+explicitly. Both notebooks show exact `H`, `P`, and `K` orders and the
+independent kernel basis next to the original loop library.
+
+Each witnessed `KernelAlgorithm` has an ID such as `K0` local to the prepared
+reference library, a cyclic `order`, the full `permutation` and `block_action`,
+and an expression and `steps`
+in original `L` loops, and a simplified `turn_sequence`. `htm_length` counts
+the displayed face turns; `qtm_length` retains the unsimplified quarter-turn
+cost of its original-loop expansion. Basis independence concerns cyclic
+factors of the actual kernel, rather than arbitrary per-block orientation
+coordinates. Every basis algorithm fixes all reference footprints and has a
+legal reference-loop witness.
+
+`structure.to_dict(include_moves=True)`, `to_json()`, and `save(path)` export
+version-one `bce-v2-block-structure` records with the reference inventory,
+original generator IDs, witnessed basis, and exact `H`, `P`, and `K` orders as
+decimal strings. `include_moves=False` keeps each kernel algorithm's original
+loop steps and exact action without expanding its face-turn witness.
+
+A quotient solution retains separate `placement_steps` and `kernel_steps`,
+their `placement_expression` and `kernel_expression`, exact `quotient_order`
+and `kernel_order`, and only the referenced `kernel_algorithms`.
+`placement_algorithms` supplies all original witnesses used by the placement
+stage, including any whose references cancel when the complete word is
+flattened. `steps` and
+`expression` remain the complete correction flattened into original loop IDs,
+and `algorithms` retains those original witnesses. Existing consumers can
+therefore replay the original loop expression. Shape restoration remains the
+separate first stage. The result's `factorization` identifies the selected
+strategy. Expanded solutions are legally replay-checked; the existing
+expansion limit preserves the compact stages when returning `limit_reached`.
+Placement steps use original `generator_id` references; kernel steps use
+`basis_id` references such as `K0`, both with signed `exponent` values. JSON
+retains both stage records and exports the quotient and kernel orders as
+decimal strings. This strategy guarantees neither shortest solutions nor
+minimum algorithm repertoires.
+
+Failure of quotient membership reports `block_permutation_not_in_group`.
+Failure of residual kernel membership reports `kernel_residual_not_in_group`
+and retains any successfully found placement word for inspection. GAP failures
+and timeouts raise errors, rather than returning either unreachability result.
 
 In the current six-outer-face model, the footprint-fixing kernel is abelian.
 A block not wholly contained in an outer face cannot move. A face-contained
@@ -214,27 +276,191 @@ This includes order-four rotations permuting constituent cubies inside a
 fixed footprint, beyond the ordinary corner-twist and edge-flip kernel.
 Unmarked center and virtual-core spin are excluded.
 
-Keep a free group on the witnessed original loops, with maps to both `H` and
-`P`. A quotient word then lifts through the same original generator IDs to an
-executable word in `H`; after applying it, factor the remaining correction in
-`K`. Every kernel basis algorithm also needs a legal move witness. GAP provides
-induced actions through `ActionHomomorphism` and `OnSets`, images and kernels,
-and abelian bases through `IndependentGeneratorsOfAbelianGroup` and
-`IndependentGeneratorExponents`. Validate the action domain: center/core-only
-blocks have no points in the faithful 48-sticker action and need separate fixed
-handling. See the official [group-action documentation](https://gap-system.github.io/gap/doc/ref/chap41_mj.html)
+A free group on witnessed original loops retains maps to both `H` and `P`,
+so a quotient word lifts through the same original generator IDs to an
+executable word in `H`. Kernel basis algorithms also retain legal original-loop
+witnesses. The GAP backend computes the induced footprint action, its image and
+kernel, and uses `IndependentGeneratorsOfAbelianGroup` and
+`IndependentGeneratorExponents` for the actual abelian correction. Blocks
+containing only centers or the core have no points in the faithful 48-sticker
+action and are handled as
+separately fixed blocks. See the official [group-action documentation](https://gap-system.github.io/gap/doc/ref/chap41_mj.html)
 and [abelian-generator operations](https://gap-system.github.io/gap/doc/ref/chap39_mj.html).
 
-Later macro discovery can use affected-block support, orientation-only powers,
-commutators, and conjugation within actual legal loop orbits. When choices are
-otherwise comparable, prefer a small reusable algorithm library over shorter
-physical move sequences. Human recognition and application rules remain
-milestone six.
+Bounded algorithm discovery now uses affected-block support, powers,
+commutators, and conjugation within actual legal loop orbits, as described
+below. When choices are otherwise comparable, a small reusable algorithm
+library remains preferable to shorter physical move sequences. Human
+recognition and application rules remain milestone six.
 
-Measured reference-root `(H, P, K)` orders are Alcatraz `(324, 18, 18)`, Bicube
-Fuse `(60, 60, 1)`, Shark Fin Soup `(36, 12, 3)`, and Most Signatures Cube
-`(10368, 144, 72)`. Recompute these when implementing the projection rather
-than treating these measurements as proofs. The
-[roadmap](roadmap.md#fourth-milestone-solve-colored-puzzles) retains this next
-delivery, exact quotient tables, and macro discovery; human recognition and
-application rules remain milestone six.
+Reference-root `(H, P, K)` orders are Alcatraz `(324, 18, 18)`, Bicube Fuse
+`(60, 60, 1)`, Shark Fin Soup `(36, 12, 3)`, and Most Signatures Cube
+`(10368, 144, 72)`. The structure computation derives these from the actual
+reference action. The [roadmap](roadmap.md#fourth-milestone-solve-colored-puzzles)
+retains exact quotient tables and further discovery improvements as followups;
+human recognition and application rules remain milestone six.
+
+## Bounded algorithm discovery and two solution views
+
+`c.discover_loop_algorithms(analysis, ...)` builds a bounded library of exact,
+witnessed root-loop algorithms. Every legal base loop can be reused, regardless
+of length. Discovery explores powers, commutators, conjugates, and transfers
+through actual symmetries of the reference bandage shape. Composite expressions
+retain their trees, including nested constructions. Separate `shortest` and
+`structured` views compare physical length with a human-oriented heuristic:
+total affected-block count first, the largest constituent application's
+affected-block count next, shared memory and description cost afterward,
+and physical turns last. Giving a long word an opaque name or taking its
+inverse does not make its description easier.
+
+```python
+library = c.discover_loop_algorithms(
+    analysis, max_seed_loops=12, rounds=2, max_candidates=500,
+    max_algorithms=64, max_htm_length=96,
+)
+for algorithm in library.shortest[:8]:
+    print(algorithm.turn_sequence, algorithm.block_action.notation)
+for algorithm in library.structured[:12]:
+    print(algorithm.structured_turn_sequence, algorithm.block_action.notation)
+
+options = solver.solve_options(
+    imported, library=library, metric="HTM", max_states=500, max_depth=3,
+)
+for option in (options.shortest_found, options.most_structured):
+    if option.status == "solved":
+        assert imported.apply(option.solution).is_solved
+        print(option.shape_solution, option.structured_turn_sequence)
+```
+
+Power proposals first prioritize the footprint-permutation order, which can
+isolate an orientation-only action. They also include every nontrivial proper
+divisor of the full action order: for example, fifth and seventh powers can
+separate the two cycle lengths in an order-35 action. Identity effects are
+omitted, and candidate and length budgets bound which proposals are evaluated
+and retained. An inverse alone is not proposed as a structural improvement.
+A flattened literal alternative is considered when its linear description is
+cheaper than the expression it replaces, without an arbitrary turn threshold.
+
+Each `LoopAlgorithm` exposes its `id`, expression tree, simplified
+`turn_sequence`, exact `block_action`, physical `htm_length` and `qtm_length`,
+affected-block `support`, `is_kernel`, and `structure_score`. `support` holds
+affected source-inventory indices, including blocks twisted in place. Lower
+structure-score tuples start with total affected-block count, then the largest
+constituent application's affected-block count, followed by shared memory and
+description cost and physical length. For equal-effect solutions, the first
+count is the same, so the constituent count favors localized intermediate
+applications. Both physical and structured
+representatives can remain available for the same exact action.
+`library.to_dict()` exports witnessed records and bounded-discovery metadata.
+`library.metadata` exposes limits, observed seed/candidate/round counts, pruning
+counts, limit flags, `symmetry_count`, `symmetry_transfer_count`, and
+`exhaustive=False`; the retained union is `library.algorithms`.
+
+`algorithm.structured_turn_sequence` renders the construction in physical
+moves. `(R U)3` repeats a group, `[A, B]` is a commutator, and `[S: A]` is
+conjugation by setup `S`; brackets retain nesting. Inverse words are reversed
+and inverted: the inverse of `R U` displays `U' R'`, and its negative third
+power displays `(U' R')3`. Single-face powers use ordinary forms such as `R2`
+and `R'`. Plain leaves show their actual turns without inventing a construction.
+`expression.render()` keeps original loop IDs for provenance, while
+`expression.render_moves(generators)` substitutes physical turn words.
+`turn_sequence` remains the expanded face-turn word for executable replay.
+Move lengths count expanded physical turns.
+
+Both notebooks display one shortest-found ranking and one structured ranking.
+Their algorithm tables use four columns: Turn sequence, Block action, HTM
+length, and Affected blocks. The structured view uses construction notation;
+the shortest view uses expanded turns. Full witnesses, expression trees, IDs,
+and diagnostic metadata remain accessible through the API and exports.
+
+`LoopExpression.loop(id)`, `sequence(...)`, `power(body, exponent)`,
+`commutator(first, second)`, `conjugate(setup, body)`, and
+`rotated(rotation_word, body)` retain explicit construction trees. For example,
+using two witnessed loops from the current analysis:
+
+```python
+a = c.LoopExpression.loop(analysis.generators[0].id)
+b = c.LoopExpression.loop(analysis.generators[1].id)
+tree = c.LoopExpression.conjugate(b, c.LoopExpression.commutator(a, b))
+algorithm = library.build_algorithm(tree)
+print(algorithm.structured_turn_sequence)
+library = library.with_expressions(tree)
+```
+
+`build_algorithm` validates the exact construction with a finite expansion
+budget. `with_expressions` returns a new library considering these alternatives
+under its existing bounds. Literal-turn leaves retain their original-loop
+witness in the tree for provenance.
+
+All expression leaves are legal loops at the same reference shape. In engine
+execution order, `[A, B]` expands to `A B A^-1 B^-1`, and a conjugate with setup
+`S` and body `A` expands to `S A S^-1`. These constructions cannot be applied to
+arbitrary face-turn words without checking intermediate shapes. The kernel
+`K` is abelian but need not be central in `H`: two kernel algorithms commute,
+while conjugating one by a placement algorithm can change its effect.
+
+A rotated expression displays a regrip, body, and inverse regrip, such as
+`x (A) x'`. It transfers the loop only through a proper rotation preserving the
+actual reference bandage shape. Bicube Fuse has two nonidentity reference-shape
+symmetries, and Shark Fin Soup has one. Alcatraz and Most Signatures Cube have
+none at their notebook roots, so their candidate tables contain no regrip
+transfers. A root with no nonidentity symmetry supplies no such transfers.
+Colored markings need not be preserved by the setup:
+the frame is restored, while the loop's action is transported to other slots.
+Regrips do not count as HTM face turns. `expanded_moves(generators)` produces the
+legal face-only witness, and `algorithm.moves`/`turn_sequence` remain executable
+by `State.apply`; its parser is unchanged. `loop_steps()` explicitly
+rejects rotated trees, whose transferred witnesses need not be words in the
+original named loops. Rotation words are retained in expression exports.
+`symmetry_count` counts nonidentity reference-shape automorphisms, and
+`symmetry_transfer_count` counts evaluated transfers within the discovery
+budget. Rotated constructions reuse the body's remembered definitions.
+
+`solver.solve_options` combines an opt-in bounded search over the discovered
+library with GAP factorization through up to 24 discovered macros from each
+ranking plus the original reduced generators. Retaining the original
+generators preserves the full group. Enriched factorizations can find words
+beyond the search-depth limit; each GAP call respects the prepared solver's
+timeout. The existing solver remains a fallback. `shortest_found` favors
+physical length; `most_structured` uses the total-effect and largest-constituent
+counts before shared memory, description cost, and turns. Equal-effect
+solutions therefore compare localization of their intermediate applications
+before description cost.
+
+Each option exposes `status`, separate `shape_solution`, loop `expression`
+string and `structured_expression` tree, physical `structured_turn_sequence`
+for the loop stage, full executable `solution`, physical move lengths, and used
+`algorithms`. `algorithm_count` counts distinct remembered leaves, treating a
+leaf and its inverse together; `original_loop_count` counts underlying
+original IDs in `base_algorithms`. The ordinary
+`LoopSolution.algorithm_count` continues counting original loops. Literal
+leaves retain their witness construction without counting every hidden witness
+leaf as a separate remembered description. These are heuristic description
+counts, without a proof of minimum human repertoire. `source` identifies
+`baseline`, `discovered`, `short_search`, `structured_search`,
+`short_factorization`, or `structured_factorization`.
+
+Structured physical turns describe the loop correction only; shape restoration
+remains separate. The full solution includes both and is legally replay-checked.
+The compact notebook comparison shows each option's shape restoration when
+needed, loop-stage Turn sequence, full HTM length, and Remembered algorithms.
+The ordinary `solver.solve` behavior is unchanged. `options.to_dict()`,
+`to_json()`, and `save(path)` export version-one
+`bce-v2-loop-solution-options` records with both trees, original witnesses,
+source labels, and search metadata. `options.library_metadata` retains a copy
+of discovery limits and counts, including with an automatically created library.
+
+Discovery bounds seeds, rounds, candidates, retained library size, and witness
+length. Solve state and depth budgets apply to the bounded search, with the
+state cap applied separately to each objective; GAP calls use the existing
+per-call timeout. Options retain `searched_states`, `search_complete`, and
+`stop_reason` about the macro searches. `candidate_stop_reasons` also records
+optional enrichment timeouts or expansion cutoffs. These optional cutoffs
+retain the verified baseline; a baseline GAP failure still raises an error.
+Both options have `optimal=False`. “Shortest found” compares available
+candidates without a global shortest-path guarantee. The structural score
+estimates localized, reusable descriptions without proving human memorability.
+
+Exact precomputed tables for the block-permutation quotient `P` remain future
+work. A human puzzle solution also needs recognition, legal application rules,
+and coverage and progress validation beyond these computational algorithms.
