@@ -1,6 +1,6 @@
 # Bandaged cube explorer roadmap
 
-Roadmap updated 8 October 2026. The Rust model and move engine, Python research interface, and initial shape tools are implemented in [v2](../v2/README.md). Milestone four now supplies validated colored input, colored exploration, exact direct BFS and bidirectional BFS for tractable cases, a general GAP loop-factorization baseline, exact reference-block actions with decorated cycle notation, and an opt-in solver for block placement and abelian kernel correction. Larger memory-conscious exact searches and improved loop-solving methods remain followups. Milestone five's default shell enumeration is complete, with 7,073 behavioral classes, or **4,857** after identifying mirror pairs and excluding permanently frozen or one-axis puzzles. Its APIs support exact partition generation/counting, proper rotations, motion classification, and optional implicit-bond closure; an atlas postprocessor handles mirrors and named mobility filters. See [the enumeration investigation](enumeration.md) for definitions, proofs, old-code reconciliation, and measured results. Reusable human solving methods belong to milestone six; broader puzzle mechanics remain later work.
+Roadmap updated 8 October 2026. The Rust model and move engine, Python research interface, and initial shape tools are implemented in [v2](../v2/README.md). Milestone four now supplies validated colored input, colored exploration, exact direct BFS and bidirectional BFS for tractable cases, a general GAP loop-factorization baseline, exact reference-block actions with decorated cycle notation, and an opt-in solver for block placement and abelian kernel correction. Larger memory-conscious exact searches and improved loop-solving methods remain followups. Milestone five's default shell enumeration is complete, with 7,073 behavioral classes, or **4,857** after identifying mirror pairs and excluding permanently frozen or one-axis puzzles. Its APIs support exact partition generation/counting, proper rotations, motion classification, and optional implicit-bond closure; an atlas postprocessor handles mirrors and named mobility filters. See [the enumeration investigation](enumeration.md) for definitions, proofs, old-code reconciliation, and measured results. Milestone six now supplies exact stage plans from reference shapes; correction policies and complete human guides remain pending. Broader puzzle mechanics remain later work.
 
 The replacement uses a Rust computational library with a Python research interface and a thin command-line application, developed alongside the existing Python project. Build shape exploration, colored solving, and enumeration on a precise model and verified move engine; use their results to develop human solving methods and an atlas of bandaged puzzles. Keep the general theory in view while making the first implementation specific to 3×3 cubes.
 
@@ -211,14 +211,18 @@ Completion criterion: a reproducible enumeration for a precisely declared family
 
 Develop reusable human **puzzle solutions**: a small algorithm repertoire and explicit recognition and application rules covering every reachable colored scramble in the declared component. Optimize the amount of information a person must remember, including both move sequences and decision rules. Prefer repeated use of a few base algorithms and compressible descriptions through powers, commutators, and conjugations. Move length is a reported property, not the optimization objective of this milestone.
 
-The initial [human-method contract and chain investigation](human-methods.md)
-now define shape-only synthesis input, observable placement/full-block features,
-and preservation at correction boundaries. The reproducible Delivery 0 probe
-validates exact reference-group chains for Alcatraz, Bicube Fuse, Shark Fin Soup,
-and Most Signatures Cube, through group order 10,368. It checks legal original
-loop witnesses, full block-action reconstruction, feature equivariance and exact
-right-coset cases. This certifies chain structure; complete correction policies,
-shared algorithm repertoires and human guides are subsequent deliveries.
+The [human-method contract and stage planner](human-methods.md) define
+shape-only input, observable placement/full-block features, and preservation at
+correction boundaries. The reproducible Delivery 0 probe validates exact
+reference-group chains for Alcatraz, Bicube Fuse, Shark Fin Soup and Most
+Signatures Cube, through group order 10,368, including legal witnesses,
+block-action reconstruction, feature equivariance and exact right-coset cases.
+Delivery 1 exposes `plan_human_stages`: immutable stage plans with observation
+cases, subgroup orders, automatically implied features and compact original-loop
+witnesses for every enumerated group element. It supports placement-first,
+block-first and manual feature orders, with an explicit optional enumeration
+cap. This establishes chain structure; complete correction policies, shared
+algorithm repertoires and human guides are subsequent deliveries.
 
 Turn the existing feature-chain and distance-layer experiments into an explicit strategy system. Replace all-pairs distance calculations for feature stages with reverse multi-source BFS from each target set. Candidate features include recognizable block locations, available faces, restored bandage relations, and reusable algorithms with useful effects. Seek a small number of stages with simple recognition, limited branching, and structured actions that guarantee progress.
 

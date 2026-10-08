@@ -474,6 +474,9 @@ from .loop_algorithms import (  # noqa: E402
 )
 from .loop_rotations import bandage_symmetries  # noqa: E402
 from .loop_algorithm_solver import AlgorithmSolution, LoopSolutionOptions  # noqa: E402
+from .human_chains import (  # noqa: E402
+    BlockFeature, HumanStage, HumanStagePlan, WitnessedLoopGroup, plan_human_stages,
+)
 
 __all__ = [
     "Shape", "State", "ShapeGraph", "BlockedMoveError", "CELL_NAMES",
@@ -489,5 +492,6 @@ __all__ = [
     "LoopExpression", "LoopAlgorithm", "AlgorithmLibrary", "discover_loop_algorithms",
     "bandage_symmetries",
     "AlgorithmSolution", "LoopSolutionOptions",
+    "BlockFeature", "HumanStage", "HumanStagePlan", "WitnessedLoopGroup", "plan_human_stages",
     "draw_cubes", "load_puzzle", "save_puzzle", "save_graph",
 ] + list(CELL_NAMES)

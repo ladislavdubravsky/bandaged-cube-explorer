@@ -679,6 +679,66 @@ See the [discovery guide](../../docs/block-actions.md#bounded-algorithm-discover
 for conventions and guarantees. Exact quotient tables and human recognition,
 application, and coverage rules remain future work.
 
+## Plan human solving stages from a shape
+
+Prepare a reusable stage skeleton from a reference bandage shape, without
+supplying a colored scramble:
+
+```python
+import bce_v2 as c
+
+plan = c.plan_human_stages(
+    c.fixture("Alcatraz"), strategy="placement_then_orientation",
+    max_group_elements=10_368,
+)
+if plan.status == "completed":
+    for stage in plan.stages:
+        print(stage.feature.kind, stage.block_name,
+              stage.order_before, stage.order_after, stage.index)
+    plan.save("alcatraz-stages.json")
+```
+
+`plan_human_stages(initial, *, strategy="placement_then_orientation",
+features=None, max_group_elements=None, gap_executable="gap", timeout=None,
+root=None)` accepts the reference inputs used by the isotropy/block-structure
+interfaces. A `State` supplies its reference specification. Every planned
+algorithm will start and finish at the selected root shape; human shape
+restoration remains separate work.
+
+The two automatic strategies are `placement_then_orientation` and
+`fully_solve_each_block`. They greedily choose the smallest nontrivial stage
+index, then stable block inventory order. `strategy="manual"` accepts an
+ordered `features` list of `c.BlockFeature(kind, cells)` values, where `kind`
+is `place_block` or `solve_block` and `cells` are the exact members of one
+reference block. Redundant manual features are recorded in `skipped_features`;
+a manual list must finish at the identity subgroup.
+
+Immutable `HumanStagePlan` and `HumanStage` records retain exact group,
+quotient and kernel orders; selected block features; observation cases;
+subgroup indices; and automatically implied features. Case counts include the
+already-solved observation. `plan.block_structure` also retains the witnessed
+independent orientation-kernel basis.
+
+A completed `plan.group` stores `permutations`, original `generators` and
+`inventory`. `group.witness(permutation)` reconstructs a `LoopExpression`
+through compact enumeration parents, so every group element has an executable
+original-loop witness. These witnesses are not yet a stage correction policy
+or a short human algorithm repertoire. The plan's metadata therefore records
+`coverage_scope: chain_structure_only` and `human_method_complete: false`.
+
+`plan.to_dict()`, `to_json()` and `save(path)` export deterministic stage
+records. `include_elements=False` omits the full group-element listing;
+`include_moves=True` includes original witness move expansions. There is no
+default enumeration cap. The example explicitly uses the largest initially
+validated group order, 10,368. An exceeded `max_group_elements` returns
+`limit_reached` with no enumerated group or partial stages and
+`terminal_order=None`; it does not establish unreachability. The cap excludes
+shape exploration and GAP preparation, and `timeout` bounds each GAP call.
+
+Read the [human-method guide](../../docs/human-methods.md#plan-stages-from-a-shape-delivery-one)
+for feature observations, endpoint preservation, manual orders, witness use
+and the distinction between a stage plan and a complete human puzzle solution.
+
 ## Explore colored components
 
 ```python

@@ -39,12 +39,12 @@ policy is claimed.
 | Shark Fin Soup | 36 | 12 | 3 | 1,938 | 2 |
 | Most Signatures Cube | 10,368 | 144 | 72 | 92,176 | 4 |
 
-The initial automatic explicit-group backend should use **10,368 elements** as
-its measured operating boundary, subject to a configurable opt-in override.
+The initial explicit-group backend is validated through **10,368 elements**.
 This is the largest fully validated experiment, not a demonstrated performance
-limit or a guarantee for every group of that order. Larger inputs will need
-additional measurements or the planned symbolic backend. The research script
-itself remains uncapped unless a limit is requested.
+limit or a guarantee for every group of that order. The public stage planner
+and research script preserve the repository's opt-in resource limits: neither
+has an implicit enumeration cap. Examples explicitly select 10,368. Larger
+inputs will need additional measurements or the planned symbolic backend.
 
 For Most Signatures Cube, reducing 3,336 extracted loops to four certified
 generators leaves seven distinct generator/inverse actions. This keeps group

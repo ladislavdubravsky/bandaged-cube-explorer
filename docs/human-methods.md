@@ -1,10 +1,11 @@
 # Human methods from reference-shape loops
 
-This document fixes the initial semantics for milestone six and distinguishes
-the reproducible baseline investigation from the method compiler still to be
-implemented. A **puzzle solution** supplies a reusable algorithm repertoire and
-recognition and application rules for every reachable scramble in its declared
-domain. An algorithm library or a subgroup chain alone is not that solution.
+This document fixes the initial semantics for milestone six and describes the
+reproducible baseline investigation and implemented stage planner. The complete
+method compiler remains future work. A **puzzle solution** supplies a reusable
+algorithm repertoire and recognition and application rules for every reachable
+scramble in its declared domain. An algorithm library or a subgroup chain alone
+is not that solution.
 See the [roadmap](roadmap.md#sixth-milestone-human-solving-methods-and-visual-exploration)
 and the existing [block-action interfaces](block-actions.md).
 
@@ -36,7 +37,7 @@ algorithm only when the existing reference-bandage symmetry checks allow it.
 
 ## Initial observable features
 
-The first compiler will support two feature kinds for a specific colored block
+The stage planner supports two feature kinds for a specific colored block
 `b`, identified by its reference inventory entry and member cells:
 
 | Feature | Observation from a `BlockAction` | Solved value |
@@ -77,8 +78,9 @@ H = H0 >= H1 >= ... >= Hr = {identity}
 
 `Hi` fixes the features completed before stage `i`; `Hi+1` additionally fixes
 that stage's selected feature. The current colored residual belongs to `Hi`
-when the stage starts. A stage reads only its declared feature observation and
-selects a correction from its case table. The correction must:
+when the stage starts. The implemented planner records that stage's observation
+orbit and stabilizer. A complete method will read the declared observation and
+select a correction from a case table. That correction must:
 
 1. Be a legal witnessed root loop belonging to `Hi`.
 2. Restore all earlier features at the correction's endpoint.
@@ -111,9 +113,11 @@ human difficulty.
 
 ## Evidence and result statuses
 
-Generation, coverage and human quality are separate properties. Future records
-must state the scope to which each claim applies. The spellings below are
-provisional until the compiler's versioned export is implemented.
+Generation, coverage and human quality are separate properties. Records must
+state the scope to which each claim applies. The implemented stage plan uses
+`status: completed` or `status: limit_reached`,
+`coverage_scope: chain_structure_only`, and `human_method_complete: false`.
+The additional method-compiler fields below remain provisional.
 
 | Property | Values and meaning |
 | --- | --- |
@@ -133,7 +137,117 @@ complete witnessed fallbacks when optional algorithm improvement is bounded,
 or label the resulting method incomplete. Limits on enumerating `H` must be
 checked against its exact order before enumeration begins where possible.
 
-## Provisional method records and API
+## Plan stages from a shape: delivery one
+
+`c.plan_human_stages` prepares a reusable stage skeleton from the reference
+shape, without a colored scramble. It enumerates the exact root-loop group,
+retains compact parent-tree witnesses, and records the observation cases and
+subgroup progression. It does not generate a correction policy or claim human
+memorability.
+
+```python
+import bce_v2 as c
+
+reference = c.fixture("Alcatraz")
+plan = c.plan_human_stages(
+    reference, strategy="placement_then_orientation", max_group_elements=10_368,
+)
+if plan.status == "completed":
+    for stage in plan.stages:
+        print(stage.feature.kind, stage.block_name,
+              stage.order_before, stage.order_after, stage.index)
+        print(stage.observations, stage.implied_features)
+    plan.save("alcatraz-stages.json")
+```
+
+The signature is:
+
+```python
+plan_human_stages(
+    initial, *, strategy="placement_then_orientation", features=None,
+    max_group_elements=None, gap_executable="gap", timeout=None, root=None,
+)
+```
+
+Reference inputs follow the existing isotropy/block-structure interfaces,
+including shapes or 27-cell lists, a `State`'s reference specification,
+complete shape graphs, witnessed loop sets, existing analyses and block
+structures. Supplying a completed previous plan reuses its enumerated group
+and block structure while selecting a new chain. `root` selects a graph vertex
+when preparing loops; it must agree with an already
+prepared reference. Supplied analyses must retain a generating set covering
+the complete original loop library.
+
+The automatic strategies are `placement_then_orientation` and
+`fully_solve_each_block`. Both greedily minimize the next nontrivial index,
+then break ties by stable inventory order. They compare recognizable stage
+structure, without optimizing algorithm length or shared repertoire.
+
+`strategy="manual"` instead consumes an ordered list of
+`c.BlockFeature(kind, cells)` values. `kind` is `place_block` or `solve_block`;
+`cells` must be the exact member cells of one reference inventory block.
+Features use physical member-cell identities, not arbitrary bandage labels.
+For example, the automatic list can be supplied explicitly:
+
+```python
+manual = c.plan_human_stages(
+    plan, strategy="manual",
+    features=[stage.feature for stage in plan.stages],
+    max_group_elements=10_368,
+)
+```
+
+Redundant manual features are skipped and retained in `skipped_features`.
+The requested manual list must finish at the identity subgroup; a list leaving
+a nontrivial colored residual is rejected. `initial_features` identifies
+features already satisfied throughout the root group. Each stage also reports
+features implied by its subgroup, so the eventual guide can explain blocks
+that become correct automatically.
+
+`HumanStagePlan` and its `HumanStage` records are immutable. A completed plan
+exposes `group_order`, `quotient_order`, `kernel_order`, `terminal_order`,
+`stages`, and the retained `block_structure` with its independent witnessed
+kernel basis. Each stage exposes `feature`, `block_name`, `order_before`,
+`order_after`, `index`, `observations`, `solved_observation` and
+`implied_features`. Placement observations are one-element tuples
+`(destination,)`; full-block observations are `(destination, phase)`.
+JSON encodes both as arrays. Cases include the already-solved observation.
+`implied_features` lists newly guaranteed features beyond the selected feature.
+
+The enumerated `plan.group` supplies `permutations` in deterministic BFS
+discovery order, original witnessed `generators`, `inventory`, and an on-demand
+expression for every element:
+
+```python
+group = plan.group
+permutation = group.permutations[-1]
+expression = group.witness(permutation)
+assert expression.evaluate(group.generators) == permutation
+print(expression.render())
+```
+
+`witness` returns an existing `LoopExpression` in original loop IDs, with
+execution order and inverse exponents preserved. It reconstructs the word
+from compact enumeration parents instead of storing a separate expanded word
+for every element. This is a general executable group witness, not yet a
+stage correction or a short human algorithm.
+
+`to_dict()`, `to_json()` and `save(path)` provide deterministic plan records.
+The `include_elements` option defaults to false; enable it to include the
+enumerated group elements, parent-tree steps and subgroup membership indices.
+`include_moves` defaults to true and controls
+original witness move expansion. These are stage-plan exports; they do not
+provide the future method's application trace or guide.
+
+There is no default group-element cap. The example explicitly selects 10,368,
+the largest group in the initial validated fixture set. If the certified order
+exceeds `max_group_elements`, the result is `limit_reached`, without an
+enumerated group or partial stages; `terminal_order` is `None`. This is not an
+unreachability result. The cap does not bound shape exploration, GAP analysis,
+or the sizes of physical move witnesses. `timeout` applies to each GAP call,
+not the entire preparation or Python enumeration.
+
+## Future method records and API
 
 The future public entry point is provisionally:
 
@@ -269,8 +383,8 @@ evidence that either chain has a better algorithm repertoire.
 
 ## Later deliveries
 
-1. **Complete baseline methods for bounded groups.** Retain enumeration
-   witnesses, construct all stage cases and legal corrections, export a guide
+1. **Complete baseline methods for bounded groups.** Use the retained
+   enumeration witnesses to construct all legal case corrections, export a guide
    and application trace, and exhaustively validate all 324 Alcatraz root-loop
    states. Add the other small named fixtures as regressions.
 2. **Better stage algorithms and shared repertoire.** Reuse bounded discovery,
