@@ -8,7 +8,7 @@ from pathlib import Path
 import sys
 
 from . import (
-    State, analyze_isotropy, explore, explore_colored, fixture, fixture_names,
+    Shape, State, analyze_isotropy, explore, explore_colored, fixture, fixture_names,
     isotropy_loops, load_puzzle, solve_colored, solve_colored_loops,
 )
 
@@ -20,12 +20,49 @@ def _state(puzzle: str) -> State:
     return State(fixture(puzzle))
 
 
+def _method_reference(puzzle: str):
+    """Accept shape-only labels, or use a saved puzzle's reference specification."""
+    if puzzle.lstrip().startswith("["):
+        return Shape(json.loads(puzzle)), None
+    path = Path(puzzle)
+    if path.is_file():
+        record = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(record, list):
+            return Shape(record), path
+        return load_puzzle(path).specification, path
+    return fixture(puzzle), None
+
+
+def _check_method_paths(input_path, output_path, guide_path):
+    """Reject path and inode aliases before synthesis or writing any artifact."""
+    paths = [(name, path) for name, path in
+             (("input", input_path), ("JSON output", output_path), ("guide", guide_path))
+             if path is not None]
+    for i, (name, path) in enumerate(paths):
+        for other_name, other_path in paths[i + 1:]:
+            same = path.resolve() == other_path.resolve()
+            if path.exists() and other_path.exists():
+                same = same or path.samefile(other_path)
+            if same:
+                raise ValueError(f"{name} and {other_name} must be different files")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="bce-v2", description="Explore and solve bandaged cube shapes and colored states."
     )
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("fixtures", help="list bundled puzzle names")
+    method = commands.add_parser("plan-method", help="generate a reusable method from a reference shape")
+    method.add_argument("puzzle", help="bundled name, inline JSON labels, label-list JSON file, or puzzle JSON file")
+    method.add_argument("--strategy", choices=("placement_then_orientation", "fully_solve_each_block"),
+                        default="placement_then_orientation")
+    method.add_argument("--max-group-elements", type=int, default=None,
+                        help="optional preflight bound on the exact reference-group order")
+    method.add_argument("--gap-executable", default="gap", help="GAP executable path")
+    method.add_argument("--timeout", type=float, default=None, help="maximum seconds per GAP subprocess")
+    method.add_argument("--output", type=Path, help="write the complete method JSON; also printed to stdout")
+    method.add_argument("--guide", type=Path, help="write the method guide as Markdown")
 
     for command in ("inspect", "replay", "explore", "solve", "render", "solve-colored", "explore-colored", "isotropy", "solve-loops"):
         sub = commands.add_parser(command)
@@ -67,11 +104,33 @@ def main(argv: list[str] | None = None) -> int:
                              help="cap unsimplified QTM expansion while retaining the loop expression")
             sub.add_argument("--output", type=Path, help="write the structured loop solution JSON")
 
-    args = parser.parse_args(argv)
+    try:
+        args = parser.parse_args(argv)
+    except SystemExit as error:
+        arguments = sys.argv[1:] if argv is None else argv
+        if error.code == 2 and arguments and arguments[0] == "plan-method":
+            return 1
+        raise
     try:
         if args.command == "fixtures":
             print("\n".join(fixture_names()))
             return 0
+
+        if args.command == "plan-method":
+            from . import synthesize_human_method
+
+            reference, input_path = _method_reference(args.puzzle)
+            _check_method_paths(input_path, args.output, args.guide)
+            method = synthesize_human_method(
+                reference, strategy=args.strategy, max_group_elements=args.max_group_elements,
+                gap_executable=args.gap_executable, timeout=args.timeout)
+            result = method.to_dict()
+            if args.output is not None:
+                method.save(args.output)
+            if args.guide is not None:
+                method.write_guide(args.guide)
+            print(json.dumps(result, sort_keys=True))
+            return {"completed": 0, "limit_reached": 2}[method.status]
 
         state = _state(args.puzzle)
         if args.command in ("inspect", "replay", "render", "solve", "solve-colored", "explore-colored", "solve-loops"):

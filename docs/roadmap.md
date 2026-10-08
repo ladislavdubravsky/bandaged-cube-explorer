@@ -1,6 +1,6 @@
 # Bandaged cube explorer roadmap
 
-Roadmap updated 8 October 2026. The Rust model and move engine, Python research interface, and initial shape tools are implemented in [v2](../v2/README.md). Milestone four now supplies validated colored input, colored exploration, exact direct BFS and bidirectional BFS for tractable cases, a general GAP loop-factorization baseline, exact reference-block actions with decorated cycle notation, and an opt-in solver for block placement and abelian kernel correction. Larger memory-conscious exact searches and improved loop-solving methods remain followups. Milestone five's default shell enumeration is complete, with 7,073 behavioral classes, or **4,857** after identifying mirror pairs and excluding permanently frozen or one-axis puzzles. Its APIs support exact partition generation/counting, proper rotations, motion classification, and optional implicit-bond closure; an atlas postprocessor handles mirrors and named mobility filters. See [the enumeration investigation](enumeration.md) for definitions, proofs, old-code reconciliation, and measured results. Milestone six now supplies exact stage plans from reference shapes; correction policies and complete human guides remain pending. Broader puzzle mechanics remain later work.
+Roadmap updated 9 October 2026. The Rust model and move engine, Python research interface, and initial shape tools are implemented in [v2](../v2/README.md). Milestone four now supplies validated colored input, colored exploration, exact direct BFS and bidirectional BFS for tractable cases, a general GAP loop-factorization baseline, exact reference-block actions with decorated cycle notation, and an opt-in solver for block placement and abelian kernel correction. Larger memory-conscious exact searches and improved loop-solving methods remain followups. Milestone five's default shell enumeration is complete, with 7,073 behavioral classes, or **4,857** after identifying mirror pairs and excluding permanently frozen or one-axis puzzles. Its APIs support exact partition generation/counting, proper rotations, motion classification, and optional implicit-bond closure; an atlas postprocessor handles mirrors and named mobility filters. See [the enumeration investigation](enumeration.md) for definitions, proofs, old-code reconciliation, and measured results. Milestone six now supplies exact stage plans and complete computational case policies from reference shapes, with portable artifacts and Markdown guides; algorithm quality and human review remain followups. Broader puzzle mechanics remain later work.
 
 The replacement uses a Rust computational library with a Python research interface and a thin command-line application, developed alongside the existing Python project. Build shape exploration, colored solving, and enumeration on a precise model and verified move engine; use their results to develop human solving methods and an atlas of bandaged puzzles. Keep the general theory in view while making the first implementation specific to 3×3 cubes.
 
@@ -221,8 +221,19 @@ Delivery 1 exposes `plan_human_stages`: immutable stage plans with observation
 cases, subgroup orders, automatically implied features and compact original-loop
 witnesses for every enumerated group element. It supports placement-first,
 block-first and manual feature orders, with an explicit optional enumeration
-cap. This establishes chain structure; complete correction policies, shared
-algorithm repertoires and human guides are subsequent deliveries.
+cap. These plans establish chain structure.
+
+Delivery 2 now compiles complete reference-shape methods with
+`synthesize_human_method`: every observation case has a legal witnessed
+correction, exact subgroup progress is checked across its full case, and the
+terminal group is trivial. The method applies its precompiled policy without
+per-scramble GAP factorization. Portable JSON loading independently validates
+source-loop coverage and the case policy without GAP; Markdown guides and the
+shape-only `plan-method` CLI expose the result. Completed methods certify all
+reachable colored residuals at the reference shape. Their quality remains
+`computational_baseline`; nicer algorithms, repertoire optimization, visual
+explanations and human review remain subsequent work. Human shape restoration
+is separate from this delivery.
 
 Turn the existing feature-chain and distance-layer experiments into an explicit strategy system. Replace all-pairs distance calculations for feature stages with reverse multi-source BFS from each target set. Candidate features include recognizable block locations, available faces, restored bandage relations, and reusable algorithms with useful effects. Seek a small number of stages with simple recognition, limited branching, and structured actions that guarantee progress.
 

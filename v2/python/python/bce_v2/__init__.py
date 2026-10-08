@@ -477,6 +477,11 @@ from .loop_algorithm_solver import AlgorithmSolution, LoopSolutionOptions  # noq
 from .human_chains import (  # noqa: E402
     BlockFeature, HumanStage, HumanStagePlan, WitnessedLoopGroup, plan_human_stages,
 )
+from .human_methods import (  # noqa: E402
+    HumanMethod, HumanMethodApplication, HumanMethodCase, HumanMethodStage,
+    HumanMethodStep, HumanRecognition, synthesize_human_method,
+)
+from .human_method_io import load_human_method  # noqa: E402
 
 __all__ = [
     "Shape", "State", "ShapeGraph", "BlockedMoveError", "CELL_NAMES",
@@ -493,5 +498,7 @@ __all__ = [
     "bandage_symmetries",
     "AlgorithmSolution", "LoopSolutionOptions",
     "BlockFeature", "HumanStage", "HumanStagePlan", "WitnessedLoopGroup", "plan_human_stages",
+    "HumanMethod", "HumanMethodApplication", "HumanMethodCase", "HumanMethodStage",
+    "HumanMethodStep", "HumanRecognition", "synthesize_human_method", "load_human_method",
     "draw_cubes", "load_puzzle", "save_puzzle", "save_graph",
 ] + list(CELL_NAMES)

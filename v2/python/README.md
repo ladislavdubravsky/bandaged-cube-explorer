@@ -739,6 +739,70 @@ Read the [human-method guide](../../docs/human-methods.md#plan-stages-from-a-sha
 for feature observations, endpoint preservation, manual orders, witness use
 and the distinction between a stage plan and a complete human puzzle solution.
 
+## Generate and apply a reusable method
+
+Compile every stage case and its legal correction from a reference bandage
+shape. No colored scramble is needed to generate the method:
+
+```python
+reference = c.fixture("Alcatraz")
+method = c.synthesize_human_method(reference, max_group_elements=10_368)
+if method.status == "completed":
+    method.save("alcatraz-method.json")
+    method.write_guide("alcatraz-method.md")
+    print(method.coverage, method.quality)
+```
+
+`synthesize_human_method(initial, *, strategy="placement_then_orientation",
+features=None, max_group_elements=None, gap_executable="gap", timeout=None,
+root=None)` accepts the same references, automatic/manual features and opt-in
+limits as `plan_human_stages`. Passing a completed stage plan reuses its
+prepared group. The baseline inverts exact coset representatives to obtain
+case corrections and shares identical correction effects across the method.
+
+A completed `HumanMethod` retains immutable `HumanMethodStage` and
+`HumanMethodCase` records, original `generators` and shared `algorithms`.
+Every case is covered; the already-solved case has `algorithm_id=None`.
+Each correction preserves earlier features when the whole algorithm finishes.
+`coverage="certified"`, `coverage_scope="all_reference_group_states"` and
+`human_method_complete=True` describe computational coverage for all reachable
+colored states already in the reference shape. `quality="computational_baseline"`
+does not claim short, memorable or human-reviewed algorithms.
+
+For any reachable root-shaped colored input, `method.recognize(state)` reads
+the first unfinished stage, `next_step(state)` returns its checked correction,
+and `apply(state)` runs the complete precompiled policy without a fresh GAP
+factorization:
+
+```python
+case = next(case for case in method.stages[0].cases
+            if case.algorithm_id is not None)
+example = method.example_state(1, case.observation)
+result = method.apply(example)
+assert result.status == "solved" and result.state.is_solved
+print(result.turn_sequence)
+```
+
+The application result retains each performed stage, observation, expression,
+physical moves and before/after state. Wrong references, unrestored shapes,
+incomplete methods and unreachable residuals have distinct outcomes. Shape
+restoration remains separate work.
+
+`to_dict()`, `to_json()` and `save(path)` write a self-contained version-one
+`bce-v2-human-method` artifact. `c.load_human_method(path)` or
+`c.HumanMethod.from_dict(record)` reconstructs it and independently checks its
+source-loop coverage, physical witnesses and case policy without invoking GAP.
+Loading a completed method explores its reference shape component again;
+the saved fingerprint and certification labels are not accepted as a proof.
+`write_guide(path=None)` returns Markdown and optionally writes it, with
+footprint/sticker recognition cues, complete case tables and expanded algorithms.
+
+There is no default group-element cap. An exceeded explicit cap returns
+`limit_reached`, `coverage="partial"` and `human_method_complete=False`, with
+no case policy. JSON and guide output then report the incomplete preparation.
+Read the [method guide](../../docs/human-methods.md#synthesize-a-complete-method-delivery-two)
+for exact semantics and the current quality limits.
+
 ## Explore colored components
 
 ```python
@@ -890,6 +954,8 @@ bce-v2 solve-colored imported.json --algorithm bfs --max-depth 8
 bce-v2 solve-loops 'Alcatraz' 'F R2' --metric HTM --timeout 60
 bce-v2 solve-loops 'Alcatraz' 'F R2' --factorization quotient_kernel --metric HTM --timeout 60
 bce-v2 solve-loops imported.json --max-expanded-moves 100000 --output /tmp/solution.json
+bce-v2 plan-method 'Alcatraz' --max-group-elements 10368 --output /tmp/method.json --guide /tmp/method.md
+bce-v2 plan-method shape-labels.json --strategy fully_solve_each_block
 bce-v2 explore-colored imported.json --max-states 100 --output /tmp/colors.json
 bce-v2 explore 'Alcatraz' --output /tmp/alcatraz-graph.json
 bce-v2 isotropy 'Bicube Fuse' --output /tmp/bicube-isotropy.json
@@ -919,3 +985,12 @@ scramble, `--metric`, `--gap-executable`, `--timeout`, `--max-expanded-moves`,
 use; quotient mode also records placement and kernel stages and the used
 kernel algorithms. Solved, unreachable, and expansion-limited results exit with codes
 0, 3, and 2 respectively; backend failures exit with code 1.
+
+`plan-method` generates a reusable computational method from a fixture,
+inline JSON list of 27 labels, label-list JSON file, or the reference
+specification in a saved puzzle file. It accepts `--strategy`,
+`--max-group-elements`, `--gap-executable`, `--timeout`, `--output` and `--guide`.
+Full method JSON is emitted to stdout and optionally saved; `--guide` writes
+Markdown. Completed methods exit with code 0, cap stops with code 2, and invalid
+inputs or backend errors with code 1. Input, JSON output and guide files must
+be distinct, including symlink and hardlink aliases.

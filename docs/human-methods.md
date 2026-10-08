@@ -1,8 +1,9 @@
 # Human methods from reference-shape loops
 
 This document fixes the initial semantics for milestone six and describes the
-reproducible baseline investigation and implemented stage planner. The complete
-method compiler remains future work. A **puzzle solution** supplies a reusable
+reproducible baseline investigation, stage planner and complete computational
+method compiler. Shorter algorithms and human review remain future work.
+A **puzzle solution** supplies a reusable
 algorithm repertoire and recognition and application rules for every reachable
 scramble in its declared domain. An algorithm library or a subgroup chain alone
 is not that solution.
@@ -78,9 +79,9 @@ H = H0 >= H1 >= ... >= Hr = {identity}
 
 `Hi` fixes the features completed before stage `i`; `Hi+1` additionally fixes
 that stage's selected feature. The current colored residual belongs to `Hi`
-when the stage starts. The implemented planner records that stage's observation
-orbit and stabilizer. A complete method will read the declared observation and
-select a correction from a case table. That correction must:
+when the stage starts. The stage planner records that stage's observation
+orbit and stabilizer. The method compiler reads the declared observation and
+selects a correction from its case table. That correction must:
 
 1. Be a legal witnessed root loop belonging to `Hi`.
 2. Restore all earlier features at the correction's endpoint.
@@ -113,24 +114,24 @@ human difficulty.
 
 ## Evidence and result statuses
 
-Generation, coverage and human quality are separate properties. Records must
-state the scope to which each claim applies. The implemented stage plan uses
-`status: completed` or `status: limit_reached`,
-`coverage_scope: chain_structure_only`, and `human_method_complete: false`.
-The additional method-compiler fields below remain provisional.
+Generation, coverage and human quality are separate properties. Records state
+the scope to which each claim applies. A stage plan retains
+`coverage_scope: chain_structure_only` and `human_method_complete: false`.
+The implemented method compiler additionally reports:
 
 | Property | Values and meaning |
 | --- | --- |
-| `generation_status` | `completed`: every requested part of the declared artifact was generated; `limit_reached`: an explicit resource bound stopped generation. Backend errors remain errors, rather than becoming unreachability claims. |
-| `coverage_status` | `exhaustive`: every state in the declared finite domain was checked; `proved`: exact group and stage certificates establish coverage; `sampled`: only stated samples were checked; `unverified`: no coverage claim. |
-| `coverage_scope` | The object checked, such as `chain_structure_only` or `method_application`, with the reference group and state count or certificate attached. |
-| `quality_status` | `unreviewed`: mathematical or heuristic output only; `experimental`: a proposed human guide with stated limitations; `reviewed`: recorded human review and solving experience. Review does not prove a minimum repertoire or universal memorability. |
+| `status` | `completed`: the full case policy was generated; `limit_reached`: the explicit group-element cap stopped preparation before enumeration. Backend errors remain errors, rather than becoming unreachability claims. |
+| `coverage` | `certified`: exact group, case and correction checks establish complete coverage; `partial`: preparation stopped without a complete policy. |
+| `coverage_scope` | `all_reference_group_states` for a completed method; `none` for a preflight stop. These claims concern reachable colored states already in the reference shape. |
+| `quality` | `computational_baseline`: valid witnessed corrections, without algorithm-quality optimization, a minimum-repertoire claim or human review. |
+| `human_method_complete` | True for a complete executable case policy and false for a stopped method. This flag describes computational completeness; human quality is reported separately. |
 
 A completed chain investigation with exhaustive subgroup checks is still only
-`chain_structure_only` evidence. It does not establish that a case policy was
-generated, that its algorithms were replayed, or that a person can remember
-them. Likewise a complete computational method may have unreviewed human
-quality. Report heuristic scores as measured scores with their definitions.
+`chain_structure_only` evidence. The method compiler adds and checks every case
+correction before claiming complete coverage. A complete computational method
+still has unreviewed human quality. Future quality improvements and human
+review should report their evidence independently of coverage.
 
 No resource cutoff proves unreachability. A generated method must retain
 complete witnessed fallbacks when optional algorithm improvement is bounded,
@@ -236,8 +237,8 @@ stage correction or a short human algorithm.
 The `include_elements` option defaults to false; enable it to include the
 enumerated group elements, parent-tree steps and subgroup membership indices.
 `include_moves` defaults to true and controls
-original witness move expansion. These are stage-plan exports; they do not
-provide the future method's application trace or guide.
+original witness move expansion. These exports describe the stage skeleton;
+the method compiler below supplies the executable policy and guide.
 
 There is no default group-element cap. The example explicitly selects 10,368,
 the largest group in the initial validated fixture set. If the certified order
@@ -247,45 +248,119 @@ unreachability result. The cap does not bound shape exploration, GAP analysis,
 or the sizes of physical move witnesses. `timeout` applies to each GAP call,
 not the entire preparation or Python enumeration.
 
-## Future method records and API
+## Synthesize a complete method: delivery two
 
-The future public entry point is provisionally:
+`c.synthesize_human_method` compiles the stage skeleton into a complete reusable
+case policy. It takes the same reference inputs and stage options as
+`plan_human_stages`; no colored scramble is needed:
 
 ```python
-# Proposed interface; not implemented by the baseline investigation.
-method = c.synthesize_human_method(reference, chain="auto", **budgets)
-method.save("method.json")
-method.write_guide("method.md")
-trace = method.apply(root_shape_colored_state)
+import bce_v2 as c
+
+reference = c.fixture("Alcatraz")
+method = c.synthesize_human_method(reference, max_group_elements=10_368)
+if method.status == "completed":
+    method.save("alcatraz-method.json")
+    method.write_guide("alcatraz-method.md")
+    print(method.coverage, method.quality)
 ```
 
-Reference inputs should follow the existing isotropy and block-structure
-interfaces. Applying a method requires a matching reference specification and
-the declared root-shape precondition. Application should return a structured
-trace of observations, selected cases, corrections and resulting stages.
+```python
+synthesize_human_method(
+    initial, *, strategy="placement_then_orientation", features=None,
+    max_group_elements=None, gap_executable="gap", timeout=None, root=None,
+)
+```
 
-The initial record boundaries are:
+The automatic and manual stage strategies, optional cap, reference selection
+and per-GAP-call timeout have the same semantics as the stage planner. A
+completed `HumanStagePlan` can be passed to reuse its prepared group. A cap
+stop produces an explicitly incomplete `HumanMethod` with no policy;
+`coverage` is `partial` and `human_method_complete` is false.
 
-| Record | Required information |
+For each nontrivial stage case, the baseline inverts a deterministic BFS coset
+representative and retains its original-loop expression and legal physical
+witness. Equal correction effects share an algorithm definition. The solved
+case has no algorithm and requires no action. This is a complete policy, with
+no claim that its face turns, algorithm repertoire or recognition table are
+pleasant to memorize.
+
+The immutable records expose:
+
+| Record | Information |
 | --- | --- |
-| `HumanMethod` | Model and reference frame, root shape, block inventory, witnessed loop-library identity, stages, shared algorithm definitions, budgets, evidence and quality metadata. |
-| `MethodStage` | Feature descriptor, features already fixed, subgroup orders and index, complete observation cases, endpoint preservation semantics. |
-| `MethodCase` | Exact observable condition, correction expression, algorithm references and exact progress promise; include the identity case. |
-| Algorithm definition | Existing `LoopExpression`, original-loop provenance, exact action, physical face-turn witness and measured costs. Distinguish memorized leaves from derived constructions. |
-| Application trace | Input/reference checks, ordered observations and cases, replayable corrections, final state and explicit outcome. |
+| `HumanMethod` | Reference shape and inventory, exact `group_order`/`quotient_order`/`kernel_order`, original `generators`, `stages`, shared `algorithms`, limits, coverage and quality. |
+| `HumanMethodStage` | Feature and named block, subgroup orders and index, solved observation, implied features and complete `cases`. |
+| `HumanMethodCase` | Observable tuple, `algorithm_id` or `None` for the solved case, and an exact representative for illustrations. |
+| `LoopAlgorithm` | Shared algorithm ID, `LoopExpression`, legal `turn_sequence`, exact permutation and block action, QTM/HTM lengths. |
+| `HumanMethodStep` | Performed correction, stage/observation, expression and moves, with before/after colored states. |
+| `HumanMethodApplication` | Final `status`, `state`, performed `steps`, combined `turn_sequence` and any precondition-failure reason. |
 
-Use stable reference member-cell identities alongside inventory indices.
-Original loop IDs are graph-local: equal root shapes alone do not establish
-compatible witnesses. Record or validate the actual generator actions and
-witnesses, as the current solution-options interface already does. Preserve
-exact expression provenance even when a literal turn sequence is the visible
-memorized algorithm.
+`method.recognize(state)` reports the first unfinished stage and its case.
+`method.next_step(state)` returns one checked correction, or `None` when solved.
+`method.apply(state)` executes the precompiled policy and retains the trace.
+These operations do not launch a GAP factorization for the supplied scramble.
+Application requires the matching reference specification and an already
+restored shape. Recognition/application distinguish `wrong_reference`,
+`shape_not_restored`, `method_incomplete`, and proven `unreachable`.
+Recognition reports `ready` or `solved` for accepted inputs; successful
+application ends with `solved`. `next_step` raises on a failed precondition;
+`recognize` and `apply` return the structured failure.
 
-The first guide must show the reference shape and coloring, named blocks,
-entry conditions, all recognition cases, shared algorithm definitions, their
-effects, stage progress and the evidence supporting coverage. JSON should
-retain the same information. A chain diagram without correction definitions
-is an investigation result, not the promised method guide.
+Case representatives can be inspected as ordinary colored `State` values:
+
+```python
+case = next(case for case in method.stages[0].cases
+            if case.algorithm_id is not None)
+example = method.example_state(1, case.observation)
+trace = method.apply(example)
+assert trace.status == "solved" and trace.state.is_solved
+```
+
+Synthesis verifies complete source-loop coverage, legal generator and
+correction witnesses, exact observation cosets, progress for every member of
+each case, implied features and terminal identity. Thus every reachable
+reference-shaped colored residual is covered. The ordinary cube validity and
+rigid-block checks used by colored imports remain separate from this exact
+membership test.
+
+`method.to_dict()`, `to_json()` and `save(path)` export version-one
+`bce-v2-human-method` records with reference/frame conventions, the full
+policy, original witnesses, algorithms, costs and a content fingerprint.
+`c.HumanMethod.from_dict(record)` and `c.load_human_method(path)` independently
+recheck the artifact. Loading a completed method regenerates the complete
+reference shape-loop source and validates group closure, witnesses and every
+case correction without invoking GAP. The fingerprint detects content
+changes; saved certification labels do not replace these checks.
+
+`method.write_guide(path=None)` returns Markdown and optionally writes it. The
+guide explains the reference convention, footprint/sticker recognition cues,
+stage progress, complete case tables, shared algorithm definitions and physical
+move sequences.
+A cap stop produces an incomplete report rather than a claimed solution.
+The current guide is a computational baseline; illustrations and human review
+remain later work.
+
+## Generate a method from the command line
+
+```sh
+v2/.venv/bin/python -m bce_v2 plan-method Alcatraz \
+    --max-group-elements 10368 \
+    --output /tmp/alcatraz-method.json --guide /tmp/alcatraz-method.md
+```
+
+`plan-method` accepts a bundled fixture name, an inline JSON list of 27 labels,
+a JSON file containing that list, or a versioned puzzle file. A puzzle file
+supplies its reference specification, independently of its current scramble.
+The input needs no colored state when labels are supplied directly. The CLI
+supports both automatic `--strategy` values, `--max-group-elements`,
+`--gap-executable` and `--timeout`.
+
+Full JSON is printed to stdout, including when `--output` also saves it.
+`--guide` additionally writes Markdown. Exit codes are zero for a completed
+method, two for an explicit cap stop, and one for invalid input or a backend
+error. Output and guide files must differ from one another and any input file;
+path, symlink and hardlink aliases are rejected before synthesis or writing.
 
 ## Baseline investigation: delivery zero
 
@@ -383,24 +458,20 @@ evidence that either chain has a better algorithm repertoire.
 
 ## Later deliveries
 
-1. **Complete baseline methods for bounded groups.** Use the retained
-   enumeration witnesses to construct all legal case corrections, export a guide
-   and application trace, and exhaustively validate all 324 Alcatraz root-loop
-   states. Add the other small named fixtures as regressions.
-2. **Better stage algorithms and shared repertoire.** Reuse bounded discovery,
+1. **Better stage algorithms and shared repertoire.** Reuse bounded discovery,
    powers, commutators, conjugates and certified symmetry transfers. Search for
    feature/coset targets, keep complete fallbacks, and optimize shared move and
    decision information across the whole guide.
-3. **Automatic chain selection.** Compare placement-first, block-first and
+2. **Automatic chain selection.** Compare placement-first, block-first and
    mixed chains using correction quality, recognition complexity and repertoire
    cost. Greedy and beam searches report their limits without claiming a global
    optimum.
-4. **Symbolic preparation for larger groups.** Use standard stabilizers,
+3. **Symbolic preparation for larger groups.** Use standard stabilizers,
    orbits and transversals with original-loop witnesses. Certify subgroup
    indices, cases and terminal triviality without enumerating all of `H`.
-5. **Human review and visual integration.** Explain cases with the existing
+4. **Human review and visual integration.** Explain cases with the existing
    renderers and notebooks, record difficult examples and solving experience,
-   and add a CLI once the Python and export contracts are stable.
+   and expand the CLI and guide views as review identifies useful improvements.
 
 These deliveries can reuse the current Rust engine. Broader geometric feature
 chains and human paths through the shape graph remain separate followups.
