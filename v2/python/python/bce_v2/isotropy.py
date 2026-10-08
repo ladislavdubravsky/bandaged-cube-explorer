@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 from . import Shape, State, explore
+from ._moves import _simplified_moves
 from .graph import ShapeGraph
 
 
@@ -19,6 +20,8 @@ class LoopGenerator:
     permutation maps source sticker positions to destinations, numbered 0..47
     in URFDLB facelet order with the six centers omitted. moves expands the
     shared tree paths lazily; qtm_length is its unsimplified quarter-turn cost.
+    turn_sequence combines adjacent same-face turns for human display, and
+    htm_length counts its face turns, including half turns as one.
     """
 
     id: int
@@ -27,18 +30,42 @@ class LoopGenerator:
     permutation: tuple[int, ...]
     qtm_length: int
     _owner: object = field(repr=False, compare=False)
+    _inventory: object = field(default=None, repr=False, compare=False)
 
     @property
     def moves(self):
         return self._owner.generator_moves(self.id)
+
+    @property
+    def turn_sequence(self):
+        """Replayable display word with adjacent same-face turns combined."""
+        return _simplified_moves(self.moves.split())
+
+    @property
+    def htm_length(self):
+        """HTM cost of turn_sequence; no shortest-word guarantee is made."""
+        return len(self.turn_sequence.split())
+
+    @property
+    def block_action(self):
+        """Exact effect on the loop root's physical reference blocks."""
+        from .block_actions import BlockInventory
+
+        inventory = self._inventory
+        if inventory is None:
+            inventory = BlockInventory(Shape(self._owner.root_shape))
+        return inventory.action(self.permutation)
 
     def to_dict(self, *, include_moves=True):
         record = {
             "id": self.id, "source": self.source, "target": self.target,
             "permutation": list(self.permutation), "qtm_length": self.qtm_length,
         }
+        record["block_action"] = self.block_action.to_dict()
         if include_moves:
             record["moves"] = self.moves
+            record["turn_sequence"] = self.turn_sequence
+            record["htm_length"] = self.htm_length
         return record
 
 
@@ -49,11 +76,12 @@ class LoopGenerators:
     This set need not be irredundant. GAP is required only by analyze().
     """
 
-    __slots__ = ("_native", "_generators")
+    __slots__ = ("_native", "_generators", "_block_inventory")
 
     def __init__(self, native):
         object.__setattr__(self, "_native", native)
         object.__setattr__(self, "_generators", None)
+        object.__setattr__(self, "_block_inventory", None)
 
     def __setattr__(self, name, value):
         raise AttributeError("LoopGenerators is immutable")
@@ -68,6 +96,15 @@ class LoopGenerators:
     @property
     def root_vertex(self):
         return self._native.root_vertex
+
+    @property
+    def block_inventory(self):
+        """Stable identities, names and orientation frames at root_shape."""
+        if self._block_inventory is None:
+            from .block_actions import BlockInventory
+
+            object.__setattr__(self, "_block_inventory", BlockInventory(self.root_shape))
+        return self._block_inventory
 
     @property
     def shape_count(self):
@@ -93,6 +130,7 @@ class LoopGenerators:
                 id=record["id"], source=record["source"], target=record["target"],
                 permutation=tuple(record["permutation"]),
                 qtm_length=record["qtm_length"], _owner=self._native,
+                _inventory=self.block_inventory,
             ) for record in self._native.generators)
             object.__setattr__(self, "_generators", records)
         return self._generators
@@ -141,6 +179,7 @@ class LoopGenerators:
             "permutation_point_order": "URFDLB-without-centers",
             "permutation_action": "source-to-destination",
             "permutation_composition": "execution-order",
+            "block_inventory": self.block_inventory.to_dict(),
         }
 
     def to_dict(self, *, include_moves=True):
@@ -180,6 +219,10 @@ class IsotropyAnalysis:
     @property
     def colored_state_count(self):
         return self.loops.shape_count * self.group_order
+
+    @property
+    def block_inventory(self):
+        return self.loops.block_inventory
 
     @property
     def generators(self):

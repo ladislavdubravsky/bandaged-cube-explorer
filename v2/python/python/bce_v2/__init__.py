@@ -462,6 +462,9 @@ from .isotropy import (  # noqa: E402
     IsotropyAnalysis, LoopGenerator, LoopGenerators, analyze_isotropy, isotropy_loops,
 )
 from .gap_backend import GapError  # noqa: E402
+from .block_actions import (  # noqa: E402
+    BlockAction, BlockInventory, BlockSlot, block_inventory, cell_name,
+)
 from .loop_solver import LoopSolution, LoopSolver, LoopStep, solve_colored_loops  # noqa: E402
 
 __all__ = [
@@ -472,6 +475,7 @@ __all__ = [
     "PuzzleAtlas",
     "LoopGenerator", "LoopGenerators", "IsotropyAnalysis", "GapError",
     "isotropy_loops", "analyze_isotropy",
+    "BlockAction", "BlockInventory", "BlockSlot", "block_inventory", "cell_name",
     "LoopSolver", "LoopSolution", "LoopStep", "solve_colored_loops",
     "draw_cubes", "load_puzzle", "save_puzzle", "save_graph",
 ] + list(CELL_NAMES)

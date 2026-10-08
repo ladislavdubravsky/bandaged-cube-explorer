@@ -342,8 +342,11 @@ still generate the full isotropy group. Move witnesses are expanded lazily
 from the shared tree, rather than storing every long path.
 
 Each `LoopGenerator` exposes `id`, `source`, `target`, `permutation`,
-`qtm_length`, and `moves`. The ID identifies its original graph arc, and the
-length counts its unsimplified quarter-turn witness. A permutation maps 48
+`qtm_length`, `moves`, `turn_sequence`, and `htm_length`. The ID identifies its
+original graph arc. `moves` retains the unsimplified witness, and `qtm_length`
+counts its quarter turns. `turn_sequence` combines adjacent turns of the same
+face, so `R R` or `R' R'` becomes `R2`; `htm_length` counts the displayed face
+turns, including half turns as one. A permutation maps 48
 movable sticker positions to their destinations, using zero-based URFDLB
 facelet order with the fixed unmarked centers omitted. `LoopGenerators` exposes
 `root_shape`, `root_vertex`, `shape_count`, `arc_count`, `candidate_count`,
@@ -382,6 +385,48 @@ orders and colored-state counts are exact integers. Their JSON representations
 are decimal strings so consumers cannot lose precision through floating-point
 conversion. A missing GAP executable, failed backend, or explicit subprocess
 timeout raises an error instead of returning a partial count.
+
+## Inspect exact block actions
+
+Each loop describes its effect on physical blocks in the reference partition,
+using the same inventory and orientation frames across the whole library:
+
+```python
+inventory = loops.block_inventory  # Anchored to loops.root_shape.
+for block in inventory.blocks:
+    print(block.name, block.type, block.orientation_order)
+
+for generator in analysis.generators:
+    action = generator.block_action
+    print(f"L{generator.id}", generator.turn_sequence, action.notation)
+    assert action.permutation == generator.permutation
+```
+
+`analysis.block_inventory` is the same reference inventory. Block identities
+are reference member-cell tuples rather than changing normalized partition
+labels. Singleton corners, edges, and centers have descriptive names and
+retain signature type `111`. Connected noncuboid blocks retain their actual
+cells and no cuboid type; independent virtual cores are omitted while actual
+core bonds remain intact.
+
+The one-line notation annotates each **source** transition: `(UFL- UFR UBR+)`
+moves UFL to UFR with phase minus one, UFR to UBR with phase zero, and UBR to
+UFL with phase plus one, measured in each destination's fixed reference frame.
+`(UFR-)` is an in-place twist and `()` is identity. Order two uses `+`, order
+three `+` and `-`, and order four `+`, `++`, and `-`. Corner `+` follows the
+ordinary clockwise convention; edge `+` is a flip. Larger blocks use
+deterministic template frames and a documented positive rotation. Unmarked
+center and virtual-core spin are excluded.
+
+Exact block destinations and observable rotations retain the complete sticker
+action. `inventory.to_dict()` and `action.to_dict()` provide structured
+records, and loop and analysis exports include these descriptions alongside
+sticker permutations and move witnesses. Read the
+[block-action guide](../../docs/block-actions.md) for frame construction,
+composition, inversion, powers, and export details. Both analysis notebooks
+show the reference inventory and decorate each reduced generator. Restore an
+off-root scramble's shape before interpreting it as an action on reference
+slots. Quotient and kernel factorization remain a subsequent delivery.
 
 ## Solve scrambles with shape loops
 

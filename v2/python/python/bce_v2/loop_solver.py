@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 from . import Shape, State, explore
+from ._moves import _simplified_moves
 from .gap_backend import GapError, _validated_options
 from .graph import ShapeGraph
 from .isotropy import IsotropyAnalysis, LoopGenerator, LoopGenerators
@@ -18,19 +19,6 @@ def _inverse_moves(moves):
     return tuple(move if move.endswith("2") else
                  move[:-1] if move.endswith("'") else move + "'"
                  for move in reversed(moves))
-
-
-def _simplified_moves(moves):
-    """Combine only adjacent turns on the same face, preserving legality."""
-    stack = []
-    for move in moves:
-        amount = 2 if move.endswith("2") else 3 if move.endswith("'") else 1
-        if stack and stack[-1][0] == move[0]:
-            amount = (stack.pop()[1] + amount) % 4
-        if amount:
-            stack.append((move[0], amount))
-    return " ".join(face + ("2" if amount == 2 else "'" if amount == 3 else "")
-                    for face, amount in stack)
 
 
 def _solve_options(metric, max_expanded_moves):

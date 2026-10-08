@@ -23,7 +23,7 @@ signature with its class count. The [signature guide](../docs/block-signatures.m
 explains the 1,735 full-atlas signatures, 1,732 filtered signatures, and types
 distinguishing center/core placement, including 221Core, 321Core, and BigClock.
 
-The Python package is the primary research interface. [Alcatraz.ipynb](examples/Alcatraz.ipynb) combines shape exploration, facelet input, direct colored solving, loop generators, exact group counts, colored distance profiles, and farthest-state views. [MostSignaturesCube.ipynb](examples/MostSignaturesCube.ipynb) uses loop-group analysis to count the colored states of the puzzle with the most shapes, together with a short colored solve. Feature chains and human strategy experiments remain milestone-six work.
+The Python package is the primary research interface. [Alcatraz.ipynb](examples/Alcatraz.ipynb) combines shape exploration, facelet input, direct colored solving, loop generators with exact block actions and decorated cycles, exact group counts, colored distance profiles, and farthest-state views. [MostSignaturesCube.ipynb](examples/MostSignaturesCube.ipynb) uses loop-group analysis to count the colored states of the puzzle with the most shapes, with the same reference-block inventories and generator effects, together with a short colored solve. Feature chains and human strategy experiments remain milestone-six work.
 
 The engine models connected partitions of the legacy 27-cell grid, including its virtual core, and the six outer faces of an ordinary fixed-center 3×3 cube. It supports quarter turns, half turns, and inverses in standard Singmaster notation. Noncuboid connected blocks are allowed; the narrower enumeration family in the roadmap is a separate concern.
 
@@ -155,6 +155,17 @@ shape count multiplied by the isotropy-group order. This computes counts
 without enumerating colored states. Partial shape graphs are rejected, and
 rotation-quotiented counts cannot be substituted. See the [Python guide](python/README.md#shape-loops-and-exact-group-counts)
 for examples and deterministic JSON export conventions.
+
+Each witnessed loop also exposes an exact reference-block action, with stable
+member-cell identities, destinations, observable proper rotations, and modular
+orientation phases. Deterministic shared frames give one-line decorated cycles
+such as `(UFL- UFR UBR+)` and preserve in-place twists, flips, and rotations of
+symmetric fused blocks. The Python API provides `loops.block_inventory`,
+`analysis.block_inventory`, and `generator.block_action`; deterministic exports
+retain both block descriptions and the authoritative sticker permutations.
+See the [block-action guide](../docs/block-actions.md) for notation and frames.
+This delivery leaves the existing solver in place; block quotient and kernel
+factorization follow separately.
 
 ## General loop-factorization solver
 

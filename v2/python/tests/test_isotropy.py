@@ -27,6 +27,14 @@ def inverse_images(images):
 
 
 class LoopExtractionTests(unittest.TestCase):
+    def test_generator_display_combines_half_turns_in_both_directions(self):
+        loops = c.isotropy_loops(c.fixture("Alcatraz"))
+        generator = next(generator for generator in loops if generator.id == 142)
+        self.assertIn("R R", generator.moves)
+        self.assertIn("F' F'", generator.moves)
+        self.assertEqual(generator.turn_sequence, "U' R U R2 F R F2 U F U'")
+        self.assertEqual((generator.qtm_length, generator.htm_length), (12, 10))
+
     def test_named_witnesses_and_reductions_are_replayable(self):
         for name, vertices, arcs, candidates, generators in (
             ("Alcatraz", 1449, 2048, 600, 31),
@@ -46,6 +54,9 @@ class LoopExtractionTests(unittest.TestCase):
                     replayed = c.State(shape).apply(generator.moves)
                     self.assertEqual(replayed.shape, shape)
                     self.assertEqual(replayed.sticker_permutation, generator.permutation)
+                    displayed = c.State(shape).apply(generator.turn_sequence)
+                    self.assertEqual(displayed, replayed)
+                    self.assertEqual(generator.htm_length, len(generator.turn_sequence.split()))
                     self.assertEqual(sum(2 if move.endswith("2") else 1
                                          for move in generator.moves.split()), generator.qtm_length)
                     self.assertNotEqual(generator.permutation, tuple(range(48)))
@@ -120,7 +131,11 @@ class LoopExtractionTests(unittest.TestCase):
         self.assertEqual(record["permutation_index_base"], 0)
         self.assertEqual(record["permutation_action"], "source-to-destination")
         self.assertIn("moves", record["generators"][0])
+        self.assertEqual(record["generators"][0]["turn_sequence"], loops[0].turn_sequence)
+        self.assertEqual(record["generators"][0]["htm_length"], loops[0].htm_length)
         self.assertNotIn("moves", loops.to_dict(include_moves=False)["generators"][0])
+        self.assertNotIn("turn_sequence", loops.to_dict(include_moves=False)["generators"][0])
+        self.assertNotIn("htm_length", loops.to_dict(include_moves=False)["generators"][0])
         self.assertEqual(json.loads(loops.to_json()), record)
         self.assertEqual(loops.to_json(), c.isotropy_loops(loops.root_shape).to_json())
         with tempfile.TemporaryDirectory() as directory:
