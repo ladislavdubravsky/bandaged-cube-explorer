@@ -4,7 +4,7 @@ This replacement is developed alongside the original Python project. The computa
 
 ## Use from Python
 
-See the [Python guide](python/README.md) for installation, inline bandage definitions, validated colored input, exact QTM/HTM colored solutions and exploration, shape solutions, galleries, optional NetworkX views, and deterministic records. From the repository root:
+See the [Python guide](python/README.md) for installation, inline bandage definitions, validated colored input, exact QTM/HTM colored search, shape-loop solving and GAP group counts, shape solutions, galleries, optional NetworkX views, and deterministic records. From the repository root:
 
 ```sh
 python3 -m venv v2/.venv
@@ -23,7 +23,7 @@ signature with its class count. The [signature guide](../docs/block-signatures.m
 explains the 1,735 full-atlas signatures, 1,732 filtered signatures, and types
 distinguishing center/core placement, including 221Core, 321Core, and BigClock.
 
-The Python package is the primary research interface. [ColoredSolving.ipynb](examples/ColoredSolving.ipynb) includes exact colored distance profiles and farthest-state views. Feature chains and human strategy experiments remain milestone-six work.
+The Python package is the primary research interface. [Alcatraz.ipynb](examples/Alcatraz.ipynb) combines shape exploration, facelet input, direct colored solving, loop generators, exact group counts, colored distance profiles, and farthest-state views. [MostSignaturesCube.ipynb](examples/MostSignaturesCube.ipynb) uses loop-group analysis to count the colored states of the puzzle with the most shapes, together with a short colored solve. Feature chains and human strategy experiments remain milestone-six work.
 
 The engine models connected partitions of the legacy 27-cell grid, including its virtual core, and the six outer faces of an ordinary fixed-center 3×3 cube. It supports quarter turns, half turns, and inverses in standard Singmaster notation. Noncuboid connected blocks are allowed; the narrower enumeration family in the roadmap is a separate concern.
 
@@ -130,8 +130,63 @@ the specification is fixed and determines the cached shape, while orientations
 remain part of the key. No spatial symmetry quotient is used.
 
 These searches are intended for tractable components and short solutions.
-Memory-conscious larger searches and the shape-loop group solver remain future
-milestone-four work.
+Memory-conscious larger exact searches remain future milestone-four work.
+
+## Shape loops and GAP analysis
+
+The Rust engine extracts legal root loops from a complete QTM shape graph using
+a spanning tree. Every non-tree edge contributes a tree transport, its move,
+and the inverse return transport, giving `arcs - shapes + 1` candidates.
+Self-loops and parallel actions remain distinct. Identity permutations and
+duplicates up to inverse are discarded without changing the generated group.
+The remaining 48-sticker permutations generate the full root isotropy group,
+with replayable move witnesses stored through shared tree paths.
+
+Python exposes `c.isotropy_loops(initial)` and `c.analyze_isotropy(initial)`.
+The latter invokes an optional external GAP executable to compute the exact
+group order and reduce generators by subgroup membership while retaining
+original loop witnesses. Install GAP separately; use `gap_executable` when it
+is outside `PATH`. Extraction alone has no GAP dependency. The batch commands
+are `bce-v2 isotropy PUZZLE` and `bce-v2 isotropy PUZZLE --loops-only`.
+
+In the fixed-frame model with full cubie identities and orientations and
+unmarked centers, the exact reachable colored-state count is the complete
+shape count multiplied by the isotropy-group order. This computes counts
+without enumerating colored states. Partial shape graphs are rejected, and
+rotation-quotiented counts cannot be substituted. See the [Python guide](python/README.md#shape-loops-and-exact-group-counts)
+for examples and deterministic JSON export conventions.
+
+## General loop-factorization solver
+
+`c.solve_colored_loops(state)` restores the shape and uses GAP subgroup
+membership and word factorization to express the remaining correction through
+legal root loops. A reusable `c.LoopSolver(specification)` keeps a stable
+repertoire of reduced original loop algorithms across scrambles. Each solve
+greedily chooses a smaller candidate subgroup containing the residual state,
+favoring fewer distinct algorithms without claiming a minimum. Imported
+colored states need no move history. The target is solved with the same
+specification; no colored component is enumerated.
+
+The prepared solver reuses its shape graph and algorithm library. Each
+nontrivial residual correction launches a fresh GAP factorization subprocess;
+its stabilizer chain is not cached across solves. Timeouts apply to each GAP
+call and exclude shape exploration.
+
+Results retain a shape-restoration path, ordered generator IDs with signed
+powers, only the algorithm witnesses they reference, and an expanded executable
+solution. Every expanded solution is replay-checked. The declared QTM/HTM metric
+reports physical move cost; these solutions have no shortest-path guarantee.
+An explicit `max_expanded_moves` caps the unsimplified QTM witness length and
+can retain the compact expression while
+returning `limit_reached` before expansion. Exact membership failure proves
+`unreachable`; backend errors remain errors.
+
+The batch interface is `bce-v2 solve-loops PUZZLE [MOVES]`, with metric, GAP
+executable, timeout, expansion limit, and JSON output options. See the
+[Python loop-solving guide](python/README.md#solve-scrambles-with-shape-loops).
+Block quotient and abelian correction methods, exact `H/Q` tables, macro mining,
+and reusable human recognition rules remain followups. Direct colored search
+retains its existing shortest-path guarantees.
 
 ## Generated kernels and tuning
 

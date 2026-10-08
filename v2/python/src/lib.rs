@@ -15,6 +15,7 @@ use bandaged_cube_engine::{
     explore::{Metric, ShapeGraph, explore_with_options},
     fixtures,
     implicit::{CoreBonds, implicit_closure},
+    isotropy::LoopGenerators,
     parse_moves,
     symmetry::{Rotation, canonical_key, canonicalize, rotate},
 };
@@ -203,6 +204,11 @@ impl PyState {
     #[getter]
     fn facelets(&self) -> String {
         self.inner.cube().to_facelets()
+    }
+
+    #[getter]
+    fn sticker_permutation(&self) -> Vec<u8> {
+        self.inner.cube().sticker_permutation().images().to_vec()
     }
 
     #[getter]
@@ -497,8 +503,85 @@ impl PyShapeGraph {
     }
 }
 
+/// Shared tree transports and faithful loop permutations; witnesses expand on demand.
+#[pyclass(name = "LoopGenerators", module = "bce_v2._native", frozen)]
+struct PyLoopGenerators {
+    inner: LoopGenerators,
+}
+
+#[pymethods]
+impl PyLoopGenerators {
+    #[getter]
+    fn root_shape(&self) -> PyShape {
+        PyShape {
+            inner: self.inner.root_shape,
+        }
+    }
+
+    #[getter]
+    fn root_vertex(&self) -> usize {
+        self.inner.root_vertex
+    }
+
+    #[getter]
+    fn shape_count(&self) -> usize {
+        self.inner.shape_count
+    }
+
+    #[getter]
+    fn arc_count(&self) -> usize {
+        self.inner.arc_count
+    }
+
+    #[getter]
+    fn candidate_count(&self) -> usize {
+        self.inner.candidate_count
+    }
+
+    #[getter]
+    fn nonidentity_count(&self) -> usize {
+        self.inner.nonidentity_count
+    }
+
+    #[getter]
+    fn generators<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyList>> {
+        let result = PyList::empty(py);
+        for generator in &self.inner.generators {
+            let record = PyDict::new(py);
+            record.set_item("id", generator.id)?;
+            record.set_item("source", generator.source)?;
+            record.set_item("target", generator.target)?;
+            record.set_item("permutation", generator.permutation.images().to_vec())?;
+            record.set_item("qtm_length", generator.qtm_length)?;
+            result.append(record)?;
+        }
+        Ok(result)
+    }
+
+    fn generator_moves(&self, id: usize) -> PyResult<String> {
+        self.inner
+            .generator_moves(id)
+            .map(move_string)
+            .ok_or_else(|| input_error("unknown retained loop generator ID"))
+    }
+
+    fn transport(&self, vertex: usize) -> PyResult<String> {
+        self.inner
+            .transport(vertex)
+            .map(move_string)
+            .ok_or_else(|| input_error("vertex ID out of range"))
+    }
+}
+
 #[pymethods]
 impl PyShapeGraph {
+    #[pyo3(signature = (root = 0))]
+    fn isotropy_loops(&self, py: Python<'_>, root: usize) -> PyResult<PyLoopGenerators> {
+        py.detach(|| LoopGenerators::from_graph(&self.inner, root))
+            .map(|inner| PyLoopGenerators { inner })
+            .map_err(input_error)
+    }
+
     #[getter]
     fn shapes(&self) -> Vec<PyShape> {
         self.inner
@@ -792,6 +875,7 @@ fn _native(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_class::<PyShape>()?;
     module.add_class::<PyState>()?;
     module.add_class::<PyShapeGraph>()?;
+    module.add_class::<PyLoopGenerators>()?;
     module.add_class::<PyColoredGraph>()?;
     module.add(
         "BlockedMoveError",

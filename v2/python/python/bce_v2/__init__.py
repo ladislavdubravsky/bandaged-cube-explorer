@@ -200,6 +200,15 @@ class State:
         return self._native.facelets
 
     @property
+    def sticker_permutation(self):
+        """Source-to-destination images of 48 stickers, omitting fixed centers.
+
+        Points are zero-based in URFDLB facelet order with centers omitted.
+        Unlike cubie positions alone, this faithfully retains orientations.
+        """
+        return tuple(self._native.sticker_permutation)
+
+    @property
     def shape(self):
         return Shape(self._native.shape)
 
@@ -449,6 +458,11 @@ from .signatures import (  # noqa: E402
     BLOCK_TYPES, Block, BlockType, block_signature, classify_blocks, format_signature,
 )
 from .atlas import PuzzleAtlas  # noqa: E402
+from .isotropy import (  # noqa: E402
+    IsotropyAnalysis, LoopGenerator, LoopGenerators, analyze_isotropy, isotropy_loops,
+)
+from .gap_backend import GapError  # noqa: E402
+from .loop_solver import LoopSolution, LoopSolver, LoopStep, solve_colored_loops  # noqa: E402
 
 __all__ = [
     "Shape", "State", "ShapeGraph", "BlockedMoveError", "CELL_NAMES",
@@ -456,5 +470,8 @@ __all__ = [
     "count_partitions", "cuboid_partitions", "enumerate_puzzles", "close_implicit",
     "BLOCK_TYPES", "Block", "BlockType", "block_signature", "classify_blocks", "format_signature",
     "PuzzleAtlas",
+    "LoopGenerator", "LoopGenerators", "IsotropyAnalysis", "GapError",
+    "isotropy_loops", "analyze_isotropy",
+    "LoopSolver", "LoopSolution", "LoopStep", "solve_colored_loops",
     "draw_cubes", "load_puzzle", "save_puzzle", "save_graph",
 ] + list(CELL_NAMES)

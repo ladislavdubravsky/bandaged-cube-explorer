@@ -7,7 +7,10 @@ import json
 from pathlib import Path
 import sys
 
-from . import State, explore, explore_colored, fixture, fixture_names, load_puzzle, solve_colored
+from . import (
+    State, analyze_isotropy, explore, explore_colored, fixture, fixture_names,
+    isotropy_loops, load_puzzle, solve_colored, solve_colored_loops,
+)
 
 
 def _state(puzzle: str) -> State:
@@ -24,19 +27,20 @@ def main(argv: list[str] | None = None) -> int:
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("fixtures", help="list bundled puzzle names")
 
-    for command in ("inspect", "replay", "explore", "solve", "render", "solve-colored", "explore-colored"):
+    for command in ("inspect", "replay", "explore", "solve", "render", "solve-colored", "explore-colored", "isotropy", "solve-loops"):
         sub = commands.add_parser(command)
         sub.add_argument("puzzle", help="bundled name or versioned puzzle JSON file")
         if command in ("replay", "solve"):
             sub.add_argument("moves", help="standard move sequence, for example 'F R2'")
-        elif command == "solve-colored":
+        elif command in ("solve-colored", "solve-loops"):
             sub.add_argument("moves", nargs="?", default="", help="optional legal scramble")
+        if command == "solve-colored":
             sub.add_argument("--algorithm", choices=("bfs", "bidirectional"), default="bidirectional")
             sub.add_argument("--max-depth", type=int, default=None)
             sub.add_argument("--target", help="optional target fixture or puzzle JSON file")
         elif command in ("inspect", "render", "explore-colored"):
             sub.add_argument("--moves", default="")
-        if command in ("explore", "solve", "solve-colored", "explore-colored"):
+        if command in ("explore", "solve", "solve-colored", "explore-colored", "solve-loops"):
             sub.add_argument("--metric", type=str.upper, choices=("QTM", "HTM"), default="QTM")
         if command == "explore":
             sub.add_argument("--max-vertices", type=int, default=None)
@@ -48,6 +52,18 @@ def main(argv: list[str] | None = None) -> int:
         if command == "render":
             sub.add_argument("--output", type=Path, required=True)
             sub.add_argument("--alpha", type=float, default=1.0)
+        if command in ("isotropy", "solve-loops"):
+            sub.add_argument("--gap-executable", default="gap", help="GAP executable path")
+            sub.add_argument("--timeout", type=float, default=None,
+                             help="maximum seconds for the GAP subprocess")
+        if command == "isotropy":
+            sub.add_argument("--loops-only", action="store_true",
+                             help="extract complete loop generators without running GAP")
+            sub.add_argument("--output", type=Path, help="write deterministic isotropy JSON")
+        if command == "solve-loops":
+            sub.add_argument("--max-expanded-moves", type=int, default=None,
+                             help="cap unsimplified QTM expansion while retaining the loop expression")
+            sub.add_argument("--output", type=Path, help="write the structured loop solution JSON")
 
     args = parser.parse_args(argv)
     try:
@@ -56,7 +72,7 @@ def main(argv: list[str] | None = None) -> int:
             return 0
 
         state = _state(args.puzzle)
-        if args.command in ("inspect", "replay", "render", "solve", "solve-colored", "explore-colored"):
+        if args.command in ("inspect", "replay", "render", "solve", "solve-colored", "explore-colored", "solve-loops"):
             state = state.apply(args.moves)
 
         if args.command in ("inspect", "replay"):
@@ -97,6 +113,15 @@ def main(argv: list[str] | None = None) -> int:
                 max_states=args.max_states, max_depth=args.max_depth)
             print(json.dumps(result.to_dict(), sort_keys=True))
             return {"solved": 0, "limit_reached": 2, "unreachable": 3}[result.status]
+        elif args.command == "solve-loops":
+            solution = solve_colored_loops(
+                state, metric=args.metric, gap_executable=args.gap_executable,
+                timeout=args.timeout, max_expanded_moves=args.max_expanded_moves)
+            result = solution.to_dict()
+            if args.output is not None:
+                args.output.write_text(json.dumps(result, sort_keys=True, indent=2) + "\n")
+            print(json.dumps(result, sort_keys=True))
+            return {"solved": 0, "limit_reached": 2, "unreachable": 3}[solution.status]
         elif args.command == "solve":
             graph = explore(state.specification, metric=args.metric)
             solution = graph.shortest_path(state.shape, state.specification)
@@ -105,6 +130,15 @@ def main(argv: list[str] | None = None) -> int:
                 "metric": graph.metric,
                 "colored_solved_after": state.apply(solution).is_solved,
             }
+        elif args.command == "isotropy":
+            if args.loops_only:
+                result = isotropy_loops(state).to_dict(include_moves=True)
+            else:
+                result = analyze_isotropy(
+                    state, gap_executable=args.gap_executable,
+                    timeout=args.timeout).to_dict(include_moves=True)
+            if args.output is not None:
+                args.output.write_text(json.dumps(result, sort_keys=True, indent=2) + "\n")
         else:
             from .graphics import draw_cubes
 
@@ -113,7 +147,7 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         print(json.dumps(result, sort_keys=True))
         return 0
-    except (ValueError, TypeError, OSError, ImportError) as error:
+    except (ValueError, TypeError, OSError, ImportError, RuntimeError) as error:
         print(f"bce-v2: {error}", file=sys.stderr)
         return 1
 

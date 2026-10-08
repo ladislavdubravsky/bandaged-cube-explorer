@@ -63,6 +63,11 @@ class ShapeGraph:
         """A checked executable move string between vertex IDs or shapes."""
         return self._native.shortest_path(self._vertex(source), self._vertex(target))
 
+    def isotropy_loops(self, root=0):
+        """Extract faithful witnessed generators; requires a complete graph."""
+        from .isotropy import isotropy_loops
+        return isotropy_loops(self, root=self._vertex(root))
+
     def to_networkx(self, *, undirected=False):
         """Build an optional NetworkX view of this graph.
 

@@ -102,6 +102,11 @@ matplotlib and the IPython kernel; `all` includes all three.
 These adapters import their dependencies only when used. The package distribution
 is named `bandaged-cube-explorer-v2`; its import name is `bce_v2`.
 
+Group analysis uses an optional external [GAP installation](https://www.gap-system.org/).
+Install GAP separately and make its `gap` executable available on `PATH`, or
+pass `gap_executable="/path/to/gap"`. No GAP Python binding is needed. Shape-loop
+extraction works without GAP or any Python extras.
+
 ## Play in VS Code
 
 Open the repository root in VS Code and install the recommended Python, Python
@@ -112,7 +117,8 @@ are a one-time setup; opening the project does not reinstall packages.
 
 Open [Alcatraz.ipynb](../examples/Alcatraz.ipynb) for the main research example.
 It has editable cells for the bandage list, scramble, full colored replay,
-QTM/HTM shape exploration and solutions, inline galleries, and saved records.
+facelet input, shape and colored solutions, loop generators, exact group and
+colored-state counts, distance profiles, galleries, and saved records.
 Select the Python environment at `v2/.venv` in the notebook's **Select Kernel**
 menu if prompted. VS Code remembers the selected notebook kernel. A separate
 Jupyter server is unnecessary.
@@ -229,7 +235,7 @@ means the unbandaged cube.
 
 Looking directly at a face also requires fixing its top edge: keep B at the top
 of U, F at the top of D, and U at the top of R/F/L/B. The numbered net in
-[ColoredSolving.ipynb](../examples/ColoredSolving.ipynb) shows the complete input
+[Alcatraz.ipynb](../examples/Alcatraz.ipynb) shows the complete input
 order. Inspect the colored scramble with the existing 3D renderer:
 
 ```python
@@ -293,7 +299,179 @@ elif result.status == "limit_reached":
 and both frontiers for bidirectional search. `max_depth` is nonnegative and
 bounds the **total** solution cost, including zero. `optimal` is true only for
 `solved`. A cutoff does not imply unreachability. Larger memory-conscious
-searches and the shape-loop group solver remain future work.
+exact searches remain future work. Shape-loop analysis and the general GAP
+factorization solver are available below.
+
+## Shape loops and exact group counts
+
+Obtain a complete generating set of legal loops at the reference shape without
+exploring colored states:
+
+```python
+initial = c.fixture("Bicube Fuse")
+loops = c.isotropy_loops(initial)
+print(loops.shape_count, loops.candidate_count, len(loops.generators))
+for loop in loops.generators:
+    replayed = c.State(loops.root_shape).apply(loop.moves)
+    assert replayed.shape == loops.root_shape
+    assert replayed.sticker_permutation == loop.permutation
+
+# This step needs the optional GAP executable.
+analysis = loops.analyze(timeout=60)
+print(analysis.group_order, analysis.colored_state_count)
+assert analysis.colored_state_count == loops.shape_count * analysis.group_order
+print([loop.moves for loop in analysis.generators])
+```
+
+`c.analyze_isotropy(initial, gap_executable="gap", timeout=None)` combines both
+steps. Inputs accept a `Shape`, 27-cell list, or `State`; a `State` supplies its
+reference specification, regardless of its current scramble. To reuse an
+existing complete QTM or HTM shape graph, call `graph.isotropy_loops(root=0)` or
+`c.isotropy_loops(graph, root=0)`. `root` is a graph vertex ID. Partial shape
+graphs cannot establish a complete generating set and are rejected.
+
+The Rust extractor chooses a spanning tree, then constructs a root loop for
+every remaining edge: travel along the tree to the edge, traverse it, and
+return along the tree. Parallel actions and self-loops are retained. For a
+connected QTM graph with `n` shapes and `m` stored clockwise arcs, there are
+`m - n + 1` candidates; reverse traversal supplies inverse moves. An HTM input
+uses its clockwise arcs and builds a QTM tree with the same vertex IDs;
+`arc_count` reports those clockwise arcs. Identity actions and duplicates up to
+inverse are removed. The surviving permutations
+still generate the full isotropy group. Move witnesses are expanded lazily
+from the shared tree, rather than storing every long path.
+
+Each `LoopGenerator` exposes `id`, `source`, `target`, `permutation`,
+`qtm_length`, and `moves`. The ID identifies its original graph arc, and the
+length counts its unsimplified quarter-turn witness. A permutation maps 48
+movable sticker positions to their destinations, using zero-based URFDLB
+facelet order with the fixed unmarked centers omitted. `LoopGenerators` exposes
+`root_shape`, `root_vertex`, `shape_count`, `arc_count`, `candidate_count`,
+`nonidentity_count`, and immutable `generators`. `loops.transport(vertex)`
+returns the shortest QTM tree path from the root to that graph vertex.
+
+GAP computes the exact permutation-group order using stabilizer chains and
+reduces the generators by subgroup membership. The reduced set retains actual
+extracted loops and their executable witnesses; it is not guaranteed to have
+minimum cardinality. `analysis.generators` holds this set, `analysis.loops`
+retains the full extraction, and `analysis.gap_version` records the backend.
+No group elements or full colored graph are enumerated.
+
+Every fixed-frame shape in the complete component has exactly `group_order`
+reachable colored states, so `colored_state_count = shape_count * group_order`
+is exact in this model. Full cubie identities and orientations are retained;
+center spin is excluded. Do not substitute a rotation-quotiented shape count.
+Use the separate loop solver below to test an imported scramble's reachability
+and factor its solution into these algorithms.
+
+The default reference roots give the following results with GAP 4.12.1. All
+three colored-component counts were independently checked by exhaustive
+colored BFS. Generator counts describe the retained witnessed subset and need
+not be minimum cardinalities.
+
+| Puzzle | Group order | Colored states | Retained generators |
+| --- | ---: | ---: | ---: |
+| Alcatraz | 324 | 469,476 | 5 |
+| Bicube Fuse | 60 | 7,260 | 2 |
+| Shark Fin Soup | 36 | 69,768 | 2 |
+
+Both result types provide deterministic `to_dict(include_moves=True)`,
+`to_json()`, and `save(path)` JSON exports; pass `include_moves=False` to omit
+expanded move strings. Python group
+orders and colored-state counts are exact integers. Their JSON representations
+are decimal strings so consumers cannot lose precision through floating-point
+conversion. A missing GAP executable, failed backend, or explicit subprocess
+timeout raises an error instead of returning a partial count.
+
+## Solve scrambles with shape loops
+
+The GAP loop solver restores the shape, tests the remaining sticker permutation
+for membership in the isotropy group, and factors its inverse into legal root
+loops. It uses the complete shape graph and permutation-group methods without
+enumerating colored states. Validated facelet or cubie imports need no scramble
+history. The target is the solved colored state of the same reference
+specification.
+
+```python
+# Reuse this solver and its stable algorithm library for the same puzzle.
+solver = c.LoopSolver(imported.specification, timeout=60)
+result = solver.solve(imported, metric="HTM", timeout=60)
+if result.status == "solved":
+    assert imported.apply(result.solution).is_solved
+    print(result.shape_solution)
+    print([(step.generator_id, step.exponent) for step in result.steps])
+    print({algorithm.id: algorithm.moves for algorithm in result.algorithms})
+
+# Convenience entry point for one scramble:
+result = c.solve_colored_loops(imported, timeout=60, max_expanded_moves=100_000)
+```
+
+`LoopSolver(initial, *, gap_executable="gap", timeout=None)` accepts a `Shape`,
+27-cell list, `State` specification, complete `ShapeGraph`, `LoopGenerators`, or
+`IsotropyAnalysis`. A graph uses vertex zero as its reference; a loop set or
+analysis uses its `root_shape`. Supplying an existing analysis avoids repeating
+GAP group analysis, but the shape graph is re-explored from that reference.
+`solver.solve(state, *, metric="QTM",
+timeout=None, max_expanded_moves=None)` checks that the state uses that same
+specification. `solve_colored_loops` accepts the same solve options and an
+optional `solver=existing_solver`; otherwise it constructs a solver with the
+specified GAP executable.
+
+A prepared solver reuses its complete shape graph and stable reduced algorithm
+library. Each solve requiring a nontrivial loop correction still launches a
+fresh GAP factorization subprocess; GAP stabilizer chains are not cached
+between solves.
+
+The solver starts with a deterministic reduced subset of the original witnessed
+loops. For each scramble it greedily chooses a smaller candidate subgroup that
+still contains the residual permutation before factorization. This favors
+fewer distinct base algorithms; an algorithm and its inverse share an ID. It
+does not prove minimum algorithm count or shortest physical move length. The
+stable library makes algorithm references reusable across scrambles.
+
+`LoopSolution` is immutable. `shape_solution` restores the geometry first;
+ordered `steps` then refer to generator IDs and signed integer powers.
+`algorithms` contains only the referenced original loops, including executable
+witnesses. Positive exponents repeat a loop; negative exponents repeat its
+inverse. `solution` expands the complete executable move string, `distance`
+reports its cost in `metric`, and `optimal` is always false. Adjacent turns of
+the same face are combined, so `R R` becomes `R2`: that costs two in QTM and
+one in HTM. `qtm_length` and `htm_length` report both costs. `algorithm_count`
+counts distinct used root loops, and `expression` displays their signed powers
+only; shape restoration remains the separate `shape_solution` field.
+`group_order` and
+`gap_version` record the algebra backend. The result is a computational
+scramble solution; a reusable human method also needs recognition and
+application rules.
+
+Outcomes are explicit:
+
+- `solved`: the expanded move string was replayed and reaches the solved state.
+- `unreachable`: the complete shape component or exact subgroup-membership
+  test proves the imported state cannot reach solved.
+- `limit_reached`: `max_expanded_moves` prevents expansion. The compact steps,
+  used algorithms, and `required_expanded_moves` remain available;
+  `solution` and `distance` are `None`. This does not imply unreachability.
+
+GAP factorization can produce long words. The optional nonnegative expansion
+cap counts the unsimplified QTM witness length: shape restoration plus each
+loop's `qtm_length` multiplied by its absolute exponent. It applies before
+combining adjacent face turns, independently of the reporting metric. It
+allows inspection of the compact expression before materializing the moves.
+There is no implicit expansion cap. `stop_reason` names an explicit limit.
+`to_dict()`, `to_json()`, and `save(path)` export the structured expression and
+algorithm witnesses alongside the expanded solution when available, with the
+exact group order represented as a decimal string in JSON.
+
+`timeout` bounds each GAP subprocess, including group analysis during solver
+preparation, and excludes shape exploration. Passing `timeout=None` to a
+prepared solver's `solve` uses its preparation-time timeout. A GAP timeout or
+backend failure raises an error and never proves unreachability.
+
+This is the first general factorization baseline. Block quotient and abelian
+correction methods, exact `H/Q` tables, macro mining, and dedicated human-memory
+optimization remain followups. The direct `solve_colored` API retains its
+shortest-path guarantees.
 
 ## Explore colored components
 
@@ -337,7 +515,7 @@ component size still reports `complete=True`. Partial-graph paths and distances
 describe the retained vertices and cannot establish global optimality or
 unreachability. Graph exports are inspection artifacts, not imported proofs.
 
-The colored-solving notebook also builds a table of shortest distances from
+The [Alcatraz notebook](../examples/Alcatraz.ipynb) also builds a table of shortest distances from
 solved and displays states at maximum distance. On a complete graph, use
 `distances = colored.distances(c.State(specification))` and
 `Counter(distances)` from Python's `collections` module for the counts. Select
@@ -443,8 +621,12 @@ bce-v2 replay 'Alcatraz' 'F R2'
 bce-v2 solve 'Alcatraz' 'F R2' --metric HTM
 bce-v2 solve-colored 'Alcatraz' 'F R2' --metric HTM --max-states 100000
 bce-v2 solve-colored imported.json --algorithm bfs --max-depth 8
+bce-v2 solve-loops 'Alcatraz' 'F R2' --metric HTM --timeout 60
+bce-v2 solve-loops imported.json --max-expanded-moves 100000 --output /tmp/solution.json
 bce-v2 explore-colored imported.json --max-states 100 --output /tmp/colors.json
 bce-v2 explore 'Alcatraz' --output /tmp/alcatraz-graph.json
+bce-v2 isotropy 'Bicube Fuse' --output /tmp/bicube-isotropy.json
+bce-v2 isotropy 'Alcatraz' --loops-only --output /tmp/alcatraz-loops.json
 bce-v2 render 'Alcatraz' --alpha 0.35 --output /tmp/alcatraz.png
 ```
 
@@ -456,3 +638,15 @@ cap, and export path. Solved or complete results exit with code 0; bounded
 incomplete results exit with code 2; proven colored unreachability exits with
 code 3. Invalid inputs exit with code 1. Shape solutions report whether the
 replay also solved colors.
+
+`isotropy` emits loop generators, a reduced witnessed generating set, the exact
+group order, and the colored-component size. `--loops-only` extracts loops
+without GAP. `--gap-executable` selects a GAP binary and `--timeout` limits its
+runtime in seconds. `--output` also saves the emitted deterministic JSON.
+
+`solve-loops` solves a fixture scramble or imported state through shape
+restoration and GAP loop factorization. It accepts an optional additional
+scramble, `--metric`, `--gap-executable`, `--timeout`, `--max-expanded-moves`,
+and `--output`. JSON includes the ordered loop powers and only the algorithms
+they use. Solved, unreachable, and expansion-limited results exit with codes
+0, 3, and 2 respectively; backend failures exit with code 1.

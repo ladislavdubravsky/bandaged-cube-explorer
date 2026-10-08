@@ -9,7 +9,7 @@ include!(concat!(env!("OUT_DIR"), "/colored_tables.rs"));
 
 // Standard URFDLB facelet order: each face is read row by row while viewed
 // from outside the cube. Entries follow the matching CORNER/EDGE_FACES order.
-const CORNER_FACELETS: [[usize; 3]; 8] = [
+pub(crate) const CORNER_FACELETS: [[usize; 3]; 8] = [
     [8, 9, 20],
     [6, 18, 38],
     [0, 36, 47],
@@ -19,7 +19,7 @@ const CORNER_FACELETS: [[usize; 3]; 8] = [
     [33, 53, 42],
     [35, 17, 51],
 ];
-const EDGE_FACELETS: [[usize; 2]; 12] = [
+pub(crate) const EDGE_FACELETS: [[usize; 2]; 12] = [
     [5, 10],
     [7, 19],
     [3, 37],
@@ -80,6 +80,11 @@ impl CubeState {
     }
     pub fn is_solved(&self) -> bool {
         *self == Self::SOLVED
+    }
+
+    /// Faithful movable-sticker action, including corner twists and edge flips.
+    pub fn sticker_permutation(&self) -> crate::StickerPermutation {
+        crate::StickerPermutation::from_cube(self)
     }
 
     /// Import exactly 54 uppercase URFDLB facelets in standard face order.

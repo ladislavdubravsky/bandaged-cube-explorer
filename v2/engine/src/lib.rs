@@ -9,12 +9,14 @@ pub mod explore;
 pub mod fixtures;
 pub mod geometry;
 pub mod implicit;
+pub mod isotropy;
 mod partition;
 pub mod symmetry;
 
 pub use bonds::{AxisMajor, BondLayout, BondShape, DefaultLayout, LegacySparse, Tuned};
 pub use colored::{BandageSpec, BandagedState, CubeState};
 pub use geometry::{Amount, Face, Move, parse_moves};
+pub use isotropy::{LoopGenerator, LoopGenerators, StickerPermutation};
 pub use partition::Partition;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
