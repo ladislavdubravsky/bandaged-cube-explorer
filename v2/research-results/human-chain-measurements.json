@@ -1,0 +1,55 @@
+{
+  "environment": {
+    "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3"
+  },
+  "format": "bce-v2-human-chain-measurements",
+  "results": [
+    {
+      "action_validation_seconds": 0.1860164950012404,
+      "block_structure_seconds": 1.5154623749986058,
+      "chain_validation_seconds": 0.013461441001709318,
+      "elapsed_seconds": 3.6375012040007277,
+      "enumeration_seconds": 0.011901338999450672,
+      "generator_replay_seconds": 0.0005910830004722811,
+      "prepare_seconds": 1.910066899999947,
+      "process_peak_rss_kib": 23808,
+      "puzzle": "Alcatraz"
+    },
+    {
+      "action_validation_seconds": 0.03131901300002937,
+      "block_structure_seconds": 1.4533051910002541,
+      "chain_validation_seconds": 0.003951771999709308,
+      "elapsed_seconds": 3.0097640290005074,
+      "enumeration_seconds": 0.001113006001105532,
+      "generator_replay_seconds": 0.0007951560000947211,
+      "prepare_seconds": 1.51927813599832,
+      "process_peak_rss_kib": 23808,
+      "puzzle": "Bicube Fuse"
+    },
+    {
+      "action_validation_seconds": 0.018480311999155674,
+      "block_structure_seconds": 1.5784153029999288,
+      "chain_validation_seconds": 0.0021845980008947663,
+      "elapsed_seconds": 3.5755505900015123,
+      "enumeration_seconds": 0.0015140030009206384,
+      "generator_replay_seconds": 0.0010959939972963184,
+      "prepare_seconds": 1.9738591330024065,
+      "process_peak_rss_kib": 24320,
+      "puzzle": "Shark Fin Soup"
+    },
+    {
+      "action_validation_seconds": 6.57740648699837,
+      "block_structure_seconds": 1.6912107060015842,
+      "chain_validation_seconds": 1.0444383889989695,
+      "elapsed_seconds": 12.593858661999548,
+      "enumeration_seconds": 0.31467787899964605,
+      "generator_replay_seconds": 0.001542773999972269,
+      "prepare_seconds": 2.964580930998636,
+      "process_peak_rss_kib": 56188,
+      "puzzle": "Most Signatures Cube"
+    }
+  ],
+  "rss_scope": "process high-water mark; cumulative across puzzles in one invocation",
+  "version": 1
+}

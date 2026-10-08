@@ -211,6 +211,15 @@ Completion criterion: a reproducible enumeration for a precisely declared family
 
 Develop reusable human **puzzle solutions**: a small algorithm repertoire and explicit recognition and application rules covering every reachable colored scramble in the declared component. Optimize the amount of information a person must remember, including both move sequences and decision rules. Prefer repeated use of a few base algorithms and compressible descriptions through powers, commutators, and conjugations. Move length is a reported property, not the optimization objective of this milestone.
 
+The initial [human-method contract and chain investigation](human-methods.md)
+now define shape-only synthesis input, observable placement/full-block features,
+and preservation at correction boundaries. The reproducible Delivery 0 probe
+validates exact reference-group chains for Alcatraz, Bicube Fuse, Shark Fin Soup,
+and Most Signatures Cube, through group order 10,368. It checks legal original
+loop witnesses, full block-action reconstruction, feature equivariance and exact
+right-coset cases. This certifies chain structure; complete correction policies,
+shared algorithm repertoires and human guides are subsequent deliveries.
+
 Turn the existing feature-chain and distance-layer experiments into an explicit strategy system. Replace all-pairs distance calculations for feature stages with reverse multi-source BFS from each target set. Candidate features include recognizable block locations, available faces, restored bandage relations, and reusable algorithms with useful effects. Seek a small number of stages with simple recognition, limited branching, and structured actions that guarantee progress.
 
 For each proposed rule, record its recognition condition, legal setup, action, intended progress, and exceptions. Specify whether earlier features must hold throughout an algorithm or only at stage boundaries. Measure coverage and worst-case distances exhaustively on tractable shape components; distinguish these guarantees from sampled colored-state evidence. A geometric stage need not preserve an algebraic subgroup, so keep feature chains and stabilizer chains distinct.
