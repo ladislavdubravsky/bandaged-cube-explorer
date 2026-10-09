@@ -488,6 +488,12 @@ from .human_algorithms import (  # noqa: E402
 from .human_chain_search import (  # noqa: E402
     HumanChainCandidate, HumanChainSearch, select_human_chain,
 )
+from .human_repertoire import (  # noqa: E402
+    HumanMacroRecipe, HumanRecognitionRule, HumanRepertoire, HumanRepertoireApplication,
+    HumanRepertoireCase, HumanRepertoireMacro, HumanRepertoireStage, HumanRepertoireStep,
+    optimize_human_repertoire,
+)
+from .human_repertoire_io import load_human_repertoire  # noqa: E402
 
 __all__ = [
     "Shape", "State", "ShapeGraph", "BlockedMoveError", "CELL_NAMES",
@@ -508,5 +514,8 @@ __all__ = [
     "HumanMethodStep", "HumanRecognition", "synthesize_human_method", "load_human_method",
     "HumanAlgorithmAlternative", "HumanAlgorithmSearch", "improve_human_method",
     "HumanChainCandidate", "HumanChainSearch", "select_human_chain",
+    "HumanMacroRecipe", "HumanRecognitionRule", "HumanRepertoire", "HumanRepertoireApplication",
+    "HumanRepertoireCase", "HumanRepertoireMacro", "HumanRepertoireStage", "HumanRepertoireStep",
+    "optimize_human_repertoire", "load_human_repertoire",
     "draw_cubes", "load_puzzle", "save_puzzle", "save_graph",
 ] + list(CELL_NAMES)

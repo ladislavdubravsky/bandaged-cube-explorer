@@ -2,8 +2,9 @@
 
 This document fixes the initial semantics for milestone six and describes the
 reproducible baseline investigation, stage planner, complete computational
-method compiler, bounded algorithm improvement and automatic chain selection. Repertoire optimization
-and human review remain future work.
+method compiler, bounded algorithm improvement, automatic chain selection and
+shared algorithm repertoires with verified compressed rules. Human review
+remains future work.
 A **puzzle solution** supplies a reusable
 algorithm repertoire and recognition and application rules for every reachable
 scramble in its declared domain. An algorithm library or a subgroup chain alone
@@ -534,6 +535,100 @@ the larger repertoire accompanying shorter execution. Complete Alcatraz
 [recognition](../v2/research-results/alcatraz-recognition-method.md) guides are
 available with independently loadable JSON artifacts.
 
+## Share algorithms and compress rules: delivery five
+
+`c.optimize_human_repertoire` compiles a completed method into a taught
+vocabulary of named master algorithms and verified stage instructions. It can
+follow the baseline compiler, algorithm improvement or chain selection:
+
+```python
+repertoire = c.optimize_human_repertoire(
+    selection.method, preference="memory", max_trials=64, max_recipes=2_000,
+)
+repertoire.method.save("alcatraz-expanded-method.json")
+repertoire.save("alcatraz-repertoire.json")
+repertoire.write_guide("alcatraz-repertoire.md")
+loaded = c.load_human_repertoire("alcatraz-repertoire.json")
+print(loaded.metadata["baseline_metrics"], loaded.metadata["selected_metrics"])
+```
+
+```python
+optimize_human_repertoire(
+    method, *, preference="memory", max_trials=64, max_recipes=2000,
+    max_power=4, max_extra_macros=16, max_setup_macros=16,
+    allow_symmetry=True, max_cost_ratio=1.0,
+)
+```
+
+The input must be a completed `HumanMethod`. Taught master definitions are
+distinct from its original loop-provenance definitions: the repertoire records
+both the executable physical words and the words' exact witnessed origins.
+Instructions may reuse a master, its inverse or power, and verified setup/undo
+constructions. Symmetry transfers use only actual proper symmetries of the
+reference bandage shape. Each full instruction sequence must preserve the
+earlier stage features and solve every state in its declared observation case.
+Its constituent master applications may temporarily disturb those features;
+the same whole-correction boundary convention still applies.
+
+Recognition compression retains the complete observation cases as its source
+of truth. Grouped inverse, power and repeated-action rules are accepted only
+after their expansion has been checked against all cases they replace. The
+compressed guide still gives concrete footprint and sticker cues and identifies
+the complete correction to execute. A shorter rule list does not remove
+reachable observations from the domain or imply that recognition itself has
+become easier for a person. Kernels are not assumed central, and corrections
+are not reordered across placement actions without checking their effects.
+
+The optimizer compares the actual input policy with bounded shared-vocabulary
+policies, then attempts to remove master definitions while retaining complete
+stage reachability. Controls and trials use one fixed recipe pool. Every
+completed candidate is independently certified and evaluated across the full
+reference group, including cancellation in the complete executed word.
+`max_cost_ratio=1.0` requires both mean and worst HTM to stay at or below the
+actual input policy. An explicit larger ratio permits execution cost to grow
+within that ratio in exchange for other properties. QTM is reported without
+the same guard.
+
+The Pareto dimensions are `macro_count`, `macro_definition_htm`, `mean_htm`,
+`worst_htm` and `rule_count`. `preference="memory"` compares them in that
+order; `"execution"` puts mean and worst HTM first, then master count,
+master-definition HTM and rule count. Named-master count and total definition
+length are computational memory proxies. Original leaf costs are recorded
+separately, and `rule_count` counts compressed rule families rather than
+observation cases. The report retains candidates, a Pareto frontier and the
+selected candidate, without claiming a minimum repertoire or human
+memorability. Human review remains scheduled for Delivery 6.
+
+All integer quality budgets accept zero. `max_trials` counts attempted master
+removals, including unreachable and quality-rejected proposals. `max_recipes`
+counts new net recipe proposals, including duplicates, identities and pruned
+recipes; unconditional direct master/inverse recipes and complete fallbacks
+are outside that budget. `max_power`, `max_extra_macros` and
+`max_setup_macros` limit the additional vocabulary constructions. Exact
+validation, reference preparation and whole-group policy metrics run outside
+these quality budgets. Exhausting a quality budget preserves complete
+coverage and the explicit baseline fallback. The cost ratio must be finite
+and at least one.
+
+`HumanRepertoire` retains `baseline`, the selected expanded `method`, `macros`,
+`stages` and copied `metadata`, and exposes `recognize`, `next_step` and `apply`.
+The expanded method preserves the portable version-one method format.
+`save`, `to_json` and `to_dict` produce a self-contained
+`bce-v2-human-repertoire` version-one artifact with definitions, compressed
+rules, both methods and a fingerprint. `HumanRepertoire.from_dict` and
+`load_human_repertoire(path)` independently validate the methods, master words
+and rule expansions without GAP. They recheck actual baseline/selected metrics
+and the metadata's internal selection consistency. Historical candidate costs
+and search counts remain recorded experiment data; they do not certify a
+minimum repertoire. The fingerprint detects record changes; the mathematical
+checks establish coverage. `write_guide` produces the
+compressed repertoire guide.
+
+The [retained Delivery 5 comparison](../v2/research-results/human-repertoire-compression.md)
+records definition and rule compression against actual input policies, with
+complete-method costs and the limits used. These measurements remain
+computational evidence pending human review.
+
 ## Generate a method from the command line
 
 ```sh
@@ -594,6 +689,30 @@ artifact and input file, including aliases. A preparation cap writes the
 explicit partial chain report, method and guide with exit code two. Search
 bounds do not change completed-method exit code zero or the portable method
 format.
+
+Add repertoire optimization after synthesis or chain selection with:
+
+```sh
+v2/.venv/bin/python -m bce_v2 plan-method Alcatraz \
+    --max-group-elements 10368 --select-chain --optimize-repertoire \
+    --repertoire-preference memory --repertoire-max-trials 64 \
+    --repertoire-max-recipes 2000 \
+    --output /tmp/alcatraz-expanded.json --guide /tmp/alcatraz-expanded.md \
+    --repertoire-output /tmp/alcatraz-repertoire.json \
+    --repertoire-guide /tmp/alcatraz-repertoire.md
+```
+
+`--optimize-repertoire` can also follow `--improve-algorithms` or ordinary
+synthesis. Stdout, `--output` and `--guide` describe the selected expanded
+method. `--repertoire-output` additionally saves the independently loadable
+wrapper, including comparison metadata; `--repertoire-guide` writes the
+compressed guide. Both require optimization. The CLI accepts the Python
+defaults for `--repertoire-max-power`, `--repertoire-max-extra-macros`,
+`--repertoire-max-setup-macros` and `--repertoire-max-cost-ratio`;
+`--repertoire-no-symmetry` disables transfers. All input and artifact paths
+must be distinct, including aliases. A preparation cap skips optimization
+and leaves repertoire output/guide paths untouched while retaining the
+ordinary partial method artifacts and any requested partial chain report.
 
 ## Baseline investigation: delivery zero
 
@@ -691,17 +810,13 @@ evidence that either chain has a better algorithm repertoire.
 
 ## Later deliveries
 
-1. **Better stage algorithms and shared repertoire.** Extend the bounded
-   stage-aware search with certified symmetry transfers and richer candidates.
-   Optimize shared move and decision information across the whole guide while
-   retaining complete fallbacks.
-2. **Human review and visual integration: Delivery 6.** Explain cases with
+1. **Human review and visual integration: Delivery 6.** Explain cases with
    the existing renderers and notebooks, record difficult examples and solving
    experience, and adjust computational quality preferences using that evidence.
-3. **Symbolic preparation for larger groups.** Use standard stabilizers,
+2. **Symbolic preparation for larger groups.** Use standard stabilizers,
    orbits and transversals with original-loop witnesses. Certify subgroup
    indices, cases and terminal triviality without enumerating all of `H`.
-4. **General integration.** Expand the CLI and guide views as review identifies
+3. **General integration.** Expand the CLI and guide views as review identifies
    useful improvements.
 
 These deliveries can reuse the current Rust engine. Broader geometric feature

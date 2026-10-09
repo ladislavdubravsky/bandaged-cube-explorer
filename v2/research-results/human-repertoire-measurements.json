@@ -1,0 +1,94 @@
+{
+  "format": "bce-v2-human-repertoire-measurements",
+  "results": [
+    {
+      "preparation_seconds": 0.301204004000283,
+      "puzzle": "Alcatraz execution",
+      "variants": {
+        "basic_graph_control": {
+          "reload_and_physical_verification_seconds": 10.315570648000175,
+          "search_seconds": 2.6525580480001736
+        },
+        "ratio_1_1": {
+          "reload_and_physical_verification_seconds": 10.446145439000247,
+          "search_seconds": 18.130440765000458
+        },
+        "ratio_1_25": {
+          "reload_and_physical_verification_seconds": 10.385394228000223,
+          "search_seconds": 15.505730005999794
+        },
+        "strict": {
+          "reload_and_physical_verification_seconds": 9.46407690199976,
+          "search_seconds": 18.101413051000236
+        }
+      }
+    },
+    {
+      "preparation_seconds": 0.26191691999974864,
+      "puzzle": "Alcatraz recognition",
+      "variants": {
+        "basic_graph_control": {
+          "reload_and_physical_verification_seconds": 11.010578529999293,
+          "search_seconds": 2.2479356089997964
+        },
+        "ratio_1_1": {
+          "reload_and_physical_verification_seconds": 11.331621842999994,
+          "search_seconds": 6.173817288999999
+        },
+        "ratio_1_25": {
+          "reload_and_physical_verification_seconds": 11.451130194000143,
+          "search_seconds": 4.948141668000062
+        },
+        "strict": {
+          "reload_and_physical_verification_seconds": 10.326705595000021,
+          "search_seconds": 6.80945188700025
+        }
+      }
+    },
+    {
+      "preparation_seconds": 5.681953612000143,
+      "puzzle": "Bicube Fuse",
+      "variants": {
+        "basic_graph_control": {
+          "reload_and_physical_verification_seconds": 1.4918606060000457,
+          "search_seconds": 1.0118127890000324
+        },
+        "ratio_1_1": {
+          "reload_and_physical_verification_seconds": 2.2017371139991155,
+          "search_seconds": 3.661947648000023
+        },
+        "ratio_1_25": {
+          "reload_and_physical_verification_seconds": 2.1453494140005205,
+          "search_seconds": 3.090002965000167
+        },
+        "strict": {
+          "reload_and_physical_verification_seconds": 1.4986346289997527,
+          "search_seconds": 3.8666228559995943
+        }
+      }
+    },
+    {
+      "preparation_seconds": 5.346288787000049,
+      "puzzle": "Shark Fin Soup",
+      "variants": {
+        "basic_graph_control": {
+          "reload_and_physical_verification_seconds": 1.0746697949998634,
+          "search_seconds": 0.6386868179997691
+        },
+        "ratio_1_1": {
+          "reload_and_physical_verification_seconds": 1.0384841939994658,
+          "search_seconds": 1.5155491830000756
+        },
+        "ratio_1_25": {
+          "reload_and_physical_verification_seconds": 1.173610868000651,
+          "search_seconds": 1.3563398780006537
+        },
+        "strict": {
+          "reload_and_physical_verification_seconds": 0.9848600200002693,
+          "search_seconds": 1.445405247999588
+        }
+      }
+    }
+  ],
+  "version": 1
+}

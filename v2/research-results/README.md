@@ -1,5 +1,10 @@
 # Human-method research results
 
+Delivery 5's [repertoire and rule comparison](human-repertoire-compression.md)
+measures taught master definitions, compressed rule families and complete
+execution costs. Its artifacts distinguish computational memory proxies from
+the human review scheduled for Delivery 6.
+
 Delivery 4's [algorithm-aware chain comparison](human-chain-selection.md)
 retains original BFS and pool-based automatic controls, mixed-feature
 candidates and their Pareto tradeoffs in execution, recognition and

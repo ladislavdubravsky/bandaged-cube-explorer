@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 import sys
 
@@ -33,11 +34,13 @@ def _method_reference(puzzle: str):
     return fixture(puzzle), None
 
 
-def _check_method_paths(input_path, output_path, guide_path, report_path=None, chain_report_path=None):
+def _check_method_paths(input_path, output_path, guide_path, report_path=None, chain_report_path=None,
+                        repertoire_output_path=None, repertoire_guide_path=None):
     """Reject path and inode aliases before synthesis or writing any artifact."""
     paths = [(name, path) for name, path in
              (("input", input_path), ("JSON output", output_path), ("guide", guide_path),
-              ("search report", report_path), ("chain report", chain_report_path))
+              ("search report", report_path), ("chain report", chain_report_path),
+              ("repertoire output", repertoire_output_path), ("repertoire guide", repertoire_guide_path))
              if path is not None]
     for i, (name, path) in enumerate(paths):
         for other_name, other_path in paths[i + 1:]:
@@ -82,6 +85,18 @@ def main(argv: list[str] | None = None) -> int:
     method.add_argument("--chain-max-expansions", type=int, default=64)
     method.add_argument("--chain-max-methods", type=int, default=16)
     method.add_argument("--chain-report", type=Path, help="write a separate chain-selection report")
+    method.add_argument("--optimize-repertoire", action="store_true",
+                        help="share witnessed master algorithms and compress verified stage rules")
+    method.add_argument("--repertoire-preference", choices=("memory", "execution"), default="memory")
+    method.add_argument("--repertoire-max-trials", type=int, default=64)
+    method.add_argument("--repertoire-max-recipes", type=int, default=2000)
+    method.add_argument("--repertoire-max-power", type=int, default=4)
+    method.add_argument("--repertoire-max-extra-macros", type=int, default=16)
+    method.add_argument("--repertoire-max-setup-macros", type=int, default=16)
+    method.add_argument("--repertoire-no-symmetry", action="store_true")
+    method.add_argument("--repertoire-max-cost-ratio", type=float, default=1.0)
+    method.add_argument("--repertoire-output", type=Path, help="write the independently loadable repertoire JSON")
+    method.add_argument("--repertoire-guide", type=Path, help="write the compressed repertoire guide as Markdown")
 
     for command in ("inspect", "replay", "explore", "solve", "render", "solve-colored", "explore-colored", "isotropy", "solve-loops"):
         sub = commands.add_parser(command)
@@ -144,6 +159,9 @@ def main(argv: list[str] | None = None) -> int:
                 raise ValueError("--chain-report requires --select-chain")
             if args.select_chain and args.improve_algorithms:
                 raise ValueError("--select-chain and --improve-algorithms cannot be combined")
+            if ((args.repertoire_output is not None or args.repertoire_guide is not None)
+                    and not args.optimize_repertoire):
+                raise ValueError("--repertoire-output and --repertoire-guide require --optimize-repertoire")
             if args.improve_algorithms or args.select_chain:
                 for name in ("max_seed_loops", "max_candidates", "max_states", "rounds",
                              "max_word_length", "max_htm_length", "max_expanded_moves"):
@@ -157,8 +175,16 @@ def main(argv: list[str] | None = None) -> int:
                     if getattr(args, f"chain_{name}") < 0:
                         option = "--chain-" + name.replace("_", "-")
                         raise ValueError(f"{option} must be nonnegative")
+            if args.optimize_repertoire:
+                for name in ("max_trials", "max_recipes", "max_power", "max_extra_macros", "max_setup_macros"):
+                    if getattr(args, f"repertoire_{name}") < 0:
+                        option = "--repertoire-" + name.replace("_", "-")
+                        raise ValueError(f"{option} must be nonnegative")
+                if not math.isfinite(args.repertoire_max_cost_ratio) or args.repertoire_max_cost_ratio < 1.0:
+                    raise ValueError("--repertoire-max-cost-ratio must be finite and at least 1")
             reference, input_path = _method_reference(args.puzzle)
-            _check_method_paths(input_path, args.output, args.guide, args.search_report, args.chain_report)
+            _check_method_paths(input_path, args.output, args.guide, args.search_report, args.chain_report,
+                                args.repertoire_output, args.repertoire_guide)
             search_options = dict(
                 mode=args.search_mode, max_candidates=args.search_max_candidates,
                 max_seed_loops=args.search_max_seed_loops,
@@ -189,6 +215,21 @@ def main(argv: list[str] | None = None) -> int:
                 method = search.method
                 if args.search_report is not None:
                     search.save(args.search_report)
+            if args.optimize_repertoire and method.status == "completed":
+                from . import optimize_human_repertoire
+
+                repertoire = optimize_human_repertoire(
+                    method, preference=args.repertoire_preference,
+                    max_trials=args.repertoire_max_trials, max_recipes=args.repertoire_max_recipes,
+                    max_power=args.repertoire_max_power, max_extra_macros=args.repertoire_max_extra_macros,
+                    max_setup_macros=args.repertoire_max_setup_macros,
+                    allow_symmetry=not args.repertoire_no_symmetry,
+                    max_cost_ratio=args.repertoire_max_cost_ratio)
+                method = repertoire.method
+                if args.repertoire_output is not None:
+                    repertoire.save(args.repertoire_output)
+                if args.repertoire_guide is not None:
+                    repertoire.write_guide(args.repertoire_guide)
             result = method.to_dict()
             if args.output is not None:
                 method.save(args.output)

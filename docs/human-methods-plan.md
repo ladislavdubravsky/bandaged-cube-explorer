@@ -1,6 +1,6 @@
 # Human solving methods: evolving implementation plan
 
-Updated 9 October 2026. Deliveries 0–4 are complete; Delivery 5 is next.
+Updated 9 October 2026. Deliveries 0–5 are complete; Delivery 6 is next.
 Thorough human review stays in Delivery 6. Revise later deliveries as experiments
 provide evidence. This is a working plan, not a promise of a particular optimizer.
 
@@ -75,9 +75,12 @@ Implemented modules:
 | human_algorithms.py | Bounded fixed-chain discovery, alternatives and quality metrics |
 | human_chain_search.py | Shared-pool greedy/beam chain comparison and complete Pareto policies |
 | human_render.py | Initial readable case-table Markdown guide |
+| human_repertoire.py | Shared masters, bounded deletion, verified instruction transitions and ranks |
+| human_repertoire_io.py | Portable repertoire wrappers and independent rule/cost validation |
+| human_repertoire_render.py | Concrete cue lookup and compressed instruction-family guides |
 
-Add chain selection and symbolic backends when their responsibilities warrant
-separate modules. Extract shared internals rather than duplicate algebra or
+Add symbolic backends when their responsibilities warrant separate modules.
+Extract shared internals rather than duplicate algebra or
 silently invoke the exact-scramble solver.
 
 Existing workflow:
@@ -262,7 +265,7 @@ Delivered 9 October 2026:
   with corresponding loadable version-one JSON files. Both remain computational
   methods awaiting Delivery 6 review.
 
-Next work is shared vocabulary and verified recognition compression. The
+Delivery 5 addresses shared vocabulary and verified recognition compression. The
 Alcatraz execution improvement increases cases, correction definitions and used
 original loops, giving Delivery 5 a concrete tradeoff to optimize. Keep the
 small-table alternative available. Thorough human review remains Delivery 6.
@@ -277,6 +280,61 @@ pairs, repeated rules with progress ranks, setups and actual proper symmetries.
 Every compressed rule must expand to exhaustive valid cases; fallbacks stay
 explicit. Never assume an abelian kernel is central or reorder corrections
 across placement actions without proof. Record execution versus memory tradeoffs.
+
+Delivered 9 October 2026:
+
+- `optimize_human_repertoire` shares literal inverse definitions and searches a
+  fixed pool of powers, conjugates, commutators and actual proper reference-shape
+  symmetries. Greedy deletion retains complete reachability of every stage.
+  Named masters remain separate from original-loop witness IDs.
+- The exact input policy is always a candidate, including its authoritative
+  physical words when they differ from its original-loop expression. Mean and
+  worst whole-method HTM may not increase by default. An explicit cost ratio
+  permits a measured execution/memory tradeoff. Memory and execution preferences
+  choose among a reported Pareto frontier; neither proves a minimum vocabulary.
+- Quality bounds default to 64 deletion trials, 2,000 additional recipe proposals,
+  powers through 4, 16 extra original-loop masters and 16 setup masters. Zero
+  budgets retain complete fallback coverage. Exact validation and full-group
+  cost measurement are separate from these quality bounds; no new default
+  exact-group cap was added.
+- Recognition families group inverse/power cases and verified complete cycles.
+  Each next instruction acts consistently on its entire observation fiber and
+  strictly decreases a nonnegative rank. Powers and setup recipes preserve prior
+  stages after the whole instruction; their parts can temporarily disturb them.
+  The full concrete cue table remains explicit.
+- A standalone version-one repertoire record embeds both methods, the taught
+  master definitions, recipes, ranks and witness provenance. Loading without GAP
+  independently replays the methods, rules and actual baseline/selected costs,
+  and checks selection metadata consistency. Historical candidate statistics
+  remain recorded search diagnostics. The expanded projection retains the
+  existing portable method format. CLI synthesis, improvement and chain
+  selection can all feed repertoire optimization and compressed Markdown guides.
+- On the retained Alcatraz execution chain, 15 corrections totaling 211 HTM
+  become 9 masters totaling 118 HTM, with 10 instruction families. Mean/worst
+  complete solve cost changes from 38.75617/61 to 38.67284/60 HTM. The smaller-table
+  chain shares its 10 corrections totaling 152 HTM as 7 masters totaling 97 HTM,
+  with 7 instruction families and unchanged 49.00617/84 HTM execution costs.
+- Strict controls also share Bicube's 10 corrections/112 HTM as 7 masters/84 HTM
+  with unchanged 26.03333/49 HTM execution, and Shark Fin Soup's 7 corrections/74
+  HTM as 4 masters/40 HTM with 21.69444/34 HTM execution. An explicit 1.1 ratio
+  gives Alcatraz execution 7 masters/87 HTM at 40.05247/67 HTM and Bicube 2
+  masters/28 HTM at 26.53333/49 HTM. Greedy deletion and graph tie choices remain
+  heuristic: different ratio runs can follow different deletion paths, so a
+  looser allowance need not return a better policy than a tighter run.
+- Validation includes 15 repertoire tests and 10 CLI tests, 972 exhaustive
+  selected/reloaded/expanded Alcatraz applications, full-fiber transitions,
+  noncentral constructions, proper symmetries, deterministic persistence,
+  20 refingerprinted corruption variants, authoritative alternative physical
+  words and correction-name collisions. The 49 relevant prior method,
+  algorithm and CLI tests also pass.
+
+The [retained comparison](../v2/research-results/human-repertoire-compression.md)
+records cross-puzzle controls, explicit cost-ratio tradeoffs, reproduction and
+separate timings, with 2,976 reloaded full-group applications per comparison.
+Its strict Alcatraz repertoire artifacts provide concrete
+guides for Delivery 6. Learned-word length and instruction-family count remain
+computational memory proxies. Human review stays in Delivery 6; shape restoration
+and symbolic scaling remain deferred as scoped above.
 
 ### Delivery 6 — Usability and thorough human review
 

@@ -911,6 +911,68 @@ no candidates, while quality-search bounds retain completed/certified methods.
 Read the [chain-selection contract](../../docs/human-methods.md#select-an-algorithm-aware-chain-delivery-four)
 for exact objective and budget semantics.
 
+## Share a taught repertoire and verified recognition rules
+
+Compile a completed baseline, improved method or selected chain into named
+master definitions and checked instructions that reuse them:
+
+```python
+repertoire = c.optimize_human_repertoire(
+    selection.method, preference="memory", max_trials=64, max_recipes=2_000,
+)
+repertoire.save("alcatraz-repertoire.json")
+repertoire.write_guide("alcatraz-repertoire.md")
+repertoire.method.save("alcatraz-expanded-method.json")
+loaded = c.load_human_repertoire("alcatraz-repertoire.json")
+print(loaded.metadata["baseline_metrics"], loaded.metadata["selected_metrics"])
+```
+
+`optimize_human_repertoire(method, *, preference="memory", max_trials=64,
+max_recipes=2000, max_power=4, max_extra_macros=16, max_setup_macros=16,
+allow_symmetry=True, max_cost_ratio=1.0)` requires a completed `HumanMethod`.
+Taught master definitions are distinct from original provenance loops.
+Instruction recipes include inverses, powers and checked setup/undo
+constructions; symmetry transfers require an actual proper reference-bandage
+symmetry. Complete recipes preserve earlier stage features at their endpoints,
+while constituent master applications may disturb them temporarily.
+
+The input's exact policy remains a selectable fallback. Bounded recipe
+construction and master-removal trials seek a smaller shared vocabulary with
+complete case reachability. Compressed rule families retain explicit
+observation cases and are verified by expansion. Their count measures rule
+families rather than reachable observations, and the guide retains concrete
+footprint and sticker cues. Full policies are certified and exhaustively
+evaluated across the reference group after whole-word simplification.
+
+The default `max_cost_ratio=1.0` requires both mean and worst HTM to stay at or
+below the actual input policy. A larger finite ratio permits an explicit
+execution/memory tradeoff; QTM is reported without the same guarantee.
+The Pareto dimensions are master count, master-definition HTM, mean HTM,
+worst HTM and rule count. `preference="memory"` uses that lexicographic order;
+`"execution"` puts mean/worst HTM first. These are computational proxies,
+without a minimum-repertoire or human-memorability claim. Review remains
+Delivery 6.
+
+All integer budgets accept zero. `max_trials` bounds attempted master removals,
+including rejected or unreachable trials. `max_recipes` counts new proposals,
+including duplicates, identities and prunes; direct master/inverse recipes and
+complete fallbacks are unconditional. Powers, extra masters and setup masters
+have separate limits. Exact preparation, validation and policy evaluation are
+outside quality-search budgets, which preserve completed coverage when reached.
+
+`HumanRepertoire` retains `baseline`, selected expanded `method`, `macros`,
+`stages` and copied `metadata`, and exposes `recognize`, `next_step` and `apply`.
+Its `save`, `to_json` and `to_dict` write a self-contained
+`bce-v2-human-repertoire` version-one artifact; `from_dict` and
+`load_human_repertoire(path)` validate methods, definitions and rule expansions
+independently without GAP. Loading rechecks actual baseline/selected costs and
+metadata consistency; historical candidate costs and search counts remain
+experiment records, without a minimum-repertoire claim. The fingerprint detects changes, while exact checks
+establish coverage. The selected expanded method keeps the existing version-one
+method format. `write_guide` writes the compressed guide. Read the
+[repertoire contract](../../docs/human-methods.md#share-algorithms-and-compress-rules-delivery-five)
+for budget and metric semantics.
+
 ## Explore colored components
 
 ```python
@@ -1065,6 +1127,7 @@ bce-v2 solve-loops imported.json --max-expanded-moves 100000 --output /tmp/solut
 bce-v2 plan-method 'Alcatraz' --max-group-elements 10368 --output /tmp/method.json --guide /tmp/method.md
 bce-v2 plan-method 'Alcatraz' --max-group-elements 10368 --improve-algorithms --search-max-candidates 3000 --search-max-states 2000 --output /tmp/improved-method.json --search-report /tmp/search.json
 bce-v2 plan-method 'Alcatraz' --max-group-elements 10368 --select-chain --chain-preference recognition --output /tmp/selected-method.json --chain-report /tmp/chains.json
+bce-v2 plan-method 'Alcatraz' --max-group-elements 10368 --select-chain --optimize-repertoire --output /tmp/expanded-method.json --repertoire-output /tmp/repertoire.json --repertoire-guide /tmp/repertoire.md
 bce-v2 plan-method shape-labels.json --strategy fully_solve_each_block
 bce-v2 explore-colored imported.json --max-states 100 --output /tmp/colors.json
 bce-v2 explore 'Alcatraz' --output /tmp/alcatraz-graph.json
@@ -1124,3 +1187,18 @@ combined with `--improve-algorithms`, and `--search-report` retains its
 improvement-only meaning. A preparation cap writes an explicit partial chain
 report alongside the partial method/guide and exits with code 2. Quality
 budgets leave the selected method complete and its portable schema unchanged.
+
+`--optimize-repertoire` runs after ordinary synthesis, improvement or chain
+selection. Stdout, `--output` and `--guide` describe the selected expanded
+version-one method. `--repertoire-output` saves the independently loadable
+wrapper with shared master definitions, compressed rules and comparison
+metadata; `--repertoire-guide` writes its compressed guide. Both require
+optimization and must differ from all input/other artifact files, including
+aliases. Its options are `--repertoire-preference memory|execution`,
+`--repertoire-max-trials` (64), `--repertoire-max-recipes` (2000),
+`--repertoire-max-power` (4), `--repertoire-max-extra-macros` (16),
+`--repertoire-max-setup-macros` (16), `--repertoire-no-symmetry`, and
+`--repertoire-max-cost-ratio` (1.0, finite and at least one).
+A preparation cap skips optimization and leaves repertoire output/guide paths
+untouched; ordinary partial method artifacts and a requested partial chain
+report remain available.
