@@ -1,7 +1,54 @@
 """Concrete recognition cues and shared witnessed master definitions."""
 
 from .block_actions import _CELL_POINTS
-from .human_render import _feature_name, _sticker
+from .human_render import _algorithm_table, _feature_name, _sticker
+from .human_diagram_modes import DiagramMode
+from .human_instruction_render import instruction_presentation
+
+
+def _guide_instructions(repertoire, *, rotate_diagram):
+    """Collect exact case words and any additional definitions before teaching."""
+    from dataclasses import replace
+
+    presentations, additional = {}, []
+    words = {macro.algorithm.turn_sequence: macro.id for macro in repertoire.macros}
+    identifiers = {macro.id for macro in repertoire.macros}
+    for stage in repertoire.stages:
+        recipes = [case.instruction for case in stage.cases if case.instruction is not None]
+        if not rotate_diagram:
+            recipes.extend(rule.recipe for rule in stage.rules)
+        for recipe in recipes:
+            if recipe in presentations:
+                continue
+            presentation = instruction_presentation(recipe, repertoire, rotate_diagram=rotate_diagram)
+            if presentation.requires_definition:
+                word = presentation.turn_sequence
+                if word not in words:
+                    number = 1
+                    while f"A{number}" in identifiers:
+                        number += 1
+                    identifier = f"A{number}"
+                    identifiers.add(identifier)
+                    words[word] = identifier
+                    additional.append((identifier, word, presentation.rotation))
+                presentation = replace(presentation, identifier=words[word])
+            presentations[recipe] = presentation
+    return presentations, additional
+
+
+def _instruction(presentation):
+    return f"`{presentation.identifier}: {presentation.turn_sequence or '(no moves)'}`"
+
+
+def _additional_algorithm_action(method, word, rotation):
+    """Describe an additional definition in its pictured execution frame."""
+    from . import State
+    from .block_actions import BlockInventory, _ROTATIONS
+    from .loop_rotations import rotation_tuple
+
+    reference = method.reference_shape.rotated(_ROTATIONS.index(rotation_tuple(rotation)))
+    inventory = BlockInventory(reference)
+    return inventory.action(State().apply(word).sticker_permutation)
 
 
 def _cue(stage, observation, method):
@@ -17,20 +64,19 @@ def _cue(stage, observation, method):
     return f"{footprint}; {sticker}"
 
 
-def _rule_lines(rule, stage, method):
+def _rule_lines(rule, stage, method, presentations):
     """Present every instruction family with all its concrete case cues."""
     lines = [f"### {rule.id}", ""]
     if rule.kind == "cycle":
-        lines.extend([f"These cases form one cycle under `{rule.recipe.render()}`. "
+        lines.extend([f"These cases form one cycle under {_instruction(presentations[rule.recipe])}. "
                       "Use the signed power below to reach this stage's solved observation.", "",
                       "Cycle in the fixed reference frame: "
                       + " → ".join(_cue(stage, observation, method) for observation in rule.cycle) + ".", ""])
     elif rule.kind == "powers":
-        lines.extend([f"These cases share the master recipe `{rule.recipe.render()}`. "
+        lines.extend([f"These cases share {_instruction(presentations[rule.recipe])}. "
                       "Choose its signed power using the block's concrete cue.", ""])
     else:
-        lines.extend([f"For the following cues, execute `{rule.recipe.render()}` once, "
-                      "then inspect this stage's block again.", ""])
+        lines.extend([f"For the following cues, execute {_instruction(presentations[rule.recipe])} once.", ""])
     if rule.kind in ("powers", "cycle"):
         lines.extend(["| Current cue | Signed power |", "| --- | ---: |"])
         for observation, exponent in zip(rule.observations, rule.exponents):
@@ -42,7 +88,8 @@ def _rule_lines(rule, stage, method):
     return lines
 
 
-def repertoire_guide(repertoire, path=None):
+def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None = None,
+                     face_colors=None):
     """Render full recognition coverage with shared masters and net commands.
 
     Original-loop provenance remains in the portable record. The taught words
@@ -50,42 +97,33 @@ def repertoire_guide(repertoire, path=None):
     """
     from pathlib import Path
 
+    if diagram_mode is not None:
+        from .human_diagram_render import (recognition_diagram_image, validate_diagram_mode,
+                                           validate_face_colors)
+        from .human_diagrams import recognition_stage_diagrams
+        diagram_mode = validate_diagram_mode(diagram_mode)
+        face_colors = validate_face_colors(face_colors)
+
     method, inventory = repertoire.method, repertoire.method.inventory
+    presentations, additional = _guide_instructions(repertoire, rotate_diagram=diagram_mode is not None)
     lines = ["# Reference-shape method with a shared repertoire", "",
              f"This computational method covers all **{method.group_order:,} reachable colored states** "
-             "whose bandage shape is already the declared reference shape.", "",
-             "Every full case route, repeated instruction, and recognition family has been checked. "
-             "Human memorability and ease of execution await the planned human review.", "",
-             "## Before starting", "",
-             "Restore the reference bandage shape first, and keep the fixed U/R/F/D/L/B face frame. "
-             "Shape restoration is separate work.", "",
-             "Identify each colored block by its reference cells and color pattern. "
-             "A name such as UFR denotes the upper, front, right corner; UF denotes the upper front edge. "
-             "A fused block name lists its reference member cells.", "",
-             "A cue such as `UFR/U → UBR/R` identifies the U-face-colored sticker of the reference "
-             "UFR cubie, currently on the R face at UBR. Use the reference color scheme to find it.", "",
-             "Follow the stages in order. Match the current footprint or sticker cue, execute the "
-             "listed instruction completely, and inspect the same stage again. Advance when its "
-             "solved cue appears. Rank is a progress coordinate: it strictly decreases after each "
-             "instruction, so repetition terminates.", "",
-             "Make case decisions only at whole-instruction boundaries. A power or setup/body/undo "
-             "recipe can temporarily disturb earlier solved blocks. Its complete instruction restores "
-             "them and the reference shape. Do not inspect between repetitions inside a listed power "
-             "or between pieces of a setup recipe.", "",
-             "Master names such as M1 refer to the shared words below. A negative power executes the "
-             "inverse word: reverse its turns and invert each turn. `[A, B]` means A B A⁻¹ B⁻¹; "
-             "`conj(S, A)` means S A S⁻¹. A listed rotation transfers the word through the indicated "
-             "regrip and undo; its face-only execution is already checked for this bandage. "
-             "The whole-cube regrips x, y, and z turn the cube in the directions of R, U, and F "
-             "respectively. `rotate(rho, M)` means regrip by rho, execute M in that frame, then "
-             "undo the regrip.", ""]
-    names = [next(block.name for block in inventory.blocks if block.cells == feature.cells)
-             for feature in method.initial_features if feature.kind == "solve_block"]
-    if names:
-        lines.extend(["Blocks already forced to be solved in this reference shape: " + "; ".join(names) + ".", ""])
+             "whose bandage shape is already the declared reference shape.", ""]
+    if repertoire.macros or additional:
+        lines.extend(["## Algorithms", "",
+                      "Singmaster notation uses U/R/F/D/L/B, an apostrophe "
+                      "for an inverse turn, and 2 for a half turn. Each algorithm starts and ends at "
+                      "the reference shape. Structured notation: "
+                      "`S^A` means A⁻¹ S A, `[A, B]` means A B A⁻¹ B⁻¹, and `(A)n` repeats A "
+                      "n times.", ""])
+        definitions = [(macro.id, macro.algorithm.turn_sequence, macro.algorithm.block_action)
+                       for macro in repertoire.macros]
+        definitions.extend((identifier, word, _additional_algorithm_action(method, word, rotation))
+                           for identifier, word, rotation in additional)
+        lines.extend(_algorithm_table(definitions))
     if not method.stages:
         lines.extend(["The reference group is trivial. Every reachable colored state in this reference "
-                      "shape is already solved; no master definitions are needed.", ""])
+                      "shape is already solved; no algorithms are needed.", ""])
     for stage, policy in zip(method.stages, repertoire.stages):
         block = inventory.blocks[stage.block_index]
         placed = all(case.observation[0] == stage.block_index for case in stage.cases)
@@ -95,13 +133,27 @@ def repertoire_guide(repertoire, path=None):
                       f"This stage has {stage.case_count} exact cases and {len(policy.rules)} {families}. "
                       f"It reduces the remaining possibilities from {stage.order_before:,} "
                       f"to {stage.order_after:,}.", ""])
-        if stage.feature.kind == "place_block":
-            lines.extend(["Find this colored block's footprint. Ignore its sticker orientation for this stage.", ""])
-        else:
-            lines.extend(["Find this colored block's footprint and the named reference sticker. "
-                          "The sticker cue distinguishes its observable orientations.", ""])
+        if diagram_mode is not None:
+            pictures = recognition_stage_diagrams(method, stage.number)
+            for index, case in enumerate(policy.cases, 1):
+                presentation = None if case.instruction is None else presentations[case.instruction]
+                instruction = ("Skip — already correct" if presentation is None else
+                               f"Execute {_instruction(presentation)}.")
+                variants = pictures[case.observation]
+                lines.extend([f"### Case {index}", "", instruction, ""])
+                if variants[0].orientation_independent:
+                    lines.extend(["Any shown sticker orientation belongs to this case.", ""])
+                image = recognition_diagram_image(variants, diagram_mode=diagram_mode,
+                                                  face_colors=face_colors,
+                                                  rotation="" if presentation is None else presentation.rotation)
+                lines.extend([f'![Stage {stage.number}, case {index}: {stage.block_name}]({image})', ""])
+            if stage.implied_features:
+                lines.extend(["Also correct automatically after this stage: "
+                              + "; ".join(_feature_name(feature, inventory) for feature in stage.implied_features)
+                              + ".", ""])
+            continue
         for rule in policy.rules:
-            lines.extend(_rule_lines(rule, stage, method))
+            lines.extend(_rule_lines(rule, stage, method, presentations))
         lines.extend(["### Complete cue lookup", "",
                       "Use these instructions until the solved case appears. Each row gives the next "
                       "whole instruction rather than a new word to memorize.", ""])
@@ -116,7 +168,8 @@ def repertoire_guide(repertoire, path=None):
         for case in policy.cases:
             destination = inventory.blocks[case.observation[0]]
             footprint = f"`{destination.compact_name}`"
-            instruction = "Skip — already correct" if case.instruction is None else f"`{case.instruction.render()}`"
+            instruction = ("Skip — already correct" if case.instruction is None else
+                           _instruction(presentations[case.instruction]))
             if stage.feature.kind == "place_block":
                 lines.append(f"| {footprint} | {instruction} | {case.rank} |")
             else:
@@ -134,30 +187,11 @@ def repertoire_guide(repertoire, path=None):
             lines.extend(["Also correct automatically after this stage: "
                           + "; ".join(_feature_name(feature, inventory) for feature in stage.implied_features)
                           + ".", ""])
-    if repertoire.macros:
-        lines.extend(["## Shared master definitions", "",
-                      "Learn these shared words. Singmaster notation uses U/R/F/D/L/B, an apostrophe "
-                      "for an inverse turn, and 2 for a half turn. Each master starts and ends at "
-                      "the reference shape. Its admissibility depends on the complete instruction "
-                      "listed for the current stage.", ""])
-        for macro in repertoire.macros:
-            algorithm = macro.algorithm
-            lines.extend([f"### {macro.id}", "",
-                          f"{algorithm.htm_length} face turns (HTM), {algorithm.qtm_length} quarter turns (QTM).", "",
-                          "```text", algorithm.turn_sequence or "(no moves)", "```", ""])
     if method.skipped_features:
         lines.extend(["Earlier constraints already force these requested redundant features: "
                       + "; ".join(_feature_name(feature, inventory) for feature in method.skipped_features) + ".", ""])
     lines.extend(["After the final stage every modeled corner and edge sticker is solved. "
-                  "Unmarked center spin and independent virtual-core spin are outside this model.", "",
-                  "## Witness provenance", "",
-                  "The portable repertoire stores every master's original-loop expression, complete "
-                  "expanded case routes, the generating witness basis, and the original baseline. "
-                  "These records support independent replay and coverage checks; the shared words "
-                  "above are the repertoire used by this guide.", ""])
-    for macro in repertoire.macros:
-        lines.append(f"- {macro.id}: `{macro.algorithm.expression.render()}`")
-    lines.append("")
+                  "Unmarked center spin and independent virtual-core spin are outside this model.", ""])
     guide = "\n".join(lines)
     if path is not None:
         Path(path).write_text(guide, encoding="utf-8")

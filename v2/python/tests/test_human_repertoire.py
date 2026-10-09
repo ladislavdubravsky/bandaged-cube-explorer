@@ -264,7 +264,9 @@ class HumanRepertoireTests(unittest.TestCase):
                        max_setup_macros=2, allow_symmetry=False)
         with patch("subprocess.run", side_effect=AssertionError("portable artifact work requires no GAP")):
             first = c.optimize_human_repertoire(self.fused, **options)
-            second = c.optimize_human_repertoire(self.fused, **options)
+            with patch.object(c.HumanMacroRecipe, "render", side_effect=AssertionError(
+                    "search ordering must not depend on user-facing notation")):
+                second = c.optimize_human_repertoire(self.fused, **options)
             self.assertEqual(first.to_json(), second.to_json())
             self.assertEqual(first.to_dict(), json.loads(first.to_json()))
             detached = first.metadata

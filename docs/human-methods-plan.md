@@ -338,6 +338,26 @@ and symbolic scaling remain deferred as scoped above.
 
 ### Delivery 6 — Usability and thorough human review
 
+Review entry point: [BandagedPocketCube.ipynb](../v2/examples/BandagedPocketCube.ipynb)
+now generates all recognition cases as cube diagrams. Select transparent 3D or
+opposite-corner views through `DiagramMode` and face colors before evaluation.
+Opposite-corner views mark solved blocks with light tints, the current target
+with the selected face colors, and all other blocks white. Transparent views use
+the UFR diagonal projection and color only face centers and current targets.
+Placement cases include every attainable target orientation.
+Algorithms appear in a table before stages, with turn sequences, block actions, and exact structured
+physical notation (`S^A` for conjugation) beside expanded words and without move
+counts or witness provenance. Every instruction repeats its identifier and
+complete turns; rotated instructions use diagrams in the required starting grip.
+The guide omits preparation, color legends, and repeated stage footprint instructions.
+Exact white face colors get ten thin diagonal stripes spanning each colored sticker;
+plain white hidden stickers remain unmarked.
+The review cell refreshes Python presentation modules on each evaluation,
+preventing an open kernel from regenerating obsolete guides from cached imports.
+The supplied shape has 580 shapes and 432 reference
+states; its default method has five stages and six shared masters. Human solving
+feedback and the remaining visual/usability work below are still pending.
+
 Render reference views, block names, stage goals, recognition diagrams,
 algorithm effects and worked cases using existing graphics. Explain orientation
 coordinates and whole-algorithm boundaries. Integrate Alcatraz first, then other

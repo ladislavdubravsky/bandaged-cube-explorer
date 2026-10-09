@@ -973,6 +973,61 @@ method format. `write_guide` writes the compressed guide. Read the
 [repertoire contract](../../docs/human-methods.md#share-algorithms-and-compress-rules-delivery-five)
 for budget and metric semantics.
 
+Choose `DiagramMode.OPPOSITE_CORNERS` or `DiagramMode.TRANSPARENT` when writing a
+visual guide:
+
+```python
+repertoire.write_guide("method.md", diagram_mode=c.DiagramMode.OPPOSITE_CORNERS,
+                       face_colors={"U": "white", "F": "limegreen"})
+```
+
+Every recognition case has an embedded cube picture and its next instruction.
+In opposite-corner mode, light tints identify guaranteed solved blocks, the selected face colors
+identify the current target, and all other blocks are white, including blocks
+with guaranteed placement but unfinished orientation. Initial and implied guarantees count. Placement
+cases show all possible target orientations together. Opposite-corner mode
+uses UFR and BLD views. Transparent mode looks along the UFR diagonal with an
+orthographic camera and colors only centers and current targets; every other
+sticker stays white and transparent. These diagrams need the optional `plots` extra.
+
+`face_colors` overrides any of U/R/F/D/L/B with Matplotlib colors; omitted faces
+keep the standard palette. It changes diagram colors only, preserving reference
+face labels and the complete solving policy.
+Use names directly, for example `face_colors={"B": "blue", "L": "orange"}`;
+hex colors and RGB tuples are also accepted.
+Exact white face colors receive ten thin black stripes spanning the stickers
+carrying recognition colors. Plain white hidden stickers remain unmarked; transparent
+mode marks only white centers and current targets.
+
+Each instruction includes its identifier and the complete move sequence, such
+as `M1: R U R' U'`. Rotated instructions use a diagram showing their required
+starting grip, with moves and face labels expressed in that pictured frame.
+The next case diagram supplies the next grip. Physical sticker colors and
+guaranteed block roles follow the cube through the displayed rotation.
+
+`recognition_block_roles`, `recognition_case_diagrams` and
+`recognition_stage_diagrams` expose the semantic picture data without drawing.
+`draw_cubes` accepts individual `sticker_colors` in 54-facelet URFDLB order
+(one sequence per State for a gallery) and `exterior_only=True` to omit interior
+surfaces. The **Algorithms** table precedes the stages, with **Turn sequence**,
+**Block action**, and **Structure** columns. Its structured notation shows
+exact powers, conjugates and commutators via `structured_move_notation`, alongside
+expanded turns. Preparation, color legends, repeated footprint instructions,
+move counts and witness provenance are omitted from the guide; portable
+records retain provenance for replay and validation.
+Conjugation uses `S^A = A⁻¹ S A`; nontrivial exponents are grouped, as in
+`S^(X Y Z)`. Numeric exponents still denote repeated or inverse algorithms.
+
+The BandagedPocketCube review cell refreshes rendering modules on each
+evaluation. A running kernel otherwise keeps cached imports even after the
+source files change. To refresh only presentation code while retaining puzzle
+and method objects:
+
+```python
+from bce_v2.notebook import refresh_renderers
+refresh_renderers()
+```
+
 ## Explore colored components
 
 ```python

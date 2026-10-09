@@ -624,6 +624,68 @@ minimum repertoire. The fingerprint detects record changes; the mathematical
 checks establish coverage. `write_guide` produces the
 compressed repertoire guide.
 
+To render recognition cases as cube diagrams, choose a mode before generation
+and pass it to the guide:
+
+```python
+diagram_mode = c.DiagramMode.OPPOSITE_CORNERS
+face_colors = {"U": "white", "R": "red", "F": "green",
+               "D": "yellow", "L": "orange", "B": "blue"}
+repertoire.write_guide("method.md", diagram_mode=diagram_mode, face_colors=face_colors)
+```
+
+`DiagramMode.OPPOSITE_CORNERS` gives opaque orthographic views from UFR and BLD.
+`DiagramMode.TRANSPARENT` uses an orthographic camera looking along the UFR
+diagonal. It colors only the six face-center stickers and the current target;
+other stickers stay white and transparent enough to expose rear targets. Both modes embed
+standalone PNGs for every exact case, including the already-correct case.
+Placement-only cases group all attainable orientations under one instruction.
+
+In opposite-corner mode, light tints mark blocks guaranteed fully solved before the stage,
+including initial and earlier implied guarantees. The selected face colors mark
+the current recognition target. All other blocks are white, including blocks
+whose placement is guaranteed but whose orientation remains unfinished. Roles follow
+physical block identity through its current placement, rather than whatever
+looks solved in one example. Current-stage consequences join the appropriate
+solved set in the following stage.
+Transparent mode hides those solved-piece colors to keep the view simple.
+
+`face_colors` accepts a mapping from U/R/F/D/L/B to Matplotlib colors; omitted
+faces retain the standard palette. This palette changes pictures only. Reference
+face labels, recognition cases and solving algorithms do not change.
+Ordinary color names such as `"blue"`, `"orange"`, `"gray"`, and `"white"`
+work directly, as do hex colors and RGB tuples.
+An exact white face color gets ten thin black stripes spanning each colored
+sticker so it remains distinct from plain white hidden stickers. In transparent mode this
+marks only white centers and current targets.
+
+Each case instruction includes both its algorithm identifier and its complete
+turn sequence: `M1: R U R' U'`. A rotated instruction shows the cube already in
+its required starting grip, and its turns use that pictured frame. Hold the
+cube as shown for each case; the next diagram supplies the next starting grip.
+The labels U/R/F/D/L/B in a diagram name the faces of that execution frame,
+while the colors continue to identify the same physical reference stickers.
+Recipes with incompatible nested frames receive their own algorithm definition
+with an exact expanded word, keeping every definition in **Algorithms**.
+
+The **Algorithms** section appears before the stages as a table with **Turn
+sequence**, **Block action**, and **Structure** columns. Identifiers appear
+beside their expanded turns. The guide goes directly into the stages, without
+preparation or recognition-color sections or repeated footprint instructions.
+Physical structured notation uses `S^A` to mean
+A⁻¹ S A, `[A, B]` means A B A⁻¹ B⁻¹, and `(A)n` repeats A. Compound exponents
+are parenthesized, as in `S^(X Y Z)`. For example,
+`R U' B' U R'` displays as `B'^(U R')`. The formatter detects exact written
+constructions and retains the expanded turns. Move counts and witness
+provenance are omitted from the guide; provenance remains in portable records.
+It does not commute turns or replace a word by a different action-equivalent
+algorithm. The minimal [BandagedPocketCube notebook](../v2/examples/BandagedPocketCube.ipynb)
+lets you choose the view and face colors before evaluating the shape-only pipeline.
+Its cell calls `bce_v2.notebook.refresh_renderers()` before evaluation so edits
+to the rendering code take effect in an already running kernel. Plain repeated
+imports reuse Python's cached modules. The refresh keeps existing puzzle,
+method, and enum objects valid.
+
 The [retained Delivery 5 comparison](../v2/research-results/human-repertoire-compression.md)
 records definition and rule compression against actual input policies, with
 complete-method costs and the limits used. These measurements remain

@@ -1,6 +1,7 @@
 """A concrete initial guide for certified computational human-method baselines."""
 
 from .block_actions import _CELL_POINTS, _POINTS, cell_name
+from .human_move_notation import structured_move_notation
 
 
 _FACES = {(0, 0, 1): "U", (1, 0, 0): "R", (0, -1, 0): "F",
@@ -15,6 +16,15 @@ def _sticker(point):
 def _feature_name(feature, inventory):
     slot = next(block for block in inventory.blocks if block.cells == feature.cells)
     return ("place " if feature.kind == "place_block" else "fully solve ") + slot.name
+
+
+def _algorithm_table(definitions):
+    """Render exact turn words, their physical action, and their structure."""
+    lines = ["| Turn sequence | Block action | Structure |", "| --- | --- | --- |"]
+    for identifier, word, action in definitions:
+        lines.append(f"| `{identifier}: {word or '(no moves)'}` | `{action.notation}` | "
+                     f"`{structured_move_notation(word)}` |")
+    return [*lines, ""]
 
 
 def method_guide(method):
@@ -38,26 +48,15 @@ def method_guide(method):
         "whose bandage shape is already the declared reference shape.", "",
         "The stage policies and physical algorithms have been checked exhaustively. "
         "Human memorability and ease of execution have not been reviewed; some algorithms may be long.", "",
-        "## Before starting", "",
-        "Restore the reference bandage shape first. Shape restoration is separate work. "
-        "Keep the fixed U/R/F/D/L/B face frame throughout the method.", "",
-        "Identify each colored block by its reference member cells and color pattern. "
-        "A cell name such as UFR means the upper, front, right corner; UF means the upper front edge. "
-        "A fused block name lists all of its reference member cells.", "",
-        "A sticker label such as `UFR/U` means the U-face-colored sticker on the reference UFR cubie. "
-        "An orientation cue such as `UFR/U → UBR/R` says that this same colored sticker is "
-        "currently on the R face at the UBR corner. Use the reference color scheme to identify it.", "",
-        "Follow the stages in order. At each stage inspect only its named block, match the case, "
-        "and execute the listed algorithm completely. A solved case needs no moves.", "",
-        "Algorithms may disturb earlier solved blocks and the reference shape internally. "
-        "They restore both at the end of the whole correction. Make the next case decision only then.", "",
     ])
-    if method.initial_features:
-        names = [next(block.name for block in inventory.blocks if block.cells == feature.cells)
-                 for feature in method.initial_features if feature.kind == "solve_block"]
-        if names:
-            lines.extend(["Blocks already forced to be solved in this reference shape: "
-                          + "; ".join(names) + ".", ""])
+    if method.algorithms:
+        lines.extend(["## Algorithms", "",
+                      "Singmaster notation uses U/R/F/D/L/B face turns, an apostrophe for the inverse, "
+                      "and 2 for a half turn. Structured notation preserves the same turn order: "
+                      "`S^A` means A⁻¹ S A, `[A, B]` means A B A⁻¹ B⁻¹, and `(A)n` repeats A "
+                      "n times.", ""])
+        lines.extend(_algorithm_table((algorithm.id, algorithm.turn_sequence, algorithm.block_action)
+                                      for algorithm in method.algorithms))
     if not method.stages:
         lines.extend(["The reference group is trivial: every reachable colored state in this "
                       "reference shape is already solved. No algorithms are needed.", ""])
@@ -83,7 +82,10 @@ def method_guide(method):
         anchor = points[0] if points else None
         for case in stage.cases:
             destination = inventory.blocks[case.observation[0]]
-            correction = "Skip — already correct" if case.algorithm_id is None else f"`{case.algorithm_id}`"
+            algorithm = next((algorithm for algorithm in method.algorithms
+                              if algorithm.id == case.algorithm_id), None)
+            correction = ("Skip — already correct" if case.algorithm_id is None else
+                          f"`{case.algorithm_id}: {algorithm.turn_sequence or '(no moves)'}`")
             footprint = f"`{destination.compact_name}`"
             if stage.feature.kind == "place_block":
                 lines.append(f"| {footprint} | {correction} |")
@@ -102,23 +104,6 @@ def method_guide(method):
             lines.extend(["Also correct automatically after this stage: "
                           + "; ".join(_feature_name(feature, inventory)
                                       for feature in stage.implied_features) + ".", ""])
-    lines.extend(["## Shared correction algorithms", "",
-                  "Singmaster notation uses U/R/F/D/L/B face turns, an apostrophe for the inverse, "
-                  "and 2 for a half turn. Execute each complete expanded word below.", "",
-                  "Expressions retain original-loop provenance. `[A, B]` means A B A⁻¹ B⁻¹; "
-                  "`conj(S, A)` means S A S⁻¹. A power repeats the enclosed word. "
-                  "The expanded face turns are authoritative for execution.", ""])
-    for algorithm in method.algorithms:
-        lines.extend([f"### {algorithm.id}", "",
-                      f"{algorithm.htm_length} face turns (HTM), {algorithm.qtm_length} quarter turns (QTM).", "",
-                      f"Expression: `{algorithm.expression.render()}`", "",
-                      "```text", algorithm.turn_sequence or "(no moves)", "```", ""])
-    lines.extend(["## Original loop definitions", "",
-                  "These definitions make every provenance expression self-contained. "
-                  "Each loop starts and ends at the reference shape.", ""])
-    for generator in method.generators:
-        lines.extend([f"### L{generator.id}", "", "```text",
-                      generator.turn_sequence or "(no moves)", "```", ""])
     if method.skipped_features:
         lines.extend(["Requested redundant features were omitted because earlier constraints already "
                       "force them: " + "; ".join(_feature_name(feature, inventory)

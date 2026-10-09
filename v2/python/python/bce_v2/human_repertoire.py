@@ -13,7 +13,9 @@ from pathlib import Path
 from . import State
 from ._moves import _simplified_moves
 from .human_algorithms import _metrics, _stage_groups
+from .human_diagram_modes import DiagramMode
 from .human_chains import _inverse_moves
+from .human_move_notation import _conjugation_notation
 from .human_methods import (HumanMethod, _expression_bound, _inverse, _observe,
                             _require, _then, _validate_method)
 from .isotropy import isotropy_loops
@@ -128,8 +130,17 @@ class HumanMacroRecipe:
             return f"{body}^{self.exponent}"
         if self.kind == "rotated":
             return f"rotate({self.rotation}, {self.children[0].render()})"
+        if self.kind == "conjugate":
+            setup, body = self.children
+            # Recipes store setup · body · setup^-1; right exponents use
+            # S^A = A^-1 · S · A, so their exponent is the inverse setup.
+            exponent = self.power(setup, -1)
+            return _conjugation_notation(
+                body.render(), exponent.render(),
+                body_is_atom=body.kind in ("macro", "commutator"),
+                exponent_is_atom=exponent.kind == "macro")
         a, b = (c.render() for c in self.children)
-        return f"conj({a}, {b})" if self.kind == "conjugate" else f"[{a}, {b}]"
+        return f"[{a}, {b}]"
 
     def to_dict(self):
         result = {"kind": self.kind}
@@ -142,6 +153,30 @@ class HumanMacroRecipe:
         if self.kind == "rotated":
             result["rotation"] = self.rotation
         return result
+
+
+def _recipe_ordering_text(recipe):
+    """Keep deterministic search choices independent of teaching notation.
+
+    This is the original recipe ordering key. It is intentionally separate
+    from the user-facing render so presentation changes cannot select a
+    different equal-cost method or renumber recognition families.
+    """
+    if recipe.kind == "macro":
+        return recipe.macro_id
+    if recipe.kind == "sequence":
+        return " ".join(_recipe_ordering_text(child) for child in recipe.children) or "()"
+    if recipe.kind == "power":
+        child = recipe.children[0]
+        body = _recipe_ordering_text(child)
+        if child.kind != "macro":
+            body = f"({body})"
+        return f"{body}^{recipe.exponent}"
+    if recipe.kind == "rotated":
+        return f"rotate({recipe.rotation}, {_recipe_ordering_text(recipe.children[0])})"
+    first, second = (_recipe_ordering_text(child) for child in recipe.children)
+    return (f"conj({first}, {second})" if recipe.kind == "conjugate"
+            else f"[{first}, {second}]")
 
 
 @dataclass(frozen=True)
@@ -230,9 +265,16 @@ class HumanRepertoire:
         from .human_repertoire_io import repertoire_from_dict
         return repertoire_from_dict(record)
 
-    def write_guide(self, path=None):
+    def write_guide(self, path=None, *, diagram_mode: DiagramMode | None = None, face_colors=None):
+        """Write a guide with optional case diagrams and face-palette overrides.
+
+        ``face_colors`` maps U/R/F/D/L/B to Matplotlib colors and affects
+        diagrams only. Omitted faces retain the standard palette. Leave
+        ``diagram_mode`` unset for a text guide without plotting dependencies,
+        or choose ``DiagramMode.OPPOSITE_CORNERS`` / ``DiagramMode.TRANSPARENT``.
+        """
         from .human_repertoire_render import repertoire_guide
-        guide = repertoire_guide(self)
+        guide = repertoire_guide(self, diagram_mode=diagram_mode, face_colors=face_colors)
         if path is not None:
             Path(path).write_text(guide, encoding="utf-8")
         return guide
@@ -307,7 +349,7 @@ def _rules(number, cases, method_stage, macros, actions, current):
                               if instruction.kind == "power" else (instruction, 1))
             families[body].append((case, exponent))
     rules = []
-    for body, entries in sorted(families.items(), key=lambda item: item[0].render()):
+    for body, entries in sorted(families.items(), key=lambda item: _recipe_ordering_text(item[0])):
         cycle = ()
         if (len(entries) == method_stage.case_count - 1 and
                 all(c.next_observation == method_stage.solved_observation for c, _ in entries)):
@@ -474,7 +516,8 @@ class _Context:
                     candidate = cost + template.algorithm.htm_length, steps + 1
                     old = labels.get(source)
                     if old is None or candidate < old or (candidate == old and
-                            template.recipe.render() < parents[source][0].recipe.render()):
+                            _recipe_ordering_text(template.recipe) <
+                            _recipe_ordering_text(parents[source][0].recipe)):
                         labels[source] = candidate
                         parents[source] = template, observation
                         heappush(queue, (*candidate, source))

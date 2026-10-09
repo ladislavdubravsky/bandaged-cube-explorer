@@ -494,6 +494,12 @@ from .human_repertoire import (  # noqa: E402
     optimize_human_repertoire,
 )
 from .human_repertoire_io import load_human_repertoire  # noqa: E402
+from .human_diagrams import (  # noqa: E402
+    HumanRecognitionDiagram, recognition_block_roles,
+    recognition_case_diagrams, recognition_stage_diagrams,
+)
+from .human_move_notation import structured_move_notation  # noqa: E402
+from .human_diagram_modes import DiagramMode  # noqa: E402
 
 __all__ = [
     "Shape", "State", "ShapeGraph", "BlockedMoveError", "CELL_NAMES",
@@ -517,5 +523,7 @@ __all__ = [
     "HumanMacroRecipe", "HumanRecognitionRule", "HumanRepertoire", "HumanRepertoireApplication",
     "HumanRepertoireCase", "HumanRepertoireMacro", "HumanRepertoireStage", "HumanRepertoireStep",
     "optimize_human_repertoire", "load_human_repertoire",
+    "HumanRecognitionDiagram", "recognition_block_roles", "recognition_case_diagrams",
+    "recognition_stage_diagrams", "structured_move_notation", "DiagramMode",
     "draw_cubes", "load_puzzle", "save_puzzle", "save_graph",
 ] + list(CELL_NAMES)

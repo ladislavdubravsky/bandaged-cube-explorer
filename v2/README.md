@@ -16,6 +16,20 @@ research session with inline galleries. The workspace settings select
 `v2/.venv` and activate terminals automatically. Install the recommended Python
 and Jupyter extensions and choose the `v2/.venv` notebook kernel once if prompted.
 
+[BandagedPocketCube.ipynb](examples/BandagedPocketCube.ipynb) is a minimal
+shape-only example: one cell displays exact counts, loop-generator effects,
+and a reusable human-style solution with shared algorithms and recognition
+diagrams. Set `diagram_mode` to `c.DiagramMode.OPPOSITE_CORNERS` or
+`c.DiagramMode.TRANSPARENT` and edit `face_colors` before evaluating its cell.
+Face colors accept names such as `"blue"` and `"orange"`. Opposite-corner mode
+shows solved blocks in light tints and the current target in the selected face
+colors. Transparent mode looks along the UFR diagonal and colors only centers
+and current targets; other stickers stay white.
+Each instruction repeats its algorithm identifier and moves beside a diagram
+in the required starting grip. The algorithms appear in a compact table before
+the stages. The cell refreshes rendering code on each evaluation so an open
+kernel picks up display changes made during review.
+
 [PuzzleSignatures.ipynb](examples/PuzzleSignatures.ipynb) explores the complete
 non-isomorphic atlas by block inventory. Its saved SQLite database supports
 queries such as puzzles containing a 222, maximum domino-only puzzles, and every

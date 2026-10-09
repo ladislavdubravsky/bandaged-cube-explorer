@@ -125,7 +125,7 @@ def _block_faces(indices):
                 yield (axis, direction, plane), vertices
 
 
-def _block_mesh(indices, transparent, visible_planes=None):
+def _block_mesh(indices, transparent, visible_planes=None, exterior_only=False):
     faces = []
     edges = Counter()
     # Hidden outlines can appear through opaque faces under matplotlib's depth
@@ -133,6 +133,8 @@ def _block_mesh(indices, transparent, visible_planes=None):
     if visible_planes is None:
         visible_planes = {_FACE_PLANES[face] for face in "UFR"}
     for plane, vertices in _block_faces(indices):
+        if exterior_only and plane not in _FACE_PLANES.values():
+            continue
         if not transparent and plane not in visible_planes:
             continue
         faces.append(vertices)
@@ -142,14 +144,23 @@ def _block_mesh(indices, transparent, visible_planes=None):
     return faces, outlines
 
 
-def _sticker_colors(state, palette):
+def _sticker_colors(state, palette, overrides=None, rotation=None):
     """Color each exterior cell face without changing its block geometry."""
+    from .block_actions import _CELL_IMAGES, _NORMALS, _rotate
+
     facelets = state.facelets
     result = {}
     for face_index, face in enumerate("URFDLB"):
-        axis, _, plane = _FACE_PLANES[face]
+        displayed_face = face
+        if rotation is not None:
+            normal = _rotate(rotation, _NORMALS[face])
+            displayed_face = next(name for name, vector in _NORMALS.items() if vector == normal)
+        axis, _, plane = _FACE_PLANES[displayed_face]
         for sticker, cell in enumerate(_FACE_CELLS[face]):
-            result[(axis, plane, cell)] = palette[facelets[9 * face_index + sticker]]
+            index = 9 * face_index + sticker
+            if rotation is not None:
+                cell = _CELL_IMAGES[rotation][cell]
+            result[(axis, plane, cell)] = (palette[facelets[index]] if overrides is None else overrides[index])
     return result
 
 
@@ -165,7 +176,8 @@ def _mesh_color(vertices, stickers, default):
 
 
 def draw_cubes(cubes, *, alpha=1, color=(1, 1, 1), colors=False, size=4,
-               linewidth=2, ncol=3, views=None):
+               linewidth=2, ncol=3, views=None, sticker_colors=None, exterior_only=False,
+               rotation=""):
     """Return a matplotlib Figure containing one shape or a gallery.
 
     Use matplotlib.pyplot.show() for a script, or display the returned figure
@@ -179,6 +191,15 @@ def draw_cubes(cubes, *, alpha=1, color=(1, 1, 1), colors=False, size=4,
     BLD is UFR rotated a half-turn about the FL--BR edge-center axis, including
     camera roll. Both views together expose every sticker. ncol limits panels
     per row; color supplies the body color and internal faces for transparency.
+
+    sticker_colors overrides individual URFDLB facelets: pass 54 matplotlib
+    colors for one State, or one 54-color sequence per State for a gallery.
+    It enables colored drawing. exterior_only=True omits internal block faces,
+    keeping transparent recognition pictures legible without interior surfaces.
+
+    rotation is a whole-cube x/y/z word describing the pictured starting grip.
+    Geometry and physical sticker colors rotate together; face labels identify
+    local execution faces. The original Shape or State is never changed.
     """
     if not 0 <= alpha <= 1:
         raise ValueError("alpha must lie between zero and one")
@@ -186,6 +207,11 @@ def draw_cubes(cubes, *, alpha=1, color=(1, 1, 1), colors=False, size=4,
         raise ValueError("ncol must be a positive integer")
     if size <= 0 or linewidth < 0:
         raise ValueError("size must be positive and linewidth nonnegative")
+    if type(exterior_only) is not bool:
+        raise TypeError("exterior_only must be a boolean")
+    from .block_actions import _CELL_IMAGES
+    from .loop_rotations import rotation_tuple
+    display_rotation = rotation_tuple(rotation)
     corner_views = views is not None
     if views is None:
         views = ("UFR",)
@@ -195,10 +221,10 @@ def draw_cubes(cubes, *, alpha=1, color=(1, 1, 1), colors=False, size=4,
         views = tuple(views)
     if not views or any(view not in _VIEWS for view in views):
         raise ValueError("views must contain UFR and/or BLD")
-    colored = colors is not False and colors is not None
-    if colored and colors is not True and not isinstance(colors, Mapping):
+    colored = (colors is not False and colors is not None) or sticker_colors is not None
+    if colors is not False and colors is not None and colors is not True and not isinstance(colors, Mapping):
         raise TypeError("colors must be True, False, or a palette mapping")
-    palette = _palette(None if colors is True else colors) if colored else None
+    palette = _palette(colors if isinstance(colors, Mapping) else None) if colored else None
     if isinstance(cubes, (Shape, State)):
         values = [cubes]
     else:
@@ -211,6 +237,12 @@ def draw_cubes(cubes, *, alpha=1, color=(1, 1, 1), colors=False, size=4,
         raise ValueError("a gallery requires at least one shape")
     if colored and any(not isinstance(value, State) for value in values):
         raise TypeError("colored drawing requires State inputs")
+    overrides = None
+    if sticker_colors is not None:
+        overrides = ((tuple(sticker_colors),) if len(values) == 1 else
+                     tuple(tuple(row) for row in sticker_colors))
+        if len(overrides) != len(values) or any(len(row) != 54 for row in overrides):
+            raise ValueError("sticker_colors needs 54 colors for each State")
     try:
         import matplotlib.pyplot as plt
         from matplotlib.colors import to_rgb
@@ -219,11 +251,13 @@ def draw_cubes(cubes, *, alpha=1, color=(1, 1, 1), colors=False, size=4,
         raise ImportError("install bandaged-cube-explorer-v2[plots] to draw shapes") from error
     if colored:
         palette = {letter: to_rgb(value) for letter, value in palette.items()}
-    panels = [(value, view) for value in values for view in views]
+    if overrides is not None:
+        overrides = tuple(tuple(to_rgb(color) for color in row) for row in overrides)
+    panels = [(value, view, value_index) for value_index, value in enumerate(values) for view in views]
     columns = min(ncol, len(panels))
     rows = ceil(len(panels) / columns)
     figure = plt.figure(figsize=(columns * size, rows * size))
-    for index, (value, view) in enumerate(panels):
+    for index, (value, view, value_index) in enumerate(panels):
         axis = figure.add_subplot(rows, columns, index + 1, projection="3d")
         axis.set_axis_off()
         axis.set(xlim=(0, 3), ylim=(0, 3), zlim=(0, 3))
@@ -235,27 +269,34 @@ def draw_cubes(cubes, *, alpha=1, color=(1, 1, 1), colors=False, size=4,
         else:
             axis.view_init(elev=25, azim=-55)
         visible_planes = {_FACE_PLANES[face] for face in visible_faces}
-        labels = shape(value).labels
-        stickers = _sticker_colors(value, palette) if colored else None
+        source_labels = shape(value).labels
+        labels = [None] * 27
+        for source, destination in enumerate(_CELL_IMAGES[display_rotation]):
+            labels[destination] = source_labels[source]
+        current_overrides = None if overrides is None else overrides[value_index]
+        stickers = _sticker_colors(value, palette, current_overrides, display_rotation) if colored else None
         for block in sorted(set(labels)):
             faces, lines = _block_mesh(
                 [cell for cell, label in enumerate(labels) if label == block],
-                alpha < 1, visible_planes)
+                alpha < 1, visible_planes, exterior_only)
             if faces:
-                axis.add_collection3d(Poly3DCollection(
+                surface = Poly3DCollection(
                     faces, facecolors=[_mesh_color(face, stickers, color) for face in faces]
                     if colored else color, alpha=alpha,
                     edgecolors="#aaaaaa" if colored else "none",
-                    linewidths=0.4 if colored else 0))
+                    linewidths=0.4 if colored else 0)
+                surface.set_gid(f"cube-{index}-block-{block}-surface")
+                axis.add_collection3d(surface)
             if lines:
-                axis.add_collection3d(Line3DCollection(
-                    lines, colors="black", linewidths=linewidth, alpha=alpha))
+                outline = Line3DCollection(lines, colors="black", linewidths=linewidth, alpha=alpha)
+                outline.set_gid(f"cube-{index}-block-{block}-outline")
+                axis.add_collection3d(outline)
         if colored:
             for face in visible_faces:
                 coordinate, direction, plane = _FACE_PLANES[face]
                 position = [1.5] * 3
                 position[coordinate] = plane + direction * 0.01
-                rgb = palette[face]
+                rgb = stickers[(coordinate, plane, _FACE_CELLS[face][4])]
                 luminance = sum(a * b for a, b in zip(rgb, (0.2126, 0.7152, 0.0722)))
                 axis.text(*position, face, ha="center", va="center",
                           color="white" if luminance < 0.45 else "black", zorder=10000)
