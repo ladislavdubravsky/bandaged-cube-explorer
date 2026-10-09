@@ -1,8 +1,10 @@
 # Human solving methods: evolving implementation plan
 
-Updated 9 October 2026. Deliveries 0–5 are complete; Delivery 6 is next.
-Thorough human review stays in Delivery 6. Revise later deliveries as experiments
-provide evidence. This is a working plan, not a promise of a particular optimizer.
+Updated 9 October 2026. Deliveries 0–5 are complete. Initial Delivery 6 review
+accepted the presentation but preferred the reduced isotropy generators to the
+learned algorithms. Further human-quality optimization is shelved. Revise later
+deliveries as experiments provide evidence. This is a working plan, not a
+promise of a particular optimizer.
 
 The original `/tmp/bandaged-cube-human-methods-plan.md` was missing at the start
 of Delivery 4. This repository copy restores the plan from the delivered code,
@@ -97,6 +99,9 @@ selection.method.save("selected-method.json")
 selection.save("chain-search.json")
 restored = c.load_human_method("method.json")
 result = restored.apply(state)  # optional consumer; no GAP or new factorization
+repertoire = c.generator_human_repertoire(selection.method)
+repertoire.write_guide("generator-method.md")
+repertoire.save("generator-repertoire.json")
 ```
 
 Artifacts retain reference specification/inventory/frame, exact group facts,
@@ -354,9 +359,31 @@ Exact white face colors get ten thin diagonal stripes spanning each colored stic
 plain white hidden stickers remain unmarked.
 The review cell refreshes Python presentation modules on each evaluation,
 preventing an open kernel from regenerating obsolete guides from cached imports.
-The supplied shape has 580 shapes and 432 reference
-states; its default method has five stages and six shared masters. Human solving
-feedback and the remaining visual/usability work below are still pending.
+The supplied shape has 580 shapes and 432 reference states. The original
+optimized example taught six shared masters over five stages.
+
+**Initial human review and resulting direction.** The user accepted the
+presentation, but found the generated algorithms too random and complicated to
+remember. For this puzzle the three reduced isotropy generators were easier to
+use with powers and cube rotations. Preserve the algorithm-optimization work,
+but shelve further improvements for now. The notebook now uses
+`generator_human_repertoire(selection.method)` to retain the selected five-stage
+chain (orders 432 → 72 → 18 → 6 → 3 → 1), while expressing every correction using
+only those three original masters in analysis order. No additional learned
+definitions are introduced. Complete corrections restore earlier features;
+their constituent generator applications may temporarily disturb them.
+
+The constructor also accepts a reference shape, block analysis or prepared
+stage plan. Direct shape input skips word discovery and chain-quality search
+and uses the requested strategy or explicit features with reduced-generator
+group witnesses. It retains exact finite-group preparation and an optional
+element cap. Existing guide, diagrams, recognition, application and portable
+save/load APIs remain available; loaded artifacts apply without GAP. This
+option provides a fixed vocabulary, without a shorter-word or human-quality
+claim. Shape restoration and symbolic scaling remain deferred.
+
+**Deferred review ideas.** The following are retained as possible work when
+human-quality improvements resume; they are not active delivery obligations.
 
 Render reference views, block names, stage goals, recognition diagrams,
 algorithm effects and worked cases using existing graphics. Explain orientation
@@ -366,7 +393,8 @@ preferred algorithms with rebuilt/revalidated remaining stages. Gather actual
 solving feedback on ambiguous cases, awkward execution and memory. Revise
 objectives using that evidence. Keep certificates in optional research detail.
 
-Acceptance: a person follows the guide from multiple unseen legal root states
+Broader review acceptance: a person follows the guide from multiple unseen
+legal root states
 without per-scramble factorization; include difficult cases and document human
 review separately from exhaustive computational proof. Move this earlier only
 if Delivery 4/5 choices cannot be assessed meaningfully without it.

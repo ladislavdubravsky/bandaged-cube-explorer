@@ -106,7 +106,7 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
 
     method, inventory = repertoire.method, repertoire.method.inventory
     presentations, additional = _guide_instructions(repertoire, rotate_diagram=diagram_mode is not None)
-    lines = ["# Reference-shape method with a shared repertoire", "",
+    lines = ["# Solution from solved shape", "",
              f"This computational method covers all **{method.group_order:,} reachable colored states** "
              "whose bandage shape is already the declared reference shape.", ""]
     if repertoire.macros or additional:

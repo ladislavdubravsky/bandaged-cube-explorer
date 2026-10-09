@@ -547,24 +547,30 @@ class _Context:
             if c.algorithm_id is not None else 0) for c in stage.cases) for stage in self.method.stages)
 
     def compile(self, policies):
-        used = {i for cases in policies for c in cases for i in c.recipe.macro_ids}
-        macros = tuple(m for m in self.macros if m.id in used)
-        stages, rules, algorithms = [], [], []
-        for stage, cases, (current, _) in zip(self.method.stages, policies, self.groups):
-            compiled = []
-            for original, case in zip(stage.cases, cases):
-                identifier = None
-                if case.instruction is not None:
-                    identifier = f"A{len(algorithms) + 1}"
-                    algorithms.append(_build_algorithm(case.recipe, macros, self.method, identifier))
-                compiled.append(replace(original, algorithm_id=identifier))
-            stages.append(replace(stage, cases=tuple(compiled)))
-            rules.append(HumanRepertoireStage(stage.number, cases,
-                _rules(stage.number, cases, stage, macros, self.actions, (self.method, current))))
-        method = _validate_method(replace(self.method, algorithms=tuple(algorithms), stages=tuple(stages)),
-                                  complete_loops=self.loops)
-        metrics = _repertoire_metrics(method, macros, tuple(rules), self.actions)
-        return method, macros, tuple(rules), metrics
+        return _compile_policies(self.method, self.macros, policies, self.actions,
+                                 self.groups, self.loops)
+
+
+def _compile_policies(baseline, definitions, policies, actions, groups, loops):
+    """Project complete named recipes into the shared method and rule format."""
+    used = {i for cases in policies for c in cases for i in c.recipe.macro_ids}
+    macros = tuple(m for m in definitions if m.id in used)
+    stages, rules, algorithms = [], [], []
+    for stage, cases, (current, _) in zip(baseline.stages, policies, groups):
+        compiled = []
+        for original, case in zip(stage.cases, cases):
+            identifier = None
+            if case.instruction is not None:
+                identifier = f"A{len(algorithms) + 1}"
+                algorithms.append(_build_algorithm(case.recipe, macros, baseline, identifier))
+            compiled.append(replace(original, algorithm_id=identifier))
+        stages.append(replace(stage, cases=tuple(compiled)))
+        rules.append(HumanRepertoireStage(stage.number, cases,
+            _rules(stage.number, cases, stage, macros, actions, (baseline, current))))
+    method = _validate_method(replace(baseline, algorithms=tuple(algorithms), stages=tuple(stages)),
+                              complete_loops=loops)
+    metrics = _repertoire_metrics(method, macros, tuple(rules), actions)
+    return method, macros, tuple(rules), metrics
 
 
 def _repertoire_metrics(method, macros, stages, actions):
@@ -844,5 +850,10 @@ def _validate_repertoire(repertoire, *, complete_loops=None):
         _require(rules_stage.rules == expected, "recognition families omit, overlap or misdescribe cases")
     _require(used == set(macros), "repertoire contains hidden or unused master definitions")
     actual = _repertoire_metrics(method, repertoire.macros, repertoire.stages, actions)
-    _validate_metadata(repertoire.metadata, actual, _baseline_metrics(baseline, actions))
+    before = _baseline_metrics(baseline, actions)
+    if "basis" in repertoire.metadata:
+        from .human_generator_repertoire import _validate_generator_metadata
+        _validate_generator_metadata(repertoire, actual, before)
+    else:
+        _validate_metadata(repertoire.metadata, actual, before)
     return replace(repertoire, baseline=baseline, method=method)

@@ -494,6 +494,7 @@ from .human_repertoire import (  # noqa: E402
     optimize_human_repertoire,
 )
 from .human_repertoire_io import load_human_repertoire  # noqa: E402
+from .human_generator_repertoire import generator_human_repertoire  # noqa: E402
 from .human_diagrams import (  # noqa: E402
     HumanRecognitionDiagram, recognition_block_roles,
     recognition_case_diagrams, recognition_stage_diagrams,
@@ -522,7 +523,7 @@ __all__ = [
     "HumanChainCandidate", "HumanChainSearch", "select_human_chain",
     "HumanMacroRecipe", "HumanRecognitionRule", "HumanRepertoire", "HumanRepertoireApplication",
     "HumanRepertoireCase", "HumanRepertoireMacro", "HumanRepertoireStage", "HumanRepertoireStep",
-    "optimize_human_repertoire", "load_human_repertoire",
+    "optimize_human_repertoire", "load_human_repertoire", "generator_human_repertoire",
     "HumanRecognitionDiagram", "recognition_block_roles", "recognition_case_diagrams",
     "recognition_stage_diagrams", "structured_move_notation", "DiagramMode",
     "draw_cubes", "load_puzzle", "save_puzzle", "save_graph",

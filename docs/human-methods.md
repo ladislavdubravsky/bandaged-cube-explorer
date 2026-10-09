@@ -3,8 +3,10 @@
 This document fixes the initial semantics for milestone six and describes the
 reproducible baseline investigation, stage planner, complete computational
 method compiler, bounded algorithm improvement, automatic chain selection and
-shared algorithm repertoires with verified compressed rules. Human review
-remains future work.
+shared algorithm repertoires with verified compressed rules. Initial human
+review accepted the presentation but found the learned algorithms difficult to
+remember. Further algorithm-quality optimization is shelved; the review
+notebook now uses only the reduced isotropy generators as its taught vocabulary.
 A **puzzle solution** supplies a reusable
 algorithm repertoire and recognition and application rules for every reachable
 scramble in its declared domain. An algorithm library or a subgroup chain alone
@@ -132,8 +134,8 @@ The implemented method compiler additionally reports:
 A completed chain investigation with exhaustive subgroup checks is still only
 `chain_structure_only` evidence. The method compiler adds and checks every case
 correction before claiming complete coverage. A complete computational method
-still has unreviewed human quality. Algorithm-search reports and future human
-review report their evidence independently of coverage.
+does not establish human quality. Algorithm-search reports and human review
+report their evidence independently of coverage.
 
 No resource cutoff proves unreachability. A generated method must retain
 complete witnessed fallbacks when optional algorithm improvement is bounded,
@@ -340,8 +342,8 @@ guide explains the reference convention, footprint/sticker recognition cues,
 stage progress, complete case tables, shared algorithm definitions and physical
 move sequences.
 A cap stop produces an incomplete report rather than a claimed solution.
-The current guide is a computational baseline; illustrations and human review
-remain later work.
+This guide is a computational baseline. For visual recognition cases, use the
+repertoire guide described below. Human review is separate from coverage.
 
 ## Improve stage algorithms: delivery three
 
@@ -513,8 +515,8 @@ are outside the additional-method budget and remain available when exploration
 is disabled. Discovery settings retain their separate Delivery 3 bounds.
 Exact preparation, certification and completed-method evaluation are outside
 these quality-search bounds. Reports distinguish exhausted bounds from
-completed coverage, without a global optimum claim. Human review remains
-scheduled for Delivery 6.
+completed coverage, without a global optimum claim. Delivery 6 records human
+review separately from these computational scores.
 
 `HumanChainSearch` exposes the original raw BFS `baseline`, selected `method`, immutable
 `candidates`, `frontier` candidate IDs, `selected_id`, copied `metadata` and
@@ -534,6 +536,52 @@ the larger repertoire accompanying shorter execution. Complete Alcatraz
 [execution](../v2/research-results/alcatraz-execution-method.md) and
 [recognition](../v2/research-results/alcatraz-recognition-method.md) guides are
 available with independently loadable JSON artifacts.
+
+## Use the reduced generators as the taught vocabulary
+
+`c.generator_human_repertoire` generates the same stage-by-stage guide and
+recognition diagrams using only the reduced isotropy generators as master
+algorithms. It accepts a reference shape, existing block analysis, prepared
+stage plan, or completed `HumanMethod`:
+
+```python
+repertoire = c.generator_human_repertoire(shape, max_group_elements=10_368)
+repertoire.write_guide("method.md", diagram_mode=c.DiagramMode.TRANSPARENT,
+                       face_colors={"U": "white", "F": "green"})
+repertoire.save("generator-repertoire.json")
+loaded = c.load_human_repertoire("generator-repertoire.json")
+result = loaded.apply(state)  # optional; no GAP or new factorization
+```
+
+```python
+generator_human_repertoire(
+    initial, *, strategy="fully_solve_each_block", features=None,
+    max_group_elements=None, gap_executable="gap", timeout=None, root=None,
+)
+```
+
+For an existing selected method, use
+`c.generator_human_repertoire(selection.method)`. This retains the chosen stage
+features and order, while rebuilding its corrections from the reduced
+generators. A direct shape input uses the declared strategy or explicit
+`features` and skips algorithm discovery and chain-quality search. Preparation
+still uses exact finite-group enumeration, with an optional group-element cap.
+
+The **Algorithms** table contains exactly `M1` through `Mn`, matching the
+reduced generators in analysis order. Each case instruction is a combination
+of those masters, their inverses and powers; no extra learned algorithm is
+introduced. Executing the complete correction restores all features protected
+by earlier stages. Individual master applications may temporarily disturb
+them. The existing guide, recognition, application and portable-artifact APIs
+work unchanged, and loading or applying a saved repertoire needs no GAP.
+
+The BandagedPocketCube review notebook retains its selected five-stage chain
+but teaches just three masters. These are the same three reduced generators
+shown above the solution. The generator vocabulary does not promise shorter
+face-turn words or a more memorable method for every bandage. It implements
+the user's preference for fewer definitions without changing the presentation.
+The optimizer below remains available for experiments; further improvements
+to its human-quality objectives are currently shelved.
 
 ## Share algorithms and compress rules: delivery five
 
@@ -597,7 +645,8 @@ length are computational memory proxies. Original leaf costs are recorded
 separately, and `rule_count` counts compressed rule families rather than
 observation cases. The report retains candidates, a Pareto frontier and the
 selected candidate, without claiming a minimum repertoire or human
-memorability. Human review remains scheduled for Delivery 6.
+memorability. The initial Delivery 6 review preferred the reduced-generator
+vocabulary described above.
 
 All integer quality budgets accept zero. `max_trials` counts attempted master
 removals, including unreachable and quality-rejected proposals. `max_recipes`
@@ -689,7 +738,8 @@ method, and enum objects valid.
 The [retained Delivery 5 comparison](../v2/research-results/human-repertoire-compression.md)
 records definition and rule compression against actual input policies, with
 complete-method costs and the limits used. These measurements remain
-computational evidence pending human review.
+computational evidence; the initial human review found the learned vocabulary
+less practical than the reduced generators for BandagedPocketCube.
 
 ## Generate a method from the command line
 
@@ -872,9 +922,11 @@ evidence that either chain has a better algorithm repertoire.
 
 ## Later deliveries
 
-1. **Human review and visual integration: Delivery 6.** Explain cases with
-   the existing renderers and notebooks, record difficult examples and solving
-   experience, and adjust computational quality preferences using that evidence.
+1. **Human review and visual integration: Delivery 6.** Presentation is accepted,
+   and the review notebook uses the reduced-generator vocabulary. Keep the
+   algorithm-quality experiments available but shelve further improvements
+   until new solving feedback warrants them. Broader usability review remains
+   separate from exhaustive coverage checks.
 2. **Symbolic preparation for larger groups.** Use standard stabilizers,
    orbits and transversals with original-loop witnesses. Certify subgroup
    indices, cases and terminal triviality without enumerating all of `H`.

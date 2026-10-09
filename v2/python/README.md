@@ -899,7 +899,7 @@ counts first. Case counts include the solved observation. The report retains
 the Pareto frontier over these eight dimensions and all controls; a selected
 chain may exchange worst-case length for mean length or simpler recognition.
 This is bounded computational selection without a global optimum or human
-memorability claim. Human review remains Delivery 6.
+memorability claim. Delivery 6 records human review separately from these scores.
 
 The immutable `HumanChainSearch` exposes the original raw BFS `baseline`, `method`, `candidates`,
 `frontier` IDs, `selected_id`, copied `metadata` and `status`. A candidate has
@@ -910,6 +910,43 @@ format. A preparation cap returns `limit_reached` with a partial method and
 no candidates, while quality-search bounds retain completed/certified methods.
 Read the [chain-selection contract](../../docs/human-methods.md#select-an-algorithm-aware-chain-delivery-four)
 for exact objective and budget semantics.
+
+## Build a guide using only reduced isotropy generators
+
+Use the reduced generating set as the complete taught vocabulary while retaining
+the stage guide, diagrams, recognition and application interfaces:
+
+```python
+repertoire = c.generator_human_repertoire(shape, max_group_elements=10_368)
+# Or preserve the features and order of an existing selected method:
+repertoire = c.generator_human_repertoire(selection.method)
+repertoire.write_guide("method.md", diagram_mode=c.DiagramMode.TRANSPARENT,
+                       face_colors={"U": "white", "F": "green"})
+repertoire.save("generator-repertoire.json")
+loaded = c.load_human_repertoire("generator-repertoire.json")
+result = loaded.apply(state)
+```
+
+`generator_human_repertoire(initial, *, strategy="fully_solve_each_block",
+features=None, max_group_elements=None, gap_executable="gap", timeout=None,
+root=None)` accepts a shape, block analysis, prepared stage plan, or completed
+`HumanMethod`. Passing a method preserves its stage features and order but
+rebuilds correction words using the reduced generator set. Shape inputs use
+the requested strategy or explicit features. This path skips algorithm
+discovery and chain-quality search, but still enumerates the exact finite
+group; `max_group_elements` is an optional preparation cap.
+
+Exactly `M1` through `Mn` are taught, in reduced-generator analysis order.
+Cases use combinations of those masters, inverses and powers, with no extra
+learned definitions. Earlier stage features are restored at each whole
+correction's endpoint; intermediate master applications may disturb them.
+Saved repertoires use the existing format and load and apply without GAP.
+
+The BandagedPocketCube review notebook uses this path with its existing five
+stages and three reduced generators. Initial human review accepted the
+presentation and preferred this smaller vocabulary to the optimized algorithms.
+The optimizer below remains available; further human-quality improvements are
+shelved. This mode makes no shorter-word or human-memorability claim.
 
 ## Share a taught repertoire and verified recognition rules
 
@@ -950,8 +987,8 @@ execution/memory tradeoff; QTM is reported without the same guarantee.
 The Pareto dimensions are master count, master-definition HTM, mean HTM,
 worst HTM and rule count. `preference="memory"` uses that lexicographic order;
 `"execution"` puts mean/worst HTM first. These are computational proxies,
-without a minimum-repertoire or human-memorability claim. Review remains
-Delivery 6.
+without a minimum-repertoire or human-memorability claim. Initial Delivery 6
+review preferred the reduced-generator vocabulary described above.
 
 All integer budgets accept zero. `max_trials` bounds attempted master removals,
 including rejected or unreachable trials. `max_recipes` counts new proposals,

@@ -18,8 +18,11 @@ and Jupyter extensions and choose the `v2/.venv` notebook kernel once if prompte
 
 [BandagedPocketCube.ipynb](examples/BandagedPocketCube.ipynb) is a minimal
 shape-only example: one cell displays exact counts, loop-generator effects,
-and a reusable human-style solution with shared algorithms and recognition
-diagrams. Set `diagram_mode` to `c.DiagramMode.OPPOSITE_CORNERS` or
+and a reusable human-style solution using only the reduced isotropy generators,
+with the existing stage plan and recognition diagrams. The notebook calls
+`c.generator_human_repertoire(selection.method)`, so each correction is a
+combination of the three generators shown above it. Set `diagram_mode` to
+`c.DiagramMode.OPPOSITE_CORNERS` or
 `c.DiagramMode.TRANSPARENT` and edit `face_colors` before evaluating its cell.
 Face colors accept names such as `"blue"` and `"orange"`. Opposite-corner mode
 shows solved blocks in light tints and the current target in the selected face
@@ -30,6 +33,15 @@ in the required starting grip. The algorithms appear in a compact table before
 the stages. The cell refreshes rendering code on each evaluation so an open
 kernel picks up display changes made during review.
 
+For a direct shape-to-guide pipeline, call
+`c.generator_human_repertoire(shape)`; this skips algorithm discovery and
+chain-quality search. Passing an existing method retains its chosen stage
+features and order. Whole corrections restore earlier stage features even if
+individual generator applications temporarily disturb them. Repertoire save,
+load and application work with the existing portable format. The algorithm
+optimizers remain available, but further human-quality improvements are shelved
+after the initial review preferred the smaller generator vocabulary.
+
 [PuzzleSignatures.ipynb](examples/PuzzleSignatures.ipynb) explores the complete
 non-isomorphic atlas by block inventory. Its saved SQLite database supports
 queries such as puzzles containing a 222, maximum domino-only puzzles, and every
@@ -37,7 +49,7 @@ signature with its class count. The [signature guide](../docs/block-signatures.m
 explains the 1,735 full-atlas signatures, 1,732 filtered signatures, and types
 distinguishing center/core placement, including 221Core, 321Core, and BigClock.
 
-The Python package is the primary research interface. [Alcatraz.ipynb](examples/Alcatraz.ipynb) combines shape exploration, facelet input, direct colored solving, loop generators with exact block actions and decorated cycles, exact group counts, colored distance profiles, and farthest-state views. [MostSignaturesCube.ipynb](examples/MostSignaturesCube.ipynb) uses loop-group analysis to count the colored states of the puzzle with the most shapes, with the same reference-block inventories and generator effects, together with a short colored solve. The [human-method compiler](../docs/human-methods.md) now turns a reference shape into exact stabilizer stages, a complete reusable case policy, legal correction algorithms, portable JSON and a Markdown guide. Its precompiled policy handles every reachable colored state already in that shape without factoring each scramble. Bounded stage-algorithm improvement supplements this policy with native-loop, shallow-word and structured searches while retaining complete fallbacks. Algorithm-aware chain selection compares original BFS controls with pool-based automatic and mixed-feature methods using one common witnessed word pool; separate reports retain physical costs, recognition and repertoire measures, and the Pareto frontier. Repertoire optimization shares taught master definitions and verifies compressed recognition rules while preserving complete fallback policies; independently loadable repertoire artifacts include comparison metadata. The stage backend is validated on both puzzles and the other named fixtures, and human review remains Delivery 6 in the [evolving plan](../docs/human-methods-plan.md).
+The Python package is the primary research interface. [Alcatraz.ipynb](examples/Alcatraz.ipynb) combines shape exploration, facelet input, direct colored solving, loop generators with exact block actions and decorated cycles, exact group counts, colored distance profiles, and farthest-state views. [MostSignaturesCube.ipynb](examples/MostSignaturesCube.ipynb) uses loop-group analysis to count the colored states of the puzzle with the most shapes, with the same reference-block inventories and generator effects, together with a short colored solve. The [human-method compiler](../docs/human-methods.md) now turns a reference shape into exact stabilizer stages, a complete reusable case policy, legal correction algorithms, portable JSON and a Markdown guide. Its precompiled policy handles every reachable colored state already in that shape without factoring each scramble. Bounded stage-algorithm improvement supplements this policy with native-loop, shallow-word and structured searches while retaining complete fallbacks. Algorithm-aware chain selection compares original BFS controls with pool-based automatic and mixed-feature methods using one common witnessed word pool; separate reports retain physical costs, recognition and repertoire measures, and the Pareto frontier. Repertoire optimization shares taught master definitions and verifies compressed recognition rules while preserving complete fallback policies; independently loadable repertoire artifacts include comparison metadata. The stage backend is validated on both puzzles and the other named fixtures. Initial review accepted the diagrams but preferred reduced-generator recipes; further algorithm-quality improvements are shelved in the [evolving plan](../docs/human-methods-plan.md).
 
 The engine models connected partitions of the legacy 27-cell grid, including its virtual core, and the six outer faces of an ordinary fixed-center 3×3 cube. It supports quarter turns, half turns, and inverses in standard Singmaster notation. Noncuboid connected blocks are allowed; the narrower enumeration family in the roadmap is a separate concern.
 
