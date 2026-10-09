@@ -2,7 +2,7 @@
 
 This document fixes the initial semantics for milestone six and describes the
 reproducible baseline investigation, stage planner, complete computational
-method compiler and bounded algorithm improvement. Repertoire optimization
+method compiler, bounded algorithm improvement and automatic chain selection. Repertoire optimization
 and human review remain future work.
 A **puzzle solution** supplies a reusable
 algorithm repertoire and recognition and application rules for every reachable
@@ -430,6 +430,110 @@ candidate witnesses. There is currently no search-report loader. Save
 its schema and `quality="computational_baseline"` stay unchanged. Optional
 search limits do not change completed/certified method coverage.
 
+## Select an algorithm-aware chain: delivery four
+
+`c.select_human_chain` compares complete methods rather than choosing a chain
+from subgroup indices alone. Its input is still the reference shape, without
+a colored scramble:
+
+```python
+selection = c.select_human_chain(
+    c.fixture("Alcatraz"), preference="execution", beam_width=4,
+    max_expansions=64, max_methods=16, max_group_elements=10_368,
+    discovery_options={"mode": "structured", "max_candidates": 3_000},
+)
+selection.method.save("alcatraz-selected-method.json")
+selection.method.write_guide("alcatraz-selected-method.md")
+selection.save("alcatraz-chain-search.json")
+print(selection.selected_id, selection.frontier)
+```
+
+```python
+select_human_chain(
+    initial, *, strategy="placement_then_orientation", manual_features=None,
+    preference="execution", beam_width=4, max_expansions=64, max_methods=16,
+    discovery_options=None, max_group_elements=None, gap_executable="gap",
+    timeout=None, root=None,
+)
+```
+
+Preparation reuses one exact enumerated reference group. The placement-first
+and block-first chains each retain their original inverse-BFS policy and a
+policy compiled from the common word pool as controls. `manual_features` can
+supply an additional complete ordered list of `BlockFeature` values under the same
+semantics as the stage planner. The search mixes `place_block` and
+`solve_block` choices; each selected feature must strictly shrink the current
+subgroup and the completed chain must reach the identity. Case correction
+eligibility and preservation still use the exact stage subgroup, allowing
+arbitrary reachable effects on blocks that have not yet been constrained.
+
+Algorithm discovery runs once on the chain chosen by `strategy`, using the
+Delivery 3 defaults modified by `discovery_options`. Pool-based automatic,
+manual and searched chains receive the same discovered witnessed word pool
+and complete inverse-BFS corrections. The original BFS policies remain
+independently selectable fallbacks. This comparison holds the discovered
+algorithm pool fixed, while its stage-aware discovery can favor the origin
+chain; the report records that
+origin. Selection does not rerun discovery separately for every candidate.
+
+Bounded greedy and beam exploration use complete rollouts of a partial chain
+to rank choices. `additive_mean_htm` is a ranking proxy formed from separate
+stage correction costs; whole-solution cancellations can change the actual
+mean and worst cost. Prefixes reaching the same subgroup may retain different
+definitions and cancellation opportunities, so subgroup equality alone does
+not identify equivalent methods.
+
+Every retained completed candidate is certified and evaluated on all
+reference-group states. The exact comparison reports:
+
+- `mean_htm` and `worst_htm`, after simplifying the full executed word.
+- `max_case_count` and `case_count_sum`, including the solved observation at
+  each stage, as recognition-branching proxies.
+- `original_leaf_count`, `original_leaf_htm` and `definition_htm`, describing
+  the original loop repertoire and correction definitions.
+- `stage_count`, alongside the chain's features and subgroup progression.
+
+The Pareto frontier retains candidates that no other retained candidate
+matches or improves in all eight dimensions with a strict improvement in at
+least one. The default `preference="execution"` selects lexicographically by
+mean HTM, worst HTM, maximum cases, summed cases, original leaf count, original
+leaf HTM, correction definition HTM and stage count. `preference="recognition"`
+moves maximum and summed case counts ahead of mean and worst HTM, leaving the
+remaining order unchanged. These are explicit computational preferences, not
+human-quality scores. Different chains may trade mean against worst-case
+length or recognition complexity; the same-chain Delivery 3 nonregression
+guard does not apply across chain choices. The report retains the controls
+and frontier so that these tradeoffs remain reviewable.
+
+`beam_width` is positive. `max_expansions` counts expanded partial-chain nodes
+across greedy and beam exploration; `max_methods` counts additional completed
+greedy/beam methods. Both accept zero. Automatic and supplied manual controls
+are outside the additional-method budget and remain available when exploration
+is disabled. Discovery settings retain their separate Delivery 3 bounds.
+Exact preparation, certification and completed-method evaluation are outside
+these quality-search bounds. Reports distinguish exhausted bounds from
+completed coverage, without a global optimum claim. Human review remains
+scheduled for Delivery 6.
+
+`HumanChainSearch` exposes the original raw BFS `baseline`, selected `method`, immutable
+`candidates`, `frontier` candidate IDs, `selected_id`, copied `metadata` and
+`status`. Each `HumanChainCandidate` has an `id`, `source`, complete `method`
+and copied `metrics`. `save`, `to_json` and `to_dict` write an inspection
+report in `bce-v2-human-chain-search` format. There is no chain-report loader;
+save the selected ordinary version-one method for independent loading.
+If the group cap stops preparation, the result has `status="limit_reached"`,
+an incomplete baseline method and no candidates. This explicit partial report
+can still be saved. A quality-search bound instead leaves the selected method
+completed and certified.
+
+The [retained Delivery 4 experiments](../v2/research-results/human-chain-selection.md)
+compare execution- and recognition-directed exploration, preserve the known
+Alcatraz six-stage/three-case versus five-stage/nine-case controls, and report
+the larger repertoire accompanying shorter execution. Complete Alcatraz
+[execution](../v2/research-results/alcatraz-execution-method.md) and
+[recognition](../v2/research-results/alcatraz-recognition-method.md) guides are
+available with independently loadable JSON artifacts.
+
 ## Generate a method from the command line
 
 ```sh
@@ -469,6 +573,27 @@ version-one schema. `--search-report` requires `--improve-algorithms` and must
 differ from every other file, including through aliases. If the group-element
 cap stops preparation, improvement is skipped and no search report is written;
 the incomplete method JSON/guide and exit code two remain available.
+
+Compare chains using one shared discovery pool with:
+
+```sh
+v2/.venv/bin/python -m bce_v2 plan-method Alcatraz \
+    --max-group-elements 10368 --select-chain \
+    --chain-preference recognition --chain-beam-width 4 \
+    --chain-max-expansions 64 --chain-max-methods 16 \
+    --search-mode structured --search-max-candidates 3000 \
+    --output /tmp/alcatraz-selected.json --guide /tmp/alcatraz-selected.md \
+    --chain-report /tmp/alcatraz-chain-search.json
+```
+
+`--select-chain` includes discovery using the existing `--search-*` options.
+`--strategy` selects the origin baseline. It cannot be combined with
+`--improve-algorithms`; `--search-report` retains its improvement-only meaning.
+`--chain-report` requires chain selection and must differ from every other
+artifact and input file, including aliases. A preparation cap writes the
+explicit partial chain report, method and guide with exit code two. Search
+bounds do not change completed-method exit code zero or the portable method
+format.
 
 ## Baseline investigation: delivery zero
 
@@ -570,16 +695,14 @@ evidence that either chain has a better algorithm repertoire.
    stage-aware search with certified symmetry transfers and richer candidates.
    Optimize shared move and decision information across the whole guide while
    retaining complete fallbacks.
-2. **Automatic chain selection.** Compare placement-first, block-first and
-   mixed chains using correction quality, recognition complexity and repertoire
-   cost. Greedy and beam searches report their limits without claiming a global
-   optimum.
+2. **Human review and visual integration: Delivery 6.** Explain cases with
+   the existing renderers and notebooks, record difficult examples and solving
+   experience, and adjust computational quality preferences using that evidence.
 3. **Symbolic preparation for larger groups.** Use standard stabilizers,
    orbits and transversals with original-loop witnesses. Certify subgroup
    indices, cases and terminal triviality without enumerating all of `H`.
-4. **Human review and visual integration.** Explain cases with the existing
-   renderers and notebooks, record difficult examples and solving experience,
-   and expand the CLI and guide views as review identifies useful improvements.
+4. **General integration.** Expand the CLI and guide views as review identifies
+   useful improvements.
 
 These deliveries can reuse the current Rust engine. Broader geometric feature
 chains and human paths through the shape graph remain separate followups.

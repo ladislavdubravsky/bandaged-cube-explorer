@@ -854,6 +854,63 @@ version-one method that `load_human_method` independently validates. Read the
 [algorithm-improvement contract](../../docs/human-methods.md#improve-stage-algorithms-delivery-three)
 for budget and metric definitions.
 
+## Select a chain using its correction algorithms
+
+Compare placement-first, block-first and bounded mixed-feature methods from
+the reference shape. New policies receive the same witnessed algorithm pool
+and complete case fallbacks; original BFS methods remain selectable controls:
+
+```python
+selection = c.select_human_chain(
+    reference, preference="execution", beam_width=4,
+    max_expansions=64, max_methods=16, max_group_elements=10_368,
+    discovery_options={"mode": "structured", "max_candidates": 3_000},
+)
+selection.method.save("alcatraz-selected-method.json")
+selection.method.write_guide("alcatraz-selected-method.md")
+selection.save("alcatraz-chain-search.json")
+print(selection.selected_id, selection.frontier)
+```
+
+`select_human_chain(initial, *, strategy="placement_then_orientation",
+manual_features=None, preference="execution", beam_width=4, max_expansions=64,
+max_methods=16, discovery_options=None, max_group_elements=None,
+gap_executable="gap", timeout=None, root=None)` prepares one exact group and
+runs Delivery 3 discovery once using the origin `strategy`. `discovery_options`
+overrides the improvement defaults. The placement-first and block-first
+chains each retain their original BFS and pool-based policies as explicit
+controls; `manual_features` adds a supplied complete chain. Discovery's
+stage-aware origin is recorded because its common word
+pool can favor that chain.
+
+Greedy and beam exploration mix block-placement and full-block features.
+Every feature shrinks the current subgroup and every completed chain reaches
+the identity. `beam_width` must be positive. `max_expansions` bounds expanded
+partial nodes; `max_methods` bounds additional completed greedy/beam methods.
+Both accept zero, leaving the automatic and manual controls available. These
+quality budgets exclude exact preparation, certification and whole-group
+evaluation. Complete rollouts guide exploration using an additive stage-cost
+proxy; final metrics simplify the entire executed word for every group state.
+
+The selected `preference="execution"` orders exact mean HTM, worst HTM,
+maximum case count, summed case counts, original leaf count, original leaf HTM,
+correction definition HTM and stage count. `"recognition"` puts the two case
+counts first. Case counts include the solved observation. The report retains
+the Pareto frontier over these eight dimensions and all controls; a selected
+chain may exchange worst-case length for mean length or simpler recognition.
+This is bounded computational selection without a global optimum or human
+memorability claim. Human review remains Delivery 6.
+
+The immutable `HumanChainSearch` exposes the original raw BFS `baseline`, `method`, `candidates`,
+`frontier` IDs, `selected_id`, copied `metadata` and `status`. A candidate has
+an `id`, `source`, complete `method` and copied `metrics`. `save`, `to_json`
+and `to_dict` write a `bce-v2-human-chain-search` inspection report without a
+report loader; selected methods keep the independently loadable version-one
+format. A preparation cap returns `limit_reached` with a partial method and
+no candidates, while quality-search bounds retain completed/certified methods.
+Read the [chain-selection contract](../../docs/human-methods.md#select-an-algorithm-aware-chain-delivery-four)
+for exact objective and budget semantics.
+
 ## Explore colored components
 
 ```python
@@ -1007,6 +1064,7 @@ bce-v2 solve-loops 'Alcatraz' 'F R2' --factorization quotient_kernel --metric HT
 bce-v2 solve-loops imported.json --max-expanded-moves 100000 --output /tmp/solution.json
 bce-v2 plan-method 'Alcatraz' --max-group-elements 10368 --output /tmp/method.json --guide /tmp/method.md
 bce-v2 plan-method 'Alcatraz' --max-group-elements 10368 --improve-algorithms --search-max-candidates 3000 --search-max-states 2000 --output /tmp/improved-method.json --search-report /tmp/search.json
+bce-v2 plan-method 'Alcatraz' --max-group-elements 10368 --select-chain --chain-preference recognition --output /tmp/selected-method.json --chain-report /tmp/chains.json
 bce-v2 plan-method shape-labels.json --strategy fully_solve_each_block
 bce-v2 explore-colored imported.json --max-states 100 --output /tmp/colors.json
 bce-v2 explore 'Alcatraz' --output /tmp/alcatraz-graph.json
@@ -1054,3 +1112,15 @@ to be enabled. A preparation cap skips improvement and leaves any search-report
 path untouched. Method stdout/output retains the version-one method schema.
 Input, method JSON, guide and search report files must be distinct, including
 symlink and hardlink aliases.
+
+`--select-chain` compares bounded mixed-feature chains with a common algorithm
+pool, using the existing `--search-*` settings for one discovery run.
+`--strategy` chooses its origin baseline. Selection options are
+`--chain-preference execution|recognition`, `--chain-beam-width` (default 4),
+`--chain-max-expansions` (64) and `--chain-max-methods` (16).
+`--chain-report` saves the separate inspection report and requires selection.
+It must differ from every other file, including aliases. Selection cannot be
+combined with `--improve-algorithms`, and `--search-report` retains its
+improvement-only meaning. A preparation cap writes an explicit partial chain
+report alongside the partial method/guide and exits with code 2. Quality
+budgets leave the selected method complete and its portable schema unchanged.

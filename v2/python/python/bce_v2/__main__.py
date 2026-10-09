@@ -33,11 +33,11 @@ def _method_reference(puzzle: str):
     return fixture(puzzle), None
 
 
-def _check_method_paths(input_path, output_path, guide_path, report_path=None):
+def _check_method_paths(input_path, output_path, guide_path, report_path=None, chain_report_path=None):
     """Reject path and inode aliases before synthesis or writing any artifact."""
     paths = [(name, path) for name, path in
              (("input", input_path), ("JSON output", output_path), ("guide", guide_path),
-              ("search report", report_path))
+              ("search report", report_path), ("chain report", chain_report_path))
              if path is not None]
     for i, (name, path) in enumerate(paths):
         for other_name, other_path in paths[i + 1:]:
@@ -75,6 +75,13 @@ def main(argv: list[str] | None = None) -> int:
     method.add_argument("--search-max-htm-length", type=int, default=120)
     method.add_argument("--search-max-expanded-moves", type=int, default=480)
     method.add_argument("--search-report", type=Path, help="write a separate algorithm-search report")
+    method.add_argument("--select-chain", action="store_true",
+                        help="compare bounded mixed-feature chains using a shared witnessed algorithm pool")
+    method.add_argument("--chain-preference", choices=("execution", "recognition"), default="execution")
+    method.add_argument("--chain-beam-width", type=int, default=4)
+    method.add_argument("--chain-max-expansions", type=int, default=64)
+    method.add_argument("--chain-max-methods", type=int, default=16)
+    method.add_argument("--chain-report", type=Path, help="write a separate chain-selection report")
 
     for command in ("inspect", "replay", "explore", "solve", "render", "solve-colored", "explore-colored", "isotropy", "solve-loops"):
         sub = commands.add_parser(command)
@@ -133,27 +140,52 @@ def main(argv: list[str] | None = None) -> int:
 
             if args.search_report is not None and not args.improve_algorithms:
                 raise ValueError("--search-report requires --improve-algorithms")
-            if args.improve_algorithms:
+            if args.chain_report is not None and not args.select_chain:
+                raise ValueError("--chain-report requires --select-chain")
+            if args.select_chain and args.improve_algorithms:
+                raise ValueError("--select-chain and --improve-algorithms cannot be combined")
+            if args.improve_algorithms or args.select_chain:
                 for name in ("max_seed_loops", "max_candidates", "max_states", "rounds",
                              "max_word_length", "max_htm_length", "max_expanded_moves"):
                     if getattr(args, f"search_{name}") < 0:
                         option = "--search-" + name.replace("_", "-")
                         raise ValueError(f"{option} must be nonnegative")
+            if args.select_chain:
+                if args.chain_beam_width <= 0:
+                    raise ValueError("--chain-beam-width must be positive")
+                for name in ("max_expansions", "max_methods"):
+                    if getattr(args, f"chain_{name}") < 0:
+                        option = "--chain-" + name.replace("_", "-")
+                        raise ValueError(f"{option} must be nonnegative")
             reference, input_path = _method_reference(args.puzzle)
-            _check_method_paths(input_path, args.output, args.guide, args.search_report)
-            method = synthesize_human_method(
-                reference, strategy=args.strategy, max_group_elements=args.max_group_elements,
-                gap_executable=args.gap_executable, timeout=args.timeout)
+            _check_method_paths(input_path, args.output, args.guide, args.search_report, args.chain_report)
+            search_options = dict(
+                mode=args.search_mode, max_candidates=args.search_max_candidates,
+                max_seed_loops=args.search_max_seed_loops,
+                max_states=args.search_max_states, rounds=args.search_rounds,
+                max_word_length=args.search_max_word_length,
+                max_htm_length=args.search_max_htm_length,
+                max_expanded_moves=args.search_max_expanded_moves)
+            if args.select_chain:
+                from . import select_human_chain
+
+                selection = select_human_chain(
+                    reference, strategy=args.strategy, preference=args.chain_preference,
+                    beam_width=args.chain_beam_width, max_expansions=args.chain_max_expansions,
+                    max_methods=args.chain_max_methods, discovery_options=search_options,
+                    max_group_elements=args.max_group_elements,
+                    gap_executable=args.gap_executable, timeout=args.timeout)
+                method = selection.method
+                if args.chain_report is not None:
+                    selection.save(args.chain_report)
+            else:
+                method = synthesize_human_method(
+                    reference, strategy=args.strategy, max_group_elements=args.max_group_elements,
+                    gap_executable=args.gap_executable, timeout=args.timeout)
             if args.improve_algorithms and method.status == "completed":
                 from . import improve_human_method
 
-                search = improve_human_method(
-                    method, mode=args.search_mode, max_candidates=args.search_max_candidates,
-                    max_seed_loops=args.search_max_seed_loops,
-                    max_states=args.search_max_states, rounds=args.search_rounds,
-                    max_word_length=args.search_max_word_length,
-                    max_htm_length=args.search_max_htm_length,
-                    max_expanded_moves=args.search_max_expanded_moves)
+                search = improve_human_method(method, **search_options)
                 method = search.method
                 if args.search_report is not None:
                     search.save(args.search_report)

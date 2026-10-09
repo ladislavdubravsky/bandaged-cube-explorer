@@ -1,9 +1,25 @@
 # Human-method research results
 
+Delivery 4's [algorithm-aware chain comparison](human-chain-selection.md)
+retains original BFS and pool-based automatic controls, mixed-feature
+candidates and their Pareto tradeoffs in execution, recognition and
+original-loop definitions. Its
+deterministic [comparison report](human-chain-comparison.json) and separate
+[machine measurements](human-chain-selection-measurements.json) record the
+shared discovery pool and explicit search bounds.
+
+The independently explored [recognition comparison](human-chain-recognition-comparison.json)
+has separate [timings](human-chain-recognition-measurements.json). Both runs
+use the same configured budgets. Persisted Alcatraz examples provide the
+[execution guide](alcatraz-execution-method.md) and
+[recognition guide](alcatraz-recognition-method.md), with loadable
+[execution JSON](alcatraz-execution-method.json) and
+[recognition JSON](alcatraz-recognition-method.json).
+
 Delivery 3's [stage-aware algorithm comparison](human-algorithms.md) records
 complete-method execution costs, definition tradeoffs and reproducible search
 settings. Its deterministic results and machine timings are retained alongside
-the initial chain investigation below.
+the initial chain investigation below. Human review remains Delivery 6.
 
 ## Chain baselines
 

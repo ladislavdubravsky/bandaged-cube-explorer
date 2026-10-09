@@ -432,6 +432,12 @@ def synthesize_human_method(initial, *, strategy="placement_then_orientation", f
     plan = plan_human_stages(initial, strategy=strategy, features=features,
                              max_group_elements=max_group_elements, gap_executable=gap_executable,
                              timeout=timeout, root=root)
+    return _compile_plan(plan)
+
+
+def _compile_plan(plan):
+    """Compile an internally prepared plan, retaining the full method proof."""
+    max_group_elements = plan.max_group_elements
     base = dict(reference_shape=plan.inventory.root_shape, strategy=plan.strategy, status=plan.status,
                 group_order=plan.group_order, quotient_order=plan.quotient_order, kernel_order=plan.kernel_order,
                 root_vertex=plan.analysis.loops.root_vertex, initial_features=plan.initial_features,

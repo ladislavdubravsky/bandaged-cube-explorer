@@ -1,0 +1,24 @@
+{
+  "format": "bce-v2-human-chain-measurements",
+  "results": [
+    {
+      "point_control_seconds": 0.0030419679999340588,
+      "preparation_seconds": 2.4876786000002085,
+      "puzzle": "Alcatraz",
+      "selection_seconds": 9.724027170999989
+    },
+    {
+      "point_control_seconds": 0.0007367469997916487,
+      "preparation_seconds": 1.972596448999866,
+      "puzzle": "Bicube Fuse",
+      "selection_seconds": 3.096658158000082
+    },
+    {
+      "point_control_seconds": 0.00038932799998292467,
+      "preparation_seconds": 2.1343659579999894,
+      "puzzle": "Shark Fin Soup",
+      "selection_seconds": 2.591829840999935
+    }
+  ],
+  "version": 1
+}

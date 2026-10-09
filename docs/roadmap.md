@@ -1,6 +1,6 @@
 # Bandaged cube explorer roadmap
 
-Roadmap updated 9 October 2026. The Rust model and move engine, Python research interface, and initial shape tools are implemented in [v2](../v2/README.md). Milestone four now supplies validated colored input, colored exploration, exact direct BFS and bidirectional BFS for tractable cases, a general GAP loop-factorization baseline, exact reference-block actions with decorated cycle notation, and an opt-in solver for block placement and abelian kernel correction. Larger memory-conscious exact searches and improved loop-solving methods remain followups. Milestone five's default shell enumeration is complete, with 7,073 behavioral classes, or **4,857** after identifying mirror pairs and excluding permanently frozen or one-axis puzzles. Its APIs support exact partition generation/counting, proper rotations, motion classification, and optional implicit-bond closure; an atlas postprocessor handles mirrors and named mobility filters. See [the enumeration investigation](enumeration.md) for definitions, proofs, old-code reconciliation, and measured results. Milestone six now supplies exact stage plans and complete computational case policies from reference shapes, with portable artifacts, Markdown guides and bounded stage-algorithm improvement; repertoire optimization and human review remain followups. Broader puzzle mechanics remain later work.
+Roadmap updated 9 October 2026. The Rust model and move engine, Python research interface, and initial shape tools are implemented in [v2](../v2/README.md). Milestone four now supplies validated colored input, colored exploration, exact direct BFS and bidirectional BFS for tractable cases, a general GAP loop-factorization baseline, exact reference-block actions with decorated cycle notation, and an opt-in solver for block placement and abelian kernel correction. Larger memory-conscious exact searches and improved loop-solving methods remain followups. Milestone five's default shell enumeration is complete, with 7,073 behavioral classes, or **4,857** after identifying mirror pairs and excluding permanently frozen or one-axis puzzles. Its APIs support exact partition generation/counting, proper rotations, motion classification, and optional implicit-bond closure; an atlas postprocessor handles mirrors and named mobility filters. See [the enumeration investigation](enumeration.md) for definitions, proofs, old-code reconciliation, and measured results. Milestone six now supplies exact stage plans and complete computational case policies from reference shapes, with portable artifacts, Markdown guides, bounded stage-algorithm improvement and algorithm-aware chain selection; repertoire optimization and human review remain followups. Broader puzzle mechanics remain later work.
 
 The replacement uses a Rust computational library with a Python research interface and a thin command-line application, developed alongside the existing Python project. Build shape exploration, colored solving, and enumeration on a precise model and verified move engine; use their results to develop human solving methods and an atlas of bandaged puzzles. Keep the general theory in view while making the first implementation specific to 3×3 cubes.
 
@@ -245,6 +245,22 @@ separate report. Quality remains `computational_baseline`: bounded search does
 not certify shortest physical words, a minimal shared repertoire or human
 memorability. Repertoire optimization, visual explanations and human review
 remain subsequent work.
+
+Delivery 4 adds `select_human_chain`: placement-first, block-first and optional
+manual controls are compared with bounded greedy/beam mixed-feature chains.
+Both automatic chains retain original BFS and pool-based policies as controls;
+the original baseline remains independently selectable.
+One stage-aware discovery run prepares a common witnessed algorithm pool;
+each chain retains complete BFS corrections. Every completed method is
+certified and exhaustively evaluated. Reports retain the Pareto frontier over
+mean/worst HTM, maximum/summed case counts, original-loop repertoire counts
+and definition lengths, and stage count. Explicit execution or recognition
+preferences choose a method from the retained candidates; quality-search
+bounds and the discovery origin are recorded without a global optimum claim.
+CLI selection writes ordinary portable methods and a separate chain report.
+Human review remains scheduled for Delivery 6, following shared repertoire
+and recognition work in Delivery 5. The evolving implementation plan is
+[kept in the repository](human-methods-plan.md).
 
 Turn the existing feature-chain and distance-layer experiments into an explicit strategy system. Replace all-pairs distance calculations for feature stages with reverse multi-source BFS from each target set. Candidate features include recognizable block locations, available faces, restored bandage relations, and reusable algorithms with useful effects. Seek a small number of stages with simple recognition, limited branching, and structured actions that guarantee progress.
 

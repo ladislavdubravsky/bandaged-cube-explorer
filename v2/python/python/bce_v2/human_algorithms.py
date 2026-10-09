@@ -39,6 +39,7 @@ class HumanAlgorithmSearch:
     alternatives: tuple[HumanAlgorithmAlternative, ...]
     _generators: tuple = field(repr=False, compare=False)
     _metadata_json: str = field(repr=False, compare=False)
+    _candidates: tuple[_Candidate, ...] = field(default=(), repr=False, compare=False)
 
     @property
     def metadata(self):
@@ -453,5 +454,7 @@ def improve_human_method(method, *, mode="structured", max_seed_loops=32, max_ca
                 "accepted": accepted, "baseline_metrics": before, "proposed_metrics": proposed_metrics,
                 "improved_metrics": proposed_metrics if accepted else before,
                 "fallback_policy_retained": True, "coverage": result.coverage}
+    retained = tuple(c for effect in sorted(search.pool)
+                     for c in sorted(search.pool[effect], key=lambda c: c.key))
     return HumanAlgorithmSearch(baseline, result, tuple(alternatives), generators,
-                                json.dumps(metadata, sort_keys=True, separators=(",", ":")))
+                                json.dumps(metadata, sort_keys=True, separators=(",", ":")), retained)

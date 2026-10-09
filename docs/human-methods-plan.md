@@ -1,6 +1,6 @@
 # Human solving methods: evolving implementation plan
 
-Updated 9 October 2026. Deliveries 0–3 are complete; Delivery 4 is in progress.
+Updated 9 October 2026. Deliveries 0–4 are complete; Delivery 5 is next.
 Thorough human review stays in Delivery 6. Revise later deliveries as experiments
 provide evidence. This is a working plan, not a promise of a particular optimizer.
 
@@ -73,6 +73,7 @@ Implemented modules:
 | human_method_io.py | Versioned portable JSON, fingerprints and independent loading |
 | human_witnesses.py | Immutable portable original-loop witness owners |
 | human_algorithms.py | Bounded fixed-chain discovery, alternatives and quality metrics |
+| human_chain_search.py | Shared-pool greedy/beam chain comparison and complete Pareto policies |
 | human_render.py | Initial readable case-table Markdown guide |
 
 Add chain selection and symbolic backends when their responsibilities warrant
@@ -88,6 +89,9 @@ search = c.improve_human_method(method, mode="structured", ...)
 search.method.save("method.json")
 search.method.write_guide("method.md")
 search.save("algorithm-search.json")
+selection = c.select_human_chain(shape, preference="recognition", ...)
+selection.method.save("selected-method.json")
+selection.save("chain-search.json")
 restored = c.load_human_method("method.json")
 result = restored.apply(state)  # optional consumer; no GAP or new factorization
 ```
@@ -170,7 +174,7 @@ Validation: 13 discovery, 15 method-CLI, 12 method and 11 existing CLI tests pas
 fiber checks, legal replay, bounds, duplicate accounting, nonzero roots,
 determinism, repeated search and full-method fallback.
 
-### Delivery 4 — Select chains using available algorithms (in progress)
+### Delivery 4 — Select chains using available algorithms (complete)
 
 - Compare placement-first, fully-solve-one-block, supplied manual and ordinary
   faithful-point-chain baselines. Keep point chains research-only if their
@@ -195,6 +199,73 @@ Acceptance: compare complete methods on the same fixtures and recorded budgets.
 Reproduce Alcatraz's six-stage 2/3-case versus five-stage 9-case tradeoff.
 Demonstrate the effect of algorithm-aware choice, or retain the simpler baseline
 with an evidence-based explanation. No global optimality or human-review claim.
+
+Delivered 9 October 2026:
+
+- `select_human_chain` prepares one exact reference, runs bounded discovery once
+  on the chosen origin chain, and freezes the full witnessed candidate pool.
+  Subgroup/feature edges, action summaries, fallback witnesses and rollouts are
+  reused. Every completed policy is independently verified before comparison.
+- Mixed placement/full-block choices use greedy lookahead and beam exploration.
+  Complete minimum-index full-block rollouts provide additive execution ranking
+  proxies; no partial prefix cost is called a physical lower bound. Distinct
+  prefixes reaching equal subgroups remain distinct candidates.
+- Both automatic chains retain raw BFS and shared-pool policy versions outside
+  quality limits; optional complete manual chains are additional controls. This
+  prevents local word selection from discarding a better full-word cancellation
+  or a smaller original repertoire. New feature edges always have full BFS
+  fallbacks, independent of discovery bounds.
+- Default exploration allows beam width four, 64 expanded prefix nodes and 16
+  additional completed methods. Counts distinguish node expansions, cached
+  stage-edge work, discovery work and final all-H evaluations. Exact preparation
+  and proof are outside the quality budgets. Zero exploration still compares
+  complete controls; exact group-cap stops remain explicit partial results.
+- Eight reported Pareto dimensions are exact mean/worst HTM, maximum/summed case
+  counts, original-leaf count/definition HTM, correction-definition HTM and stage
+  count. Execution preference prioritizes mean/worst; recognition prioritizes
+  maximum/summed cases. Both are explicit lexicographic computational choices,
+  with human quality still unreviewed. Across chains, mean, worst, recognition
+  and repertoire may trade off; no global optimum or blanket nonregression is
+  claimed. Raw controls remain selectable.
+- Shape-only CLI adds `--select-chain`, preference/beam/expansion/method settings
+  and a separate `--chain-report`. Existing search flags configure the common
+  word pool. It preserves portable version-one methods, rejects incompatible
+  opt-ins/invalid budgets/aliases early, and exports honest partial cap reports.
+- [Reproducible research](../v2/research-results/human-chain-selection.md) compares
+  the same fixtures/budgets under execution- and recognition-directed exploration.
+  Both deterministic reports reproduce byte for byte. Their discovery metadata
+  match, but each run has its own discovery/search work; neither receives credit
+  for a hidden shared total budget. The pool's origin-chain bias is disclosed.
+- Execution-selected mean/worst HTM improve over the Delivery 3 placement-first
+  policies: Alcatraz **50.40/86 → 38.76/61**, Bicube **26.70/49 → 26.03/49**,
+  Shark **22.67/35 → 21.78/34**. Alcatraz's four full-block stages have indices
+  4/9/3/3, maximum nine cases and nine used original loops totaling 105 HTM.
+- Alcatraz recognition-directed exploration instead selects six stages with
+  indices 3/3/2/2/3/3, maximum three cases, **49.01/84 HTM**, and six used loops
+  totaling 66 HTM. It reaches the 16-additional-method budget. The execution-run
+  frontier's recognition winner remains 50.40/86; these are distinct explorations.
+  The known six-stage max-three versus five-stage max-nine automatic tradeoff
+  remains among the explicit controls.
+- Ordinary minimum-orbit faithful sticker-point chains are independent
+  structural controls with exact coset/terminal checks. Their indices match the
+  full-block automatic controls on these fixtures. They are not exported as
+  executable human methods because the current guide/schema recognize blocks.
+- Validation: 13 chain-selection tests, nine new CLI tests, 15 previous method-CLI,
+  12 method and 13 discovery regressions pass (62 targeted tests). Checks include
+  648 selected/reloaded imported Alcatraz applications, every retained candidate's
+  legal words and complete stage fibers, independently measured full physical
+  costs, exact Pareto/preference results, caps, manual controls, orientation-only
+  and trivial groups, deterministic records and forged prepared contexts.
+  Nonzero-root selection and GAP-free reload/application also pass independently.
+- Persisted Alcatraz examples: [execution guide](../v2/research-results/alcatraz-execution-method.md)
+  and [recognition guide](../v2/research-results/alcatraz-recognition-method.md),
+  with corresponding loadable version-one JSON files. Both remain computational
+  methods awaiting Delivery 6 review.
+
+Next work is shared vocabulary and verified recognition compression. The
+Alcatraz execution improvement increases cases, correction definitions and used
+original loops, giving Delivery 5 a concrete tradeoff to optimize. Keep the
+small-table alternative available. Thorough human review remains Delivery 6.
 
 ### Delivery 5 — Shared repertoire and compressed recognition
 
