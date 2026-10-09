@@ -33,10 +33,11 @@ def _method_reference(puzzle: str):
     return fixture(puzzle), None
 
 
-def _check_method_paths(input_path, output_path, guide_path):
+def _check_method_paths(input_path, output_path, guide_path, report_path=None):
     """Reject path and inode aliases before synthesis or writing any artifact."""
     paths = [(name, path) for name, path in
-             (("input", input_path), ("JSON output", output_path), ("guide", guide_path))
+             (("input", input_path), ("JSON output", output_path), ("guide", guide_path),
+              ("search report", report_path))
              if path is not None]
     for i, (name, path) in enumerate(paths):
         for other_name, other_path in paths[i + 1:]:
@@ -63,6 +64,17 @@ def main(argv: list[str] | None = None) -> int:
     method.add_argument("--timeout", type=float, default=None, help="maximum seconds per GAP subprocess")
     method.add_argument("--output", type=Path, help="write the complete method JSON; also printed to stdout")
     method.add_argument("--guide", type=Path, help="write the method guide as Markdown")
+    method.add_argument("--improve-algorithms", action="store_true",
+                        help="search for bounded stage corrections while retaining complete fallbacks")
+    method.add_argument("--search-mode", choices=("original", "shallow", "structured"), default="structured")
+    method.add_argument("--search-max-candidates", type=int, default=3000)
+    method.add_argument("--search-max-seed-loops", type=int, default=32)
+    method.add_argument("--search-max-states", type=int, default=2000)
+    method.add_argument("--search-rounds", type=int, default=1)
+    method.add_argument("--search-max-word-length", type=int, default=3)
+    method.add_argument("--search-max-htm-length", type=int, default=120)
+    method.add_argument("--search-max-expanded-moves", type=int, default=480)
+    method.add_argument("--search-report", type=Path, help="write a separate algorithm-search report")
 
     for command in ("inspect", "replay", "explore", "solve", "render", "solve-colored", "explore-colored", "isotropy", "solve-loops"):
         sub = commands.add_parser(command)
@@ -119,11 +131,32 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "plan-method":
             from . import synthesize_human_method
 
+            if args.search_report is not None and not args.improve_algorithms:
+                raise ValueError("--search-report requires --improve-algorithms")
+            if args.improve_algorithms:
+                for name in ("max_seed_loops", "max_candidates", "max_states", "rounds",
+                             "max_word_length", "max_htm_length", "max_expanded_moves"):
+                    if getattr(args, f"search_{name}") < 0:
+                        option = "--search-" + name.replace("_", "-")
+                        raise ValueError(f"{option} must be nonnegative")
             reference, input_path = _method_reference(args.puzzle)
-            _check_method_paths(input_path, args.output, args.guide)
+            _check_method_paths(input_path, args.output, args.guide, args.search_report)
             method = synthesize_human_method(
                 reference, strategy=args.strategy, max_group_elements=args.max_group_elements,
                 gap_executable=args.gap_executable, timeout=args.timeout)
+            if args.improve_algorithms and method.status == "completed":
+                from . import improve_human_method
+
+                search = improve_human_method(
+                    method, mode=args.search_mode, max_candidates=args.search_max_candidates,
+                    max_seed_loops=args.search_max_seed_loops,
+                    max_states=args.search_max_states, rounds=args.search_rounds,
+                    max_word_length=args.search_max_word_length,
+                    max_htm_length=args.search_max_htm_length,
+                    max_expanded_moves=args.search_max_expanded_moves)
+                method = search.method
+                if args.search_report is not None:
+                    search.save(args.search_report)
             result = method.to_dict()
             if args.output is not None:
                 method.save(args.output)

@@ -1,4 +1,11 @@
-# Human-method chain baselines
+# Human-method research results
+
+Delivery 3's [stage-aware algorithm comparison](human-algorithms.md) records
+complete-method execution costs, definition tradeoffs and reproducible search
+settings. Its deterministic results and machine timings are retained alongside
+the initial chain investigation below.
+
+## Chain baselines
 
 Delivery 0 records exact reference-group and block-feature-chain experiments.
 These are chain structures, without correction policies or a human algorithm

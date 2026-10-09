@@ -1,8 +1,9 @@
 # Human methods from reference-shape loops
 
 This document fixes the initial semantics for milestone six and describes the
-reproducible baseline investigation, stage planner and complete computational
-method compiler. Shorter algorithms and human review remain future work.
+reproducible baseline investigation, stage planner, complete computational
+method compiler and bounded algorithm improvement. Repertoire optimization
+and human review remain future work.
 A **puzzle solution** supplies a reusable
 algorithm repertoire and recognition and application rules for every reachable
 scramble in its declared domain. An algorithm library or a subgroup chain alone
@@ -124,14 +125,14 @@ The implemented method compiler additionally reports:
 | `status` | `completed`: the full case policy was generated; `limit_reached`: the explicit group-element cap stopped preparation before enumeration. Backend errors remain errors, rather than becoming unreachability claims. |
 | `coverage` | `certified`: exact group, case and correction checks establish complete coverage; `partial`: preparation stopped without a complete policy. |
 | `coverage_scope` | `all_reference_group_states` for a completed method; `none` for a preflight stop. These claims concern reachable colored states already in the reference shape. |
-| `quality` | `computational_baseline`: valid witnessed corrections, without algorithm-quality optimization, a minimum-repertoire claim or human review. |
+| `quality` | `computational_baseline`: valid witnessed corrections, optionally improved by bounded search, without a shortest-word, minimum-repertoire or human-review claim. |
 | `human_method_complete` | True for a complete executable case policy and false for a stopped method. This flag describes computational completeness; human quality is reported separately. |
 
 A completed chain investigation with exhaustive subgroup checks is still only
 `chain_structure_only` evidence. The method compiler adds and checks every case
 correction before claiming complete coverage. A complete computational method
-still has unreviewed human quality. Future quality improvements and human
-review should report their evidence independently of coverage.
+still has unreviewed human quality. Algorithm-search reports and future human
+review report their evidence independently of coverage.
 
 No resource cutoff proves unreachability. A generated method must retain
 complete witnessed fallbacks when optional algorithm improvement is bounded,
@@ -341,6 +342,94 @@ A cap stop produces an incomplete report rather than a claimed solution.
 The current guide is a computational baseline; illustrations and human review
 remain later work.
 
+## Improve stage algorithms: delivery three
+
+`c.improve_human_method` searches for better corrections while keeping a
+completed method as its fallback. It needs no colored scramble or GAP call:
+
+```python
+search = c.improve_human_method(
+    method, mode="structured", max_candidates=3_000, max_states=2_000,
+)
+improved = search.method
+improved.save("alcatraz-improved-method.json")
+improved.write_guide("alcatraz-improved-method.md")
+search.save("alcatraz-algorithm-search.json")
+print(search.metadata["baseline_metrics"], search.metadata["improved_metrics"])
+```
+
+```python
+improve_human_method(
+    method, *, mode="structured", max_seed_loops=32, max_candidates=3000,
+    max_word_length=3, rounds=1, max_states=2000, max_stage_generators=24,
+    max_alternatives=3, max_htm_length=120, max_expanded_moves=480,
+)
+```
+
+The input must be a completed `HumanMethod`. Improvement regenerates the
+reference shape loops and rechecks the method; it supplements the stored
+generating set with at most `max_seed_loops` native loops. The three modes
+provide comparable bounded experiments:
+
+| Mode | Additional candidates |
+| --- | --- |
+| `original` | Selected native loop witnesses and their inverses. |
+| `shallow` | Original candidates, short words and bounded searches over their exact actions. |
+| `structured` | Shallow candidates plus stage-preserving Schreier words, differences of words with the same protected-feature observations, powers, commutators and conjugates. |
+
+Candidates need only preserve the features protected at their intended stage.
+A correction is eligible for a case when its full effect sends that observation
+coset into the next subgroup; it need not equal the baseline correction's full
+permutation. The completed proposed method undergoes the same exact coverage,
+progress and legal-witness checks as the baseline.
+
+Case selection ranks simplified physical HTM, then QTM, then expression
+description cost. Bounded macro searches use additive edge costs to discover
+words, so they do not prove shortest physical sequences after cancellation.
+The complete policy is also evaluated on every element of the reference group:
+an increase in mean or worst-case HTM rejects the proposal and returns the
+baseline. This guard does not optimize recognition or the shared repertoire,
+and does not promise a QTM improvement.
+
+`max_candidates` counts proposed expressions, including duplicates, identity
+effects and length-pruned candidates. `max_states` bounds settled Dijkstra
+states across the run. `max_word_length` bounds shallow words and Dijkstra
+paths in macro steps; structured constructions can use more original leaves.
+`max_htm_length` limits simplified candidate turns, while
+`max_expanded_moves` limits witness expansion before simplification. The limits
+apply to improvement, never to the retained baseline. All integer settings
+allow zero except `max_alternatives`, which must be positive. In particular,
+`max_candidates=0` disables new proposals while preserving complete coverage.
+These limits exclude reference-graph preparation, final certification and
+exhaustive whole-group metrics; `preparation_group_elements` reports that
+group's order separately.
+
+`HumanAlgorithmSearch` retains `baseline`, the selected `method`, immutable
+per-case `alternatives`, and a copied `metadata` dictionary. Each
+`HumanAlgorithmAlternative` names its stage, observation, witnessed algorithm
+and discovery source. Reports include settings, proposal and expansion counts,
+pruning flags, proposed stage changes, the whole-method acceptance decision
+and baseline/proposed/selected metrics. Mean and worst HTM/QTM cover all
+reference-group elements, including the solved state. This strict chain has
+one correction per nontrivial case; `original_leaf_count`, `original_leaf_htm`
+and visible-leaf counts describe reuse beneath those correction definitions.
+Bounds and counts are evidence of the experiment performed, not exhaustive
+word-search certification.
+
+The retained [Delivery 3 comparison](../v2/research-results/human-algorithms.md)
+evaluates all three modes at equal configured limits on Alcatraz, Bicube Fuse
+and Shark Fin Soup. It reports full-method worst/mean costs and the increase in
+original-loop definitions that can accompany shorter solutions. Original-loop
+selection supplies most gains on these fixtures; structured discovery finds
+no further move saving at the recorded budget.
+
+`search.to_dict()`, `to_json()` and `save(path)` produce a separate
+`bce-v2-human-algorithm-search` inspection report containing both methods and
+candidate witnesses. There is currently no search-report loader. Save
+`search.method` for a portable, independently loadable version-one method;
+its schema and `quality="computational_baseline"` stay unchanged. Optional
+search limits do not change completed/certified method coverage.
+
 ## Generate a method from the command line
 
 ```sh
@@ -361,6 +450,25 @@ Full JSON is printed to stdout, including when `--output` also saves it.
 method, two for an explicit cap stop, and one for invalid input or a backend
 error. Output and guide files must differ from one another and any input file;
 path, symlink and hardlink aliases are rejected before synthesis or writing.
+
+Add bounded improvement and a separate inspection report with:
+
+```sh
+v2/.venv/bin/python -m bce_v2 plan-method Alcatraz \
+    --max-group-elements 10368 --improve-algorithms \
+    --search-mode structured --search-max-seed-loops 32 \
+    --search-max-candidates 3000 --search-max-states 2000 \
+    --output /tmp/alcatraz-improved.json --guide /tmp/alcatraz-improved.md \
+    --search-report /tmp/alcatraz-search.json
+```
+
+The CLI also accepts `--search-rounds`, `--search-max-word-length`,
+`--search-max-htm-length` and `--search-max-expanded-moves`; defaults match the
+Python API. The method JSON on stdout and at `--output` retains its existing
+version-one schema. `--search-report` requires `--improve-algorithms` and must
+differ from every other file, including through aliases. If the group-element
+cap stops preparation, improvement is skipped and no search report is written;
+the incomplete method JSON/guide and exit code two remain available.
 
 ## Baseline investigation: delivery zero
 
@@ -458,10 +566,10 @@ evidence that either chain has a better algorithm repertoire.
 
 ## Later deliveries
 
-1. **Better stage algorithms and shared repertoire.** Reuse bounded discovery,
-   powers, commutators, conjugates and certified symmetry transfers. Search for
-   feature/coset targets, keep complete fallbacks, and optimize shared move and
-   decision information across the whole guide.
+1. **Better stage algorithms and shared repertoire.** Extend the bounded
+   stage-aware search with certified symmetry transfers and richer candidates.
+   Optimize shared move and decision information across the whole guide while
+   retaining complete fallbacks.
 2. **Automatic chain selection.** Compare placement-first, block-first and
    mixed chains using correction quality, recognition complexity and repertoire
    cost. Greedy and beam searches report their limits without claiming a global

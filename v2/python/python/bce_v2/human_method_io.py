@@ -9,13 +9,13 @@ from hashlib import sha256
 import json
 from pathlib import Path
 import re
-from types import MappingProxyType
 
 from . import Shape
 from ._moves import _simplified_moves
 from .block_actions import BlockInventory
 from .human_chains import BlockFeature
-from .isotropy import LoopGenerator, isotropy_loops
+from .human_witnesses import stored_loop_generators
+from .isotropy import isotropy_loops
 from .loop_algorithms import LoopAlgorithm, LoopExpression
 
 
@@ -145,41 +145,6 @@ def _word(value, label):
     return value
 
 
-class _StoredLoopOwner:
-    """Native-like immutable owner for portable original-loop leaves.
-
-    LoopExpression can recover a LoopGenerators wrapper from this owner, so
-    existing expression display and physical expansion remain available.
-    Saved loop IDs are local names and need not match regenerated graph IDs.
-    """
-
-    __slots__ = ("root_shape", "root_vertex", "shape_count", "arc_count", "candidate_count",
-                 "nonidentity_count", "generators", "_moves")
-
-    def __init__(self, inventory, root_vertex, records, complete_loops):
-        object.__setattr__(self, "root_shape", tuple(inventory.root_shape.labels))
-        object.__setattr__(self, "root_vertex", root_vertex)
-        object.__setattr__(self, "shape_count", complete_loops.shape_count)
-        object.__setattr__(self, "arc_count", complete_loops.arc_count)
-        object.__setattr__(self, "candidate_count", complete_loops.candidate_count)
-        object.__setattr__(self, "nonidentity_count", complete_loops.nonidentity_count)
-        object.__setattr__(self, "generators", tuple(MappingProxyType({
-            key: tuple(record[key]) if key == "permutation" else record[key]
-            for key in ("id", "source", "target", "permutation", "qtm_length")
-        }) for record in records))
-        object.__setattr__(self, "_moves", MappingProxyType({record["id"]: record["moves"]
-                                                            for record in records}))
-
-    def __setattr__(self, name, value):
-        raise AttributeError("portable loop owner is immutable")
-
-    def __delattr__(self, name):
-        raise AttributeError("portable loop owner is immutable")
-
-    def generator_moves(self, identifier):
-        return self._moves[identifier]
-
-
 def _generators(records, inventory, root_vertex, complete_loops):
     records = _list(records, "generators")
     expected = {"id", "source", "target", "permutation", "qtm_length", "block_action",
@@ -199,10 +164,7 @@ def _generators(records, inventory, root_vertex, complete_loops):
         _integer(record["htm_length"], "original HTM length", 1)
         _word(record["moves"], "original loop moves")
         _word(record["turn_sequence"], "original loop turn sequence")
-    owner = _StoredLoopOwner(inventory, root_vertex, records, complete_loops)
-    generators = tuple(LoopGenerator(record["id"], record["source"], record["target"],
-                                     tuple(record["permutation"]), record["qtm_length"],
-                                     owner, inventory) for record in records)
+    generators = stored_loop_generators(records, inventory, root_vertex, complete_loops)
     for generator, record in zip(generators, records):
         if (generator.qtm_length != sum(2 if move.endswith("2") else 1
                                         for move in generator.moves.split())

@@ -1,6 +1,6 @@
 # Bandaged cube explorer roadmap
 
-Roadmap updated 9 October 2026. The Rust model and move engine, Python research interface, and initial shape tools are implemented in [v2](../v2/README.md). Milestone four now supplies validated colored input, colored exploration, exact direct BFS and bidirectional BFS for tractable cases, a general GAP loop-factorization baseline, exact reference-block actions with decorated cycle notation, and an opt-in solver for block placement and abelian kernel correction. Larger memory-conscious exact searches and improved loop-solving methods remain followups. Milestone five's default shell enumeration is complete, with 7,073 behavioral classes, or **4,857** after identifying mirror pairs and excluding permanently frozen or one-axis puzzles. Its APIs support exact partition generation/counting, proper rotations, motion classification, and optional implicit-bond closure; an atlas postprocessor handles mirrors and named mobility filters. See [the enumeration investigation](enumeration.md) for definitions, proofs, old-code reconciliation, and measured results. Milestone six now supplies exact stage plans and complete computational case policies from reference shapes, with portable artifacts and Markdown guides; algorithm quality and human review remain followups. Broader puzzle mechanics remain later work.
+Roadmap updated 9 October 2026. The Rust model and move engine, Python research interface, and initial shape tools are implemented in [v2](../v2/README.md). Milestone four now supplies validated colored input, colored exploration, exact direct BFS and bidirectional BFS for tractable cases, a general GAP loop-factorization baseline, exact reference-block actions with decorated cycle notation, and an opt-in solver for block placement and abelian kernel correction. Larger memory-conscious exact searches and improved loop-solving methods remain followups. Milestone five's default shell enumeration is complete, with 7,073 behavioral classes, or **4,857** after identifying mirror pairs and excluding permanently frozen or one-axis puzzles. Its APIs support exact partition generation/counting, proper rotations, motion classification, and optional implicit-bond closure; an atlas postprocessor handles mirrors and named mobility filters. See [the enumeration investigation](enumeration.md) for definitions, proofs, old-code reconciliation, and measured results. Milestone six now supplies exact stage plans and complete computational case policies from reference shapes, with portable artifacts, Markdown guides and bounded stage-algorithm improvement; repertoire optimization and human review remain followups. Broader puzzle mechanics remain later work.
 
 The replacement uses a Rust computational library with a Python research interface and a thin command-line application, developed alongside the existing Python project. Build shape exploration, colored solving, and enumeration on a precise model and verified move engine; use their results to develop human solving methods and an atlas of bandaged puzzles. Keep the general theory in view while making the first implementation specific to 3×3 cubes.
 
@@ -230,10 +230,21 @@ terminal group is trivial. The method applies its precompiled policy without
 per-scramble GAP factorization. Portable JSON loading independently validates
 source-loop coverage and the case policy without GAP; Markdown guides and the
 shape-only `plan-method` CLI expose the result. Completed methods certify all
-reachable colored residuals at the reference shape. Their quality remains
-`computational_baseline`; nicer algorithms, repertoire optimization, visual
-explanations and human review remain subsequent work. Human shape restoration
+reachable colored residuals at the reference shape. Human shape restoration
 is separate from this delivery.
+
+Delivery 3 adds `improve_human_method`: bounded native-loop, shallow-word and
+structured stage searches retain the complete baseline while looking for
+shorter case corrections. Candidates include stage-preserving Schreier words,
+same-observation differences, powers, commutators and conjugates. The resulting
+policy is checked across every reference-group state, and increases in mean or
+worst-case HTM cause the proposal to be rejected. Search reports retain bounds,
+work counts, alternatives, stage changes and before/after metrics; ordinary
+method JSON remains version one. The CLI exposes opt-in improvement and a
+separate report. Quality remains `computational_baseline`: bounded search does
+not certify shortest physical words, a minimal shared repertoire or human
+memorability. Repertoire optimization, visual explanations and human review
+remain subsequent work.
 
 Turn the existing feature-chain and distance-layer experiments into an explicit strategy system. Replace all-pairs distance calculations for feature stages with reverse multi-source BFS from each target set. Candidate features include recognizable block locations, available faces, restored bandage relations, and reusable algorithms with useful effects. Seek a small number of stages with simple recognition, limited branching, and structured actions that guarantee progress.
 

@@ -676,8 +676,8 @@ raises. Both options have `optimal=False`. “Shortest found” compares availab
 candidates without proving global optimality; structured scoring estimates
 localized, reusable descriptions without proving human memorability.
 See the [discovery guide](../../docs/block-actions.md#bounded-algorithm-discovery-and-two-solution-views)
-for conventions and guarantees. Exact quotient tables and human recognition,
-application, and coverage rules remain future work.
+for conventions and guarantees. The method compiler below supplies reusable
+stage recognition, application and whole-method coverage rules.
 
 ## Plan human solving stages from a shape
 
@@ -802,6 +802,57 @@ There is no default group-element cap. An exceeded explicit cap returns
 no case policy. JSON and guide output then report the incomplete preparation.
 Read the [method guide](../../docs/human-methods.md#synthesize-a-complete-method-delivery-two)
 for exact semantics and the current quality limits.
+
+## Improve reusable stage algorithms
+
+Search for alternative corrections without changing the stage features or
+losing the complete baseline policy:
+
+```python
+search = c.improve_human_method(
+    method, mode="structured", max_candidates=3_000, max_states=2_000,
+)
+search.method.save("alcatraz-improved-method.json")
+search.method.write_guide("alcatraz-improved-method.md")
+search.save("alcatraz-algorithm-search.json")
+print(search.metadata["baseline_metrics"], search.metadata["improved_metrics"])
+```
+
+`improve_human_method(method, *, mode="structured", max_seed_loops=32,
+max_candidates=3000, max_word_length=3, rounds=1, max_states=2000,
+max_stage_generators=24, max_alternatives=3, max_htm_length=120,
+max_expanded_moves=480)` requires a completed `HumanMethod`. It regenerates
+native reference loops and independently validates the baseline, without GAP.
+It returns an immutable `HumanAlgorithmSearch` containing `baseline`, the
+selected `method`, per-case `alternatives` and copied `metadata`.
+
+`original` mode considers native loop seeds and their inverses. `shallow` adds
+short words and bounded searches over exact actions. `structured` also mines
+stage-preserving Schreier words, same-observation differences, powers,
+commutators and conjugates. A candidate can correct an entire case without
+matching the baseline's full permutation, provided it preserves earlier
+features and enters the next subgroup. Full case coverage and legal witnesses
+are rechecked before a policy is accepted.
+
+Selection ranks simplified HTM, then QTM and expression description cost.
+Whole-group evaluation rejects a proposal if mean or worst-case HTM increases;
+the report retains proposed and selected metrics. This is bounded discovery,
+not a shortest-face-word guarantee or a minimum-repertoire method. The method
+keeps `quality="computational_baseline"` and its original coverage guarantees.
+
+The proposal, settled-state and witness-expansion budgets constrain search;
+reference preparation, certification and exhaustive policy metrics run
+separately. `max_word_length` limits shallow words and Dijkstra paths in macro
+steps, while structured expressions use the expansion bound. All integer
+settings accept zero except positive `max_alternatives`; zero proposal budget
+retains the baseline policy. Search reports include the settings, work counts,
+pruning, proposed stage changes and baseline/proposed/selected metrics.
+
+`search.save(path)` writes a `bce-v2-human-algorithm-search` inspection report;
+there is no report loader. `search.method.save(path)` writes an ordinary
+version-one method that `load_human_method` independently validates. Read the
+[algorithm-improvement contract](../../docs/human-methods.md#improve-stage-algorithms-delivery-three)
+for budget and metric definitions.
 
 ## Explore colored components
 
@@ -955,6 +1006,7 @@ bce-v2 solve-loops 'Alcatraz' 'F R2' --metric HTM --timeout 60
 bce-v2 solve-loops 'Alcatraz' 'F R2' --factorization quotient_kernel --metric HTM --timeout 60
 bce-v2 solve-loops imported.json --max-expanded-moves 100000 --output /tmp/solution.json
 bce-v2 plan-method 'Alcatraz' --max-group-elements 10368 --output /tmp/method.json --guide /tmp/method.md
+bce-v2 plan-method 'Alcatraz' --max-group-elements 10368 --improve-algorithms --search-max-candidates 3000 --search-max-states 2000 --output /tmp/improved-method.json --search-report /tmp/search.json
 bce-v2 plan-method shape-labels.json --strategy fully_solve_each_block
 bce-v2 explore-colored imported.json --max-states 100 --output /tmp/colors.json
 bce-v2 explore 'Alcatraz' --output /tmp/alcatraz-graph.json
@@ -992,5 +1044,13 @@ specification in a saved puzzle file. It accepts `--strategy`,
 `--max-group-elements`, `--gap-executable`, `--timeout`, `--output` and `--guide`.
 Full method JSON is emitted to stdout and optionally saved; `--guide` writes
 Markdown. Completed methods exit with code 0, cap stops with code 2, and invalid
-inputs or backend errors with code 1. Input, JSON output and guide files must
-be distinct, including symlink and hardlink aliases.
+inputs or backend errors with code 1. `--improve-algorithms` runs bounded
+correction discovery for a completed baseline. Its options are `--search-mode`,
+`--search-max-seed-loops`, `--search-max-candidates`, `--search-max-states`,
+`--search-rounds`, `--search-max-word-length`, `--search-max-htm-length` and
+`--search-max-expanded-moves`, with the Python API defaults.
+`--search-report` writes a separate inspection report and requires improvement
+to be enabled. A preparation cap skips improvement and leaves any search-report
+path untouched. Method stdout/output retains the version-one method schema.
+Input, method JSON, guide and search report files must be distinct, including
+symlink and hardlink aliases.

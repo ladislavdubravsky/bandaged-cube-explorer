@@ -482,6 +482,9 @@ from .human_methods import (  # noqa: E402
     HumanMethodStep, HumanRecognition, synthesize_human_method,
 )
 from .human_method_io import load_human_method  # noqa: E402
+from .human_algorithms import (  # noqa: E402
+    HumanAlgorithmAlternative, HumanAlgorithmSearch, improve_human_method,
+)
 
 __all__ = [
     "Shape", "State", "ShapeGraph", "BlockedMoveError", "CELL_NAMES",
@@ -500,5 +503,6 @@ __all__ = [
     "BlockFeature", "HumanStage", "HumanStagePlan", "WitnessedLoopGroup", "plan_human_stages",
     "HumanMethod", "HumanMethodApplication", "HumanMethodCase", "HumanMethodStage",
     "HumanMethodStep", "HumanRecognition", "synthesize_human_method", "load_human_method",
+    "HumanAlgorithmAlternative", "HumanAlgorithmSearch", "improve_human_method",
     "draw_cubes", "load_puzzle", "save_puzzle", "save_graph",
 ] + list(CELL_NAMES)

@@ -1,0 +1,33 @@
+{
+  "format": "bce-v2-human-algorithm-measurements",
+  "results": [
+    {
+      "modes": {
+        "original": 0.7442535730006057,
+        "shallow": 2.2713504879975517,
+        "structured": 3.3438798040006077
+      },
+      "preparation_seconds": 5.05212729500272,
+      "puzzle": "Alcatraz"
+    },
+    {
+      "modes": {
+        "original": 0.2253535029994964,
+        "shallow": 0.41357590400002664,
+        "structured": 2.2737640390005254
+      },
+      "preparation_seconds": 2.8529656049977348,
+      "puzzle": "Bicube Fuse"
+    },
+    {
+      "modes": {
+        "original": 0.24398841799848014,
+        "shallow": 1.4230797499985783,
+        "structured": 2.036025934998179
+      },
+      "preparation_seconds": 2.902939462001086,
+      "puzzle": "Shark Fin Soup"
+    }
+  ],
+  "version": 1
+}
