@@ -11,9 +11,10 @@ from dataclasses import replace
 from heapq import heappop, heappush
 import json
 
+from .computation import checkpoint, report_progress, retain_method
 from .human_methods import _expression_bound, _inverse, _observe, _validate_method
-from .isotropy import LoopGenerators, isotropy_loops
-from .loop_algorithms import AlgorithmLibrary, LoopExpression, discover_loop_algorithms
+from .loop_algorithms import AlgorithmLibrary, LoopExpression, _loops_from_records, discover_loop_algorithms
+from .preparation import reference_loops
 
 
 _IDENTITY = tuple(range(48))
@@ -51,6 +52,7 @@ def _orbit_edges(candidates, stage, inventory, maximum):
     observations = stage.observations
     distinct = {}
     for item in candidates:
+        checkpoint("algorithm_orbit_edges", work=1, stage=getattr(stage, "number", None))
         action = inventory.action(item.algorithm.permutation)
         mapping = tuple(_successor(value, action, inventory) for value in observations)
         if mapping == observations:
@@ -75,6 +77,7 @@ def _orbit_edges(candidates, stage, inventory, maximum):
         return found
 
     while mappings and len(selected) < maximum:
+        checkpoint("algorithm_orbit_edges", work=1, stage=getattr(stage, "number", None))
         scored = [(len(closure((*selected, mapping))), distinct[mapping].key, mapping)
                   for mapping in mappings]
         _, _, chosen = min(scored, key=lambda value: (-value[0], value[1]))
@@ -107,8 +110,11 @@ def improve_symbolic_human_method(method, *, mode, max_seed_loops, max_candidate
                     max_word_length=max_word_length, rounds=rounds, max_states=max_states,
                     max_stage_generators=max_stage_generators, max_alternatives=max_alternatives,
                     max_htm_length=max_htm_length, max_expanded_moves=max_expanded_moves)
-    complete_loops = isotropy_loops(method.reference_shape)
+    complete_loops = reference_loops(method)
     baseline = _validate_method(method, complete_loops=complete_loops)
+    retain_method(baseline, source="algorithm_baseline")
+    report_progress("algorithm_improvement", status="started", backend="symbolic", mode=mode)
+    checkpoint("algorithm_improvement", work=0)
     generators = baseline.generators
     if dictionary is not None:
         from .symbolic_dictionary import SymbolicAlgorithmDictionary
@@ -124,14 +130,15 @@ def improve_symbolic_human_method(method, *, mode, max_seed_loops, max_candidate
     records = {g.id: g for g in generators}
     # Use precisely the saved leaf library: local IDs can differ from a newly
     # explored graph, especially at a nonzero original reference vertex.
-    witness_loops = LoopGenerators(generators[0]._owner) if generators else None
+    witness_loops = _loops_from_records(generators) if generators else None
     builder = AlgorithmLibrary(witness_loops, (), (), ()) if witness_loops is not None else None
+    lengths = tuple((generator.id, generator.htm_length) for generator in generators)
     counts, sources = Counter(), Counter()
     pool, seen = defaultdict(list), set()
 
     def candidate(algorithm, source):
         algorithm = replace(algorithm, _inventory=baseline.inventory, _generators=generators,
-                            _leaf_htm_lengths=tuple((g.id, g.htm_length) for g in generators),
+                            _leaf_htm_lengths=lengths,
                             _human_score=())
         return _Candidate(algorithm, source, algorithm.expression.structure_cost(generators))
 
@@ -158,6 +165,7 @@ def improve_symbolic_human_method(method, *, mode, max_seed_loops, max_candidate
         if counts["candidates_examined"] >= max_candidates:
             counts["candidate_limit_reached"] = 1
             return False
+        checkpoint("algorithm_candidates", work=1, source=source)
         counts["candidates_examined"] += 1
         sources[source] += 1
         if expression in seen:
@@ -187,6 +195,7 @@ def improve_symbolic_human_method(method, *, mode, max_seed_loops, max_candidate
                    max_htm_length and max_expanded_moves)
     if enabled and dictionary is not None:
         for algorithm in dictionary.algorithms:
+            checkpoint("algorithm_candidates", work=1, source="shared_dictionary")
             if counts["candidates_examined"] >= max_candidates:
                 counts["candidate_limit_reached"] = 1
                 break
@@ -236,6 +245,7 @@ def improve_symbolic_human_method(method, *, mode, max_seed_loops, max_candidate
     changed_total = 0
     for stage_index, (stage, certified) in enumerate(zip(baseline.stages,
                                                        baseline._symbolic_chain.stages)):
+        checkpoint("algorithm_stages", work=1, stage=stage.number)
         # Filtering sifts permutations through a BSGS certificate. It never
         # iterates over the members of the (possibly enormous) stabilizer.
         admissible = [item for effect, choices in pool.items()
@@ -255,6 +265,8 @@ def improve_symbolic_human_method(method, *, mode, max_seed_loops, max_candidate
             expanded = 0
             observations = set(stage.observations)
             while queue and counts["candidates_examined"] < max_candidates:
+                checkpoint("algorithm_states", work=1, stage=stage.number,
+                           states=counts["states_expanded"])
                 if expanded >= state_share:
                     counts["stage_state_share_limit_reached"] = 1
                     if counts["states_expanded"] >= max_states:
@@ -330,6 +342,9 @@ def improve_symbolic_human_method(method, *, mode, max_seed_loops, max_candidate
         result = _validate_method(replace(baseline, algorithms=tuple(selected), stages=tuple(stages)),
                                   complete_loops=complete_loops)
     before, after = _additive_metrics(baseline), _additive_metrics(result)
+    retain_method(result, source="algorithm_improvement", metrics=after)
+    report_progress("algorithm_improvement", status="completed", backend="symbolic",
+                    candidates=counts["candidates_examined"], states=counts["states_expanded"])
     metadata = {"settings": settings, "backend": "symbolic", "exhaustive_word_search": False,
                 "selection": "case physical HTM, QTM; certified feature-orbit membership",
                 "macro_search_cost": "additive edge HTM and QTM; heuristic for simplified physical words",

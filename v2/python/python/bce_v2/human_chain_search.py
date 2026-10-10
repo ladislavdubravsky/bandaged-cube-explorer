@@ -249,6 +249,80 @@ def select_human_chain(initial, *, strategy="placement_then_orientation", manual
                        preference="execution", beam_width=4, max_expansions=64, max_methods=16,
                        discovery_options=None, max_group_elements=None,
                        gap_executable="gap", timeout=None, root=None, backend="explicit",
+                       dictionary=None, dictionary_options=None, optimization_seconds=None,
+                       max_optimization_work=None, progress=None):
+    """Select a complete chain with a shared budget after certified fallback.
+
+    All optional dictionary and chain passes share ``optimization_seconds`` and
+    ``max_optimization_work``. A cutoff retains a certified policy. Initial
+    certification continues to use the independent per-GAP ``timeout`` cap.
+    ``backend='auto'`` routes on measured group and witnessed-loop workload.
+    """
+    from .computation import Computation, OptimizationBudgetExceeded, current_computation
+    from .preparation import route_preparation
+    if backend not in ("explicit", "symbolic", "auto"):
+        raise ValueError("backend must be explicit, symbolic or auto")
+    if backend == "auto":
+        if strategy not in ("placement_then_orientation", "fully_solve_each_block"):
+            raise ValueError("chain search strategy must name an automatic baseline")
+        if preference not in _PREFERENCES:
+            raise ValueError("preference must be execution or recognition")
+        for name, value, minimum in (("beam_width", beam_width, 1),
+                                    ("max_expansions", max_expansions, 0), ("max_methods", max_methods, 0)):
+            if type(value) is not int:
+                raise TypeError(f"{name} must be an integer")
+            if value < minimum:
+                raise ValueError(f"{name} must be at least {minimum}")
+        if manual_features is not None:
+            manual_features = tuple(manual_features)
+            if any(not isinstance(feature, BlockFeature) for feature in manual_features):
+                raise TypeError("manual_features must contain BlockFeature instances")
+        from .preparation import validate_search_inputs
+        validate_search_inputs(discovery_options, dictionary, dictionary_options)
+    options = dict(strategy=strategy, manual_features=manual_features, preference=preference,
+        beam_width=beam_width, max_expansions=max_expansions, max_methods=max_methods,
+        discovery_options=discovery_options, max_group_elements=max_group_elements,
+        gap_executable=gap_executable, timeout=timeout, root=root, backend=backend,
+        dictionary=dictionary, dictionary_options=dictionary_options)
+    context = current_computation()
+    if context is not None:
+        if backend == "auto":
+            initial, options["backend"] = route_preparation(initial,
+                gap_executable=gap_executable, timeout=timeout, root=root,
+                max_group_elements=max_group_elements)
+        return _select_human_chain(initial, **options)
+    context = Computation(optimization_seconds=optimization_seconds,
+        max_optimization_work=max_optimization_work, progress=progress)
+    context.method_preference = "recognition" if preference == "recognition" else "execution"
+    with context.activate():
+        if backend == "auto":
+            initial, options["backend"] = route_preparation(initial,
+                gap_executable=gap_executable, timeout=timeout, root=root,
+                max_group_elements=max_group_elements)
+        try:
+            result = _select_human_chain(initial, **options)
+        except OptimizationBudgetExceeded:
+            method = context.best_method
+            if method is None:
+                raise
+            costs = method.additive_costs()["htm"]
+            metrics = dict(mean_htm=costs["mean"], worst_htm=costs["worst"])
+            candidate = HumanChainCandidate("C1", "budget_fallback", method, json.dumps(metrics))
+            result = HumanChainSearch(method, method, (candidate,), ("C1",), "C1",
+                json.dumps(dict(backend=method.backend, coverage="certified",
+                    selected_source="budget_fallback", exhaustive_chain_search=False)))
+        context.event("complete", "certified", stopped=context.stop_reason is not None)
+        if not context.diagnostics_enabled:
+            return result
+        metadata = result.metadata
+        metadata["computation"] = context.summary()
+        return replace(result, _metadata_json=json.dumps(metadata, sort_keys=True))
+
+
+def _select_human_chain(initial, *, strategy="placement_then_orientation", manual_features=None,
+                       preference="execution", beam_width=4, max_expansions=64, max_methods=16,
+                       discovery_options=None, max_group_elements=None,
+                       gap_executable="gap", timeout=None, root=None, backend="explicit",
                        dictionary=None, dictionary_options=None):
     """Compare complete recognizable methods using a shared witnessed word pool.
 
@@ -314,6 +388,8 @@ def select_human_chain(initial, *, strategy="placement_then_orientation", manual
                 "stage_cache_hits": 0, "discovery": None,
                 "rank_scope": "complete additive minimum-index full-block rollout; physical-cost proxy"}
     baseline = _compile_plan(plan)
+    from .computation import checkpoint, retain_method, report_progress
+    retain_method(baseline)
     if plan.status != "completed":
         return HumanChainSearch(baseline, baseline, (), (), None, json.dumps(metadata, sort_keys=True))
     controls, raw_controls = [], []
@@ -330,6 +406,7 @@ def select_human_chain(initial, *, strategy="placement_then_orientation", manual
         stages, _, skipped = _chains(plan.group, "manual", manual_features)
         controls.append(("manual", tuple(s.feature for s in stages), "manual", skipped))
     discovery = improve_human_method(baseline, **discovery_settings)
+    retain_method(discovery.method, source="dictionary")
     context = _Context(plan, baseline, discovery)
     candidates, seen = [], set()
 
@@ -340,6 +417,7 @@ def select_human_chain(initial, *, strategy="placement_then_orientation", manual
                 return
             metadata["additional_methods_evaluated"] += 1
         method, metrics = context.compile(features, method_strategy, skipped)
+        retain_method(method, source=source, metrics=metrics)
         candidates.append(HumanChainCandidate(f"C{len(candidates) + 1}", source, method,
                                               json.dumps(metrics, sort_keys=True)))
         seen.add(signature)
@@ -359,6 +437,7 @@ def select_human_chain(initial, *, strategy="placement_then_orientation", manual
     prefix, current = (), tuple(range(len(plan.group)))
     while (current != (0,) and metadata["nodes_expanded"] < max_expansions and
            metadata["additional_methods_evaluated"] < max_methods):
+        checkpoint("chain_greedy")
         metadata["nodes_expanded"] += 1
         edge = min(context.next_edges(current),
                    key=lambda e: context.rank((*prefix, e.stage.feature), preference))
@@ -371,6 +450,7 @@ def select_human_chain(initial, *, strategy="placement_then_orientation", manual
     beam = [()]
     while (beam and metadata["nodes_expanded"] < max_expansions and
            metadata["additional_methods_evaluated"] < max_methods):
+        checkpoint("chain_beam")
         successors = []
         for prefix in beam:
             if (metadata["nodes_expanded"] >= max_expansions or

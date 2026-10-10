@@ -123,7 +123,8 @@ class _Context:
         self.by_id = {macro.id: macro for macro in self.macros}
         self.word_pools, self.edges = {}, {}
         self.dictionary_cache = {}
-        self.search = defaultdict(int)
+        self.search = defaultdict(int, physical_words_examined=0,
+                                  physical_depths_completed=0, physical_word_budget_hits=0)
         self.all_features = tuple(BlockFeature(kind, block.cells)
             for kind in ("place_block", "solve_block") for block in baseline.inventory.blocks)
         self.blocks = {block.cells: i for i, block in enumerate(baseline.inventory.blocks)}
@@ -201,6 +202,7 @@ class _Context:
 
     def words(self, available):
         """Complete additive witnesses plus a separately bounded physical beam."""
+        from .computation import checkpoint
         available = frozenset(available)
         if available in self.word_pools:
             return self.word_pools[available]
@@ -211,7 +213,11 @@ class _Context:
         best = {_IDENTITY: identity}
         distances = {_IDENTITY: (0, 0, ())}
         queue = [(distances[_IDENTITY], _IDENTITY)]
+        expanded = 0
         while queue:
+            if expanded % 128 == 0:
+                checkpoint("template_vocabulary", vertices=expanded)
+            expanded += 1
             distance, permutation = heappop(queue)
             if distance != distances[permutation]:
                 continue
@@ -235,6 +241,7 @@ class _Context:
             candidates = {}
             exhausted = False
             for word in frontier:
+                checkpoint("template_physical_words", examined=examined)
                 for factor in alphabet:
                     if examined >= self.settings["max_word_candidates"]:
                         exhausted = True
@@ -380,6 +387,123 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
                               max_cost_ratio=1.0, chunk_options=None,
                               max_group_elements=None, gap_executable="gap", timeout=None, root=None,
                               backend="explicit", dictionary=None, dictionary_options=None,
+                              discovery_options=None, optimization_seconds=None,
+                              max_optimization_work=None, progress=None):
+    """Build a certified guide with shared optional quality-search limits.
+
+    ``backend='auto'`` routes using exact group order, loop and witness workload.
+    Explicit backend selections and supplied method chains are preserved.
+    ``optimization_seconds`` and ``max_optimization_work`` apply across all
+    optional passes after a complete baseline is certified. A cutoff returns
+    the best retained complete policy; mandatory fallback construction and
+    validation are outside that allowance. ``timeout`` remains a per-GAP cap.
+    ``progress`` receives phase/status dictionaries, including baseline and
+    completion events. None preserves the existing unlimited quality budget.
+    """
+    from .computation import Computation, OptimizationBudgetExceeded, current_computation
+    from .preparation import route_preparation
+    if backend not in ("explicit", "symbolic", "auto"):
+        raise ValueError("backend must be explicit, symbolic or auto")
+    if backend == "auto":
+        # Automatic routing must not launch analysis before ordinary argument
+        # errors have been rejected. Backend-specific checks still follow it.
+        if preference not in _PREFERENCES:
+            raise ValueError("preference must be memory, execution or recognition")
+        if type(allow_symmetry) is not bool or (select_chain is not None and type(select_chain) is not bool):
+            raise TypeError("allow_symmetry and select_chain must be booleans (select_chain may be None)")
+        budgets = dict(max_trials=max_trials, max_applications=max_applications,
+                       max_word_candidates=max_word_candidates, max_word_frontier=max_word_frontier,
+                       beam_width=beam_width, max_chain_expansions=max_chain_expansions,
+                       max_chain_methods=max_chain_methods)
+        for name, value in budgets.items():
+            if name == "max_chain_expansions" and value is None:
+                continue
+            if type(value) is not int:
+                raise TypeError(f"{name} must be an integer")
+            if value < (1 if name in ("beam_width", "max_word_frontier") else 0):
+                raise ValueError(f"invalid template-search budget: {name}")
+        if type(max_cost_ratio) not in (int, float) or not isfinite(max_cost_ratio) or max_cost_ratio < 1:
+            raise ValueError("max_cost_ratio must be finite and at least one")
+        if chunk_options is not None and not isinstance(chunk_options, dict):
+            raise TypeError("chunk_options must be a dictionary or None")
+        if set(chunk_options or {}) - set(_CHUNK_OPTIONS):
+            raise ValueError("unknown chunk option")
+        chunks = {**_CHUNK_OPTIONS, **(chunk_options or {})}
+        for name, value in chunks.items():
+            if type(value) is not int:
+                raise TypeError(f"chunk {name} must be an integer")
+            if value < (2 if name in ("min_chunk_length", "max_chunk_length") else 0):
+                raise ValueError(f"invalid chunk budget: {name}")
+        if chunks["min_chunk_length"] > chunks["max_chunk_length"]:
+            raise ValueError("minimum chunk length exceeds maximum")
+        templates = tuple(templates)
+        if any(not isinstance(template, LoopAlgorithm) for template in templates):
+            raise TypeError("templates must contain witnessed LoopAlgorithms")
+        from .preparation import validate_search_inputs, validate_stage_inputs
+        features = validate_stage_inputs(strategy, features)
+        validate_search_inputs(discovery_options, dictionary, dictionary_options)
+    options = dict(strategy=strategy, features=features, preference=preference,
+        allow_symmetry=allow_symmetry, select_chain=select_chain, templates=templates,
+        max_trials=max_trials, max_applications=max_applications, max_word_candidates=max_word_candidates,
+        max_word_frontier=max_word_frontier, beam_width=beam_width,
+        max_chain_expansions=max_chain_expansions, max_chain_methods=max_chain_methods,
+        max_cost_ratio=max_cost_ratio, chunk_options=chunk_options, max_group_elements=max_group_elements,
+        gap_executable=gap_executable, timeout=timeout, root=root, backend=backend,
+        dictionary=dictionary, dictionary_options=dictionary_options, discovery_options=discovery_options)
+    # Nested preparation shares the same counters and deadline; it cannot
+    # silently buy another allowance for a second chain or template pass.
+    if current_computation() is not None:
+        if backend == "auto":
+            if isinstance(initial, HumanMethod):
+                options["backend"] = initial.backend
+            else:
+                initial, options["backend"] = route_preparation(initial,
+                    gap_executable=gap_executable, timeout=timeout, root=root,
+                    max_group_elements=max_group_elements)
+        return _template_human_repertoire(initial, **options)
+    context = Computation(optimization_seconds=optimization_seconds,
+                          max_optimization_work=max_optimization_work, progress=progress)
+    context.method_preference = "recognition" if preference == "recognition" else "execution"
+    with context.activate():
+        if backend == "auto":
+            if isinstance(initial, HumanMethod):
+                options["backend"] = initial.backend
+            else:
+                initial, options["backend"] = route_preparation(initial,
+                    gap_executable=gap_executable, timeout=timeout, root=root,
+                    max_group_elements=max_group_elements)
+        try:
+            result = _template_human_repertoire(initial, **options)
+        except OptimizationBudgetExceeded:
+            if context.best_repertoire is not None:
+                result = context.best_repertoire
+            elif context.best_method is not None:
+                # Finalize a complete portable guide from the last certified
+                # policy without starting fresh dictionary/chain/chunk mining.
+                context.event("fallback", "started")
+                with context.suspend():
+                    result = _template_human_repertoire(context.best_method,
+                        preference=preference, allow_symmetry=allow_symmetry,
+                        select_chain=False, backend=context.best_method.backend,
+                        max_trials=0, max_applications=0, max_word_candidates=0,
+                        max_chain_expansions=0, max_chain_methods=0,
+                        max_cost_ratio=max_cost_ratio,
+                        chunk_options={"max_candidates": 0, "max_chunks": 0, "max_word_moves": 0})
+            else:
+                # Initial certification is deliberately outside quality search;
+                # this branch cannot turn an incomplete proof into a guide.
+                raise
+        return context.finish(result)
+
+
+def _template_human_repertoire(initial, *, strategy="fully_solve_each_block", features=None,
+                              preference="memory", allow_symmetry=True, select_chain=None,
+                              templates=(), max_trials=16, max_applications=6,
+                              max_word_candidates=100000, max_word_frontier=2000,
+                              beam_width=3, max_chain_expansions=None, max_chain_methods=8,
+                              max_cost_ratio=1.0, chunk_options=None,
+                              max_group_elements=None, gap_executable="gap", timeout=None, root=None,
+                              backend="explicit", dictionary=None, dictionary_options=None,
                               discovery_options=None):
     """Build a complete guide using selected templates, regrips and shared pieces.
 
@@ -481,7 +605,8 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
             raise ValueError("root differs from the supplied method reference")
         if max_group_elements is not None and initial.group_order > max_group_elements:
             raise ValueError("template repertoire group exceeds max_group_elements")
-        loops = isotropy_loops(initial.reference_shape)
+        from .preparation import reference_loops
+        loops = reference_loops(initial)
         baseline = _validate_method(initial, complete_loops=loops)
     else:
         plan = plan_human_stages(initial, strategy=strategy, features=features,
@@ -489,6 +614,10 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
         if plan.status != "completed":
             raise ValueError(f"template repertoire requires a complete plan: {plan.reason}")
         loops, baseline = plan.analysis.loops, _compile_plan(plan)
+    from .computation import (checkpoint, retain_method, report_progress,
+                              retain_repertoire, current_computation)
+    retain_method(baseline)
+    report_progress("templates", "started", backend="explicit")
     context = _Context(baseline, loops, settings, templates)
     candidates, seen = [], {}
 
@@ -517,6 +646,34 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
     def rank(candidate):
         return (*[candidate[5][key] for key in _PREFERENCES[preference]], candidate[0])
 
+    def publish():
+        eligible = [c for c in candidates if admissible(c)]
+        frontier = [c for c in eligible if not any(_dominates(other[5], c[5]) for other in eligible)]
+        selected = min(frontier, key=rank)
+        metadata = {
+            "basis": "templates", "construction": "symmetry_template_search", "settings": settings,
+            "coverage": "certified", "human_reviewed": False, "exhaustive_repertoire_search": False,
+            "physical_shortest_claim": False, "rotations": list(context.rotations),
+            "chunk_dictionary": selected[6].to_dict(),
+            "baseline_chunk_dictionary": fallback[6].to_dict(), "baseline_metrics": before,
+            "selected_metrics": selected[5], "pareto_dimensions": _DIMENSIONS,
+            "preference_orders": _PREFERENCES, "selected_id": selected[0],
+            "frontier": [c[0] for c in frontier], "search": dict(context.search),
+            "candidates": [{"id": c[0], "source": c[1], "metrics": c[5], "admissible": admissible(c)}
+                           for c in candidates],
+        }
+        repertoire = HumanRepertoire(baseline, selected[2], selected[3], selected[4],
+                                     json.dumps(metadata, sort_keys=True, allow_nan=False))
+        result = _validate_repertoire(repertoire, complete_loops=loops)
+        retain_repertoire(result)
+        return result
+
+    computation = current_computation()
+    snapshots = (computation is not None and not computation._suspended
+                 and (computation.seconds is not None or computation.limit is not None))
+    if snapshots:
+        publish()
+
     chains = [("input", baseline.stages, baseline.strategy)]
     if select_chain:
         for name in ("placement_then_orientation", "fully_solve_each_block"):
@@ -526,6 +683,7 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
     available = context.seed_ids
 
     def evaluate(identifiers, source, stage_choices=chains):
+        checkpoint("template_trial", source=source)
         if context.words(identifiers) is None:
             return ()
         found = []
@@ -535,12 +693,18 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
                                      f"{source}:{name}:{family}", method_strategy)
                 if candidate is not None:
                     found.append(candidate)
+        if snapshots:
+            publish()
         return tuple(found)
 
-    evaluate(available, "initial")
+    # Legacy zero-search settings still compile the complete vocabulary's
+    # additive policies. A budget-cutoff finalizer keeps the exact saved policy.
+    if computation is None or not computation._suspended:
+        evaluate(available, "initial")
     # Symmetry variants precede every closure and deletion trial. Removing a
     # template therefore removes its entire orbit, not an individual regrip.
     while available and context.search["trials_examined"] < max_trials:
+        checkpoint("template_deletion")
         removed = False
         eligible_current = [c for c in candidates if admissible(c)]
         current_rank = rank(min(eligible_current, key=rank))
@@ -564,6 +728,7 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
         beam, complete_seen = [()], {tuple(s.feature for s in chain[1]) for chain in chains}
         expanded = published = 0
         while beam and expanded < max_chain_expansions and published < max_chain_methods:
+            checkpoint("template_chain")
             following = []
             for prefix in beam:
                 if expanded >= max_chain_expansions or published >= max_chain_methods:
@@ -591,24 +756,9 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
             beam = [prefix for _, prefix in following[:beam_width]]
         context.search["chain_nodes_expanded"] = expanded
         context.search["additional_chains_evaluated"] = published
-    eligible = [c for c in candidates if admissible(c)]
-    frontier = [c for c in eligible if not any(_dominates(other[5], c[5]) for other in eligible)]
-    selected = min(frontier, key=rank)
-    metadata = {
-        "basis": "templates", "construction": "symmetry_template_search", "settings": settings,
-        "coverage": "certified", "human_reviewed": False, "exhaustive_repertoire_search": False,
-        "physical_shortest_claim": False, "rotations": list(context.rotations),
-        "chunk_dictionary": selected[6].to_dict(),
-        "baseline_chunk_dictionary": fallback[6].to_dict(), "baseline_metrics": before,
-        "selected_metrics": selected[5], "pareto_dimensions": _DIMENSIONS,
-        "preference_orders": _PREFERENCES, "selected_id": selected[0],
-        "frontier": [c[0] for c in frontier], "search": dict(context.search),
-        "candidates": [{"id": c[0], "source": c[1], "metrics": c[5], "admissible": admissible(c)}
-                       for c in candidates],
-    }
-    repertoire = HumanRepertoire(baseline, selected[2], selected[3], selected[4],
-                                 json.dumps(metadata, sort_keys=True, allow_nan=False))
-    return _validate_repertoire(repertoire, complete_loops=loops)
+    result = publish()
+    report_progress("templates", "completed", backend="explicit", macros=len(result.macros))
+    return result
 
 
 def _validate_template_metadata(repertoire, actual, before):
@@ -619,7 +769,9 @@ def _validate_template_metadata(repertoire, actual, before):
               "exhaustive_repertoire_search", "physical_shortest_claim", "rotations",
               "chunk_dictionary", "baseline_chunk_dictionary", "baseline_metrics", "selected_metrics", "pareto_dimensions",
               "preference_orders", "selected_id", "frontier", "search", "candidates"}
-    _require(set(metadata) == fields and metadata["basis"] == "templates" and
+    from .computation import validate_computation_metadata
+    validate_computation_metadata(metadata)
+    _require(set(metadata) - {"computation"} == fields and metadata["basis"] == "templates" and
              metadata["construction"] == "symmetry_template_search" and metadata["coverage"] == "certified"
              and metadata["human_reviewed"] is False and metadata["exhaustive_repertoire_search"] is False
              and metadata["physical_shortest_claim"] is False, "invalid template repertoire metadata")

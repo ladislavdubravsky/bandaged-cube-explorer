@@ -7,7 +7,9 @@ claim. The complete original loop set is retained separately in each library.
 """
 
 from collections import deque
+from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
+from functools import cached_property
 from hashlib import sha256
 from itertools import zip_longest
 import json
@@ -18,6 +20,7 @@ import re
 from . import BlockedMoveError, State
 from ._moves import _simplified_moves
 from .block_actions import _CELL_POINTS, _POINTS
+from .computation import checkpoint
 from .isotropy import IsotropyAnalysis, LoopGenerators, isotropy_loops
 from .loop_rotations import (
     bandage_symmetries, inverse_rotation, normalize_rotation, rotate_moves, rotate_permutation,
@@ -91,9 +94,13 @@ def _records(generators):
     if hasattr(generators, "loops"):
         generators = generators.loops
     if isinstance(generators, LoopGenerators):
-        generators = generators.generators
-    if isinstance(generators, dict):
+        return generators.generator_records
+    if isinstance(generators, Mapping):
         return generators
+    if isinstance(generators, tuple) and generators:
+        library = getattr(generators[0], "_library", None)
+        if isinstance(library, LoopGenerators) and generators is library.generators:
+            return library.generator_records
     return {generator.id: generator for generator in generators}
 
 
@@ -113,12 +120,25 @@ def _loops_from_records(generators):
         generators = generators.loops
     if isinstance(generators, LoopGenerators):
         return generators
+    if isinstance(generators, tuple) and generators:
+        library = getattr(generators[0], "_library", None)
+        if isinstance(library, LoopGenerators) and generators is library.generators:
+            return library
+    if isinstance(generators, Mapping) and generators:
+        library = getattr(next(iter(generators.values())), "_library", None)
+        if isinstance(library, LoopGenerators) and generators is library.generator_records:
+            return library
     records = _records(generators)
     if not records:
         raise ValueError("expanded_moves requires original witnesses with a reference root")
     owners = [getattr(record, "_owner", None) for record in records.values()]
     if owners[0] is None or any(owner is not owners[0] for owner in owners):
         raise ValueError("original witnesses must share a reference root")
+    library = getattr(next(iter(records.values())), "_library", None)
+    if (isinstance(library, LoopGenerators) and library._native is owners[0]
+            and all(library.generator_records.get(identifier) is record
+                    for identifier, record in records.items())):
+        return library
     return LoopGenerators(owners[0])
 
 
@@ -229,13 +249,13 @@ class LoopExpression:
             body = body.children[0]
         return cls("rotated", (body,), rotation=rotation) if rotation else body
 
-    @property
+    @cached_property
     def base_ids(self):
         if self.kind == "loop":
             return (self.generator_id,)
         return tuple(sorted({identifier for child in self.children for identifier in child.base_ids}))
 
-    @property
+    @cached_property
     def memory_keys(self):
         """Visible memorized leaves, treating a literal word and inverse alike."""
         if self.kind == "loop":
@@ -246,6 +266,10 @@ class LoopExpression:
         return tuple(sorted({key for child in self.children for key in child.memory_keys}, key=repr))
 
     def render(self):
+        return self._rendered
+
+    @cached_property
+    def _rendered(self):
         if self.kind == "loop":
             return f"L{self.generator_id}"
         if self.kind == "turns":
@@ -273,7 +297,7 @@ class LoopExpression:
         accepted by State.apply(). Original-ID render() remains unchanged.
         """
         records = _records(generators)
-        missing = set(self.base_ids) - set(records)
+        missing = [identifier for identifier in self.base_ids if identifier not in records]
         if missing:
             raise ValueError(f"unknown original loop IDs: {sorted(missing)}")
 
@@ -381,7 +405,15 @@ class LoopExpression:
 
     def evaluate(self, generators):
         """Evaluate the faithful action without expanding repeated words."""
-        return _evaluate(self, _records(generators), {})
+        reference = generators.analysis if hasattr(generators, "analysis") else generators
+        if hasattr(reference, "loops"):
+            reference = reference.loops
+        if isinstance(reference, tuple) and reference:
+            library = getattr(reference[0], "_library", None)
+            if isinstance(library, LoopGenerators) and reference is library.generators:
+                reference = library
+        cache = reference._evaluations if isinstance(reference, LoopGenerators) else {}
+        return _evaluate(self, _records(generators), cache)
 
     def expanded_moves(self, generators, *, max_expanded_moves=100_000):
         """Build a checked face-only witness, including certified regrip transfers."""
@@ -391,7 +423,12 @@ class LoopExpression:
                          or hasattr(generators, "loops") or hasattr(generators, "analysis"))
         reference = generators if has_reference else records
         loops = _loops_from_records(reference)
-        return _build(self, loops, records, {}, {}, set(),
+        same_records = (records is loops.generator_records or
+                        all(loops.generator_records.get(identifier) is record
+                            for identifier, record in records.items()))
+        words, evaluations, verified_turns = ((loops._algorithm_words, loops._evaluations,
+                                              loops._verified_turns) if same_records else ({}, {}, set()))
+        return _build(self, loops, records, words, evaluations, verified_turns,
                       max_expanded_moves).turn_sequence
 
     def structure_cost(self, generators):
@@ -400,7 +437,7 @@ class LoopExpression:
         visible_ids = [key[1] for key in self.memory_keys if key[0] == "loop"]
         lengths = {identifier: records[identifier].htm_length for identifier in visible_ids
                    if identifier in records}
-        missing = set(self.base_ids) - set(records)
+        missing = [identifier for identifier in self.base_ids if identifier not in records]
         if missing:
             raise ValueError(f"unknown original loop IDs: {sorted(missing)}")
         return _structure(self, lengths)[0]
@@ -511,6 +548,12 @@ class LoopAlgorithm:
     _generators: tuple = field(default=(), repr=False, compare=False)
     _human_score: tuple = field(default=(), repr=False, compare=False)
 
+    def __post_init__(self):
+        if not isinstance(self.expression, LoopExpression):
+            raise TypeError("algorithm expression must be a LoopExpression")
+        for name in ("permutation", "_leaf_htm_lengths", "_generators", "_human_score"):
+            object.__setattr__(self, name, tuple(getattr(self, name)))
+
     @property
     def moves(self):
         return self.turn_sequence
@@ -520,25 +563,29 @@ class LoopAlgorithm:
         """Move-level powers and brackets, with the expanded word kept separately."""
         return self.expression.render_moves(self._generators)
 
-    @property
+    @cached_property
     def qtm_length(self):
         return sum(2 if move.endswith("2") else 1 for move in self.turn_sequence.split())
 
-    @property
+    @cached_property
     def htm_length(self):
         return len(self.turn_sequence.split())
 
-    @property
+    @cached_property
     def block_action(self):
         return self._inventory.action(self.permutation)
 
-    @property
-    def support(self):
-        return _effect(self.permutation, self._inventory)[0]
+    @cached_property
+    def _effect_summary(self):
+        return _effect(self.permutation, self._inventory)
 
-    @property
+    @cached_property
+    def support(self):
+        return self._effect_summary[0]
+
+    @cached_property
     def is_kernel(self):
-        return _effect(self.permutation, self._inventory)[1]
+        return self._effect_summary[1]
 
     @property
     def base_ids(self):
@@ -580,15 +627,15 @@ def _build(expression, loops, records, words, evaluations, verified_turns,
            max_expanded_moves, max_htm_length=None):
     if not isinstance(expression, LoopExpression):
         raise TypeError("algorithm expression must be a LoopExpression")
-    missing = set(expression.base_ids) - set(records)
+    missing = [identifier for identifier in expression.base_ids if identifier not in records]
     if missing:
         raise ValueError(f"unknown original loop IDs: {sorted(missing)}")
     def verify_turns(node):
+        if node.kind == "turns" and len(node.moves.split()) > max_expanded_moves:
+            raise _ExpansionLimit("literal turns exceed max_expanded_moves")
         if node in verified_turns:
             return
         if node.kind == "turns":
-            if len(node.moves.split()) > max_expanded_moves:
-                raise _ExpansionLimit("literal turns exceed max_expanded_moves")
             try:
                 replay = State(loops.root_shape).apply(node.moves)
             except BlockedMoveError as error:
@@ -610,9 +657,9 @@ def _build(expression, loops, records, words, evaluations, verified_turns,
             return tuple(node.moves.split())
         if node.kind == "loop":
             identifier = node.generator_id
+            if records[identifier].qtm_length > max_expanded_moves:
+                raise _ExpansionLimit("original loop witness exceeds max_expanded_moves")
             if identifier not in words:
-                if records[identifier].qtm_length > max_expanded_moves:
-                    raise _ExpansionLimit("original loop witness exceeds max_expanded_moves")
                 words[identifier] = tuple(records[identifier].turn_sequence.split())
             return words[identifier]
         if node.kind == "sequence":
@@ -783,6 +830,18 @@ class AlgorithmLibrary:
     collision_proposal_count: int = 0
     inverse_proposal_count: int = 0
 
+    def __post_init__(self):
+        for name in ("algorithms", "shortest", "structured"):
+            object.__setattr__(self, name, tuple(getattr(self, name)))
+
+    @cached_property
+    def _build_context(self):
+        # Expressions and original witness records are immutable. Literal
+        # replay certificates are scoped to this exact root/alphabet only;
+        # each call still enforces its own physical expansion and length caps.
+        return (self.loops.generator_records, self.loops._algorithm_words,
+                self.loops._evaluations, self.loops._verified_turns)
+
     @property
     def metadata(self):
         names = ("max_seed_loops", "rounds", "max_candidates", "max_algorithms", "max_htm_length",
@@ -808,7 +867,8 @@ class AlgorithmLibrary:
         _integer(max_expanded_moves, "max_expanded_moves")
         if max_htm_length is not None:
             _integer(max_htm_length, "max_htm_length")
-        return _build(expression, self.loops, _records(self.loops), {}, {}, set(),
+        records, words, evaluations, verified_turns = self._build_context
+        return _build(expression, self.loops, records, words, evaluations, verified_turns,
                       max_expanded_moves, max_htm_length)
 
     def with_expressions(self, *expressions):
@@ -913,7 +973,8 @@ def _mining_expressions(operands, symmetries=()):
 
 def discover_loop_algorithms(initial, *, max_seed_loops=32, rounds=2,
                              max_candidates=3000, max_algorithms=256,
-                             max_htm_length=120, max_expanded_moves=None):
+                             max_htm_length=120, max_expanded_moves=None,
+                             seed_generator_ids=None):
     """Mine bounded exact effects, retaining short and structured alternatives.
 
     No GAP is needed. Complete original loops remain available even when only
@@ -934,8 +995,19 @@ def discover_loop_algorithms(initial, *, max_seed_loops=32, rounds=2,
     if max_expanded_moves is not None:
         _integer(max_expanded_moves, "max_expanded_moves")
     loops = _reference(initial)
+    seed_generators = loops.generators
+    if seed_generator_ids is not None:
+        identifiers = tuple(seed_generator_ids)
+        if len(set(identifiers)) != len(identifiers):
+            raise ValueError("seed_generator_ids must not contain duplicates")
+        for identifier in identifiers:
+            _integer(identifier, "seed generator ID", 0)
+            if identifier not in loops.generator_records:
+                raise ValueError(f"unknown original loop ID {identifier}")
+        seed_generators = tuple(loops.generator_records[identifier] for identifier in identifiers)
     symmetries = bandage_symmetries(loops.root_shape)
-    records, words, evaluations, verified_turns = _records(loops), {}, {}, set()
+    records, words, evaluations, verified_turns = (loops.generator_records, loops._algorithm_words,
+                                                 loops._evaluations, loops._verified_turns)
     pool, originals, seen = {}, [], set()
     counts = dict(examined_count=0, identity_count=0, duplicate_count=0,
                   length_pruned_count=0, expansion_pruned_count=0,
@@ -950,6 +1022,7 @@ def discover_loop_algorithms(initial, *, max_seed_loops=32, rounds=2,
         if counts["examined_count"] >= max_candidates:
             limited = True
             return None
+        checkpoint("dictionary", work=1)
         counts["examined_count"] += 1
         if expression.kind == "rotated":
             counts["symmetry_transfer_count"] += 1
@@ -991,7 +1064,7 @@ def discover_loop_algorithms(initial, *, max_seed_loops=32, rounds=2,
 
     original_budget = min(max_seed_loops, max_candidates,
                           max(1, max_candidates // (rounds + 1)))
-    for generator in loops.generators[:original_budget]:
+    for generator in seed_generators[:original_budget]:
         if counts["examined_count"] >= max_candidates:
             limited = True
             break

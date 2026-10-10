@@ -12,6 +12,7 @@ import json
 from . import State
 from .human_methods import _observe, _require, _then, _validate_method
 from .isotropy import isotropy_loops
+from .preparation import reference_loops
 
 
 _IDENTITY = tuple(range(48))
@@ -65,7 +66,7 @@ def compile_symbolic_policies(method, definitions, policies, *, loops=None):
         policies_out.append(HumanRepertoireStage(
             stage.number, cases,
             _rules(stage.number, cases, stage, macros, {}, (method, certified.group_before))))
-    loops = loops or isotropy_loops(method.reference_shape)
+    loops = loops or reference_loops(method)
     projected = _validate_method(replace(method, algorithms=tuple(algorithms), stages=tuple(stages)),
                                  complete_loops=loops)
     policies_out = tuple(policies_out)
@@ -100,7 +101,7 @@ def build_symbolic_repertoire(method, definitions, recipes, *, baseline=None, me
                 observation, recipe, None if solved else recipe,
                 stage.solved_observation, 0 if solved else 1))
         policies.append(tuple(converted))
-    loops = isotropy_loops(method.reference_shape)
+    loops = reference_loops(method)
     projected, macros, stages, _ = compile_symbolic_policies(
         method, definitions, policies, loops=loops)
     result = HumanRepertoire(baseline or method, projected, macros, stages,
@@ -119,15 +120,16 @@ def validate_symbolic_repertoire(repertoire, *, complete_loops=None, validate_me
 
     _require(repertoire.baseline.backend == repertoire.method.backend == "symbolic",
              "repertoire baseline and projection use different backends")
-    loops = complete_loops or isotropy_loops(repertoire.method.reference_shape)
+    loops = complete_loops or reference_loops(repertoire.method)
     baseline = _validate_method(repertoire.baseline, complete_loops=loops)
     method = _validate_method(repertoire.method, complete_loops=loops)
     _require(baseline.status == method.status == "completed" and
              baseline.reference_shape == method.reference_shape and
              baseline.root_vertex == method.root_vertex and
              baseline.group_order == method.group_order and
-             all(generator.permutation in method._permutations for generator in baseline.generators) and
-             all(generator.permutation in baseline._permutations for generator in method.generators),
+             (baseline._permutations is method._permutations or
+              (all(generator.permutation in method._permutations for generator in baseline.generators) and
+               all(generator.permutation in baseline._permutations for generator in method.generators))),
              "repertoire baseline and projection have different references or groups")
     if repertoire.metadata.get("basis") != "templates":
         _require(tuple((stage.feature, stage.observations) for stage in baseline.stages) ==

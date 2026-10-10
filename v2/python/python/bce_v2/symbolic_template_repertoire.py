@@ -17,6 +17,8 @@ from .human_repertoire import HumanMacroRecipe, HumanRepertoireMacro, _same_json
 from .isotropy import LoopGenerators, isotropy_loops
 from .loop_algorithms import LoopAlgorithm, LoopExpression
 from .loop_rotations import bandage_symmetries, inverse_rotation, rotate_moves
+from .computation import checkpoint, retain_method, retain_repertoire, report_progress
+from .preparation import reference_loops
 
 
 _DIMENSIONS = ("description_score", "instruction_symbols", "macro_count", "mean_htm",
@@ -65,7 +67,7 @@ class _Bodies:
         self.method = method
         self.rotations = ("", *bandage_symmetries(method.reference_shape)) if allow_symmetry else ("",)
         self.roots = {g.id: g for g in method.generators}
-        self.loops = LoopGenerators(method.generators[0]._owner) if method.generators else None
+        self.loops = reference_loops(method) if method.generators else None
         self.witnesses = {}
         self.word_cache, self.alias_cache = {}, {}
 
@@ -153,7 +155,20 @@ class _Bodies:
 
     def shared(self, settings, templates):
         counts, seed_words = Counter(), set()
-        for generator in self.method.generators:
+        # Rich physical seeds are independent of the complete proof alphabet.
+        # Preserve all necessary leaves, but avoid attempting every native loop
+        # on large shape components. Small six-face alphabets stay unchanged.
+        generators = self.method.generators
+        if len(generators) > 128:
+            required_ids = {identifier for algorithm in (*self.method.algorithms, *templates)
+                            for identifier in algorithm.base_ids}
+            basis = self.method._symbolic_chain.algebra_generators
+            shortlist = sorted(generators, key=lambda g: (g.qtm_length, g.id))[:128]
+            cheap = sorted(shortlist, key=lambda g: (g.htm_length, g.qtm_length, g.id))[:32]
+            selected_ids = required_ids | {g.id for g in (*basis, *cheap)}
+            generators = tuple(g for g in generators if g.id in selected_ids)
+        for generator in generators:
+            checkpoint("template_seeds")
             expression = LoopExpression.loop(generator.id)
             word = self.alias(expression)[0]
             if len(generator.turn_sequence.split()) == 1:
@@ -167,6 +182,7 @@ class _Bodies:
             nonlocal examined
             if examined >= settings["max_word_candidates"]:
                 return
+            checkpoint("template_expressions")
             examined += 1
             word = self.alias(expression)[0]
             if word and word != previous_word:
@@ -195,6 +211,7 @@ class _Bodies:
         selected = set(seed_words)
 
         def score(words):
+            checkpoint("template_scoring")
             definitions, recipes = self.recipes(words)
             records = {m.id: m for m in definitions}
             return (sum(len(word.split()) for word in words) +
@@ -214,6 +231,7 @@ class _Bodies:
         proposals = proposals[:settings["max_word_frontier"]]
         trials = examined_trials = 0
         for _ in range(settings["max_trials"]):
+            checkpoint("template_bodies")
             if not proposals:
                 break
             alternatives = []
@@ -344,8 +362,10 @@ def symbolic_template_human_repertoire(initial, *, strategy, features, preferenc
             raise ValueError("dictionary_options cannot be supplied with a prepared dictionary")
     baseline = _prepare(initial, settings, strategy, features, dictionary, dictionary_options,
                         discovery_options, gap_executable, timeout, root)
-    loops = isotropy_loops(baseline.reference_shape)
+    loops = reference_loops(baseline)
     _validate_method(baseline, complete_loops=loops)
+    retain_method(baseline)
+    report_progress("templates", "started", backend="symbolic")
     for template in templates:
         _require(template._inventory.root_shape == baseline.reference_shape and
                  template._generators == baseline.generators and
@@ -369,30 +389,44 @@ def symbolic_template_human_repertoire(initial, *, strategy, features, preferenc
     search = {"group_elements_enumerated": 0, "expression_nodes_examined": 0,
               "expression_limit_reached": 0, "template_trials_examined": 0,
               "accepted_shared_bodies": 0, "shared_body_proposals": 0}
-    if max_trials and max_word_candidates and max_applications:
-        definitions, recipes, search = bodies.shared(settings, templates)
-        consider(definitions, recipes, "shared_witnessed_bodies")
     before = candidates[0][4]
 
     def dominates(first, second):
         return all(first[k] <= second[k] for k in _DIMENSIONS) and any(first[k] < second[k] for k in _DIMENSIONS)
-    frontier = [c for c in candidates if not any(dominates(o[4], c[4]) for o in candidates)]
-    selected = min(frontier, key=lambda c: (*[c[4][k] for k in _PREFERENCES[preference]], c[0]))
-    metadata = {"basis": "templates", "construction": "symbolic_template_search",
-        "settings": settings, "coverage": "certified", "human_reviewed": False,
-        "exhaustive_repertoire_search": False, "physical_shortest_claim": False,
-        "cost_scope": _SCOPE, "policy_scope": "the selected physical case words are retained exactly",
-        "search_scope": "bounded shared expression bodies and typed physical chunks; no group enumeration",
-        "rotations": list(bodies.rotations), "chunk_dictionary": selected[3].to_dict(),
-        "baseline_chunk_dictionary": candidates[0][3].to_dict(), "baseline_metrics": before,
-        "selected_metrics": selected[4], "pareto_dimensions": _DIMENSIONS,
-        "preference_orders": _PREFERENCES, "selected_id": selected[0],
-        "frontier": [c[0] for c in frontier], "search": search,
-        "candidates": [{"id": c[0], "source": c[1], "metrics": c[4], "admissible": True}
-                       for c in candidates]}
-    result = replace(selected[2], _metadata_json=json.dumps(metadata, sort_keys=True, allow_nan=False))
-    from .human_repertoire import _validate_repertoire
-    return _validate_repertoire(result, complete_loops=loops)
+    def publish():
+        frontier = [c for c in candidates if not any(dominates(o[4], c[4]) for o in candidates)]
+        selected = min(frontier, key=lambda c: (*[c[4][k] for k in _PREFERENCES[preference]], c[0]))
+        metadata = {"basis": "templates", "construction": "symbolic_template_search",
+            "settings": settings, "coverage": "certified", "human_reviewed": False,
+            "exhaustive_repertoire_search": False, "physical_shortest_claim": False,
+            "cost_scope": _SCOPE, "policy_scope": "the selected physical case words are retained exactly",
+            "search_scope": "bounded shared expression bodies and typed physical chunks; no group enumeration",
+            "rotations": list(bodies.rotations), "chunk_dictionary": selected[3].to_dict(),
+            "baseline_chunk_dictionary": candidates[0][3].to_dict(), "baseline_metrics": before,
+            "selected_metrics": selected[4], "pareto_dimensions": _DIMENSIONS,
+            "preference_orders": _PREFERENCES, "selected_id": selected[0],
+            "frontier": [c[0] for c in frontier], "search": search,
+            "candidates": [{"id": c[0], "source": c[1], "metrics": c[4], "admissible": True}
+                           for c in candidates]}
+        result = replace(selected[2], _metadata_json=json.dumps(metadata, sort_keys=True, allow_nan=False))
+        from .human_repertoire import _validate_repertoire
+        result = _validate_repertoire(result, complete_loops=loops)
+        retain_repertoire(result)
+        return result
+
+    from .computation import current_computation
+    computation = current_computation()
+    if (computation is not None and not computation._suspended
+            and (computation.seconds is not None or computation.limit is not None)
+            and max_trials and max_word_candidates and max_applications):
+        publish()
+    if max_trials and max_word_candidates and max_applications:
+        checkpoint("template_search")
+        definitions, recipes, search = bodies.shared(settings, templates)
+        consider(definitions, recipes, "shared_witnessed_bodies")
+    result = publish()
+    report_progress("templates", "completed", backend="symbolic", macros=len(result.macros))
+    return result
 
 
 def _validate_symbolic_template_metadata(repertoire, actual, before):
@@ -405,7 +439,9 @@ def _validate_symbolic_template_metadata(repertoire, actual, before):
         "search_scope", "rotations", "chunk_dictionary", "baseline_chunk_dictionary",
         "baseline_metrics", "selected_metrics", "pareto_dimensions", "preference_orders",
         "selected_id", "frontier", "search", "candidates"}
-    _require(set(metadata) == fields and metadata["basis"] == "templates" and
+    from .computation import validate_computation_metadata
+    validate_computation_metadata(metadata)
+    _require(set(metadata) - {"computation"} == fields and metadata["basis"] == "templates" and
         metadata["construction"] == "symbolic_template_search" and metadata["coverage"] == "certified" and
         metadata["human_reviewed"] is False and metadata["exhaustive_repertoire_search"] is False and
         metadata["physical_shortest_claim"] is False and metadata["cost_scope"] == _SCOPE and

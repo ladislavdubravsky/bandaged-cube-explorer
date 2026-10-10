@@ -13,12 +13,14 @@ import json
 from inspect import signature
 
 from .block_actions import _CELL_POINTS
+from .computation import checkpoint, report_progress, retain_method
 from .gap_backend import GapError, _gap_images, _run_gap, _validated_options
 from .human_chains import BlockFeature, plan_human_stages
 from .human_methods import (_compile_plan, _expression_bound, _inverse, _observe,
                             _validate_method)
 from .loop_algorithms import AlgorithmLibrary, LoopExpression
-from .symbolic_chains import _PROGRAM as _CHAIN_PROGRAM, _parse_symbolic_plan_output
+from .symbolic_chains import (_PROGRAM as _CHAIN_PROGRAM, _algebra_basis,
+                              _parse_symbolic_plan_output)
 from .symbolic_human_algorithms import _additive_metrics, _successor
 
 
@@ -245,7 +247,8 @@ def _adaptive_plan(analysis, algorithms, *, kind, preference, max_expansions,
                    max_htm_length=120, max_expanded_moves=960,
                    gap_executable="gap", timeout=None):
     executable, timeout = _validated_options(gap_executable, timeout)
-    generators = tuple(analysis.loops.generators)
+    checkpoint("adaptive_chain", kind=kind)
+    original_generators, generators, _ = _algebra_basis(analysis)
     blocks = analysis.block_inventory.blocks
     points = [sorted(p+1 for cell in b.cells for p in _CELL_POINTS[cell]) for b in blocks]
     projections = [[d+1 for d in g.block_action.destinations] for g in generators]
@@ -260,7 +263,8 @@ def _adaptive_plan(analysis, algorithms, *, kind, preference, max_expansions,
                       "BCESymbolicChain(" + ",".join(arguments) + ");;\n" +
                       "BCEExportDictionaryChain();;\nQUIT;\n", executable, timeout,
                       "dictionary-aware symbolic chain search")
-    plan = _parse_symbolic_plan_output(output, analysis, "manual")
+    plan = _parse_symbolic_plan_output(output, analysis, "manual",
+                                       algebra_generators=generators)
     lines = output.splitlines()
     if lines.count(_BEGIN) != 1 or lines.count(_END) != 1:
         raise GapError("missing dictionary-chain search result markers")
@@ -271,9 +275,10 @@ def _adaptive_plan(analysis, algorithms, *, kind, preference, max_expansions,
         raise GapError("malformed dictionary-chain search result") from error
     builder = AlgorithmLibrary(analysis.loops, (), (), ())
     by_effect = {a.permutation: a for a in algorithms}
-    roots = {g.id:g for g in generators}
+    roots = {g.id:g for g in original_generators}
     pruned = 0
     for permutation, cost, word in records:
+        checkpoint("adaptive_witnesses")
         expression = LoopExpression.sequence(*(LoopExpression.power(algorithms[index].expression, exponent)
                                                for index, exponent in word))
         if _expression_bound(expression, roots) > max_expanded_moves:
@@ -329,9 +334,11 @@ def _select_edges(induced, solved, observations, maximum):
     return [(induced[key][0],induced[key][1]) for key in selected]
 
 
-def _compile_dictionary_policy(plan, algorithms, settings):
+def _compile_dictionary_policy(plan, algorithms, settings, *, baseline=None):
     """Shortest additive macro paths on small observations, with full fallback."""
-    baseline = _compile_plan(plan)
+    if baseline is None:
+        baseline = _compile_plan(plan)
+    retain_method(baseline, source="fallback:" + plan.strategy)
     records = {g.id:g for g in baseline.generators}
     builder = AlgorithmLibrary(plan.analysis.loops, (), (), ())
     used_algorithms = {a.id:a for a in baseline.algorithms}
@@ -339,6 +346,7 @@ def _compile_dictionary_policy(plan, algorithms, settings):
     next_id = len(used_algorithms)+1
     catalog = []
     for algorithm in algorithms:
+        checkpoint("dictionary_policy_catalog")
         if (algorithm.htm_length <= settings["max_htm_length"] and
                 _expression_bound(algorithm.expression,records) <= settings["max_expanded_moves"]):
             if algorithm.permutation not in plan.group:
@@ -348,6 +356,7 @@ def _compile_dictionary_policy(plan, algorithms, settings):
                    algorithm.expression.structure_cost(baseline.generators),algorithm.expression.render())
             catalog.append((algorithm,action,key))
     for stage, certified in zip(baseline.stages, plan.stages):
+        checkpoint("dictionary_policy", stage=stage.number, stages=len(plan.stages))
         # H_i is the exact intersection of the preceding feature stabilizers.
         # With root membership certified once, these cached feature checks
         # are equivalent to sifting every candidate through every H_i again.
@@ -377,6 +386,7 @@ def _compile_dictionary_policy(plan, algorithms, settings):
                 best[image] = value
         while (heap and settings["mode"] != "original" and
                expansions < settings["max_states"]):
+            checkpoint("dictionary_policy_search")
             htm,qtm,depth,observation = heappop(heap)
             stored = labels.get((observation,depth))
             if stored is None or (htm,qtm) != stored[:2]:
@@ -420,6 +430,7 @@ def _compile_dictionary_policy(plan, algorithms, settings):
     method = _validate_method(replace(baseline,stages=tuple(new_stages),
                                       algorithms=tuple(a for key,a in used_algorithms.items() if key in used)),
                               complete_loops=plan.analysis.loops)
+    retain_method(method, source="dictionary:" + plan.strategy)
     return baseline, method, {"cases_improved":changed,"observation_states_expanded":expansions,
                               "state_limit_reached":expansions >= settings["max_states"]}
 
@@ -472,12 +483,19 @@ def select_symbolic_human_chain(initial, *, strategy="placement_then_orientation
         manual_features = tuple(manual_features)
         if any(not isinstance(f,BlockFeature) for f in manual_features):
             raise TypeError("manual_features must contain BlockFeature instances")
-    first = plan_human_stages(initial,strategy="placement_then_orientation",backend="symbolic",
+    report_progress("symbolic_baseline", strategy=strategy)
+    first = plan_human_stages(initial,strategy=strategy,backend="symbolic",
                               gap_executable=gap_executable,timeout=timeout,root=root)
-    plans = [first,plan_human_stages(first.analysis,strategy="fully_solve_each_block",backend="symbolic",
+    first_baseline = _compile_plan(first)
+    retain_method(first_baseline, source="fallback:" + strategy)
+    checkpoint("symbolic_control_chain")
+    other = ("fully_solve_each_block" if strategy == "placement_then_orientation"
+             else "placement_then_orientation")
+    plans = [first,plan_human_stages(first.analysis,strategy=other,backend="symbolic",
                                     gap_executable=gap_executable,timeout=timeout,root=root)]
     analysis = plans[0].analysis
     if dictionary is None:
+        checkpoint("symbolic_dictionary")
         options = dict(dictionary_options or {})
         options.setdefault("max_candidates",settings["max_candidates"]//2)
         options.setdefault("rounds",settings["rounds"])
@@ -531,10 +549,13 @@ def select_symbolic_human_chain(initial, *, strategy="placement_then_orientation
                        original_leaf_htm=sum(g.htm_length for g in method.generators))
         candidates.append(HumanChainCandidate(f"C{len(candidates)+1}",source,method,
                                               json.dumps(metrics,sort_keys=True)))
+        retain_method(method, source=source, metrics=metrics)
 
     baselines = {}
     for plan in plans:
-        raw, improved, stats = _compile_dictionary_policy(plan,algorithms,settings)
+        checkpoint("symbolic_chain_policy", strategy=plan.strategy)
+        raw, improved, stats = _compile_dictionary_policy(
+            plan,algorithms,settings, baseline=first_baseline if plan is first else None)
         baselines[plan.strategy] = raw
         add(raw,"fallback:"+plan.strategy)
         add(improved,"dictionary:"+plan.strategy)
@@ -547,6 +568,7 @@ def select_symbolic_human_chain(initial, *, strategy="placement_then_orientation
         remaining = max_expansions
         remaining_proposals = max(0,settings["max_candidates"]-len(algorithms))
         for kind in (1,2)[:min(max_methods,2)]:
+            checkpoint("adaptive_chain", kind=kind)
             if remaining <= 0:
                 break
             plan,pool,adaptive_stats = _adaptive_plan(

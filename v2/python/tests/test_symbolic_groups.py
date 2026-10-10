@@ -91,6 +91,26 @@ class SymbolicGroupTests(unittest.TestCase):
         self.assertNotIn((1, 0, 2, 3), certificate)
         self.assertEqual(PermutationGroupCertificate.from_dict(certificate.to_dict()).order, 1)
 
+    def test_subgroup_can_reuse_only_its_verified_ambient_alphabet(self):
+        full = symmetric_certificate(3)
+        subgroup = PermutationGroupCertificate(
+            full.root_generators, (StrongGenerator((1, 0, 2), ((0, 1),)),),
+            (StabilizerLevel(0, (0,)),), input_generators=((1, 0, 2),),
+            ambient_certificate=full)
+        self.assertIs(subgroup.root_generators, full.root_generators)
+        self.assertEqual(subgroup.order, 2)
+        encoded = subgroup.to_dict()
+        loaded = PermutationGroupCertificate.from_dict(encoded, ambient_certificate=full)
+        self.assertIs(loaded.root_generators, full.root_generators)
+        changed = deepcopy(encoded)
+        changed["root_generators"][0][0] = True
+        with self.assertRaises(TypeError):
+            PermutationGroupCertificate.from_dict(changed, ambient_certificate=full)
+        with self.assertRaisesRegex(ValueError, "another root alphabet"):
+            PermutationGroupCertificate(
+                tuple(reversed(full.root_generators)), subgroup.strong_generators,
+                subgroup.levels, input_generators=(), ambient_certificate=full)
+
     def test_incomplete_strong_generators_fail_schreier_closure(self):
         # The two generators move every base point, so none enter the alleged
         # first stabilizer.  The omitted (1 2) Schreier generator proves the

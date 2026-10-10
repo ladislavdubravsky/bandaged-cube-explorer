@@ -15,10 +15,13 @@ import json
 from pathlib import Path
 
 from ._moves import _simplified_moves
+from .computation import checkpoint, report_progress, retain_method
 from .human_methods import HumanMethod, _expression_bound, _inverse, _observe, _then, _validate_method
 from .human_witnesses import stored_loop_generators
-from .isotropy import LoopGenerators, isotropy_loops
-from .loop_algorithms import AlgorithmLibrary, LoopAlgorithm, LoopExpression, _mining_expressions
+from .loop_algorithms import (
+    AlgorithmLibrary, LoopAlgorithm, LoopExpression, _loops_from_records, _mining_expressions,
+)
+from .preparation import reference_loops
 
 
 _IDENTITY = tuple(range(48))
@@ -111,6 +114,7 @@ def _merge_seeds(method, complete_loops, maximum):
 def _stage_groups(method, actions):
     current, groups = frozenset(actions), []
     for stage in method.stages:
+        checkpoint("algorithm_stages", work=1, stage=stage.number)
         target = frozenset(p for p in current
                            if _observe(actions[p], stage.block_index, stage.feature.kind) == stage.solved_observation)
         groups.append((current, target))
@@ -121,7 +125,9 @@ def _stage_groups(method, actions):
 def _metrics(method, actions):
     algorithms = {a.id: a for a in method.algorithms}
     totals, worst = [0, 0], [0, 0]
-    for original in sorted(method._permutations):
+    for index, original in enumerate(sorted(method._permutations)):
+        if index % 128 == 0:
+            checkpoint("algorithm_metrics", work=1, states=index)
         current, words = original, []
         for stage in method.stages:
             observation = _observe(actions[current], stage.block_index, stage.feature.kind)
@@ -153,14 +159,15 @@ class _Search:
     def __init__(self, method, generators, settings):
         self.method, self.generators, self.settings = method, generators, settings
         self.records = {g.id: g for g in generators}
-        self.library = (AlgorithmLibrary(LoopGenerators(generators[0]._owner), (), (), ())
+        self.lengths = tuple((generator.id, generator.htm_length) for generator in generators)
+        self.library = (AlgorithmLibrary(_loops_from_records(generators), (), (), ())
                         if generators else None)
         self.pool, self.seen = defaultdict(list), set()
         self.counts, self.sources = Counter(), Counter()
 
     def candidate(self, algorithm, source):
         algorithm = replace(algorithm, _inventory=self.method.inventory, _generators=self.generators,
-                            _leaf_htm_lengths=tuple((g.id, g.htm_length) for g in self.generators), _human_score=())
+                            _leaf_htm_lengths=self.lengths, _human_score=())
         return _Candidate(algorithm, source, algorithm.expression.structure_cost(self.generators))
 
     def add(self, candidate):
@@ -185,6 +192,7 @@ class _Search:
         if self.counts["candidates_examined"] >= self.settings["max_candidates"]:
             self.counts["candidate_limit_reached"] = 1
             return False
+        checkpoint("algorithm_candidates", work=1, source=source)
         self.counts["candidates_examined"] += 1
         self.sources[source] += 1
         if expression in self.seen:
@@ -223,6 +231,8 @@ class _Search:
         queue, serial = [(0, 0, 0, _IDENTITY, ())], 0
         settled = 0
         while queue and self.remaining() > 0:
+            checkpoint("algorithm_states", work=1, source=source,
+                       states=self.counts["states_expanded"])
             if settled >= maximum_states or self.counts["states_expanded"] >= self.settings["max_states"]:
                 self.counts["state_limit_reached"] = 1
                 break
@@ -325,14 +335,21 @@ def improve_human_method(method, *, mode="structured", max_seed_loops=32, max_ca
         return improve_symbolic_human_method(method, dictionary=dictionary, **settings)
     if dictionary is not None:
         raise ValueError("a supplied dictionary currently requires a symbolic method")
-    complete_loops = isotropy_loops(method.reference_shape)
+    complete_loops = reference_loops(method)
     baseline = _validate_method(method, complete_loops=complete_loops)
+    retain_method(baseline, source="algorithm_baseline")
+    report_progress("algorithm_improvement", status="started", backend="explicit", mode=mode)
+    checkpoint("algorithm_improvement", work=0)
     generators, seed_ids = _merge_seeds(baseline, complete_loops, max_seed_loops)
     search = _Search(baseline, generators, settings)
     baseline_algorithms = {a.id: search.candidate(a, "baseline") for a in baseline.algorithms}
     for candidate in baseline_algorithms.values():
         search.add(candidate)
-    actions = {p: baseline.inventory.action(p) for p in sorted(baseline._permutations)}
+    actions = {}
+    for index, permutation in enumerate(sorted(baseline._permutations)):
+        if index % 128 == 0:
+            checkpoint("algorithm_actions", work=1, states=index)
+        actions[permutation] = baseline.inventory.action(permutation)
     groups = _stage_groups(baseline, actions)
     alphabet = tuple(LoopExpression.power(LoopExpression.loop(identifier), exponent)
                      for identifier in seed_ids for exponent in (1, -1))
@@ -356,6 +373,7 @@ def improve_human_method(method, *, mode="structured", max_seed_loops=32, max_ca
         state_share = max_states if mode == "shallow" else max_states // 2
         paths.update(search.dijkstra(seeds, baseline._permutations, state_share, "global_words"))
     for iteration in range(rounds if mode == "structured" else 0):
+        checkpoint("algorithm_round", work=1, round=iteration + 1)
         if search.remaining() <= 0:
             break
         previous_work = search.counts["candidates_examined"], search.counts["states_expanded"]
@@ -386,6 +404,7 @@ def improve_human_method(method, *, mode="structured", max_seed_loops=32, max_ca
             break
     stages, chosen_algorithms, alternatives, summaries = [], [], [], []
     for stage, (current, _) in zip(baseline.stages, groups):
+        checkpoint("algorithm_stages", work=1, stage=stage.number)
         by_observation = defaultdict(list)
         for effect, choices in search.pool.items():
             if effect in current:
@@ -435,6 +454,9 @@ def improve_human_method(method, *, mode="structured", max_seed_loops=32, max_ca
     accepted = (proposed_metrics["total_htm"] <= before["total_htm"] and
                 proposed_metrics["worst_htm"] <= before["worst_htm"])
     result = proposed_method if accepted else baseline
+    retain_method(result, source="algorithm_improvement", metrics=proposed_metrics if accepted else before)
+    report_progress("algorithm_improvement", status="completed", backend="explicit", accepted=accepted,
+                    candidates=search.counts["candidates_examined"], states=search.counts["states_expanded"])
     metadata = {"settings": settings, "exhaustive_word_search": False,
                 "selection": "physical HTM, QTM, expression description cost; full-method HTM guard",
                 "macro_search_cost": "sum of simplified edge HTM; heuristic for physical words",

@@ -507,6 +507,7 @@ from .human_chunks import (  # noqa: E402
     AlgorithmChunk, ChunkExpression, ChunkDictionary, extract_algorithm_chunks,
 )
 from .template_human_repertoire import template_human_repertoire  # noqa: E402
+from .preparation import preparation_profile  # noqa: E402
 from .human_diagrams import (  # noqa: E402
     HumanRecognitionDiagram, recognition_block_roles,
     recognition_case_diagrams, recognition_stage_diagrams,
@@ -573,7 +574,7 @@ __all__ = [
     "HumanRepertoireCase", "HumanRepertoireMacro", "HumanRepertoireStage", "HumanRepertoireStep",
     "optimize_human_repertoire", "load_human_repertoire", "generator_human_repertoire", "ShapePath",
     "AlgorithmChunk", "ChunkExpression", "ChunkDictionary", "extract_algorithm_chunks",
-    "template_human_repertoire",
+    "template_human_repertoire", "preparation_profile",
     "HumanRecognitionDiagram", "recognition_block_roles", "recognition_case_diagrams",
     "recognition_stage_diagrams", "structured_move_notation", "DiagramMode",
     "draw_cubes", "draw_bandage_graph", "bandage_graph_layout",

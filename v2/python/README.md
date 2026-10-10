@@ -1057,6 +1057,45 @@ repertoire = c.template_human_repertoire(analysis, backend="symbolic", preferenc
 repertoire.write_guide("cube.md", diagram_mode=c.DiagramMode.OPPOSITE_CORNERS)
 ```
 
+For new bandages, automatic routing and a shared quality budget are available:
+
+```python
+analysis = c.analyze_isotropy(bandage)
+print(c.preparation_profile(analysis))
+repertoire = c.template_human_repertoire(
+    analysis, backend="auto", preference="memory",
+    optimization_seconds=120, progress=None,
+)
+print(repertoire.metadata["computation"])
+```
+
+The notebooks keep progress output disabled. Set `progress=print` to display
+phase and certification events during compilation.
+
+Backend routing uses the exact reference-group order, estimated block-action
+entries, loop count and witness lengths. Graph size also informs the reported
+discovery policy and graph view. Routing conservatively chooses explicit
+enumeration for small workloads and symbolic preparation otherwise; explicit
+backend choices remain available.
+Symbolic algebra uses a certified reduced basis while retaining every original
+native witness for coverage checks. Physical discovery keeps the required basis
+and a bounded collection of additional short loops. This preserves the richer
+ordinary-cube dictionary and optimizer.
+
+`optimization_seconds` and `max_optimization_work` share one allowance across
+dictionary mining, algorithm improvement, chain selection, templates and chunks.
+The allowance starts when the first complete method is certified. A cutoff
+returns a retained certified repertoire or finalizes a retained complete method.
+Initial certification and mandatory fallback validation are outside this
+allowance, so it is not a total wall-clock deadline. `timeout` remains a separate
+cap for each GAP subprocess; quality subprocesses also respect the remaining
+shared time. Progress callbacks receive dictionaries with `phase`, `status`,
+elapsed seconds and work counters. Both budgets default to `None` for unlimited
+quality work, and `select_human_chain` accepts the same controls. Execution
+diagnostics are saved when budgets or progress are requested, or automatic
+routing is performed;
+default explicit/symbolic calls preserve deterministic artifact metadata.
+
 This prepares a physical dictionary, selects a certified feature chain, and
 shares witnessed algorithm bodies, inverses, legal symmetry variants and typed
 physical chunks. It searches the small case tables and their expression trees,

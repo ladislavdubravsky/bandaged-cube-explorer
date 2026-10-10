@@ -496,6 +496,11 @@ def plan_human_stages(initial, *, strategy="placement_then_orientation", feature
     shortest-word guarantee, or human-quality claim.
     """
     gap_executable, timeout = _validated_options(gap_executable, timeout)
+    if backend == "auto":
+        from .preparation import route_preparation, validate_stage_inputs
+        features = validate_stage_inputs(strategy, features)
+        initial, backend = route_preparation(initial, gap_executable=gap_executable,
+            timeout=timeout, root=root, max_group_elements=max_group_elements)
     if backend not in ("explicit", "symbolic"):
         raise ValueError("backend must be 'explicit' or 'symbolic'")
     if backend == "symbolic" and max_group_elements is not None:

@@ -269,6 +269,8 @@ def _gap_images(images):
 
 
 def _run_gap(program, executable, timeout, operation="analysis"):
+    from .computation import checkpoint, current_computation, quality_timeout
+    timeout = quality_timeout(timeout)
     try:
         completed = subprocess.run(
             [executable, "-q", "-b", "--quitonbreak", "-r", "-A"],
@@ -281,6 +283,11 @@ def _run_gap(program, executable, timeout, operation="analysis"):
             check=False,
         )
     except subprocess.TimeoutExpired as error:
+        # Translate only an exhausted shared quality deadline. An independent
+        # GAP cap during certification remains a failed/incomplete computation.
+        context = current_computation()
+        if context is not None:
+            checkpoint("algebra", work=0)
         raise GapTimeoutError(f"GAP {operation} exceeded its {timeout:g}-second timeout") from error
     except OSError as error:
         raise GapUnavailableError(

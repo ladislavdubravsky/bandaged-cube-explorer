@@ -401,11 +401,13 @@ def _alphabet(selected):
 
 
 def _parse(word, selected):
+    from .computation import checkpoint
     """Finite dynamic-programming phrase cover with a literal fallback."""
     alphabet = _alphabet(tuple(selected))
 
     @lru_cache(maxsize=None)
     def solve(index, remaining):
+        checkpoint("chunk_parsing")
         if index == len(word):
             return (0, 0, ()), ()
         following = index + 1

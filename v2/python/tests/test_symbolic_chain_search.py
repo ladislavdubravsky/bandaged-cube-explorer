@@ -8,6 +8,7 @@ from unittest.mock import patch
 
 import bce_v2 as c
 from bce_v2.symbolic_chain_search import select_symbolic_human_chain
+from bce_v2.computation import Computation, OptimizationBudgetExceeded
 
 
 def imported(state):
@@ -66,6 +67,27 @@ class SymbolicChainSearchTests(unittest.TestCase):
                              2000-len(self.dictionary.algorithms))
         self.assertIn("before_boundary_cancellation",search.method.additive_costs()["scope"])
         self.assertEqual(search.method.terminal_order,1)
+        adaptive = next(candidate.method for candidate in search.candidates
+                        if candidate.source == "fallback:adaptive:1")
+        self.assertEqual(tuple(g.id for g in adaptive._symbolic_chain.algebra_generators),
+                         self.analysis.generator_ids)
+        self.assertEqual(adaptive._symbolic_chain.group.root_generators,
+                         tuple(g.permutation for g in self.analysis.loops.generators))
+
+    def test_total_quality_cutoff_retains_requested_certified_baseline_first(self):
+        events = []
+        context = Computation(max_optimization_work=0, progress=events.append)
+        with patch("bce_v2.symbolic_dictionary.discover_symbolic_dictionary",
+                   side_effect=AssertionError("no mining before the certified fallback")):
+            with context.activate(), self.assertRaises(OptimizationBudgetExceeded):
+                select_symbolic_human_chain(self.analysis, strategy="fully_solve_each_block",
+                                            timeout=30)
+        self.assertEqual(context.best_method.strategy, "fully_solve_each_block")
+        self.assertEqual(context.best_method.status, "completed")
+        self.assertEqual(context.best_method.terminal_order, 1)
+        self.assertEqual(context.work, 0)
+        self.assertTrue(any(event["status"] == "certified" and event["phase"] == "baseline"
+                            for event in events))
 
     def test_every_small_group_element_solves_and_selected_artifact_is_offline(self):
         with patch("subprocess.run",side_effect=AssertionError("application and artifact loading are offline")):

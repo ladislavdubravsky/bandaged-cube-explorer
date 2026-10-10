@@ -331,20 +331,25 @@ class HumanRepertoire:
 
 
 def _build_algorithm(recipe, macros, method, identifier):
+    from .loop_algorithms import _loops_from_records, _records
+
     expression = recipe.loop_expression(macros)
-    records = {g.id: g for g in method.generators}
-    witness_loops = LoopGenerators(method.generators[0]._owner) if method.generators else ()
     if method.generators:
-        # The method already carries these exact saved leaves and their root
-        # inventory. Seed the lazy wrapper instead of rebuilding either for
-        # every case, instruction and guide presentation.
-        object.__setattr__(witness_loops, "_generators", method.generators)
-        object.__setattr__(witness_loops, "_block_inventory", method.inventory)
-    word = expression.expanded_moves(witness_loops,
+        witness_loops = _loops_from_records(method.generators)
+        lengths = (witness_loops.generator_htm_lengths
+                   if method.generators is witness_loops.generators else
+                   tuple((generator.id, generator.htm_length) for generator in method.generators))
+    else:
+        witness_loops, lengths = (), ()
+    records = _records(method.generators)
+    missing = [identifier for identifier in expression.base_ids if identifier not in records]
+    if missing:
+        raise ValueError(f"unknown original loop IDs: {sorted(missing)}")
+    word = expression.expanded_moves(method.generators,
                                      max_expanded_moves=max(1, _expression_bound(expression, records)))
-    return LoopAlgorithm(identifier, expression, expression.evaluate(method.generators),
+    return LoopAlgorithm(identifier, expression, expression.evaluate(witness_loops if method.generators else records),
                          _simplified_moves(word.split()), method.inventory,
-                         tuple((g.id, g.htm_length) for g in method.generators), method.generators)
+                         lengths, method.generators)
 
 
 def _rules(number, cases, method_stage, macros, actions, current):

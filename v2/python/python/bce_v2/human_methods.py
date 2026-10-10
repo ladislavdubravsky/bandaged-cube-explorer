@@ -13,6 +13,7 @@ from pathlib import Path
 from . import Shape, State
 from ._moves import _simplified_moves
 from .block_actions import BlockInventory
+from .computation import checkpoint
 from .human_chains import BlockFeature, plan_human_stages
 from .isotropy import LoopGenerator, LoopGenerators
 from .loop_algorithms import LoopAlgorithm, LoopExpression
@@ -454,7 +455,7 @@ def _validate_method(method, *, complete_loops=None):
 
 def synthesize_human_method(initial, *, strategy="placement_then_orientation", features=None,
                             max_group_elements=None, gap_executable="gap", timeout=None, root=None,
-                            backend="explicit"):
+                            backend="explicit", progress=None):
     """Compile a complete reusable case policy from a reference shape alone.
 
     Uses the stage planner's reference inputs and optional explicit limits.
@@ -462,10 +463,26 @@ def synthesize_human_method(initial, *, strategy="placement_then_orientation", f
     Corrections invert deterministic BFS coset representatives; this is not
     an algorithm-quality optimizer or a shortest physical word guarantee.
     """
+    from .computation import Computation, current_computation, report_progress, retain_method
+    if progress is not None and current_computation() is None:
+        with Computation(progress=progress).activate():
+            return synthesize_human_method(initial, strategy=strategy, features=features,
+                max_group_elements=max_group_elements, gap_executable=gap_executable,
+                timeout=timeout, root=root, backend=backend)
+    if backend == "auto":
+        from .preparation import route_preparation, validate_stage_inputs
+        features = validate_stage_inputs(strategy, features)
+        initial, backend = route_preparation(initial, gap_executable=gap_executable,
+            timeout=timeout, root=root, max_group_elements=max_group_elements)
+    report_progress("planning", "started", backend=backend, strategy=strategy)
     plan = plan_human_stages(initial, strategy=strategy, features=features,
                              max_group_elements=max_group_elements, gap_executable=gap_executable,
                              timeout=timeout, root=root, backend=backend)
-    return _compile_plan(plan)
+    report_progress("policy", "started", backend=backend)
+    method = _compile_plan(plan)
+    retain_method(method)
+    report_progress("policy", "completed", backend=backend, coverage=method.coverage)
+    return method
 
 
 def _compile_plan(plan):
@@ -484,6 +501,7 @@ def _compile_plan(plan):
         return _validate_method(HumanMethod(**base, generators=(), stages=(), algorithms=()))
     group, stages, algorithms, by_effect = plan.group, [], [], {}
     by_id = {g.id: g for g in group.generators}
+    generator_lengths = tuple((g.id, g.htm_length) for g in group.generators)
     for stage in plan.stages:
         representatives = {}
         for i in stage.members_before:
@@ -504,7 +522,7 @@ def _compile_plan(plan):
                     raw_length = sum(abs(e) * by_id[i].qtm_length for i, e in steps)
                     moves = expression.expanded_moves(group.generators, max_expanded_moves=max(1, raw_length))
                     algorithm = LoopAlgorithm(f"A{len(algorithms) + 1}", expression, permutation, moves,
-                                              group.inventory, tuple((g.id, g.htm_length) for g in group.generators),
+                                              group.inventory, generator_lengths,
                                               group.generators)
                     algorithms.append(algorithm)
                     by_effect[permutation] = algorithm.id
@@ -520,10 +538,12 @@ def _compile_plan(plan):
 def _compile_symbolic_plan(plan):
     """Compile witnessed feature transversals, without listing group elements."""
     generators = tuple(plan.analysis.loops.generators)
-    witness_loops = LoopGenerators(generators[0]._owner) if generators else None
+    witness_loops = plan.analysis.loops
     records = {g.id: g for g in generators}
+    generator_lengths = tuple((g.id, g.htm_length) for g in generators)
     stages, algorithms, by_effect = [], [], {}
     for stage in plan.stages:
+        checkpoint("symbolic_case_compilation", stage=stage.number, stages=len(plan.stages))
         cases = []
         for representative in stage.representatives:
             observation, permutation = representative.observation, representative.permutation
@@ -536,7 +556,7 @@ def _compile_symbolic_plan(plan):
                         witness_loops, max_expanded_moves=max(1, _expression_bound(expression, records)))
                     algorithm = LoopAlgorithm(
                         f"A{len(algorithms) + 1}", expression, correction, moves, plan.inventory,
-                        tuple((g.id, g.htm_length) for g in generators), generators)
+                        generator_lengths, generators)
                     algorithms.append(algorithm)
                     by_effect[correction] = algorithm.id
                 algorithm_id = by_effect[correction]
@@ -568,26 +588,28 @@ def _validate_symbolic_method(method, *, complete_loops):
     _require(len(method.stages) == len(chain.stages), "symbolic method omits certified stages")
     initial = State(method.reference_shape)
     _require(len({g.id for g in method.generators}) == len(method.generators), "duplicate original loop IDs")
-    for generator in method.generators:
-        _require(type(generator.id) is int and generator.id >= 0, "invalid original loop ID")
-        replay = initial.apply(generator.moves)
-        _require(replay.shape == method.reference_shape and
-                 replay.sticker_permutation == generator.permutation,
-                 "original loop witness fails legal replay")
-    _require(all(g.permutation in chain.group for g in complete_loops.generators),
+    # chain.validate has just checked this exact immutable witness tuple.
+    _require(all(type(g.id) is int and g.id >= 0 for g in method.generators),
+             "invalid original loop ID")
+    complete_roots = tuple(g.permutation for g in complete_loops.generators)
+    _require(complete_roots == chain.group.root_generators or
+             all(p in chain.group for p in complete_roots),
              "symbolic generators omit part of the complete reference-loop group")
     algorithms = {a.id: a for a in method.algorithms}
     records = {g.id: g for g in method.generators}
-    witness_loops = LoopGenerators(method.generators[0]._owner) if method.generators else None
+    witness_loops = (complete_loops if method.generators is complete_loops.generators else
+                     LoopGenerators(method.generators[0]._owner) if method.generators else None)
     _require(len(algorithms) == len(method.algorithms), "duplicate shared algorithm IDs")
     for algorithm in method.algorithms:
+        checkpoint("symbolic_method_validation")
         _require(isinstance(algorithm.id, str) and bool(algorithm.id) and
                  algorithm.permutation != _IDENTITY and algorithm.permutation in chain.group,
                  "invalid shared correction algorithm")
         _require(algorithm._inventory.root_shape == method.reference_shape and
                  algorithm._generators == method.generators,
                  "algorithm refers to a different witness library")
-        _require(algorithm.expression.evaluate(method.generators) == algorithm.permutation,
+        _require(algorithm.expression.evaluate(witness_loops if witness_loops is not None else records)
+                 == algorithm.permutation,
                  "algorithm expression disagrees with its full action")
         moves = algorithm.expression.expanded_moves(
             witness_loops, max_expanded_moves=max(1, _expression_bound(algorithm.expression, records)))

@@ -6,7 +6,8 @@ The coordinate frame is x=R, y=B, z=U, as in the Rust engine.
 """
 
 from collections import Counter
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
+from functools import lru_cache
 import json
 from pathlib import Path
 
@@ -33,15 +34,26 @@ def _rotate(rotation, vector):
                  for axis in rotation)
 
 
-def _compose(left, right):
+def _compose_axes(left, right):
     """Ordinary composition: right is applied first."""
     return tuple((1 if axis > 0 else -1) * right[abs(axis) - 1]
                  for axis in left)
 
 
+_COMPOSITIONS = {(left, right): _compose_axes(left, right)
+                 for left in _ROTATIONS for right in _ROTATIONS}
+_INVERSES = {rotation: next(candidate for candidate in _ROTATIONS
+                           if _COMPOSITIONS[candidate, rotation] == _IDENTITY)
+             for rotation in _ROTATIONS}
+
+
+def _compose(left, right):
+    """Ordinary composition: right is applied first."""
+    return _COMPOSITIONS[left, right]
+
+
 def _inverse(rotation):
-    return next(candidate for candidate in _ROTATIONS
-                if _compose(candidate, rotation) == _IDENTITY)
+    return _INVERSES[rotation]
 
 
 def _coordinates(cell):
@@ -84,6 +96,9 @@ _STICKER_IMAGES = {
     r: tuple(_POINT_INDEX[_CELL_IMAGES[r][cell], _rotate(r, normal)]
              for cell, normal in _POINTS) for r in _ROTATIONS
 }
+_STICKER_ROTATIONS = {(point, image): rotation
+                      for rotation, images in _STICKER_IMAGES.items()
+                      for point, image in enumerate(images)}
 _CELL_POINTS = tuple(tuple(i for i, (cell, _) in enumerate(_POINTS) if cell == c)
                      for c in range(27))
 
@@ -106,6 +121,7 @@ def _footprint(rotation, cells):
     return tuple(sorted(_CELL_IMAGES[rotation][cell] for cell in cells))
 
 
+@lru_cache(maxsize=96)
 def _powers(generator, order):
     result = [_IDENTITY]
     for _ in range(1, order):
@@ -184,6 +200,9 @@ class BlockInventory:
 
     root_shape: Shape
     blocks: tuple[BlockSlot, ...]
+    _action_cache: dict = field(repr=False, compare=False)
+    _slots: dict = field(repr=False, compare=False)
+    _block_points: tuple = field(repr=False, compare=False)
 
     def __init__(self, reference=None):
         if hasattr(reference, "loops"):
@@ -240,6 +259,10 @@ class BlockInventory:
             ))
         object.__setattr__(self, "root_shape", reference)
         object.__setattr__(self, "blocks", tuple(blocks))
+        object.__setattr__(self, "_action_cache", {})
+        object.__setattr__(self, "_slots", {block.cells: index for index, block in enumerate(blocks)})
+        object.__setattr__(self, "_block_points", tuple(
+            tuple(point for cell in block.cells for point in _CELL_POINTS[cell]) for block in blocks))
 
     def action(self, permutation):
         """Validate a faithful sticker action returning to this partition.
@@ -257,11 +280,12 @@ class BlockInventory:
             raise TypeError("sticker images must be integers")
         if len(permutation) != 48 or set(permutation) != set(range(48)):
             raise ValueError("sticker images must permute 0 through 47")
+        if permutation in self._action_cache:
+            return self._action_cache[permutation]
         destinations, rotations = [], []
-        slots = {block.cells: i for i, block in enumerate(self.blocks)}
-        for block in self.blocks:
+        slots = self._slots
+        for block, points in zip(self.blocks, self._block_points):
             cell_images = {}
-            points = tuple(p for cell in block.cells for p in _CELL_POINTS[cell])
             for cell in block.cells:
                 targets = {_POINTS[permutation[p]][0] for p in _CELL_POINTS[cell]}
                 if len(targets) > 1:
@@ -274,19 +298,26 @@ class BlockInventory:
             if not points:
                 rotation = None  # Unmarked center spin/core orientation is invisible.
             else:
-                candidates = [r for r in _ROTATIONS
-                              if all(_CELL_IMAGES[r][cell] == target for cell, target in cell_images.items())
-                              and all(_STICKER_IMAGES[r][p] == permutation[p] for p in points)]
-                if len(candidates) != 1:
+                rotation = _STICKER_ROTATIONS.get((points[0], permutation[points[0]]))
+                if (rotation is None or
+                        not all(_CELL_IMAGES[rotation][cell] == target
+                                for cell, target in cell_images.items()) or
+                        not all(_STICKER_IMAGES[rotation][point] == permutation[point]
+                                for point in points)):
                     raise ValueError("sticker action violates rigid block orientation")
-                rotation = candidates[0]
                 if not block.movable and (destination != len(destinations) or rotation != _IDENTITY):
                     raise ValueError("a block outside every outer face is permanently immobile")
             destinations.append(destination)
             rotations.append(rotation)
         if sorted(destinations) != list(range(len(self.blocks))):
             raise ValueError("sticker action does not permute reference blocks")
-        return self._from_transitions(tuple(destinations), tuple(rotations))
+        result = self._from_transitions(tuple(destinations), tuple(rotations))
+        # Keep this compilation-local cache bounded even when callers traverse
+        # a large explicit group. Invalid actions are never entered.
+        if len(self._action_cache) >= 4096:
+            self._action_cache.pop(next(iter(self._action_cache)))
+        self._action_cache[permutation] = result
+        return result
 
     def _from_transitions(self, destinations, rotations):
         phases = []

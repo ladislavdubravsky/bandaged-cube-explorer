@@ -14,10 +14,11 @@ from math import gcd, prod
 from pathlib import Path
 
 from . import Shape, State
+from .computation import checkpoint, report_progress
 from .gap_backend import analyze_generators
 from .isotropy import IsotropyAnalysis
 from .loop_algorithms import (
-    AlgorithmLibrary, LoopExpression, _ExpansionLimit, _LengthLimit, _integer,
+    AlgorithmLibrary, LoopAlgorithm, LoopExpression, _ExpansionLimit, _LengthLimit, _integer,
     _reference, _then, discover_loop_algorithms,
 )
 from .loop_rotations import normalize_rotation, rotate_moves, rotate_permutation
@@ -183,6 +184,11 @@ class SymbolicAlgorithmDictionary:
     algorithms: tuple
     orientation_basis: tuple
     _metadata_json: str = field(repr=False, compare=False)
+    _validated: bool = field(default=False, init=False, repr=False, compare=False)
+
+    def __post_init__(self):
+        object.__setattr__(self, "algorithms", tuple(self.algorithms))
+        object.__setattr__(self, "orientation_basis", tuple(self.orientation_basis))
 
     @property
     def generators(self):
@@ -202,21 +208,25 @@ class SymbolicAlgorithmDictionary:
         generators = self.generators if generators is None else tuple(generators)
         if inventory.root_shape != self.inventory.root_shape:
             raise ValueError("dictionary refers to a different root shape")
-        signatures = lambda records: tuple((g.id, g.permutation, g.moves) for g in records)
-        if signatures(generators) != signatures(self.generators):
+        signature_cache = {id(self.generators): (self.generators, self.loops.witness_signature)}
+
+        def signatures(records):
+            key = id(records)
+            if key not in signature_cache:
+                signature_cache[key] = (records, tuple(
+                    (g.id, g.permutation, g.moves, g.qtm_length) for g in records))
+            return signature_cache[key][1]
+
+        signature = signatures(generators)
+        if signature != self.loops.witness_signature:
             raise ValueError("dictionary refers to a different original-loop alphabet")
+        if self._validated:
+            return self
         metadata = self.metadata
         initial = State(inventory.root_shape)
         if len({g.id for g in generators}) != len(generators):
             raise ValueError("dictionary has duplicate original loop IDs")
-        for generator in generators:
-            if (type(generator.id) is not int or generator.id < 0 or
-                    generator.qtm_length != sum(2 if move.endswith("2") else 1
-                                                for move in generator.moves.split())):
-                raise ValueError("dictionary original loop has invalid ID or length metadata")
-            replay = initial.apply(generator.moves)
-            if replay.shape != inventory.root_shape or replay.sticker_permutation != generator.permutation:
-                raise ValueError("dictionary original loop fails physical replay")
+        self.loops.validate_witnesses()
         by_id = {}
         for algorithm in self.algorithms:
             if algorithm.id in by_id or algorithm.permutation == _IDENTITY:
@@ -253,6 +263,9 @@ class SymbolicAlgorithmDictionary:
             raise ValueError("dictionary orientation independence claim is inconsistent")
         if metadata["orientation_complete"] != (actual == metadata["orientation_target_order"]):
             raise ValueError("dictionary orientation completeness claim is inconsistent")
+        if all(isinstance(algorithm, LoopAlgorithm)
+               for algorithm in (*self.algorithms, *self.orientation_basis)):
+            object.__setattr__(self, "_validated", True)
         return self
 
     def to_dict(self):
@@ -324,6 +337,7 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
                                  max_algorithms=1024, max_setup_depth=2,
                                  max_setup_words=256, max_conjugates=12000,
                                  max_htm_length=80, max_expanded_moves=400,
+                                 max_original_loops=32,
                                  gap_executable="gap", timeout=None):
     """Discover a bounded reusable repertoire and measure exact orientation span.
 
@@ -336,15 +350,17 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
                     max_algorithms=max_algorithms,
                     max_setup_depth=max_setup_depth, max_setup_words=max_setup_words,
                     max_conjugates=max_conjugates, max_htm_length=max_htm_length,
-                    max_expanded_moves=max_expanded_moves)
+                    max_expanded_moves=max_expanded_moves, max_original_loops=max_original_loops)
     for name, value in settings.items():
         _integer(value, name, 1 if name in ("max_algorithms", "max_htm_length", "max_expanded_moves") else 0)
     loops = _reference(initial)
     inventory, generators = loops.block_inventory, loops.generators
     analysis = initial if isinstance(initial, IsotropyAnalysis) else loops.analyze(
         gap_executable=gap_executable, timeout=timeout)
+    report_progress("dictionary", status="started", original_loops=len(generators),
+                    algebra_generators=len(analysis.generators))
     projections = [tuple(g.block_action.destinations) + tuple(range(len(inventory.blocks), 48))
-                   for g in generators]
+                   for g in analysis.generators]
     quotient = analyze_generators(projections, gap_executable=gap_executable,
                                   timeout=timeout, prune=False).group_order
     if analysis.group_order % quotient:
@@ -377,8 +393,24 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
         return keep(algorithm)
 
     originals = []
-    for generator in sorted(generators, key=lambda g: (g.htm_length, g.qtm_length, g.id)):
-        for exponent in (1, -1, 2):
+    # Keep the certified algebra basis and a bounded physical quality pool.
+    # Native records are QTM ordered: a small window avoids expanding every
+    # witness merely to rank its simplified HTM length.
+    physical = list(analysis.generators)
+    physical_ids = {generator.id for generator in physical}
+    window = generators[:max_original_loops * 4]
+    short = sorted((generator for generator in window if generator.id not in physical_ids),
+                   key=lambda g: (g.htm_length, g.qtm_length, g.id))[:max_original_loops]
+    physical.extend(short)
+    original_budget = (3 * len(physical) if not max_candidates else
+                       min(max_candidates, max(3 * len(analysis.generators),
+                                               max_candidates // (rounds + 1))))
+    for exponent in (1, -1, 2):
+        for generator in physical:
+            if counts["original_proposals_examined"] >= original_budget:
+                break
+            checkpoint("dictionary", work=1)
+            counts["original_proposals_examined"] += 1
             expression = LoopExpression.power(LoopExpression.loop(generator.id), exponent)
             algorithm = build(expression)
             if algorithm is not None:
@@ -387,11 +419,13 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
                 direct_effects.setdefault(algorithm.permutation, expression)
 
     mining = None
-    if max_candidates and max_seed_loops and generators:
+    mining_budget = max(0, max_candidates - counts["original_proposals_examined"])
+    if mining_budget and max_seed_loops and physical:
         mining = discover_loop_algorithms(
-            loops, max_seed_loops=min(max_seed_loops, max_candidates), rounds=rounds,
-            max_candidates=max_candidates, max_algorithms=max(512, max_algorithms),
-            max_htm_length=max_htm_length, max_expanded_moves=max_expanded_moves)
+            loops, max_seed_loops=min(max_seed_loops, mining_budget), rounds=rounds,
+            max_candidates=mining_budget, max_algorithms=max(512, max_algorithms),
+            max_htm_length=max_htm_length, max_expanded_moves=max_expanded_moves,
+            seed_generator_ids=tuple(generator.id for generator in physical))
         for algorithm in mining.algorithms:
             expression = _plain_expression(algorithm.expression, records, direct_words, direct_effects)
             if expression is None:
@@ -404,6 +438,7 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
     alphabet = sorted({a.permutation: a for a in originals}.values(), key=_key)[:32]
     setups, queue, setup_effects = [], deque([(LoopExpression.sequence(), _IDENTITY, 0)]), {_IDENTITY}
     while queue and len(setups) < max_setup_words:
+        checkpoint("dictionary", work=1)
         expression, effect, depth = queue.popleft()
         setups.append(expression)
         if depth >= max_setup_depth:
@@ -436,6 +471,7 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
                     if counts["conjugates_examined"] >= max_conjugates:
                         break
                     counts["conjugates_examined"] += 1
+                    checkpoint("dictionary", work=1)
                     build(LoopExpression.conjugate(setup, LoopExpression.power(body.expression, exponent)))
                 if counts["conjugates_examined"] >= max_conjugates:
                     break
@@ -473,6 +509,11 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
                 "orientation_basis_max_htm": max((a.htm_length for a in basis), default=0),
                 "original_loop_count": len(generators), "retained_original_effects": len(
                     {a.permutation for a in originals if a.permutation in effects}),
+                "physical_original_loop_count": len(physical),
+                "redundant_original_loop_count": len(short),
+                "original_admission_limit_reached": len(physical) < len(generators),
+                "candidate_count": counts["original_proposals_examined"] +
+                                   (0 if mining is None else mining.examined_count),
                 "algorithm_count": len(selected), "available_effect_count": len(pool),
                 "algorithm_limit_reached": len(pool) > len(selected),
                 "setup_word_count": len(setups), "setup_limit_reached": bool(queue),
@@ -482,5 +523,9 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
                 "mining": None if mining is None else mining.metadata,
                 "target_source": "exact reference group and placement quotient orders",
                 "coverage_scope": "orientation span; retained native loops are separate witnesses"}
-    return SymbolicAlgorithmDictionary(loops, tuple(selected), basis,
-                                       json.dumps(metadata, sort_keys=True, separators=(",", ":"))).validate()
+    result = SymbolicAlgorithmDictionary(loops, tuple(selected), basis,
+                                        json.dumps(metadata, sort_keys=True, separators=(",", ":"))).validate()
+    report_progress("dictionary", status="completed", candidates=metadata["candidate_count"],
+                    algorithms=len(selected), orientation_span_order=span,
+                    orientation_target_order=target)
+    return result

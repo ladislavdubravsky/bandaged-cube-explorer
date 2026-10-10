@@ -5,8 +5,10 @@ retained generators continue to reference their original legal move witnesses.
 """
 
 from dataclasses import dataclass, field
+from functools import cached_property
 import json
 from pathlib import Path
+from types import MappingProxyType
 
 from . import Shape, State, explore
 from ._moves import _simplified_moves
@@ -31,22 +33,26 @@ class LoopGenerator:
     qtm_length: int
     _owner: object = field(repr=False, compare=False)
     _inventory: object = field(default=None, repr=False, compare=False)
+    _library: object = field(default=None, repr=False, compare=False)
 
-    @property
+    def __post_init__(self):
+        object.__setattr__(self, "permutation", tuple(self.permutation))
+
+    @cached_property
     def moves(self):
         return self._owner.generator_moves(self.id)
 
-    @property
+    @cached_property
     def turn_sequence(self):
         """Replayable display word with adjacent same-face turns combined."""
         return _simplified_moves(self.moves.split())
 
-    @property
+    @cached_property
     def htm_length(self):
         """HTM cost of turn_sequence; no shortest-word guarantee is made."""
         return len(self.turn_sequence.split())
 
-    @property
+    @cached_property
     def block_action(self):
         """Exact effect on the loop root's physical reference blocks."""
         from .block_actions import BlockInventory
@@ -76,12 +82,21 @@ class LoopGenerators:
     This set need not be irredundant. GAP is required only by analyze().
     """
 
-    __slots__ = ("_native", "_generators", "_block_inventory")
+    __slots__ = ("_native", "_generators", "_block_inventory", "_generator_records",
+                 "_evaluations", "_algorithm_words", "_verified_turns",
+                 "_validated_witness_signature", "_witness_signature", "_generator_htm_lengths")
 
     def __init__(self, native):
         object.__setattr__(self, "_native", native)
         object.__setattr__(self, "_generators", None)
         object.__setattr__(self, "_block_inventory", None)
+        object.__setattr__(self, "_generator_records", None)
+        object.__setattr__(self, "_evaluations", {})
+        object.__setattr__(self, "_algorithm_words", {})
+        object.__setattr__(self, "_verified_turns", set())
+        object.__setattr__(self, "_validated_witness_signature", None)
+        object.__setattr__(self, "_witness_signature", None)
+        object.__setattr__(self, "_generator_htm_lengths", None)
 
     def __setattr__(self, name, value):
         raise AttributeError("LoopGenerators is immutable")
@@ -130,10 +145,59 @@ class LoopGenerators:
                 id=record["id"], source=record["source"], target=record["target"],
                 permutation=tuple(record["permutation"]),
                 qtm_length=record["qtm_length"], _owner=self._native,
-                _inventory=self.block_inventory,
+                _inventory=self.block_inventory, _library=self,
             ) for record in self._native.generators)
             object.__setattr__(self, "_generators", records)
         return self._generators
+
+    @property
+    def generator_records(self):
+        """Immutable original-ID index shared by this witness library."""
+        if self._generator_records is None:
+            object.__setattr__(self, "_generator_records", MappingProxyType(
+                {generator.id: generator for generator in self.generators}))
+        return self._generator_records
+
+    @property
+    def witness_signature(self):
+        """Exact immutable alphabet identity, including physical witnesses."""
+        if self._witness_signature is None:
+            object.__setattr__(self, "_witness_signature", tuple(
+                (generator.id, generator.permutation, generator.moves, generator.qtm_length)
+                for generator in self.generators))
+        return self._witness_signature
+
+    @property
+    def generator_htm_lengths(self):
+        """Stable immutable length table for this original witness alphabet."""
+        if self._generator_htm_lengths is None:
+            object.__setattr__(self, "_generator_htm_lengths", tuple(
+                (generator.id, generator.htm_length) for generator in self.generators))
+        return self._generator_htm_lengths
+
+    def validate_witnesses(self):
+        """Independently replay this immutable alphabet once per owner.
+
+        Portable imports receive a fresh owner and therefore a cold certificate.
+        The cache records successful physical replay, never a trust flag copied
+        from saved data or a claim that the alphabet generates the full group.
+        """
+        signature = self.witness_signature
+        if self._validated_witness_signature == signature:
+            return self
+        if len({generator.id for generator in self.generators}) != len(self.generators):
+            raise ValueError("original loops have duplicate IDs")
+        initial = State(self.root_shape)
+        for generator in self.generators:
+            if (type(generator.id) is not int or generator.id < 0 or
+                    generator.qtm_length != sum(2 if move.endswith("2") else 1
+                                                for move in generator.moves.split())):
+                raise ValueError("original loop has invalid ID or length metadata")
+            replay = initial.apply(generator.moves)
+            if replay.shape != self.root_shape or replay.sticker_permutation != generator.permutation:
+                raise ValueError("original loop fails physical replay")
+        object.__setattr__(self, "_validated_witness_signature", signature)
+        return self
 
     def __len__(self):
         return len(self.generators)
@@ -226,7 +290,7 @@ class IsotropyAnalysis:
 
     @property
     def generators(self):
-        by_id = {generator.id: generator for generator in self.loops.generators}
+        by_id = self.loops.generator_records
         return tuple(by_id[identifier] for identifier in self.generator_ids)
 
     def to_dict(self, *, include_moves=True):

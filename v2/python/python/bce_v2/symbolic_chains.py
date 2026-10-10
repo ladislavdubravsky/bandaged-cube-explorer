@@ -15,6 +15,7 @@ from pathlib import Path
 
 from . import State
 from .block_actions import _CELL_POINTS
+from .computation import checkpoint, report_progress
 from .gap_backend import GapError, _gap_images, _run_gap, _validated_options
 from .human_chains import BlockFeature, _KINDS, _STRATEGIES, _observation
 from .loop_algorithms import LoopExpression
@@ -162,6 +163,9 @@ def _check(condition, message):
 
 
 def _expression(syllables, generators):
+    _check(all(type(index) is int and 0 <= index < len(generators)
+               for index, exponent in syllables),
+           "GAP returned an invalid transversal algebra generator index")
     return LoopExpression.sequence(*(LoopExpression.power(
         LoopExpression.loop(generators[index].id), exponent)
         for index, exponent in syllables))
@@ -286,10 +290,17 @@ class SymbolicStagePlan:
     reason: None = None
     max_group_elements: None = None
     block_structure: None = None
+    _algebra_generators: tuple | None = field(default=None, repr=False, compare=False)
+    _validation_context: tuple | None = field(default=None, init=False, repr=False, compare=False)
 
     @property
     def inventory(self):
         return self._inventory
+
+    @property
+    def algebra_generators(self):
+        """Witnessed basis used by GAP, separate from the ambient loop library."""
+        return self._generators if self._algebra_generators is None else self._algebra_generators
 
     @property
     def group_order(self):
@@ -308,7 +319,7 @@ class SymbolicStagePlan:
         return False
 
     def to_dict(self, *, include_elements=False, include_moves=True):
-        return {"format": "bce-v2-symbolic-stage-chain", "version": 1,
+        record = {"format": "bce-v2-symbolic-stage-chain", "version": 1,
                 "strategy": self.strategy, "gap_version": self.gap_version,
                 "group_order": str(self.group_order),
                 "quotient_order": str(self.quotient_order),
@@ -320,6 +331,9 @@ class SymbolicStagePlan:
                 "initial_features": [f.to_dict() for f in self.initial_features],
                 "skipped_features": [f.to_dict() for f in self.skipped_features],
                 "stages": [s.to_dict() for s in self.stages]}
+        if self._algebra_generators is not None:
+            record["algebra_generator_ids"] = [g.id for g in self.algebra_generators]
+        return record
 
     def to_json(self, path=None, *, include_elements=False, include_moves=True):
         text = json.dumps(self.to_dict(include_elements=include_elements,
@@ -337,24 +351,53 @@ class SymbolicStagePlan:
         """Certify root closure, each feature stabilizer and its transversal."""
         inventory = self.inventory if inventory is None else inventory
         generators = self._generators if generators is None else tuple(generators)
-        roots = tuple(g.permutation for g in generators)
-        _check(self.strategy in (*_STRATEGIES, "manual"), "unknown symbolic stage strategy")
-        _check(isinstance(self.gap_version, str), "symbolic GAP version must be a string")
-        root_state = State(inventory.root_shape)
-        for generator in generators:
-            replay = root_state.apply(generator.turn_sequence)
-            _check(replay.shape == inventory.root_shape and
-                   tuple(replay.sticker_permutation) == generator.permutation,
-                   "symbolic original loop has an invalid physical witness")
-        _check(self.group.root_generators == roots,
-               "symbolic group certificate uses another original-loop alphabet")
-        _check(all(self.group.contains(p) for p in roots),
-               "symbolic root group omits an original loop")
         _check(expected_order is None or self.group_order == expected_order,
                "symbolic group order disagrees with the reference analysis")
+        if (self._validation_context is not None and
+                self._validation_context[0] is inventory and
+                self._validation_context[1] is generators):
+            return self
+        roots = tuple(g.permutation for g in generators)
+        by_id = {g.id: g for g in generators}
+        _check(len(by_id) == len(generators), "symbolic original-loop IDs are not unique")
+        _check(len({g.id for g in self.algebra_generators}) == len(self.algebra_generators) and
+               all(g.id in by_id and by_id[g.id].permutation == g.permutation
+                   for g in self.algebra_generators),
+               "symbolic algebra basis is outside the original-loop library")
+        _check(self.strategy in (*_STRATEGIES, "manual"), "unknown symbolic stage strategy")
+        _check(isinstance(self.gap_version, str), "symbolic GAP version must be a string")
+        loops = self.analysis.loops if self.analysis is not None else None
+        if loops is not None and generators is loops.generators:
+            _check(loops.root_shape == inventory.root_shape,
+                   "symbolic native loops use another reference shape")
+            loops.validate_witnesses()
+            witness_context = loops
+        else:
+            root_state = State(inventory.root_shape)
+            for generator in generators:
+                checkpoint("symbolic_original_witnesses")
+                replay = root_state.apply(generator.turn_sequence)
+                _check(replay.shape == inventory.root_shape and
+                       tuple(replay.sticker_permutation) == generator.permutation,
+                       "symbolic original loop has an invalid physical witness")
+            witness_context = by_id
+        _check(self.group.root_generators == roots,
+               "symbolic group certificate uses another original-loop alphabet")
+        _check(self.group.input_generators == roots or all(self.group.contains(p) for p in roots),
+               "symbolic root group omits an original loop")
+        indices = {g.id: i for i, g in enumerate(generators)}
+        basis_indices = {indices[g.id] for g in self.algebra_generators}
+        _check(all(index in basis_indices for strong in self.group.strong_generators
+                   for index, exponent in strong.syllables),
+               "symbolic root certificate does not prove the declared algebra basis generates the group")
         _check(self.quotient_order * self.kernel_order == self.group_order,
                "symbolic placement/kernel orders are inconsistent")
-        projections = tuple(inventory.action(p).destinations for p in roots)
+        # The root certificate already proves that the witnessed basis and
+        # every native root generate the same group. Projecting that basis
+        # therefore certifies the complete placement image without deriving
+        # thousands of redundant physical block actions.
+        projections = tuple(inventory.action(g.permutation).destinations
+                            for g in self.algebra_generators)
         _check(self.placement_group.degree == len(inventory.blocks) and
                self.placement_group.root_generators == projections and
                all(self.placement_group.contains(p) for p in projections) and
@@ -365,6 +408,7 @@ class SymbolicStagePlan:
         current = self.group
         identity = inventory.action(_IDENTITY)
         for number, stage in enumerate(self.stages, 1):
+            checkpoint("symbolic_chain_validation", stage=number, stages=len(self.stages))
             _check(type(stage.number) is int and type(stage.block_index) is int and
                    all(type(value) is int for observation in
                        (stage.solved_observation, *stage.observations)
@@ -396,7 +440,7 @@ class SymbolicStagePlan:
             for representative in stage.representatives:
                 _check(_original_loop_expression(representative.expression) and
                        current.contains(representative.permutation) and
-                       representative.expression.evaluate(generators) == representative.permutation,
+                       representative.expression.evaluate(witness_context) == representative.permutation,
                        "symbolic transversal has an invalid original-loop witness")
                 _check(_observation(inventory.action(representative.permutation),
                                     stage.block_index, stage.feature.kind) == representative.observation,
@@ -410,22 +454,53 @@ class SymbolicStagePlan:
         _check((self.strategy == "manual" or not self.skipped_features) and
                all(feature in fixed for feature in self.skipped_features),
                "symbolic skipped features are inconsistent")
+        object.__setattr__(self, "_validation_context", (inventory, generators))
         return self
 
 
-def _parse_certificate(raw, roots, *, degree=48):
+def _parse_certificate(raw, roots, *, degree=48, root_indices=None, complete=False,
+                       ambient_certificate=None):
     order, inputs, pool, levels = raw
+    def remap(word):
+        if root_indices is None:
+            return tuple(tuple(s) for s in word)
+        result = []
+        for index, exponent in word:
+            _check(type(index) is int and 0 <= index < len(root_indices),
+                   "GAP returned an invalid algebra generator index")
+            result.append((root_indices[index], exponent))
+        return tuple(result)
     certificate = PermutationGroupCertificate(
-        roots, tuple(StrongGenerator(tuple(p), tuple(tuple(s) for s in w)) for p, w in pool),
+        roots, tuple(StrongGenerator(tuple(p), remap(w)) for p, w in pool),
         tuple(StabilizerLevel(point, tuple(indices)) for point, indices in levels),
-        input_generators=tuple(tuple(p) for p in inputs), degree=degree)
+        input_generators=None if complete else tuple(tuple(p) for p in inputs), degree=degree,
+        ambient_certificate=ambient_certificate)
     _check(certificate.order == order, "GAP and portable subgroup orders disagree")
     return certificate
 
 
+def _algebra_basis(analysis, generator_basis="reduced"):
+    """Select original witnesses, keeping their stable native IDs and owners."""
+    if generator_basis not in ("reduced", "full"):
+        raise ValueError("generator_basis must be reduced or full")
+    generators = tuple(analysis.loops.generators)
+    basis = tuple(analysis.generators) if generator_basis == "reduced" else generators
+    by_id = {generator.id: (index, generator) for index, generator in enumerate(generators)}
+    _check(len(by_id) == len(generators), "native original-loop IDs are not unique")
+    _check(len({g.id for g in basis}) == len(basis) and
+           all(g.id in by_id and by_id[g.id][1].permutation == g.permutation for g in basis),
+           "algebra basis does not refer to original native witnesses")
+    return generators, basis, tuple(by_id[g.id][0] for g in basis)
+
+
 def plan_symbolic_stages(analysis, *, strategy="placement_then_orientation", features=None,
-                         gap_executable="gap", timeout=None):
-    """Compute exact small-feature stages and their physical transversals."""
+                         gap_executable="gap", timeout=None, generator_basis="reduced"):
+    """Compute exact feature stages using a reduced witnessed algebra basis.
+
+    The complete native loop library remains the ambient certificate alphabet
+    and every omitted loop is independently checked for membership. ``full``
+    is available for comparing alphabets; it does not change physical discovery.
+    """
     executable, timeout = _validated_options(gap_executable, timeout)
     if strategy not in (*_STRATEGIES, "manual"):
         raise ValueError("unknown human stage strategy")
@@ -445,7 +520,10 @@ def plan_symbolic_stages(analysis, *, strategy="placement_then_orientation", fea
         if features is not None:
             raise ValueError("features are only accepted with strategy='manual'")
         phases = [_KINDS.index(kind) for kind in _STRATEGIES[strategy]]
-    generators = tuple(analysis.loops.generators)
+    _, generators, _ = _algebra_basis(analysis, generator_basis)
+    report_progress("symbolic_stage_planning", strategy=strategy,
+                    native_generators=len(analysis.loops.generators),
+                    algebra_generators=len(generators), group_order=analysis.group_order)
     roots = tuple(g.permutation for g in generators)
     points = [sorted(p+1 for cell in b.cells for p in _CELL_POINTS[cell]) for b in blocks]
     projections = [[d+1 for d in g.block_action.destinations] for g in generators]
@@ -453,13 +531,18 @@ def plan_symbolic_stages(analysis, *, strategy="placement_then_orientation", fea
                  json.dumps(phases), "true" if strategy == "manual" else "false"]
     output = _run_gap(_PROGRAM + "\nBCESymbolicChain(" + ",".join(arguments) + ");;\nQUIT;\n",
                       executable, timeout, "symbolic stage planning")
-    return _parse_symbolic_plan_output(output, analysis, strategy)
+    return _parse_symbolic_plan_output(output, analysis, strategy,
+                                       algebra_generators=generators)
 
 
-def _parse_symbolic_plan_output(output, analysis, strategy):
+def _parse_symbolic_plan_output(output, analysis, strategy, *, algebra_generators=None):
     inventory = analysis.block_inventory
     blocks = inventory.blocks
     generators = tuple(analysis.loops.generators)
+    algebra_generators = (tuple(analysis.generators) if algebra_generators is None
+                          else tuple(algebra_generators))
+    by_id = {generator.id: index for index, generator in enumerate(generators)}
+    root_indices = tuple(by_id[g.id] for g in algebra_generators)
     roots = tuple(g.permutation for g in generators)
     lines = output.splitlines()
     _check(lines.count(_BEGIN) == lines.count(_END) == 1,
@@ -473,7 +556,12 @@ def _parse_symbolic_plan_output(output, analysis, strategy):
     _check(order == analysis.group_order, "symbolic root group disagrees with isotropy analysis")
     if terminal != 1:
         raise ValueError(f"manual features leave a subgroup of order {terminal}; add solve_block features")
-    groups = tuple(_parse_certificate(raw, roots) for raw in raw_groups)
+    groups = []
+    for i, raw in enumerate(raw_groups):
+        groups.append(_parse_certificate(
+            raw, roots, root_indices=root_indices, complete=i == 0,
+            ambient_certificate=groups[0] if groups else None))
+    groups = tuple(groups)
     _check(len(groups) == len(raw_stages)+1, "GAP returned inconsistent symbolic subgroup records")
     fixed = initial = _fixed_features(inventory, groups[0])
     stages = []
@@ -485,7 +573,7 @@ def _parse_symbolic_plan_output(output, analysis, strategy):
                "GAP returned inconsistent symbolic stage orders")
         reps = tuple(sorted((SymbolicRepresentative(
             _observation(inventory.action(tuple(p)), block, feature.kind), tuple(p),
-            _expression(w, generators)) for p, w in raw_reps), key=lambda r: r.observation))
+            _expression(w, algebra_generators)) for p, w in raw_reps), key=lambda r: r.observation))
         after_fixed = _fixed_features(inventory, groups[number])
         implied = tuple(f for f in after_fixed if f not in fixed and f != feature)
         stages.append(SymbolicStage(number, feature, block, blocks[block].name,
@@ -497,9 +585,9 @@ def _parse_symbolic_plan_output(output, analysis, strategy):
                              tuple(_feature(blocks,k,b) for k,b in raw_skipped),
                              quotient, kernel, version,
                              _parse_certificate(raw_placement,
-                                                tuple(g.block_action.destinations for g in generators),
+                                                tuple(g.block_action.destinations for g in algebra_generators),
                                                 degree=len(blocks)),
-                             inventory, generators)
+                             inventory, generators, _algebra_generators=algebra_generators)
     return plan.validate(expected_order=analysis.group_order)
 
 
@@ -509,7 +597,11 @@ def symbolic_plan_from_dict(record, inventory, generators, expected_order=None):
         _check(isinstance(record, dict), "symbolic stage-chain record must be an object")
         _check(record["format"] == "bce-v2-symbolic-stage-chain" and record["version"] == 1,
                "unsupported symbolic stage-chain format")
-        groups = tuple(PermutationGroupCertificate.from_dict(g) for g in record["groups"])
+        groups = []
+        for raw in record["groups"]:
+            groups.append(PermutationGroupCertificate.from_dict(
+                raw, ambient_certificate=groups[0] if groups else None))
+        groups = tuple(groups)
         rows = record["stages"]
         _check(len(groups) == len(rows)+1, "symbolic chain has inconsistent subgroup records")
         feature = lambda row: BlockFeature(row["kind"], tuple(row["reference_cells"]))
@@ -527,6 +619,13 @@ def symbolic_plan_from_dict(record, inventory, generators, expected_order=None):
                                  record["gap_version"],
                                  PermutationGroupCertificate.from_dict(record["placement_group"]),
                                  inventory, tuple(generators))
+        if "algebra_generator_ids" in record:
+            by_id = {g.id: g for g in generators}
+            identifiers = tuple(record["algebra_generator_ids"])
+            _check(all(type(identifier) is int for identifier in identifiers) and
+                   len(set(identifiers)) == len(identifiers),
+                   "saved symbolic algebra IDs must be distinct integers")
+            object.__setattr__(plan, "_algebra_generators", tuple(by_id[i] for i in identifiers))
         _check(int(record["group_order"]) == plan.group_order and
                int(record["terminal_order"]) == plan.terminal_order,
                "saved symbolic chain has inconsistent declared orders")

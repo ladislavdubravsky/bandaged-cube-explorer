@@ -19,6 +19,8 @@ from numbers import Integral
 from types import MappingProxyType
 from typing import Mapping
 
+from .computation import checkpoint
+
 
 _SCHEMA = "bce.permutation_group_certificate.v1"
 
@@ -111,7 +113,7 @@ class PermutationGroupCertificate:
     _orbit_levels: tuple[_OrbitLevel, ...]
 
     def __init__(self, root_generators, strong_generators, levels, *,
-                 input_generators=None, degree=None):
+                 input_generators=None, degree=None, ambient_certificate=None):
         roots, generators, supplied_levels = (
             tuple(root_generators), tuple(strong_generators), tuple(levels)
         )
@@ -123,8 +125,28 @@ class PermutationGroupCertificate:
         if degree < 1:
             raise ValueError("certificate degree must be positive")
         identity = tuple(range(degree))
-        roots = tuple(_permutation(value, degree, f"root generator {index}")
-                      for index, value in enumerate(roots))
+        if ambient_certificate is not None:
+            if (not isinstance(ambient_certificate, PermutationGroupCertificate) or
+                    degree != ambient_certificate.degree or
+                    roots != ambient_certificate.root_generators):
+                raise ValueError("ambient certificate uses another root alphabet")
+            if roots is not ambient_certificate.root_generators:
+                # Imported records still receive strict scalar checks: Python
+                # equality alone would accept True or 1.0 in place of 1.
+                for index, value in enumerate(roots):
+                    if any(type(point) is not int for point in value):
+                        _permutation(value, degree, f"root generator {index}")
+            # Each subgroup shares its already verified immutable ambient
+            # library. Its own words, Schreier closure and inputs are still
+            # checked independently below.
+            roots = ambient_certificate.root_generators
+        else:
+            validated = []
+            for index, value in enumerate(roots):
+                if index % 128 == 0:
+                    checkpoint("symbolic_certificate_roots")
+                validated.append(_permutation(value, degree, f"root generator {index}"))
+            roots = tuple(validated)
         inputs = roots if input_generators is None else tuple(
             _permutation(value, degree, f"input generator {index}")
             for index, value in enumerate(input_generators)
@@ -224,7 +246,9 @@ class PermutationGroupCertificate:
                     if self._sift(schreier, number + 1) != identity:
                         raise ValueError(f"level {number} Schreier generator is absent "
                                          "from the next stabilizer")
-        for generator in inputs:
+        for index, generator in enumerate(inputs):
+            if index % 128 == 0:
+                checkpoint("symbolic_certificate_membership")
             if self._sift(generator) != identity:
                 raise ValueError("input generator is absent from the certified group")
 
@@ -279,7 +303,7 @@ class PermutationGroupCertificate:
         }
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data, *, ambient_certificate=None):
         """Independently validate a saved certificate without GAP."""
         if not isinstance(data, Mapping) or data.get("schema") != _SCHEMA:
             raise ValueError("unsupported permutation group certificate schema")
@@ -295,8 +319,10 @@ class PermutationGroupCertificate:
             levels = tuple(StabilizerLevel(record["base_point"],
                                            tuple(record["generator_indices"]))
                            for record in data["levels"])
-            result = cls(data["root_generators"], generators, levels,
-                         input_generators=data["input_generators"], degree=data["degree"])
+            roots = tuple(tuple(p) for p in data["root_generators"])
+            result = cls(roots, generators, levels,
+                         input_generators=data["input_generators"], degree=data["degree"],
+                         ambient_certificate=ambient_certificate)
         except (KeyError, IndexError) as error:
             raise ValueError("malformed permutation group certificate") from error
         if not isinstance(data["order"], str) or data["order"] != str(result.order):
