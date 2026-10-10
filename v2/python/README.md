@@ -1267,13 +1267,14 @@ accepts such a mapping for custom or reused layouts.
 
 With `show_shapes=True`, vertex pictures use white for arbitrary stickers and
 face colors for the exterior stickers on blocks containing face centers.
+White face colors appear black in these pictures to match their graph edges.
 `diagram_mode` selects opposite-corner or transparent views. Picture size is
 proportional to directed incident degree, counting a loop twice; the `start`
 vertex (default ID `0`, also accepts a shape) always has the maximum size.
 Degree-two vertices keep their incident edges but display neither a marker nor
 a shape picture, except for the starting vertex. `shape_size` controls the
 maximum picture width in inches. Without pictures, marker sizes use the same degree rule.
-`edge_labels=True` shows Singmaster face labels. Edges use the selected face
+`edge_labels=True` shows Singmaster face labels in black. Edges use the selected face
 palette, with white rendered as black so it remains visible.
 
 Drawing a bounded `ShapeGraph` retains its partial status in the figure title;

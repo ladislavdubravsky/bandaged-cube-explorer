@@ -221,11 +221,11 @@ def bandage_graph_layout(value, *, layout="symmetry", seed=0, iterations=300):
 def _palette_rgb(face_colors):
     from matplotlib.colors import to_rgb
     palette = {face: to_rgb(color) for face, color in _palette(face_colors).items()}
-    # The standard near-white U is also rendered black for edge contrast.
+    # Face stickers and edges share the same white-to-black graph palette.
     white = {(1., 1., 1.), to_rgb(_palette(None)["U"])}
     edges = {face: (0., 0., 0.) if rgb in white else rgb
              for face, rgb in palette.items()}
-    return palette, edges
+    return edges, edges
 
 
 def _project_cube(point, view):
@@ -350,10 +350,11 @@ def draw_bandage_graph(value, *, layout="symmetry", show_shapes=False,
     Set ``show_shapes=True`` for miniature orthographic shape diagrams. Their
     linear sizes are proportional to degree; ``shape_size`` is the maximum
     diagram width in inches. Arbitrary blocks are white. Exterior stickers of
-    blocks containing fixed face centers use the displayed face's palette.
+    blocks containing fixed face centers use the displayed face's palette,
+    with white face colors rendered black to match their edges.
     ``diagram_mode`` selects two opposite corners or one transparent view.
     Face colors also color edges; white (including the default near-white U)
-    becomes black. ``edge_labels=True`` adds Singmaster letters. ``pos`` accepts
+    becomes black. ``edge_labels=True`` adds black Singmaster letters. ``pos`` accepts
     precomputed/manual coordinates. Partial explorations are clearly titled.
     Save the returned Figure as SVG/PDF to retain vector cube diagrams.
     """
@@ -451,7 +452,7 @@ def draw_bandage_graph(value, *, layout="symmetry", show_shapes=False,
             arrow.set_gid(f"bandage-edge-{source}-{target}-{move}")
             axis.add_patch(arrow)
             if edge_labels:
-                label = axis.text(*label_point, move, color=edge_colors[move], fontsize=6,
+                label = axis.text(*label_point, move, color="black", fontsize=6,
                                   ha="center", va="center", zorder=7,
                                   bbox={"facecolor": "white", "edgecolor": "none", "pad": 0.15})
                 label.set_gid(f"bandage-label-{source}-{target}-{move}")
