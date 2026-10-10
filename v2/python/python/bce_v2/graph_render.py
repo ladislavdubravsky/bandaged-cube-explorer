@@ -1,10 +1,11 @@
 """Directed single-turn bandage graphs and deterministic geometric layouts.
 
-Layout uses unweighted shape adjacency; rendering retains every clockwise
-action, including parallel edges and loops. No shape is quotiented by rotation.
+Layout uses unweighted shape adjacency; full rendering retains every clockwise
+action, including parallel edges and loops. Large graphs default to a summary,
+with optional bounded local views. No shape is quotiented by rotation.
 """
 
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, deque
 from collections.abc import Mapping
 from inspect import signature
 from math import cos, isfinite, pi, sin, sqrt
@@ -16,6 +17,8 @@ from .human_diagram_modes import DiagramMode
 
 
 _LAYOUTS = ("symmetry", "spring", "kamada_kawai", "spectral")
+_VIEWS = ("auto", "full", "summary", "local")
+_DEFAULT_MAX_VERTICES = 1000
 
 
 def _dependencies():
@@ -46,13 +49,15 @@ def _geometry(graph, nx):
 
 
 def _cycles(permutation):
-    unseen = set(range(len(permutation)))
+    visited = bytearray(len(permutation))
     result = []
-    while unseen:
-        vertex = min(unseen)
+    for first in range(len(permutation)):
+        if visited[first]:
+            continue
+        vertex = first
         cycle = []
-        while vertex in unseen:
-            unseen.remove(vertex)
+        while not visited[vertex]:
+            visited[vertex] = 1
             cycle.append(vertex)
             vertex = permutation[vertex]
         result.append(cycle)
@@ -281,8 +286,10 @@ def _shape_picture(axis, value, center, width, palette, mode, vertex):
         axis.add_collection(outline)
 
 
-def _positions(pos, graph, np):
-    if not isinstance(pos, Mapping) or set(pos) != set(range(len(graph))):
+def _positions(pos, graph, np, vertices=None):
+    required = set(range(len(graph))) if vertices is None else set(vertices)
+    if not isinstance(pos, Mapping) or (
+            set(pos) != required and (vertices is None or set(pos) != set(range(len(graph))))):
         raise ValueError("pos must map every vertex ID to a finite 2D position")
     result = {}
     for vertex, point in pos.items():
@@ -294,6 +301,126 @@ def _positions(pos, graph, np):
             raise ValueError("pos must contain finite 2D positions")
         result[vertex] = tuple(point)
     return result
+
+
+def _local_vertices(actions, root, *, radius, max_vertices):
+    """Select a bounded neighborhood without laying out the complete graph."""
+    adjacent = defaultdict(set)
+    for source, target, _ in actions:
+        adjacent[source].add(target)
+        adjacent[target].add(source)
+    vertices = {root}
+    pending = deque(((root, 0),))
+    while pending and len(vertices) < max_vertices:
+        vertex, distance = pending.popleft()
+        if distance >= radius:
+            continue
+        for neighbor in sorted(adjacent[vertex]):
+            if neighbor in vertices:
+                continue
+            vertices.add(neighbor)
+            pending.append((neighbor, distance + 1))
+            if len(vertices) == max_vertices:
+                break
+    return vertices
+
+
+def _summary_figure(graph, actions, *, figsize, plt):
+    """Draw statistics without loading shapes, constructing geometry, or layout."""
+    figure, axis = plt.subplots(figsize=figsize or (8, 3))
+    axis.set_axis_off()
+    status = "Complete" if graph.complete else "Partial"
+    axis.set_title(f"{status} graph · {len(graph):,} shapes · "
+                   f"{len(actions):,} clockwise face turns", fontsize=11)
+    axis.text(0.5, 0.65, "Shape graph summary", ha="center", va="center",
+              transform=axis.transAxes, fontsize=15)
+    axis.text(0.5, 0.42,
+              f"{graph.metric} exploration · full graph layout skipped\n"
+              "Use view='local' for a bounded neighborhood, or\n"
+              "view='full' to explicitly request the complete drawing.",
+              ha="center", va="center", transform=axis.transAxes, fontsize=10)
+    figure.tight_layout()
+    return figure
+
+
+def _local_layout(vertices, actions, *, layout, seed, iterations, nx):
+    geometry = nx.Graph()
+    geometry.add_nodes_from(sorted(vertices))
+    geometry.add_edges_from((source, target) for source, target, _ in actions
+                           if source != target)
+    if len(vertices) == 1:
+        return {next(iter(vertices)): (0., 0.)}
+    if layout in ("symmetry", "spring"):
+        # A neighborhood need not retain any symmetry of the whole component.
+        options = {"method": "force"} if "method" in signature(nx.spring_layout).parameters else {}
+        positions = nx.spring_layout(geometry, seed=seed, iterations=iterations,
+                                     weight=None, **options)
+    elif layout == "kamada_kawai":
+        positions = nx.kamada_kawai_layout(geometry, weight=None)
+    else:
+        positions = nx.spectral_layout(geometry, weight=None)
+    return {vertex: tuple(map(float, point)) for vertex, point in positions.items()}
+
+
+def _default_figsize(positions, pairs, *, span, show_shapes, np):
+    """Keep typical edges readable without producing an unbounded canvas."""
+    lengths = [np.linalg.norm(np.array(positions[first]) - positions[second])
+               for first, second in pairs if first != second]
+    lengths = [length for length in lengths if length > span * 1e-10]
+    spacing = float(np.median(lengths)) if lengths else span
+    # Aim for longer edges when they need to accommodate cube pictures. The
+    # initial drawing extent is 0.62 * span, with 93% of the figure height used.
+    edge_inches = 1.2 if show_shapes else 0.35
+    side = min(24., max(6., 1.24 * span * edge_inches / (0.93 * spacing)))
+    return (side, side)
+
+
+def _shape_width_limit(positions, ratios, *, span, mode, np):
+    """Estimate a picture width in data units from local node clearances."""
+    vertices = sorted(positions)
+    points = np.array([positions[vertex] for vertex in vertices])
+    weights = np.array([ratios.get(vertex, 0.) for vertex in vertices])
+    nearest = []
+    if len(points) > _DEFAULT_MAX_VERTICES:
+        # Large drawings are opt-in. Even then, picture sizing should not add
+        # another quadratic scan. A nearest-neighbor distance and the largest
+        # possible partner weight give a conservative clearance for each node.
+        distinct = np.unique(points, axis=0)
+        if len(distinct) > 1:
+            try:
+                from scipy.spatial import cKDTree
+            except ImportError:
+                # Coordinate gaps bound every noncoincident pair's separation.
+                # This conservative fallback keeps sizing linearithmic without
+                # making SciPy a prerequisite for user-supplied coordinates.
+                gaps = np.concatenate([np.diff(np.unique(points[:, axis])) for axis in (0, 1)])
+                gap = float(np.min(gaps[gaps > 0])) if (gaps > 0).any() else 0.
+                distances = np.full(len(points), gap)
+            else:
+                distances = cKDTree(distinct).query(points, k=2)[0][:, 1]
+            visible = (weights > 0) & (distances > 0)
+            nearest.extend(distances[visible] / (weights[visible] + weights.max()))
+    else:
+        # Hidden vertices still constrain pictures so incident short edges do
+        # not disappear under a diagram. Small drawings retain exact bounds.
+        for first in range(0, len(points), 128):
+            last = min(first + 128, len(points))
+            distances = np.linalg.norm(points[first:last, None, :] - points[None, :, :], axis=-1)
+            sums = weights[first:last, None] + weights[None, :]
+            limits = np.full(distances.shape, np.inf)
+            valid = (distances > span * 1e-10) & (sums > 0)
+            limits[valid] = distances[valid] / sums[valid]
+            nearest.extend(limits.min(axis=1)[weights[first:last] > 0])
+    nearest = sorted(value for value in nearest if isfinite(value))
+    if not nearest:
+        return 0.4 * span  # Single-node/entirely coincident layouts.
+    # Ignore the tightest tenth on large layouts: a few almost coincident
+    # vertices should not make every picture unreadable. Small graphs use the
+    # minimum. Bounding circles leave at least 60% of typical edge lengths free.
+    spacing = nearest[len(nearest) // 10]
+    views = 2 if mode is DiagramMode.OPPOSITE_CORNERS else 1
+    diagonal = sqrt(1 + (2 / (sqrt(3) * views))**2)
+    return 0.8 * spacing / diagonal
 
 
 def _drawing_extent(positions, pairs, ratios, *, center, span, shape_size,
@@ -337,46 +464,74 @@ def _drawing_extent(positions, pairs, ratios, *, center, span, shape_size,
 
 def draw_bandage_graph(value, *, layout="symmetry", show_shapes=False,
                        edge_labels=False, face_colors=None, start=0,
-                       figsize=(12, 12), shape_size=0.6, seed=0, iterations=300,
-                       pos=None, diagram_mode=DiagramMode.OPPOSITE_CORNERS):
-    """Return a Matplotlib Figure of the full single-turn shape groupoid graph.
+                       figsize=None, shape_size=None, seed=0, iterations=300,
+                       pos=None, diagram_mode=DiagramMode.OPPOSITE_CORNERS,
+                       view="auto", max_vertices=_DEFAULT_MAX_VERTICES, radius=2):
+    """Return a Matplotlib Figure of the single-turn shape groupoid graph.
+
+    ``view='auto'`` draws the complete graph through ``max_vertices`` (default
+    1,000), and a statistics summary above that limit. The summary performs no
+    layout or shape-picture sizing. ``view='summary'`` always uses that summary;
+    ``view='local'`` draws at most ``max_vertices`` within ``radius`` undirected
+    quarter-turn steps of ``start``, retaining original vertex IDs. Local
+    ``symmetry`` layout falls back to spring because the selected neighborhood
+    need not preserve the component's rotations. ``view='full'`` explicitly
+    requests the complete drawing, including potentially expensive layouts.
 
     Accept a ShapeGraph or any bandage accepted by ``explore``. Only positive
     U/R/F/D/L/B quarter-turn actions are drawn, even from an HTM graph. Every
-    retained vertex and arc participates; degree-two markers/diagrams are hidden
+    retained vertex and arc participates in a full drawing; degree-two markers/diagrams are hidden
     except for ``start`` (a vertex ID or shape), which always has maximum size.
     Degree counts incident positive arcs, with loops counted twice.
 
     Set ``show_shapes=True`` for miniature orthographic shape diagrams. Their
     linear sizes are proportional to degree; ``shape_size`` is the maximum
-    diagram width in inches. Arbitrary blocks are white. Exterior stickers of
-    blocks containing fixed face centers use the displayed face's palette,
+    diagram width in inches. With ``figsize=None``, edge spacing selects a square
+    figure between 6 and 24 inches. With ``shape_size=None``, nearby vertices
+    limit picture widths to leave room for edges, accounting for degree and
+    diagram mode. Very close/coincident vertices may still overlap. Either size
+    can be overridden independently. Arbitrary blocks are white. Exterior
+    stickers of blocks containing fixed face centers use the displayed face's palette,
     with white face colors rendered black to match their edges.
     ``diagram_mode`` selects two opposite corners or one transparent view.
     Face colors also color edges; white (including the default near-white U)
     becomes black. ``edge_labels=True`` adds black Singmaster letters. ``pos`` accepts
-    precomputed/manual coordinates. Partial explorations are clearly titled.
+    precomputed/manual coordinates for every full-view vertex, or just the
+    selected local vertices. Partial explorations are clearly titled.
     Save the returned Figure as SVG/PDF to retain vector cube diagrams.
     """
+    if not isinstance(view, str) or view not in _VIEWS:
+        raise ValueError(f"view must be one of {_VIEWS}")
+    if isinstance(max_vertices, bool) or not isinstance(max_vertices, int) or max_vertices <= 0:
+        raise ValueError("max_vertices must be a positive integer")
+    if isinstance(radius, bool) or not isinstance(radius, int) or radius < 0:
+        raise ValueError("radius must be a nonnegative integer")
+    if not isinstance(layout, str) or layout not in _LAYOUTS:
+        raise ValueError(f"layout must be one of {_LAYOUTS}")
+    if isinstance(iterations, bool) or not isinstance(iterations, int) or iterations < 0:
+        raise ValueError("iterations must be a nonnegative integer")
+    if isinstance(seed, bool) or not isinstance(seed, int) or not 0 <= seed < 2**32:
+        raise ValueError("seed must be an integer in 0..2**32-1")
     for name, flag in (("show_shapes", show_shapes), ("edge_labels", edge_labels)):
         if type(flag) is not bool:
             raise TypeError(f"{name} must be a boolean")
-    if (isinstance(shape_size, bool) or not isinstance(shape_size, (int, float))
+    if shape_size is not None and (
+            isinstance(shape_size, bool) or not isinstance(shape_size, (int, float))
             or not isfinite(shape_size) or shape_size <= 0):
         raise ValueError("shape_size must be positive and finite")
-    try:
-        figsize = tuple(float(value) for value in figsize)
-    except (TypeError, ValueError) as error:
-        raise ValueError("figsize needs two positive finite dimensions") from error
-    if len(figsize) != 2 or any(not isfinite(value) or value <= 0 for value in figsize):
-        raise ValueError("figsize needs two positive finite dimensions")
+    if figsize is not None:
+        try:
+            figsize = tuple(float(value) for value in figsize)
+        except (TypeError, ValueError) as error:
+            raise ValueError("figsize needs two positive finite dimensions") from error
+        if len(figsize) != 2 or any(not isfinite(value) or value <= 0 for value in figsize):
+            raise ValueError("figsize needs two positive finite dimensions")
     try:
         mode = DiagramMode(diagram_mode)
     except (TypeError, ValueError) as error:
         raise ValueError("diagram_mode must be a DiagramMode member") from error
     graph = _graph(value)
     root = graph._vertex(start)
-    nx, np = _dependencies()
     try:
         import matplotlib.pyplot as plt
         from matplotlib.path import Path
@@ -384,31 +539,59 @@ def draw_bandage_graph(value, *, layout="symmetry", show_shapes=False,
     except ImportError as error:
         raise ImportError("install bandaged-cube-explorer-v2[graph,plots] "
                           "to draw bandage graphs") from error
-    palette, edge_colors = _palette_rgb(face_colors)
-    positions = (_positions(pos, graph, np) if pos is not None else
-                 bandage_graph_layout(graph, layout=layout, seed=seed, iterations=iterations))
     actions = _actions(graph)
+    if view == "summary" or (view == "auto" and len(graph) > max_vertices):
+        return _summary_figure(graph, actions, figsize=figsize, plt=plt)
+    nx, np = _dependencies()
+    palette, edge_colors = _palette_rgb(face_colors)
+    if view == "local":
+        vertices = _local_vertices(actions, root, radius=radius, max_vertices=max_vertices)
+        actions = tuple(action for action in actions
+                        if action[0] in vertices and action[1] in vertices)
+        if pos is None:
+            positions = _local_layout(vertices, actions, layout=layout, seed=seed,
+                                      iterations=iterations, nx=nx)
+        else:
+            positions = {vertex: point for vertex, point in _positions(pos, graph, np, vertices).items()
+                         if vertex in vertices}
+    else:
+        vertices = range(len(graph))
+        positions = (_positions(pos, graph, np) if pos is not None else
+                     bandage_graph_layout(graph, layout=layout, seed=seed, iterations=iterations))
     degrees = Counter(vertex for source, target, _ in actions for vertex in (source, target))
     maximum = max(degrees.values(), default=1)
-    visible = {vertex for vertex in range(len(graph)) if degrees[vertex] != 2 or vertex == root}
+    visible = {vertex for vertex in vertices if degrees[vertex] != 2 or vertex == root}
     ratios = {vertex: (1. if vertex == root else max(degrees[vertex], 1) / maximum)
               for vertex in visible}
     pairs = defaultdict(list)
     for action in actions:
         pairs[tuple(sorted(action[:2]))].append(action)
+    coordinates = np.array(list(positions.values()))
+    low, high = coordinates.min(axis=0), coordinates.max(axis=0)
+    span = float((high - low).max()) or 1.
+    center = (low + high) / 2
+    if figsize is None:
+        figsize = _default_figsize(positions, pairs, span=span, show_shapes=show_shapes, np=np)
+    # Equal aspect leaves a square drawing area even on rectangular figures.
+    drawing_inches = min(figsize[0] * 0.96, figsize[1] * 0.93)
+    automatic_shapes = shape_size is None and show_shapes
+    if shape_size is None:
+        shape_size = 1.2 if mode is DiagramMode.OPPOSITE_CORNERS else 0.8
+    extent = _drawing_extent(positions, pairs, ratios, center=center, span=span,
+                             shape_size=shape_size, show_shapes=show_shapes,
+                             drawing_inches=drawing_inches, np=np)
+    if automatic_shapes:
+        width_limit = _shape_width_limit(positions, ratios, span=span, mode=mode, np=np)
+        shape_size = min(shape_size, width_limit * drawing_inches / (2 * extent))
+        # Smaller pictures can only reduce the required extent, so this second
+        # fit preserves the clearance calculated from the first fit.
+        extent = _drawing_extent(positions, pairs, ratios, center=center, span=span,
+                                 shape_size=shape_size, show_shapes=show_shapes,
+                                 drawing_inches=drawing_inches, np=np)
     figure, axis = plt.subplots(figsize=figsize)
     figure.subplots_adjust(left=0.02, right=0.98, bottom=0.02, top=0.95)
     axis.set_aspect("equal")
     axis.set_axis_off()
-    coordinates = np.array(list(positions.values()))
-    low, high = coordinates.min(axis=0), coordinates.max(axis=0)
-    span = max(float((high - low).max()), 1.)
-    center = (low + high) / 2
-    # Equal aspect leaves a square drawing area even on rectangular figures.
-    drawing_inches = min(figsize[0] * 0.96, figsize[1] * 0.93)
-    extent = _drawing_extent(positions, pairs, ratios, center=center, span=span,
-                             shape_size=shape_size, show_shapes=show_shapes,
-                             drawing_inches=drawing_inches, np=np)
     axis.set(xlim=(center[0] - extent, center[0] + extent),
              ylim=(center[1] - extent, center[1] + extent))
     units_per_inch = 2 * extent / drawing_inches
@@ -467,8 +650,12 @@ def draw_bandage_graph(value, *, layout="symmetry", show_shapes=False,
             marker.set_gid(f"bandage-node-{vertex}")
             axis.add_patch(marker)
     status = "" if graph.complete else "Partial graph · "
-    axis.set_title(f"{status}{len(graph):,} shapes · {len(actions):,} clockwise face turns",
-                   fontsize=11)
+    if view == "local":
+        title = (f"{status}Local view · {len(vertices):,} of {len(graph):,} shapes · "
+                 f"{len(actions):,} clockwise face turns")
+    else:
+        title = f"{status}{len(graph):,} shapes · {len(actions):,} clockwise face turns"
+    axis.set_title(title, fontsize=11)
     return figure
 
 

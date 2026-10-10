@@ -1375,9 +1375,22 @@ figure = c.draw_bandage_graph(graph, pos=positions)
 Install `./v2/python[graph]` or `./v2/python[notebooks]` to use these helpers.
 The returned figure is a regular matplotlib figure. The
 [BandagedPocketCube notebook](../examples/BandagedPocketCube.ipynb) displays the
-full graph immediately after its shape and scramble counts, with editable
+graph in its third code cell, after the staged guide. All graph settings live
+in this optional drawing cell, with editable
+`graph_view`, `graph_max_vertices`, `graph_radius`,
 `graph_layout`, `graph_show_shapes`, `graph_edge_labels`, `graph_figsize`, and
-`graph_shape_size` settings.
+`graph_shape_size` settings. The renderer's two size arguments default to `None`,
+which lets it choose them from the layout. This notebook sets shape width to
+one inch and leaves figure size automatic.
+
+`view="auto"` draws the full graph through `max_vertices=1000` and returns a
+small summary above that limit. Summary rendering skips layout and shape
+materialization. `view="local"` draws a neighborhood around `start`, bounded by
+`radius=2` and `max_vertices`; original vertex IDs and induced clockwise actions
+are retained. `view="summary"` always returns the summary, while `view="full"`
+explicitly requests the complete layout. These options also work on `graph.draw`.
+Leave the optional graph cell unevaluated to omit the drawing.
+Calling `bandage_graph_layout` directly still explicitly requests a full layout.
 
 [Unbandaged3x3.ipynb](../examples/Unbandaged3x3.ipynb) applies the same workflow
 to the classic cube. It reports the template compiler's explicit group-size
@@ -1407,8 +1420,17 @@ White face colors appear black in these pictures to match their graph edges.
 proportional to directed incident degree, counting a loop twice; the `start`
 vertex (default ID `0`, also accepts a shape) always has the maximum size.
 Degree-two vertices keep their incident edges but display neither a marker nor
-a shape picture, except for the starting vertex. `shape_size` controls the
-maximum picture width in inches. Without pictures, marker sizes use the same degree rule.
+a shape picture, except for the starting vertex.
+
+`figsize=None` (the default) chooses a square figure from typical edge lengths,
+between 6 and 24 inches per side. `shape_size=None` chooses a maximum picture
+width from nearby vertex spacing, degree, and diagram mode, leaving room for
+incident edges. It also adapts to an explicitly supplied figure size. On large
+graphs, the tightest tenth of local spacings is ignored so a few crowded
+vertices do not shrink every picture; coincident or unusually close vertices
+can still overlap. Changing sizes cannot resolve edge crossings in the layout.
+Pass `figsize=(width, height)` or `shape_size=width` in inches to override either
+setting independently. Without pictures, marker sizes use the same degree rule.
 `edge_labels=True` shows Singmaster face labels in black. Edges use the selected face
 palette, with white rendered as black so it remains visible.
 

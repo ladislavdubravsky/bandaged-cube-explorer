@@ -3,6 +3,7 @@
 from collections import Counter
 import importlib.util
 import unittest
+from unittest.mock import patch
 
 import bce_v2 as c
 
@@ -49,6 +50,198 @@ class BandageGraphRenderTests(unittest.TestCase):
     def positive_edges(self, graph):
         return {(source, target, move) for source, target, move in graph.arcs
                 if move in "URFDLB" and len(move) == 1}
+
+    def shape_bounds(self, figure):
+        import numpy as np
+        points = {}
+        for gid, artist in self.artists(figure, "bandage-shape-").items():
+            if gid.endswith("-surface"):
+                vertex = int(gid.split("-")[2])
+                points.setdefault(vertex, []).extend(
+                    point for path in artist.get_paths() for point in path.vertices)
+        return {vertex: (np.min(values, axis=0), np.max(values, axis=0))
+                for vertex, values in points.items()}
+
+    def test_auto_summary_skips_layout_sizing_and_shape_materialization(self):
+        # A low threshold exercises the large-graph policy on a real graph.
+        graph = c.explore(POCKET)
+        self.assertIsNone(graph._shapes)
+        with patch("bce_v2.graph_render.bandage_graph_layout", side_effect=AssertionError("layout")), \
+             patch("bce_v2.graph_render._shape_width_limit", side_effect=AssertionError("sizing")), \
+             patch("bce_v2.graph_render._dependencies", side_effect=AssertionError("networkx")):
+            figure = graph.draw(max_vertices=100, show_shapes=True)
+        self.assertIsNone(graph._shapes)
+        self.assertEqual(self.artists(figure, "bandage-edge-"), {})
+        self.assertEqual(self.artists(figure, "bandage-shape-"), {})
+        self.assertIn("580 shapes", figure.axes[0].get_title())
+        self.assertTrue(any("view='full'" in text.get_text() for text in figure.axes[0].texts))
+
+    def test_public_draw_api_forwards_view_size_limit_and_radius(self):
+        summary = c.draw_bandage_graph(self.pocket, view="auto", max_vertices=100,
+                                       radius=0, show_shapes=True)
+        self.assertIn("580 shapes", summary.axes[0].get_title())
+        self.assertEqual(self.artists(summary, "bandage-edge-"), {})
+        local = c.draw_bandage_graph(self.cycle, view="local", max_vertices=3,
+                                     radius=0, start=3, iterations=0)
+        self.assertEqual(set(self.artists(local, "bandage-node-")), {"bandage-node-3"})
+        self.assertEqual(self.artists(local, "bandage-edge-"), {})
+        full = c.draw_bandage_graph(self.cycle, view="full", max_vertices=1,
+                                    radius=0, iterations=0)
+        self.assertEqual(set(self.artists(full, "bandage-edge-")), {
+            f"bandage-edge-{source}-{target}-{move}"
+            for source, target, move in self.positive_edges(self.cycle)})
+
+    def test_full_override_and_small_auto_retain_all_actions(self):
+        for view in ("auto", "full"):
+            figure = self.cycle.draw(view=view, max_vertices=1 if view == "full" else 4,
+                                     iterations=0)
+            self.assertEqual(set(self.artists(figure, "bandage-edge-")), {
+                f"bandage-edge-{source}-{target}-{move}"
+                for source, target, move in self.positive_edges(self.cycle)})
+        figure = self.cycle.draw(view="summary")
+        self.assertEqual(self.artists(figure, "bandage-edge-"), {})
+
+    def test_local_view_is_bounded_and_preserves_original_vertex_ids(self):
+        actions = tuple(sorted(self.positive_edges(self.bicube)))
+        start = 17
+        with patch("bce_v2.graph_render.bandage_graph_layout", side_effect=AssertionError("full layout")):
+            figure = self.bicube.draw(view="local", start=start, radius=2,
+                                      max_vertices=7, iterations=0)
+        vertices = {start}
+        for gid in self.artists(figure, "bandage-edge-"):
+            _, _, source, target, _ = gid.split("-")
+            vertices.update((int(source), int(target)))
+        self.assertLessEqual(len(vertices), 7)
+        self.assertGreater(len(vertices), 1)
+        distances = self.bicube.distances(start)
+        self.assertTrue(all(distances[vertex] <= 2 for vertex in vertices))
+        self.assertEqual(set(self.artists(figure, "bandage-edge-")), {
+            f"bandage-edge-{source}-{target}-{move}"
+            for source, target, move in actions if source in vertices and target in vertices})
+        self.assertIn("Local view", figure.axes[0].get_title())
+        self.assertIn(f"{len(vertices)} of", figure.axes[0].get_title())
+        self.assertIn(f"bandage-node-{start}", self.artists(figure, "bandage-node-"))
+
+    def test_local_radius_zero_draws_only_start_and_its_loops(self):
+        figure = self.bicube.draw(view="local", start=3, radius=0, show_shapes=True)
+        self.assertEqual({int(gid.split("-")[2]) for gid in
+                          self.artists(figure, "bandage-shape-")}, {3})
+        self.assertEqual(set(self.artists(figure, "bandage-edge-")), {
+            f"bandage-edge-3-3-{move}" for source, target, move in self.positive_edges(self.bicube)
+            if source == target == 3})
+
+    def test_local_manual_positions_need_only_selected_vertices(self):
+        positions = {3: (2., 4.)}
+        figure = self.bicube.draw(view="local", start=3, radius=0, pos=positions)
+        self.assertEqual(tuple(self.artists(figure, "bandage-node-")[
+            "bandage-node-3"].center), positions[3])
+
+    def test_view_options_are_validated_before_summary(self):
+        for options in ({"view": "unknown"}, {"max_vertices": 0}, {"max_vertices": True},
+                        {"radius": -1}, {"radius": 1.5}, {"layout": "bad"},
+                        {"iterations": -1}, {"seed": True}):
+            with self.subTest(options=options), self.assertRaises(ValueError):
+                self.cycle.draw(**options)
+
+    def test_linear_cycles_keep_deterministic_order(self):
+        from bce_v2.graph_render import _cycles
+        self.assertEqual(_cycles((0, 3, 4, 1, 2)), [[0], [1, 3], [2, 4]])
+        self.assertEqual(_cycles(tuple(range(16000))), [[vertex] for vertex in range(16000)])
+
+    @unittest.skipUnless(HAS_SCIPY, "optional SciPy nearest neighbors")
+    def test_large_automatic_picture_clearances_use_nearest_neighbors(self):
+        import numpy as np
+        from bce_v2.graph_render import _shape_width_limit
+        positions = {vertex: (float(vertex), 0.) for vertex in range(2001)}
+        ratios = {vertex: 1. for vertex in positions}
+        with patch("numpy.linalg.norm", side_effect=AssertionError("all-pairs distances")):
+            width = _shape_width_limit(positions, ratios, span=2000.,
+                                       mode=c.DiagramMode.OPPOSITE_CORNERS, np=np)
+        self.assertGreater(width, 0.)
+        self.assertLess(width, 0.5)
+
+    def test_automatic_sizes_leave_room_between_shapes_and_for_edges(self):
+        import numpy as np
+        labels = [0] * 27
+        for cell in (c.U, c.UB, c.UF):
+            labels[cell] = 1
+        graph = c.explore(labels)
+        positions = {0: (0., 0.), 1: (0.1, 0.)}
+        for mode in c.DiagramMode:
+            for figsize in (None, (4, 3), (3, 8)):
+                with self.subTest(mode=mode, figsize=figsize):
+                    figure = c.draw_bandage_graph(
+                        graph, pos=positions, show_shapes=True, diagram_mode=mode,
+                        figsize=figsize)
+                    figure.canvas.draw()
+                    bounds = self.shape_bounds(figure)
+                    self.assertEqual(set(bounds), {0, 1})
+                    # Conservative picture bounds consume less than half the
+                    # separation, leaving a visible middle section of each arc.
+                    radii = [np.linalg.norm(high - low) / 2 for low, high in bounds.values()]
+                    self.assertLess(sum(radii), 0.05)
+                    self.assertLess(bounds[0][1][0], bounds[1][0][0])
+                    for arrow in self.artists(figure, "bandage-edge-").values():
+                        self.assertTrue(np.isfinite(arrow.get_path().vertices).all())
+
+    def test_automatic_sizes_respect_hidden_vertices_and_coordinate_scale(self):
+        import numpy as np
+        positions = {0: (0., 0.), 1: (0.05, 0.), 2: (2., 2.), 3: (0., 2.)}
+        sizes = []
+        widths = []
+        for scale in (1., 0.001, 100.):
+            figure = self.cycle.draw(
+                pos={vertex: tuple(scale * np.array(point)) for vertex, point in positions.items()},
+                show_shapes=True)
+            figure.canvas.draw()
+            bounds = self.shape_bounds(figure)
+            self.assertEqual(set(bounds), {0})
+            low, high = bounds[0]
+            self.assertLess(np.linalg.norm(high - low) / 2, 0.025 * scale)
+            sizes.append(figure.get_size_inches())
+            widths.append((high[0] - low[0]) / scale)
+        np.testing.assert_allclose(sizes, np.tile(sizes[0], (3, 1)), atol=1e-9)
+        np.testing.assert_allclose(widths, [widths[0]] * 3, atol=1e-9)
+
+    def test_automatic_figure_grows_with_layout_density_and_is_bounded(self):
+        positions = {0: (0., 0.), 1: (2., 0.), 2: (2., 2.), 3: (0., 2.)}
+        sparse = c.draw_bandage_graph(self.cycle, pos=positions)
+        dense = c.draw_bandage_graph(self.pocket, layout="spring", iterations=20)
+        self.assertGreater(dense.get_figwidth(), sparse.get_figwidth())
+        for figure in (sparse, dense):
+            self.assertGreaterEqual(figure.get_figwidth(), 6)
+            self.assertLessEqual(figure.get_figwidth(), 24)
+
+    def test_explicit_sizes_override_automatic_defaults_independently(self):
+        import numpy as np
+        positions = {0: (0., 0.), 1: (2., 0.), 2: (2., 2.), 3: (0., 2.)}
+        for figsize in (None, (9, 5)):
+            figure = c.draw_bandage_graph(
+                self.cycle, pos=positions, show_shapes=True,
+                figsize=figsize, shape_size=0.7)
+            figure.canvas.draw()
+            if figsize is not None:
+                np.testing.assert_allclose(figure.get_size_inches(), figsize)
+            low, high = self.shape_bounds(figure)[0]
+            axis, = figure.axes
+            pixels = axis.transData.transform(high)[0] - axis.transData.transform(low)[0]
+            # The cube panels reserve a small gutter inside the specified width.
+            self.assertAlmostEqual(pixels / figure.dpi, 0.7 * (1 + 1 / 1.08) / 2)
+
+    def test_automatic_sizes_handle_coincident_positions_and_keep_validation(self):
+        import numpy as np
+        figure = c.draw_bandage_graph(
+            self.cycle, pos=dict.fromkeys(range(4), (0., 0.)), show_shapes=True)
+        figure.canvas.draw()
+        self.assertTrue(np.isfinite(figure.get_size_inches()).all())
+        self.assertTrue(all(np.isfinite(low).all() and np.isfinite(high).all()
+                            for low, high in self.shape_bounds(figure).values()))
+        for size in (0, -1, float("inf"), float("nan"), True):
+            with self.subTest(shape_size=size), self.assertRaises(ValueError):
+                c.draw_bandage_graph(self.cycle, shape_size=size)
+        for size in ((), (3,), (3, 0), (3, float("inf")), False):
+            with self.subTest(figsize=size), self.assertRaises(ValueError):
+                c.draw_bandage_graph(self.cycle, figsize=size)
 
     def test_exact_positive_native_actions_in_both_metrics(self):
         """Each arrow represents the original directed action, not an inverse view."""

@@ -69,7 +69,7 @@ class ShapeGraph:
         return isotropy_loops(self, root=self._vertex(root))
 
     def draw(self, **kwargs):
-        """Draw the directed bandage graph, retaining every shape vertex."""
+        """Draw small graphs; summarize large ones, or request a local/full view."""
         from .graph_render import draw_bandage_graph
         return draw_bandage_graph(self, **kwargs)
 

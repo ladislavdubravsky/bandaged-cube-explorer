@@ -525,18 +525,27 @@ def bandage_graph_layout(graph_or_bandage, *, layout="symmetry", seed=0,
 
 def draw_bandage_graph(graph_or_bandage, *, layout="symmetry", show_shapes=False,
                        edge_labels=False, face_colors=None, start=0,
-                       figsize=(12, 12), shape_size=0.6, seed=0, iterations=300,
-                       pos=None, diagram_mode=DiagramMode.OPPOSITE_CORNERS):
+                       figsize=None, shape_size=None, seed=0, iterations=300,
+                       pos=None, diagram_mode=DiagramMode.OPPOSITE_CORNERS,
+                       view="auto", max_vertices=1000, radius=2):
     """Draw shape objects and directed clockwise face-turn actions.
 
     Accept a ShapeGraph, or explore a Shape, State, or 27-cell bandage in QTM.
     Returns a matplotlib figure that can be displayed or saved with savefig.
+    Omit ``figsize`` and ``shape_size`` (or pass None) to size from the layout;
+    explicit dimensions and maximum picture widths are measured in inches.
+    ``view='auto'`` draws complete graphs through ``max_vertices`` (default
+    1,000) and summarizes larger ones without layout. ``'local'`` draws a
+    bounded neighborhood within ``radius`` quarter turns of ``start``;
+    ``'summary'`` always skips layout, and ``'full'`` explicitly requests every
+    shape and action, including potentially expensive large graph layouts.
     """
     from .graph_render import draw_bandage_graph as draw
     return draw(graph_or_bandage, layout=layout, show_shapes=show_shapes,
                 edge_labels=edge_labels, face_colors=face_colors, start=start,
                 figsize=figsize, shape_size=shape_size, seed=seed,
-                iterations=iterations, pos=pos, diagram_mode=diagram_mode)
+                iterations=iterations, pos=pos, diagram_mode=diagram_mode,
+                view=view, max_vertices=max_vertices, radius=radius)
 
 
 __all__ = [
