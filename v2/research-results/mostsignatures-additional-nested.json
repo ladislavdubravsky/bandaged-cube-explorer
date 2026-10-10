@@ -1,0 +1,17 @@
+{
+  "puzzle": "MostSignaturesCube",
+  "graph_shapes": 92176,
+  "graph_complete": true,
+  "proposed_words": 1440,
+  "excluded_existing_catalog_words": 48,
+  "tested_new_words": 1392,
+  "legal_words": 48,
+  "closed_words": 0,
+  "distinct_legal_shapes": 1764,
+  "distinct_closed_shapes": 0,
+  "native_sample_replays": 48,
+  "hits": [],
+  "seconds": 4.545042093999655,
+  "mask_seconds": 3.201163892998011,
+  "scope": "Selected RU/RUprime inner commutators with powers 1/2/3 and RU2/R2U inner commutators with powers 1/2; outer D/Dprime/D2/F/Fprime/F2; all proper rotations and inverse classes; original familiar-algorithm catalog words excluded. This does not exhaust nested commutators or ordinary 3x3 algorithms."
+}

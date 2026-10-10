@@ -1,0 +1,99 @@
+{
+  "scope": "exact discovery verification and bounded-shortlist group coverage",
+  "compiled_words": 552,
+  "compilation_seconds": 0.6978036260006775,
+  "puzzles": [
+    {
+      "puzzle": "BeltRoad",
+      "graph_catalog_pairs": 46690368,
+      "legality_mismatches": 0,
+      "closure_mismatches": 0,
+      "comparison_seconds": 3.5870384270019713,
+      "checked_shortlist_group_order": 746496,
+      "checked_shortlist_basis_size": 5,
+      "complete_isotropy_order": 1492992,
+      "checked_shortlist_index": 2,
+      "all_originals_membership_checked": 19473,
+      "native_augmentations": [
+        {
+          "id": 86,
+          "word": "R L U2 L' R'",
+          "htm": 5
+        }
+      ],
+      "gap_version": "4.12.1",
+      "macro_group_seconds": 1.119101739001053,
+      "full_group_seconds": 6.292748735002533
+    },
+    {
+      "puzzle": "MostSignaturesCube",
+      "graph_catalog_pairs": 50881152,
+      "legality_mismatches": 0,
+      "closure_mismatches": 0,
+      "comparison_seconds": 4.626042013002007,
+      "checked_shortlist_group_order": 1,
+      "checked_shortlist_basis_size": 0,
+      "complete_isotropy_order": 10368,
+      "checked_shortlist_index": 10368,
+      "all_originals_membership_checked": 3336,
+      "native_augmentations": [
+        {
+          "id": 55,
+          "word": "R L U2 L' R'",
+          "htm": 5
+        },
+        {
+          "id": 1048,
+          "word": "F' B' U2 B F",
+          "htm": 5
+        },
+        {
+          "id": 525,
+          "word": "F U2 F' U L' U2 L",
+          "htm": 7
+        },
+        {
+          "id": 567,
+          "word": "F' U2 F R2 B' R' B R'",
+          "htm": 8
+        },
+        {
+          "id": 2126,
+          "word": "L U L' B2 R B R' F' U2 B U' F",
+          "htm": 12
+        },
+        {
+          "id": 5851,
+          "word": "L U L' B' R B L U2 L' R' F' U F",
+          "htm": 13
+        }
+      ],
+      "gap_version": "4.12.1",
+      "macro_group_seconds": 0.9984896930000104,
+      "full_group_seconds": 1.9005495450001035
+    },
+    {
+      "puzzle": "FourPair",
+      "graph_catalog_pairs": 2242224,
+      "legality_mismatches": 0,
+      "closure_mismatches": 0,
+      "comparison_seconds": 0.27680187200166984,
+      "checked_shortlist_group_order": 20065812480,
+      "checked_shortlist_basis_size": 7,
+      "complete_isotropy_order": 40131624960,
+      "checked_shortlist_index": 2,
+      "all_originals_membership_checked": 4968,
+      "native_augmentations": [
+        {
+          "id": 45,
+          "word": "F B U D' L' R'",
+          "htm": 6
+        }
+      ],
+      "gap_version": "4.12.1",
+      "macro_group_seconds": 1.1953129649991752,
+      "full_group_seconds": 2.6349713100025838
+    }
+  ],
+  "total_graph_catalog_pairs": 99813744
+}
