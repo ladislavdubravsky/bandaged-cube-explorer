@@ -137,6 +137,7 @@ pub struct LoopGenerators {
     pub nonidentity_count: usize,
     /// Ordered by witness length and then original arc ID.
     pub generators: Vec<LoopGenerator>,
+    generator_indices: HashMap<usize, usize>,
     parents: Vec<Option<Parent>>,
 }
 
@@ -236,6 +237,11 @@ impl LoopGenerators {
         }
         let mut generators: Vec<_> = unique.into_values().collect();
         generators.sort_unstable_by_key(|generator| (generator.qtm_length, generator.id));
+        let generator_indices = generators
+            .iter()
+            .enumerate()
+            .map(|(index, generator)| (generator.id, index))
+            .collect();
         Ok(Self {
             root_shape: graph.vertices[root],
             root_vertex: root,
@@ -244,6 +250,7 @@ impl LoopGenerators {
             candidate_count,
             nonidentity_count,
             generators,
+            generator_indices,
             parents,
         })
     }
@@ -265,9 +272,13 @@ impl LoopGenerators {
     /// Expand the legal root-loop witness of a retained original arc ID.
     pub fn generator_moves(&self, id: usize) -> Option<Vec<Move>> {
         let generator = self
-            .generators
-            .iter()
-            .find(|generator| generator.id == id)?;
+            .generator_indices
+            .get(&id)
+            .and_then(|&index| self.generators.get(index))
+            .filter(|generator| generator.id == id)
+            // The public vector can be edited by native callers. Keep that
+            // API valid while indexing the normal immutable extracted family.
+            .or_else(|| self.generators.iter().find(|generator| generator.id == id))?;
         let mut moves = self.transport(generator.source)?;
         moves.push(generator.movement);
         let mut vertex = generator.target;

@@ -49,6 +49,22 @@ fn closure(generators: &[StickerPermutation]) -> HashSet<StickerPermutation> {
 }
 
 #[test]
+fn indexed_original_ids_keep_witnesses_when_public_records_are_reordered() {
+    let graph = explore(BondShape::from_partition(&Partition::singletons()));
+    let mut loops = LoopGenerators::from_graph(&graph, 0).unwrap();
+    let expected: Vec<_> = loops
+        .generators
+        .iter()
+        .map(|generator| (generator.id, loops.generator_moves(generator.id).unwrap()))
+        .collect();
+    loops.generators.reverse();
+    for (id, word) in expected {
+        assert_eq!(loops.generator_moves(id), Some(word));
+    }
+    assert_eq!(loops.generator_moves(usize::MAX), None);
+}
+
+#[test]
 fn sticker_actions_retain_orientations_and_compose_in_execution_order() {
     assert_eq!(
         CubeState::SOLVED.sticker_permutation(),
