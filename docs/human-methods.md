@@ -3,10 +3,9 @@
 This document fixes the initial semantics for milestone six and describes the
 reproducible baseline investigation, stage planner, complete computational
 method compiler, bounded algorithm improvement, automatic chain selection and
-shared algorithm repertoires with verified compressed rules. Initial human
-review accepted the presentation but found the learned algorithms difficult to
-remember. Further algorithm-quality optimization is shelved; the review
-notebook now uses only the reduced isotropy generators as its taught vocabulary.
+shared algorithm repertoires with verified compressed rules. The Pocket Cube
+review led to a template compiler that selects stages in the taught vocabulary,
+reuses valid symmetry variants, and extracts checked open pieces and local loops.
 A **puzzle solution** supplies a reusable
 algorithm repertoire and recognition and application rules for every reachable
 scramble in its declared domain. An algorithm library or a subgroup chain alone
@@ -575,13 +574,79 @@ by earlier stages. Individual master applications may temporarily disturb
 them. The existing guide, recognition, application and portable-artifact APIs
 work unchanged, and loading or applying a saved repertoire needs no GAP.
 
-The BandagedPocketCube review notebook retains its selected five-stage chain
-but teaches just three masters. These are the same three reduced generators
-shown above the solution. The generator vocabulary does not promise shorter
-face-turn words or a more memorable method for every bandage. It implements
-the user's preference for fewer definitions without changing the presentation.
-The optimizer below remains available for experiments; further improvements
-to its human-quality objectives are currently shelved.
+This fixed-vocabulary compiler remains available as a comparison control. The
+BandagedPocketCube notebook now uses the template compiler below, which selects
+stages and complete corrections using its actual taught vocabulary.
+
+## Select symmetry templates and shared pieces
+
+```python
+repertoire = c.template_human_repertoire(shape, preference="memory")
+repertoire.write_guide("method.md", diagram_mode=c.DiagramMode.OPPOSITE_CORNERS)
+repertoire.save("templates.json")
+loaded = c.load_human_repertoire("templates.json")
+result = loaded.apply(state)
+```
+
+The input can be a shape, isotropy analysis, prepared stage plan, or completed
+method. Shape-based preparation compares both automatic stage strategies and
+bounded mixed feature chains. A supplied method retains its chain unless
+`select_chain=True`. Explicit `features` define the baseline; use
+`select_chain=False` to keep them fixed. Every compared policy uses its own
+taught templates, inverses and valid reference-bandage symmetries. Original loop
+witnesses remain in the artifact as complete group provenance, even when fewer
+templates are taught.
+
+For each observation, the compiler searches for a complete correction into the
+next stabilizer. Later features remain free, and the correction is checked on
+every member of the observation fiber. Complete additive macro Dijkstra supplies
+fallback words; a bounded search compares expanded physical words to exploit
+cancellation across calls. The exact input policy is also an eligible fallback.
+Mean and worst HTM must both stay within `max_cost_ratio` of that policy
+(default 1.0). Reaching a quality budget never removes coverage.
+
+`preference` accepts `memory`, `execution`, or `recognition`. The saved Pareto
+comparison measures dictionary symbols, whole-case instruction symbols, template
+count, actual mean/worst HTM and case counts. These are reproducible proxies;
+the artifact makes no global shortest-word, minimum-dictionary or human-review
+claim. Budgets include `max_trials`, `max_applications`,
+`max_word_candidates`, `max_word_frontier`, `beam_width`,
+`max_chain_expansions` and `max_chain_methods`. Physical-word budgets apply to
+each trial vocabulary; counters report totals. `chunk_options` controls the
+bounded dictionary search, with literal fallback when a word exceeds its limit.
+`max_group_elements`, `timeout`, `gap_executable` and `root` retain the existing
+exact preparation semantics. Loading and applying prepared artifacts need no GAP.
+
+The guide lists piece definitions inside the Algorithms section's Shared piece
+recipes subsection and displays whole-cube regrips around named calls. Mixed-grip case recipes reuse the taught
+templates instead of adding new algorithm definitions. Piece definitions carry
+exact admissible source shapes; a repeated spelling alone does not make a piece
+executable from every shape.
+
+The path and dictionary APIs can also be used independently:
+
+```python
+setup = c.ShapePath.from_moves(shape, setup_moves)
+body = c.ShapePath.local_loop(setup.target_shape, loop_moves)
+closed = setup.transport_loop(body)  # setup, body, inverse setup
+dictionary = c.extract_algorithm_chunks(shape, {"A": closed.moves})
+assert dictionary.expand("A") == closed.moves
+```
+
+`ShapePath` retains exact source/target shapes, presentation frame, normalized
+face moves and faithful sticker action. Composition checks both endpoints and
+frames; inversion reverses endpoints, and rotation transforms endpoints and
+action. `from_graph` constructs a witnessed route between shape vertices.
+`to_loop_expression(witness, generators)` only accepts a closed reference path
+whose replay agrees with the supplied original-loop certificate. Open paths
+are never accepted as reference-loop leaves.
+
+`extract_algorithm_chunks` mines repeated paths in direct, inverse and proper
+rotation forms, splits half-turn boundaries when useful, and retains
+setup/local-loop/undo decompositions. `ChunkDictionary` records checked instances,
+typed expression trees, formulas, metrics and search limits. Both it and
+`ShapePath` support independently replayed portable records; malformed endpoints,
+frames, actions, references and costs are rejected.
 
 ## Share algorithms and compress rules: delivery five
 
@@ -685,19 +750,21 @@ repertoire.write_guide("method.md", diagram_mode=diagram_mode, face_colors=face_
 
 `DiagramMode.OPPOSITE_CORNERS` gives opaque orthographic views from UFR and BLD.
 `DiagramMode.TRANSPARENT` uses an orthographic camera looking along the UFR
-diagonal. It colors only the six face-center stickers and the current target;
-other stickers stay white and transparent enough to expose rear targets. Both modes embed
+diagonal. Face centers and solved grey stickers remain opaque; unfinished
+non-target stickers stay white and transparent. Both modes embed
 standalone PNGs for every exact case, including the already-correct case.
 Placement-only cases group all attainable orientations under one instruction.
+Their skip case means already placed; the sticker orientation can still require
+a later correction. The two opposite-corner views expose different faces, so
+two orientation rows can share the same front view while differing at the rear.
 
-In opposite-corner mode, light tints mark blocks guaranteed fully solved before the stage,
-including initial and earlier implied guarantees. The selected face colors mark
-the current recognition target. All other blocks are white, including blocks
+Dark grey marks blocks guaranteed fully solved before the stage, including
+initial and earlier implied guarantees. Face-center stickers and the current
+recognition target use the full selected face colors. All other stickers are white, including blocks
 whose placement is guaranteed but whose orientation remains unfinished. Roles follow
 physical block identity through its current placement, rather than whatever
 looks solved in one example. Current-stage consequences join the appropriate
 solved set in the following stage.
-Transparent mode hides those solved-piece colors to keep the view simple.
 
 `face_colors` accepts a mapping from U/R/F/D/L/B to Matplotlib colors; omitted
 faces retain the standard palette. This palette changes pictures only. Reference
@@ -705,8 +772,8 @@ face labels, recognition cases and solving algorithms do not change.
 Ordinary color names such as `"blue"`, `"orange"`, `"gray"`, and `"white"`
 work directly, as do hex colors and RGB tuples.
 An exact white face color gets ten thin black stripes spanning each colored
-sticker so it remains distinct from plain white hidden stickers. In transparent mode this
-marks only white centers and current targets.
+sticker so it remains distinct from plain white hidden stickers. This marks
+only white centers and current targets; grey solved stickers stay unmarked.
 
 Each case instruction includes both its algorithm identifier and its complete
 turn sequence: `M1: R U R' U'`. A rotated instruction shows the cube already in
@@ -923,10 +990,9 @@ evidence that either chain has a better algorithm repertoire.
 ## Later deliveries
 
 1. **Human review and visual integration: Delivery 6.** Presentation is accepted,
-   and the review notebook uses the reduced-generator vocabulary. Keep the
-   algorithm-quality experiments available but shelve further improvements
-   until new solving feedback warrants them. Broader usability review remains
-   separate from exhaustive coverage checks.
+   and the Pocket Cube follow-up now selects symmetry templates and shared pieces.
+   Gather solving feedback on its cases, regrips and memory demands. Broader
+   usability review remains separate from exhaustive coverage checks.
 2. **Symbolic preparation for larger groups.** Use standard stabilizers,
    orbits and transversals with original-loop witnesses. Certify subgroup
    indices, cases and terminal triviality without enumerating all of `H`.

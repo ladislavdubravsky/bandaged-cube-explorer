@@ -1,0 +1,979 @@
+{
+  "bandage": [
+    1,
+    1,
+    2,
+    1,
+    1,
+    2,
+    3,
+    3,
+    0,
+    0,
+    0,
+    4,
+    0,
+    0,
+    4,
+    5,
+    5,
+    6,
+    0,
+    0,
+    4,
+    0,
+    0,
+    4,
+    5,
+    5,
+    6
+  ],
+  "colored_state_count": 250560,
+  "group_order": 432,
+  "masters": [
+    {
+      "block_action": "([UBR-UR] [FR-DFR] [UFL-UF])(UFR DBL)(BL DL)",
+      "generator_id": 477,
+      "htm": 15,
+      "id": "M1",
+      "qtm": 15,
+      "turn_sequence": "F' U L F U' R' F D R F' R' F D' F' R"
+    },
+    {
+      "block_action": "([UBR-UR] [FR-DFR] [UFL-UF])(UFR+ DBL-)(DB DL)",
+      "generator_id": 597,
+      "htm": 15,
+      "id": "M2",
+      "qtm": 15,
+      "turn_sequence": "U F' L' F U' F' U L F U' R' F D R F'"
+    },
+    {
+      "block_action": "([UBR-UR] [UFL-UF])(UFR DBL)(DB+ DL+)",
+      "generator_id": 352,
+      "htm": 13,
+      "id": "M3",
+      "qtm": 16,
+      "turn_sequence": "U F' L' F U2 R B2 R' U2 F' L F U'"
+    }
+  ],
+  "puzzle": "BandagedPocketCube",
+  "scope": "uniform complete reference group, includes solved; shape restoration excluded",
+  "shape_count": 580,
+  "symmetry": {
+    "closures": [
+      {
+        "definition_htm": 15,
+        "distinct_actions": 3,
+        "group_order": 72,
+        "masters": [
+          "M1"
+        ]
+      },
+      {
+        "definition_htm": 15,
+        "distinct_actions": 3,
+        "group_order": 72,
+        "masters": [
+          "M2"
+        ]
+      },
+      {
+        "definition_htm": 13,
+        "distinct_actions": 3,
+        "group_order": 6,
+        "masters": [
+          "M3"
+        ]
+      },
+      {
+        "definition_htm": 30,
+        "distinct_actions": 6,
+        "group_order": 216,
+        "masters": [
+          "M1",
+          "M2"
+        ]
+      },
+      {
+        "definition_htm": 28,
+        "distinct_actions": 6,
+        "group_order": 432,
+        "masters": [
+          "M1",
+          "M3"
+        ]
+      },
+      {
+        "definition_htm": 28,
+        "distinct_actions": 6,
+        "group_order": 432,
+        "masters": [
+          "M2",
+          "M3"
+        ]
+      },
+      {
+        "definition_htm": 43,
+        "distinct_actions": 9,
+        "group_order": 432,
+        "masters": [
+          "M1",
+          "M2",
+          "M3"
+        ]
+      }
+    ],
+    "nonidentity_rotations": [
+      "x y",
+      "x' z'"
+    ],
+    "pairwise_rotation_or_inverse_matches": []
+  },
+  "variants": {
+    "bounded_six_fixed_basis": {
+      "metrics": {
+        "algorithm_count": 13,
+        "definition_htm": 420,
+        "definition_qtm": 452,
+        "mean_htm": 119.19907407407408,
+        "mean_qtm": 129.16666666666666,
+        "original_leaf_count": 3,
+        "original_leaf_htm": 43,
+        "states": 432,
+        "total_htm": 51494,
+        "total_qtm": 55800,
+        "visible_leaf_count": 3,
+        "worst_htm": 219,
+        "worst_qtm": 237
+      },
+      "search": {
+        "alphabet_size": 5,
+        "cases": [
+          {
+            "expression": "L477^-1 L352 L597 L477",
+            "fiber_size_checked": 72,
+            "htm": 48,
+            "observation": [
+              4,
+              1
+            ],
+            "qtm": 51,
+            "stage": 1,
+            "turn_sequence": "R' F D F' R F R' D' F' R U F' L' U' F U F' L' F U2 R B2 R' U F' U L F U' R' F D R F2 U L F U' R' F D R F' R' F D' F' R"
+          },
+          {
+            "expression": "L597 L477",
+            "fiber_size_checked": 72,
+            "htm": 29,
+            "observation": [
+              11,
+              0
+            ],
+            "qtm": 30,
+            "stage": 1,
+            "turn_sequence": "U F' L' F U' F' U L F U' R' F D R F2 U L F U' R' F D R F' R' F D' F' R"
+          },
+          {
+            "expression": "L352^-1 L477^-1",
+            "fiber_size_checked": 72,
+            "htm": 28,
+            "observation": [
+              11,
+              1
+            ],
+            "qtm": 31,
+            "stage": 1,
+            "turn_sequence": "U F' L' F U2 R B2 R' U2 F' L F U' R' F D F' R F R' D' F' R U F' L' U' F"
+          },
+          {
+            "expression": "L477^-1",
+            "fiber_size_checked": 72,
+            "htm": 15,
+            "observation": [
+              12,
+              0
+            ],
+            "qtm": 15,
+            "stage": 1,
+            "turn_sequence": "R' F D F' R F R' D' F' R U F' L' U' F"
+          },
+          {
+            "expression": "L352 L597 L477",
+            "fiber_size_checked": 72,
+            "htm": 33,
+            "observation": [
+              12,
+              1
+            ],
+            "qtm": 36,
+            "stage": 1,
+            "turn_sequence": "U F' L' F U2 R B2 R' U F' U L F U' R' F D R F2 U L F U' R' F D R F' R' F D' F' R"
+          },
+          {
+            "expression": "L352 L597",
+            "fiber_size_checked": 18,
+            "htm": 19,
+            "observation": [
+              11,
+              1
+            ],
+            "qtm": 21,
+            "stage": 2,
+            "turn_sequence": "U F' L' F U2 R B2 R' U F' U L F U' R' F D R F'"
+          },
+          {
+            "expression": "L597^-1",
+            "fiber_size_checked": 18,
+            "htm": 15,
+            "observation": [
+              12,
+              0
+            ],
+            "qtm": 15,
+            "stage": 2,
+            "turn_sequence": "F R' D' F' R U F' L' U' F U F' L F U'"
+          },
+          {
+            "expression": "L352^-1",
+            "fiber_size_checked": 18,
+            "htm": 13,
+            "observation": [
+              12,
+              1
+            ],
+            "qtm": 16,
+            "stage": 2,
+            "turn_sequence": "U F' L' F U2 R B2 R' U2 F' L F U'"
+          },
+          {
+            "expression": "L477^-2",
+            "fiber_size_checked": 6,
+            "htm": 30,
+            "observation": [
+              2,
+              0
+            ],
+            "qtm": 30,
+            "stage": 3,
+            "turn_sequence": "R' F D F' R F R' D' F' R U F' L' U' F R' F D F' R F R' D' F' R U F' L' U' F"
+          },
+          {
+            "expression": "L477^2",
+            "fiber_size_checked": 6,
+            "htm": 30,
+            "observation": [
+              9,
+              0
+            ],
+            "qtm": 30,
+            "stage": 3,
+            "turn_sequence": "F' U L F U' R' F D R F' R' F D' F' R F' U L F U' R' F D R F' R' F D' F' R"
+          },
+          {
+            "expression": "L352^-1 L477 L352^-1 L477^-1 L352^-1 L477^-1",
+            "fiber_size_checked": 3,
+            "htm": 84,
+            "observation": [
+              9,
+              0
+            ],
+            "qtm": 93,
+            "stage": 4,
+            "turn_sequence": "U F' L' F U2 R B2 R' U2 F' L F U' F' U L F U' R' F D R F' R' F D' F' R U F' L' F U2 R B2 R' U2 F' L F U' R' F D F' R F R' D' F' R U F' L' U' F U F' L' F U2 R B2 R' U2 F' L F U' R' F D F' R F R' D' F' R U F' L' U' F"
+          },
+          {
+            "expression": "L597^-1 L352^-1 L597^-1 L352^-1",
+            "fiber_size_checked": 1,
+            "htm": 38,
+            "observation": [
+              3,
+              1
+            ],
+            "qtm": 42,
+            "stage": 5,
+            "turn_sequence": "F R' D' F' R U F' L' U' F U' R B2 R' U2 F' L F U' F R' D' F' R U F' L' U' F U' R B2 R' U2 F' L F U'"
+          },
+          {
+            "expression": "L352 L597 L352 L597",
+            "fiber_size_checked": 1,
+            "htm": 38,
+            "observation": [
+              3,
+              2
+            ],
+            "qtm": 42,
+            "stage": 5,
+            "turn_sequence": "U F' L' F U2 R B2 R' U F' U L F U' R' F D R F' U F' L' F U2 R B2 R' U F' U L F U' R' F D R F'"
+          }
+        ],
+        "coverage_fallback": "original_complete_policy",
+        "enumeration": [
+          {
+            "depth": 1,
+            "effects_covered": 6,
+            "words_evaluated": 5
+          },
+          {
+            "depth": 2,
+            "effects_covered": 22,
+            "words_evaluated": 20
+          },
+          {
+            "depth": 3,
+            "effects_covered": 57,
+            "words_evaluated": 80
+          },
+          {
+            "depth": 4,
+            "effects_covered": 121,
+            "words_evaluated": 320
+          },
+          {
+            "depth": 5,
+            "effects_covered": 219,
+            "words_evaluated": 1280
+          },
+          {
+            "depth": 6,
+            "effects_covered": 327,
+            "words_evaluated": 5120
+          }
+        ],
+        "masters": [
+          "M1",
+          "M2",
+          "M3"
+        ],
+        "max_applications": 6,
+        "physical_shortest_claim": false,
+        "symmetries": false,
+        "word_selection_key": [
+          "simplified_htm",
+          "simplified_qtm",
+          "factor_count",
+          "expression_text"
+        ]
+      },
+      "stage_chain": [
+        {
+          "block": "Edge BL",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              9
+            ]
+          },
+          "index": 6,
+          "order_after": 72,
+          "order_before": 432
+        },
+        {
+          "block": "Edge DB",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              19
+            ]
+          },
+          "index": 4,
+          "order_after": 18,
+          "order_before": 72
+        },
+        {
+          "block": "Pair UBR-UR",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              2,
+              5
+            ]
+          },
+          "index": 3,
+          "order_after": 6,
+          "order_before": 18
+        },
+        {
+          "block": "Pair UFL-UF",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              6,
+              7
+            ]
+          },
+          "index": 2,
+          "order_after": 3,
+          "order_before": 6
+        },
+        {
+          "block": "Corner UFR",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              8
+            ]
+          },
+          "index": 3,
+          "order_after": 1,
+          "order_before": 3
+        }
+      ],
+      "verification": {
+        "complete_case_fibers_checked": true,
+        "physical_states_checked": 432,
+        "portable_roundtrip": true
+      }
+    },
+    "bounded_six_two_templates_with_symmetry": {
+      "metrics": {
+        "algorithm_count": 13,
+        "definition_htm": 356,
+        "definition_qtm": 394,
+        "mean_htm": 99.23611111111111,
+        "mean_qtm": 110.47222222222223,
+        "original_leaf_count": 2,
+        "original_leaf_htm": 28,
+        "states": 432,
+        "total_htm": 42870,
+        "total_qtm": 47724,
+        "visible_leaf_count": 2,
+        "worst_htm": 182,
+        "worst_qtm": 203
+      },
+      "search": {
+        "alphabet_size": 9,
+        "cases": [
+          {
+            "expression": "L477 rotate(x' z', L352^1)",
+            "fiber_size_checked": 72,
+            "htm": 27,
+            "observation": [
+              4,
+              1
+            ],
+            "qtm": 31,
+            "stage": 1,
+            "turn_sequence": "F' U L F U' R' F D R F' R' F D' F' R2 U' B' U R2 F D2 F' R2 U' B U R'"
+          },
+          {
+            "expression": "rotate(x y, L352^1)",
+            "fiber_size_checked": 72,
+            "htm": 13,
+            "observation": [
+              11,
+              0
+            ],
+            "qtm": 16,
+            "stage": 1,
+            "turn_sequence": "F R' D' R F2 U L2 U' F2 R' D R F'"
+          },
+          {
+            "expression": "rotate(x' z', L477^-1)",
+            "fiber_size_checked": 72,
+            "htm": 15,
+            "observation": [
+              11,
+              1
+            ],
+            "qtm": 15,
+            "stage": 1,
+            "turn_sequence": "F' U L U' F U F' L' U' F R U' B' R' U"
+          },
+          {
+            "expression": "L477^-1",
+            "fiber_size_checked": 72,
+            "htm": 15,
+            "observation": [
+              12,
+              0
+            ],
+            "qtm": 15,
+            "stage": 1,
+            "turn_sequence": "R' F D F' R F R' D' F' R U F' L' U' F"
+          },
+          {
+            "expression": "rotate(x' z', L352^1)",
+            "fiber_size_checked": 72,
+            "htm": 13,
+            "observation": [
+              12,
+              1
+            ],
+            "qtm": 16,
+            "stage": 1,
+            "turn_sequence": "R U' B' U R2 F D2 F' R2 U' B U R'"
+          },
+          {
+            "expression": "L352 rotate(x y, L477^-1)",
+            "fiber_size_checked": 18,
+            "htm": 27,
+            "observation": [
+              11,
+              1
+            ],
+            "qtm": 31,
+            "stage": 2,
+            "turn_sequence": "U F' L' F U2 R B2 R' U2 F' L F U2 R B R' U R U' B' R' U F R' D' F' R"
+          },
+          {
+            "expression": "rotate(x y, L477^-1)",
+            "fiber_size_checked": 18,
+            "htm": 15,
+            "observation": [
+              12,
+              0
+            ],
+            "qtm": 15,
+            "stage": 2,
+            "turn_sequence": "U' R B R' U R U' B' R' U F R' D' F' R"
+          },
+          {
+            "expression": "L352",
+            "fiber_size_checked": 18,
+            "htm": 13,
+            "observation": [
+              12,
+              1
+            ],
+            "qtm": 16,
+            "stage": 2,
+            "turn_sequence": "U F' L' F U2 R B2 R' U2 F' L F U'"
+          },
+          {
+            "expression": "L477^-2",
+            "fiber_size_checked": 6,
+            "htm": 30,
+            "observation": [
+              2,
+              0
+            ],
+            "qtm": 30,
+            "stage": 3,
+            "turn_sequence": "R' F D F' R F R' D' F' R U F' L' U' F R' F D F' R F R' D' F' R U F' L' U' F"
+          },
+          {
+            "expression": "L477^2",
+            "fiber_size_checked": 6,
+            "htm": 30,
+            "observation": [
+              9,
+              0
+            ],
+            "qtm": 30,
+            "stage": 3,
+            "turn_sequence": "F' U L F U' R' F D R F' R' F D' F' R F' U L F U' R' F D R F' R' F D' F' R"
+          },
+          {
+            "expression": "L477^-1 rotate(x y, L352^1) L477 rotate(x y, L477^1)",
+            "fiber_size_checked": 3,
+            "htm": 50,
+            "observation": [
+              9,
+              0
+            ],
+            "qtm": 55,
+            "stage": 4,
+            "turn_sequence": "R' F D F' R F R' D' F' R U F' L' U' F2 R' D' R F2 U L2 U' F2 R' D R F2 U L F U' R' F D R F' R' F R F' U' R B U R' U' R B' R' U"
+          },
+          {
+            "expression": "L352 rotate(x y, L477^-1) L352 rotate(x y, L477^-1)",
+            "fiber_size_checked": 1,
+            "htm": 54,
+            "observation": [
+              3,
+              1
+            ],
+            "qtm": 62,
+            "stage": 5,
+            "turn_sequence": "U F' L' F U2 R B2 R' U2 F' L F U2 R B R' U R U' B' R' U F R' D' F' R U F' L' F U2 R B2 R' U2 F' L F U2 R B R' U R U' B' R' U F R' D' F' R"
+          },
+          {
+            "expression": "L477 rotate(x' z', L352^1) L477 rotate(x' z', L352^1)",
+            "fiber_size_checked": 1,
+            "htm": 54,
+            "observation": [
+              3,
+              2
+            ],
+            "qtm": 62,
+            "stage": 5,
+            "turn_sequence": "F' U L F U' R' F D R F' R' F D' F' R2 U' B' U R2 F D2 F' R2 U' B U R' F' U L F U' R' F D R F' R' F D' F' R2 U' B' U R2 F D2 F' R2 U' B U R'"
+          }
+        ],
+        "coverage_fallback": "none_needed",
+        "enumeration": [
+          {
+            "depth": 1,
+            "effects_covered": 10,
+            "words_evaluated": 9
+          },
+          {
+            "depth": 2,
+            "effects_covered": 68,
+            "words_evaluated": 72
+          },
+          {
+            "depth": 3,
+            "effects_covered": 185,
+            "words_evaluated": 576
+          },
+          {
+            "depth": 4,
+            "effects_covered": 306,
+            "words_evaluated": 4608
+          },
+          {
+            "depth": 5,
+            "effects_covered": 396,
+            "words_evaluated": 36864
+          },
+          {
+            "depth": 6,
+            "effects_covered": 432,
+            "words_evaluated": 294912
+          }
+        ],
+        "masters": [
+          "M1",
+          "M3"
+        ],
+        "max_applications": 6,
+        "physical_shortest_claim": false,
+        "symmetries": true,
+        "word_selection_key": [
+          "simplified_htm",
+          "simplified_qtm",
+          "factor_count",
+          "expression_text"
+        ]
+      },
+      "stage_chain": [
+        {
+          "block": "Edge BL",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              9
+            ]
+          },
+          "index": 6,
+          "order_after": 72,
+          "order_before": 432
+        },
+        {
+          "block": "Edge DB",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              19
+            ]
+          },
+          "index": 4,
+          "order_after": 18,
+          "order_before": 72
+        },
+        {
+          "block": "Pair UBR-UR",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              2,
+              5
+            ]
+          },
+          "index": 3,
+          "order_after": 6,
+          "order_before": 18
+        },
+        {
+          "block": "Pair UFL-UF",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              6,
+              7
+            ]
+          },
+          "index": 2,
+          "order_after": 3,
+          "order_before": 6
+        },
+        {
+          "block": "Corner UFR",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              8
+            ]
+          },
+          "index": 3,
+          "order_after": 1,
+          "order_before": 3
+        }
+      ],
+      "verification": {
+        "complete_case_fibers_checked": true,
+        "physical_states_checked": 432,
+        "portable_roundtrip": true
+      }
+    },
+    "direct_default_reduced_basis": {
+      "metrics": {
+        "algorithm_count": 14,
+        "definition_htm": 718,
+        "definition_qtm": 758,
+        "mean_htm": 145.91666666666666,
+        "mean_qtm": 154.98611111111111,
+        "original_leaf_count": 3,
+        "original_leaf_htm": 43,
+        "states": 432,
+        "total_htm": 63036,
+        "total_qtm": 66954,
+        "visible_leaf_count": 3,
+        "worst_htm": 279,
+        "worst_qtm": 295
+      },
+      "stage_chain": [
+        {
+          "block": "Pair UBR-UR",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              2,
+              5
+            ]
+          },
+          "index": 3,
+          "order_after": 144,
+          "order_before": 432
+        },
+        {
+          "block": "Pair UFL-UF",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              6,
+              7
+            ]
+          },
+          "index": 2,
+          "order_after": 72,
+          "order_before": 144
+        },
+        {
+          "block": "Corner UFR",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              8
+            ]
+          },
+          "index": 6,
+          "order_after": 12,
+          "order_before": 72
+        },
+        {
+          "block": "Edge BL",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              9
+            ]
+          },
+          "index": 6,
+          "order_after": 2,
+          "order_before": 12
+        },
+        {
+          "block": "Edge DB",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              19
+            ]
+          },
+          "index": 2,
+          "order_after": 1,
+          "order_before": 2
+        }
+      ],
+      "verification": {
+        "complete_case_fibers_checked": true,
+        "physical_states_checked": 432,
+        "portable_roundtrip": true
+      }
+    },
+    "notebook_displayed_reduced_basis": {
+      "metrics": {
+        "algorithm_count": 13,
+        "definition_htm": 459,
+        "definition_qtm": 492,
+        "mean_htm": 126.94212962962963,
+        "mean_qtm": 137.38888888888889,
+        "original_leaf_count": 3,
+        "original_leaf_htm": 43,
+        "states": 432,
+        "total_htm": 54839,
+        "total_qtm": 59352,
+        "visible_leaf_count": 3,
+        "worst_htm": 247,
+        "worst_qtm": 267
+      },
+      "stage_chain": [
+        {
+          "block": "Edge BL",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              9
+            ]
+          },
+          "index": 6,
+          "order_after": 72,
+          "order_before": 432
+        },
+        {
+          "block": "Edge DB",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              19
+            ]
+          },
+          "index": 4,
+          "order_after": 18,
+          "order_before": 72
+        },
+        {
+          "block": "Pair UBR-UR",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              2,
+              5
+            ]
+          },
+          "index": 3,
+          "order_after": 6,
+          "order_before": 18
+        },
+        {
+          "block": "Pair UFL-UF",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              6,
+              7
+            ]
+          },
+          "index": 2,
+          "order_after": 3,
+          "order_before": 6
+        },
+        {
+          "block": "Corner UFR",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              8
+            ]
+          },
+          "index": 3,
+          "order_after": 1,
+          "order_before": 3
+        }
+      ],
+      "verification": {
+        "complete_case_fibers_checked": true,
+        "physical_states_checked": 432,
+        "portable_roundtrip": true
+      }
+    },
+    "notebook_selected_before_rebuild": {
+      "metrics": {
+        "algorithm_count": 13,
+        "definition_htm": 256,
+        "definition_qtm": 272,
+        "mean_htm": 70.52083333333333,
+        "mean_qtm": 74.91666666666667,
+        "original_leaf_count": 11,
+        "original_leaf_htm": 165,
+        "states": 432,
+        "total_htm": 30465,
+        "total_qtm": 32364,
+        "visible_leaf_count": 11,
+        "worst_htm": 118,
+        "worst_qtm": 124
+      },
+      "stage_chain": [
+        {
+          "block": "Edge BL",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              9
+            ]
+          },
+          "index": 6,
+          "order_after": 72,
+          "order_before": 432
+        },
+        {
+          "block": "Edge DB",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              19
+            ]
+          },
+          "index": 4,
+          "order_after": 18,
+          "order_before": 72
+        },
+        {
+          "block": "Pair UBR-UR",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              2,
+              5
+            ]
+          },
+          "index": 3,
+          "order_after": 6,
+          "order_before": 18
+        },
+        {
+          "block": "Pair UFL-UF",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              6,
+              7
+            ]
+          },
+          "index": 2,
+          "order_after": 3,
+          "order_before": 6
+        },
+        {
+          "block": "Corner UFR",
+          "feature": {
+            "kind": "solve_block",
+            "reference_cells": [
+              8
+            ]
+          },
+          "index": 3,
+          "order_after": 1,
+          "order_before": 3
+        }
+      ],
+      "verification": {
+        "complete_case_fibers_checked": true,
+        "physical_states_checked": 432,
+        "portable_roundtrip": true
+      }
+    }
+  }
+}

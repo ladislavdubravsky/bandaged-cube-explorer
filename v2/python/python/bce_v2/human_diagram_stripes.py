@@ -13,8 +13,8 @@ def add_white_sticker_stripes(figure, diagrams, face_colors=None, *, rotation=""
     """Hatch only visible colored stickers whose selected face color is white.
 
     Each unit sticker receives ten thin diagonal black stripes from edge to
-    edge. Plain white unfinished stickers remain unmarked. In transparent pictures only target
-    stickers and face centers carry color, so solved noncenters stay unmarked.
+    edge. Only targets and face centers retain their physical colors;
+    grey solved stickers and plain white unfinished stickers remain unmarked.
     This overlays the existing mesh without changing its faces or block seams.
     """
     from matplotlib.colors import to_rgb
@@ -62,15 +62,10 @@ def add_white_sticker_stripes(figure, diagrams, face_colors=None, *, rotation=""
                 if diagram.state.facelets[index] not in white_faces:
                     continue
                 role = diagram.sticker_roles[index]
-                if transparent:
-                    if role == "current":
-                        category, opacity = "current", .95
-                    elif sticker == 4:
-                        category, opacity = "center", .72
-                    else:
-                        continue
-                elif role in ("solved", "current"):
-                    category, opacity = role, .35 if role == "solved" else 1.
+                if sticker == 4:
+                    category, opacity = "center", 1.
+                elif role == "current":
+                    category, opacity = "current", .95 if transparent else 1.
                 else:
                     continue
                 cell = _CELL_IMAGES[display_rotation][source_cell]

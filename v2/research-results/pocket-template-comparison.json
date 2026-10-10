@@ -1,0 +1,114 @@
+{
+  "chunks": [
+    {
+      "id": "C1",
+      "kind": "open_path",
+      "moves": "U F' L'"
+    }
+  ],
+  "colored_state_count": 250560,
+  "dictionary_metrics": {
+    "chunk_count": 1,
+    "dictionary_definition_moves": 3,
+    "dictionary_definition_symbols": 3,
+    "expanded_definition_moves": 28,
+    "master_count": 2,
+    "recipe_symbols": 16,
+    "regrip_count": 1,
+    "score": 20
+  },
+  "formulas": {
+    "M2": "x y (C1) y' x' F' R C1 U' F U F' C1^-1",
+    "M3": "(C1 F U2 R) (B2) (C1 F U2 R)^-1"
+  },
+  "frontier": [
+    "C1",
+    "C5",
+    "C9",
+    "C25"
+  ],
+  "global_shortest_claim": false,
+  "group_order": 432,
+  "human_reviewed": false,
+  "implemented": {
+    "definition_htm": 28,
+    "macro_count": 2,
+    "mean_htm": 83.7199074074074,
+    "mean_qtm": 92.02314814814815,
+    "stage_indices": [
+      3,
+      2,
+      3,
+      2,
+      4,
+      3
+    ],
+    "total_htm": 36167,
+    "total_qtm": 39754,
+    "verified_states": 432,
+    "worst_htm": 142,
+    "worst_qtm": 160
+  },
+  "implemented_pipeline": "template_human_repertoire(analysis)",
+  "local_loops": [
+    {
+      "body": "B2",
+      "master_id": "M3",
+      "setup": "U F' L' F U2 R"
+    }
+  ],
+  "mean_htm_reduction_percent": 34.048760918324554,
+  "previous": {
+    "definition_htm": 43,
+    "macro_count": 3,
+    "mean_htm": 126.94212962962963,
+    "mean_qtm": 137.38888888888889,
+    "stage_indices": [
+      6,
+      4,
+      3,
+      2,
+      3
+    ],
+    "total_htm": 54839,
+    "total_qtm": 59352,
+    "verified_states": 432,
+    "worst_htm": 247,
+    "worst_qtm": 267
+  },
+  "previous_pipeline": "generator_human_repertoire(select_human_chain(analysis).method)",
+  "search": {
+    "accepted_deletions": 1,
+    "additional_chains_evaluated": 8,
+    "chain_nodes_expanded": 1,
+    "complete_vocabularies": 2,
+    "physical_depths_completed": 12,
+    "physical_word_budget_hits": 0,
+    "physical_words_examined": 71244,
+    "trials_examined": 3,
+    "unreachable_vocabularies": 2
+  },
+  "selected_id": "C25",
+  "settings": {
+    "allow_symmetry": true,
+    "beam_width": 3,
+    "chunk_options": {
+      "max_candidates": 256,
+      "max_chunk_length": 8,
+      "max_chunks": 12,
+      "max_word_moves": 96,
+      "min_chunk_length": 3
+    },
+    "max_applications": 6,
+    "max_chain_expansions": 12,
+    "max_chain_methods": 8,
+    "max_cost_ratio": 1.0,
+    "max_trials": 16,
+    "max_word_candidates": 100000,
+    "max_word_frontier": 2000,
+    "preference": "memory",
+    "select_chain": true
+  },
+  "shape_count": 580,
+  "worst_htm_reduction_percent": 42.51012145748988
+}

@@ -785,8 +785,10 @@ def _validate_repertoire(repertoire, *, complete_loops=None):
     _require(baseline.status == method.status == "completed" and
              baseline.reference_shape == method.reference_shape and baseline._permutations == method._permutations,
              "repertoire baseline and projection have different references or groups")
-    _require(tuple((s.feature, s.observations) for s in baseline.stages) ==
-             tuple((s.feature, s.observations) for s in method.stages), "repertoire changes the declared stage chain")
+    if repertoire.metadata.get("basis") != "templates":
+        _require(tuple((s.feature, s.observations) for s in baseline.stages) ==
+                 tuple((s.feature, s.observations) for s in method.stages),
+                 "repertoire changes the declared stage chain")
     macros = _macro_map(repertoire.macros)
     _require(len(macros) == len(repertoire.macros), "duplicate master IDs")
     initial = State(method.reference_shape)
@@ -851,7 +853,10 @@ def _validate_repertoire(repertoire, *, complete_loops=None):
     _require(used == set(macros), "repertoire contains hidden or unused master definitions")
     actual = _repertoire_metrics(method, repertoire.macros, repertoire.stages, actions)
     before = _baseline_metrics(baseline, actions)
-    if "basis" in repertoire.metadata:
+    if repertoire.metadata.get("basis") == "templates":
+        from .template_human_repertoire import _validate_template_metadata
+        _validate_template_metadata(repertoire, actual, before)
+    elif "basis" in repertoire.metadata:
         from .human_generator_repertoire import _validate_generator_metadata
         _validate_generator_metadata(repertoire, actual, before)
     else:

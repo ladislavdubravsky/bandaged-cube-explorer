@@ -67,10 +67,7 @@ class WhiteStickerStripeTests(unittest.TestCase):
                 role = diagram.sticker_roles[index]
                 if diagram.state.facelets[index] not in white_faces:
                     continue
-                if transparent:
-                    if role != "current" and sticker != 4:
-                        continue
-                elif role not in ("solved", "current"):
+                if role != "current" and sticker != 4:
                     continue
                 if not transparent and normal not in [normals[letter]
                         for letter in ("UFR" if panel % 2 == 0 else "BLD")]:
@@ -126,17 +123,18 @@ class WhiteStickerStripeTests(unittest.TestCase):
             add_white_sticker_stripes(figure, self.diagram, palette)
             self.assertTrue(all(not axis.collections for axis in figure.axes))
 
-    def test_opposite_views_mark_only_solved_and_target_stickers(self):
+    def test_opposite_views_mark_only_centers_and_targets_leaving_grey_solved_unmarked(self):
         figure = self.figure(2)
         palette = dict.fromkeys("URFDLB", "white")
         add_white_sticker_stripes(figure, self.diagram, palette)
         for panel, axis in enumerate(figure.axes):
             self.assertEqual(self.rendered(axis), self.expected(self.diagram, set("URFDLB"), panel=panel))
             for collection in self.stripes(axis):
-                opacity = .35 if collection.get_gid().endswith("solved") else 1.
-                self.assertEqual(collection.get_alpha(), opacity)
+                self.assertFalse(collection.get_gid().endswith("solved"))
+                self.assertEqual(collection.get_alpha(), 1.)
         self.assertEqual(sum(self.count(axis) for axis in figure.axes),
-                         sum(role in ("current", "solved") for role in self.diagram.sticker_roles))
+                         sum(role == "current" or index % 9 == 4
+                             for index, role in enumerate(self.diagram.sticker_roles)))
 
     def test_transparent_marks_only_centers_and_targets_including_rear_faces(self):
         figure = self.figure(1)
@@ -148,7 +146,7 @@ class WhiteStickerStripeTests(unittest.TestCase):
                                               for index, role in enumerate(self.diagram.sticker_roles)))
         self.assertTrue(any(direction < 0 for (_, direction, _) in self.rendered(axis)))
         for collection in self.stripes(axis):
-            self.assertEqual(collection.get_alpha(), .95 if collection.get_gid().endswith("current") else .72)
+            self.assertEqual(collection.get_alpha(), .95 if collection.get_gid().endswith("current") else 1.)
 
     def test_all_24_grips_preserve_white_sticker_identity_and_both_camera_sides(self):
         import matplotlib.pyplot as plt

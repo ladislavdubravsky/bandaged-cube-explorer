@@ -10,7 +10,7 @@ from .human_diagrams import HumanRecognitionDiagram
 
 
 DIAGRAM_MODES = tuple(DiagramMode)
-_SOLVED_WHITE_BLEND = 0.72
+_SOLVED_COLOR = (0.5, 0.5, 0.5)  # RGB: 0 = black; 1 = white.
 _WHITE = (1.0, 1.0, 1.0)
 
 
@@ -48,38 +48,28 @@ def validate_face_colors(face_colors=None):
     return result
 
 
-def _recognition_colored_stickers(diagram, transparent):
-    """Which source stickers carry recognition colors in the selected view."""
-    return tuple(role == "current" or (index % 9 == 4 if transparent else role == "solved")
-                 for index, role in enumerate(diagram.sticker_roles))
-
-
 def recognition_diagram_colors(diagram, *, face_colors=None,
                                diagram_mode: DiagramMode = DiagramMode.OPPOSITE_CORNERS):
     """Return each physical sticker's role color in 54-facelet URFDLB order.
 
-    Solved blocks use a light tint of their physical sticker colors;
-    current targets use the selected face colors. Other blocks stay white,
+    Solved blocks use dark grey. Face centers and current targets retain
+    their full physical sticker colors. Other blocks stay white,
     including correctly placed blocks whose orientation is still unsolved.
-    Transparent mode colors only the current targets and the six face centers.
     """
     if not isinstance(diagram, HumanRecognitionDiagram):
         raise TypeError("diagram must be a HumanRecognitionDiagram")
-    transparent = validate_diagram_mode(diagram_mode) is DiagramMode.TRANSPARENT
-    current = validate_face_colors(face_colors)
-    if transparent:
-        return tuple(current[face] if colored else _WHITE for face, colored in zip(
-            diagram.state.facelets, _recognition_colored_stickers(diagram, True)))
-    solved = {face: tuple(component * (1 - _SOLVED_WHITE_BLEND) + _SOLVED_WHITE_BLEND
-                          for component in color) for face, color in current.items()}
-    palettes = {"solved": solved, "current": current}
-    return tuple(palettes[role][face] if role in palettes else _WHITE
-                 for face, role in zip(diagram.state.facelets, diagram.sticker_roles))
+    validate_diagram_mode(diagram_mode)
+    palette = validate_face_colors(face_colors)
+    return tuple(palette[face] if index % 9 == 4 or role == "current" else
+                 _SOLVED_COLOR if role == "solved" else _WHITE
+                 for index, (face, role) in enumerate(zip(
+                     diagram.state.facelets, diagram.sticker_roles)))
 
 
 def _transparent_sticker_opacities(diagram):
-    """Keep each center visible even when it belongs to a larger solved block."""
-    return tuple(0.95 if role == "current" else 0.72 if index % 9 == 4 else 0.06
+    """Keep centers at full color and solved blocks at their dark grey shade."""
+    return tuple(1.0 if index % 9 == 4 or role == "solved" else
+                 0.95 if role == "current" else 0.06
                  for index, role in enumerate(diagram.sticker_roles))
 
 
@@ -110,8 +100,6 @@ def _style_transparent_axis(axis, diagram, panel_index, colors, rotation):
                      _mesh_color(face, opacities, 0.06)) for face in faces]
             collection.set_alpha(None)
             collection.set_facecolor(rgba)
-            collection.set_edgecolor([(0.65, 0.65, 0.65, min(color[3], 0.4))
-                                      for color in rgba])
         else:
             collection.set_alpha(0.95 if roles[prefix] == "current" else 0.2)
     for label in axis.texts:
@@ -122,8 +110,9 @@ def recognition_diagram_figure(diagrams, *, diagram_mode: DiagramMode = DiagramM
                                face_colors=None, rotation=""):
     """Draw one case, grouping all orientation variants under its instruction.
 
-    Transparent mode looks along the UFR diagonal, coloring only
-    current targets and face centers; other stickers are faint white.
+    Transparent mode looks along the UFR diagonal, retaining grey solved
+    blocks, colored current targets and fully opaque face centers;
+    other stickers are faint white.
     Interior block surfaces are omitted to preserve their color contrast.
     Opposite-corner mode gives opaque orthographic UFR and BLD views.
     rotation changes the pictured starting grip, keeping physical sticker
@@ -148,10 +137,25 @@ def recognition_diagram_figure(diagrams, *, diagram_mode: DiagramMode = DiagramM
     for index, axis in enumerate(figure.axes):
         if transparent:
             _style_transparent_axis(axis, diagrams[index], index, overrides[index], rotation)
+        # Separate outlines already trace each fused block's boundary. The
+        # individual sticker polygons must not add grid lines inside it.
+        for collection in axis.collections:
+            if collection.get_gid().endswith("-surface"):
+                collection.set_edgecolor("none")
+                collection.set_linewidth(0)
+                collection.set_antialiased(False)
         label = views[index % len(views)]
         if len(diagrams) > 1:
             label = f"Orientation {index // len(views) + 1} · {label}"
         axis.set_title(label, fontsize=10, pad=0)
+    columns = min(3, len(diagrams)) if transparent else 2
+    rows = (len(figure.axes) + columns - 1) // columns
+    if rows > 1:
+        # Cube galleries otherwise have no row gap. Leave room for each next
+        # orientation's title while retaining the size of the cube pictures.
+        width, height = figure.get_size_inches()
+        figure.set_size_inches(width, height + 0.6 * (rows - 1))
+        figure.subplots_adjust(hspace=0.2)
     from .human_diagram_stripes import add_white_sticker_stripes
     add_white_sticker_stripes(figure, diagrams, palette, rotation=rotation, transparent=transparent)
     return figure

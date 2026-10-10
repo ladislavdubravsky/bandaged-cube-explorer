@@ -11,6 +11,7 @@ def _guide_instructions(repertoire, *, rotate_diagram):
     from dataclasses import replace
 
     presentations, additional = {}, []
+    preserve_templates = getattr(repertoire, "metadata", {}).get("basis") == "templates"
     words = {macro.algorithm.turn_sequence: macro.id for macro in repertoire.macros}
     identifiers = {macro.id for macro in repertoire.macros}
     for stage in repertoire.stages:
@@ -20,7 +21,10 @@ def _guide_instructions(repertoire, *, rotate_diagram):
         for recipe in recipes:
             if recipe in presentations:
                 continue
-            presentation = instruction_presentation(recipe, repertoire, rotate_diagram=rotate_diagram)
+            presentation = instruction_presentation(
+                recipe, repertoire, rotate_diagram=rotate_diagram,
+                preserve_templates=preserve_templates,
+            )
             if presentation.requires_definition:
                 word = presentation.turn_sequence
                 if word not in words:
@@ -34,6 +38,23 @@ def _guide_instructions(repertoire, *, rotate_diagram):
                 presentation = replace(presentation, identifier=words[word])
             presentations[recipe] = presentation
     return presentations, additional
+
+
+def _chunk_table(repertoire):
+    """Return piece definitions and their complete algorithm recipes."""
+    record = repertoire.metadata.get("chunk_dictionary")
+    if record is None:
+        return [], {}
+    from .human_chunks import ChunkDictionary
+
+    dictionary = ChunkDictionary.from_dict(record)
+    if not dictionary.chunks:
+        return [], dictionary.master_formulas
+    lines = ["| Piece | Turn sequence |", "| --- | --- |"]
+    for chunk in dictionary.chunks:
+        lines.append(f"| `{chunk.id}` | `{chunk.moves}` |")
+    lines.append("")
+    return lines, dictionary.master_formulas
 
 
 def _instruction(presentation):
@@ -108,19 +129,36 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
     presentations, additional = _guide_instructions(repertoire, rotate_diagram=diagram_mode is not None)
     lines = ["# Solution from solved shape", "",
              f"This computational method covers all **{method.group_order:,} reachable colored states** "
-             "whose bandage shape is already the declared reference shape.", ""]
+             "whose bandage shape is already the declared reference shape.", "",
+             "In each stage's diagrams: face centers are colored to inform you how to orient the cube "
+             "before algorithm application. Blocks already solved are dark grey. The block this stage "
+             "requires you to identify is colored. Striped white color indicates a white sticker, "
+             "plain white indicates unsolved sticker of any color.", ""]
+    chunk_lines, formulas = _chunk_table(repertoire)
     if repertoire.macros or additional:
-        lines.extend(["## Algorithms", "",
-                      "Singmaster notation uses U/R/F/D/L/B, an apostrophe "
-                      "for an inverse turn, and 2 for a half turn. Each algorithm starts and ends at "
-                      "the reference shape. Structured notation: "
-                      "`S^A` means A⁻¹ S A, `[A, B]` means A B A⁻¹ B⁻¹, and `(A)n` repeats A "
-                      "n times.", ""])
+        lines.extend(["## Algorithms", ""])
+        if repertoire.metadata.get("basis") == "templates":
+            lines.extend(["Singmaster notation uses U/R/F/D/L/B, an apostrophe for an inverse turn, "
+                          "2 for a half turn, x/y/z represent whole cube rotations 90° in the "
+                          "direction of an R/U/F move respectively.", ""])
+        else:
+            lines.extend(["Singmaster notation uses U/R/F/D/L/B, an apostrophe "
+                          "for an inverse turn, and 2 for a half turn. Each algorithm starts and ends at "
+                          "the reference shape. Structured notation: "
+                          "`S^A` means A⁻¹ S A, `[A, B]` means A B A⁻¹ B⁻¹, and `(A)n` repeats A "
+                          "n times.", ""])
         definitions = [(macro.id, macro.algorithm.turn_sequence, macro.algorithm.block_action)
                        for macro in repertoire.macros]
         definitions.extend((identifier, word, _additional_algorithm_action(method, word, rotation))
                            for identifier, word, rotation in additional)
         lines.extend(_algorithm_table(definitions))
+        if formulas:
+            lines.extend(["### Shared piece recipes", ""])
+            lines.extend(chunk_lines)
+            lines.extend(["| Algorithm | Recipe |", "| --- | --- |"])
+            for macro in repertoire.macros:
+                lines.append(f"| `{macro.id}` | `{formulas[macro.id]}` |")
+            lines.append("")
     if not method.stages:
         lines.extend(["The reference group is trivial. Every reachable colored state in this reference "
                       "shape is already solved; no algorithms are needed.", ""])
@@ -135,14 +173,16 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
                       f"to {stage.order_after:,}.", ""])
         if diagram_mode is not None:
             pictures = recognition_stage_diagrams(method, stage.number)
+            if stage.feature.kind == "place_block":
+                lines.extend(["Check the target's position only; its sticker orientation "
+                              "does not change the case.", ""])
             for index, case in enumerate(policy.cases, 1):
                 presentation = None if case.instruction is None else presentations[case.instruction]
-                instruction = ("Skip — already correct" if presentation is None else
+                skip = "Skip — already placed" if stage.feature.kind == "place_block" else "Skip — already correct"
+                instruction = (skip if presentation is None else
                                f"Execute {_instruction(presentation)}.")
                 variants = pictures[case.observation]
                 lines.extend([f"### Case {index}", "", instruction, ""])
-                if variants[0].orientation_independent:
-                    lines.extend(["Any shown sticker orientation belongs to this case.", ""])
                 image = recognition_diagram_image(variants, diagram_mode=diagram_mode,
                                                   face_colors=face_colors,
                                                   rotation="" if presentation is None else presentation.rotation)
@@ -168,7 +208,8 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
         for case in policy.cases:
             destination = inventory.blocks[case.observation[0]]
             footprint = f"`{destination.compact_name}`"
-            instruction = ("Skip — already correct" if case.instruction is None else
+            skip = "Skip — already placed" if stage.feature.kind == "place_block" else "Skip — already correct"
+            instruction = (skip if case.instruction is None else
                            _instruction(presentations[case.instruction]))
             if stage.feature.kind == "place_block":
                 lines.append(f"| {footprint} | {instruction} | {case.rank} |")

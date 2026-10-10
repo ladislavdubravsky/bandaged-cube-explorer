@@ -22,8 +22,9 @@ class HumanInstructionPresentation:
     ``rotation`` uses the active geometry convention of ``rotation_tuple``.
     Rotating ``turn_sequence`` back with ``rotate_moves(word, rotation)``
     recovers the original physical instruction in the reference face frame.
-    A recipe with several incompatible local regrips requires a separately
-    named algorithm definition; in that case ``identifier`` is None.
+    A recipe with several local regrips can retain its template names when
+    ``preserve_templates`` is enabled. Otherwise it requires a separately
+    named definition and ``identifier`` is None.
     """
 
     identifier: str | None
@@ -75,6 +76,40 @@ def _has_rotation(recipe):
     return recipe.kind == "rotated" or any(_has_rotation(child) for child in recipe.children)
 
 
+def _named_notation(recipe):
+    """Render exact regrips around learned masters without adding definitions."""
+    from .human_move_notation import _conjugation_notation
+
+    if recipe.kind == "macro":
+        return recipe.macro_id
+    if recipe.kind == "sequence":
+        return " ".join(_named_notation(child) for child in recipe.children) or "()"
+    if recipe.kind == "power":
+        if not recipe.exponent:
+            return "()"
+        child = recipe.children[0]
+        body = _named_notation(child)
+        if recipe.exponent == 1:
+            return body
+        if child.kind != "macro":
+            body = f"({body})"
+        return f"{body}^{recipe.exponent}"
+    if recipe.kind == "rotated":
+        body = _named_notation(recipe.children[0])
+        if not recipe.rotation:
+            return body
+        return f"{recipe.rotation} ({body}) {_inverse_moves(recipe.rotation)}"
+    if recipe.kind == "commutator":
+        return f"[{_named_notation(recipe.children[0])}, {_named_notation(recipe.children[1])}]"
+    setup, body = recipe.children
+    exponent = HumanMacroRecipe.power(setup, -1)
+    return _conjugation_notation(
+        _named_notation(body), _named_notation(exponent),
+        body_is_atom=body.kind in ("macro", "commutator"),
+        exponent_is_atom=exponent.kind == "macro",
+    )
+
+
 def _expand(recipe, records, maximum):
     """Expand named physical words, preserving order and all nested frames."""
     if recipe.kind == "macro":
@@ -108,7 +143,7 @@ def _expand(recipe, records, maximum):
 
 
 def instruction_presentation(recipe, repertoire, *, rotate_diagram=True,
-                             max_expanded_moves=100_000):
+                             preserve_templates=False, max_expanded_moves=100_000):
     """Return an exact instruction and a convenient starting diagram frame.
 
     ``repertoire`` may be a HumanRepertoire, its macro tuple, or a macro map.
@@ -121,11 +156,17 @@ def instruction_presentation(recipe, repertoire, *, rotate_diagram=True,
     With ``rotate_diagram=False``, turns remain in the reference frame. Any
     remaining rotated expression likewise requires a new named definition.
     The input recipe and all solver records remain unchanged.
+
+    With preserve_templates=True, mixed frames are presented as explicit
+    x/y/z regrips around the learned master names. They need no new algorithm
+    definition; the accompanying physical word remains exactly checked.
     """
     if not isinstance(recipe, HumanMacroRecipe):
         raise TypeError("recipe must be a HumanMacroRecipe")
     if not isinstance(rotate_diagram, bool):
         raise TypeError("rotate_diagram must be a boolean")
+    if not isinstance(preserve_templates, bool):
+        raise TypeError("preserve_templates must be a boolean")
     if isinstance(max_expanded_moves, bool) or not isinstance(max_expanded_moves, int):
         raise TypeError("max_expanded_moves must be an integer")
     if max_expanded_moves < 1:
@@ -140,9 +181,10 @@ def instruction_presentation(recipe, repertoire, *, rotate_diagram=True,
     if rotate_diagram and frames:
         rotation = frames[0] if len(set(frames)) == 1 else _outer_frame(recipe)
     local = _local_recipe(recipe, "", rotation)
-    requires_definition = _has_rotation(local)
+    requires_definition = _has_rotation(local) and not preserve_templates
     turns = _expand(local, records, max_expanded_moves)
-    return HumanInstructionPresentation(None if requires_definition else local.render(),
+    identifier = _named_notation(local) if preserve_templates else local.render()
+    return HumanInstructionPresentation(None if requires_definition else identifier,
                                         turns, rotation, local, requires_definition)
 
 

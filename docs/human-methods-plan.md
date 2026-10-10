@@ -2,7 +2,8 @@
 
 Updated 9 October 2026. Deliveries 0–5 are complete. Initial Delivery 6 review
 accepted the presentation but preferred the reduced isotropy generators to the
-learned algorithms. Further human-quality optimization is shelved. Revise later
+learned algorithms. The Pocket Cube follow-up resumes human-quality work with
+checked paths, symmetry templates, complete case targets and shared pieces. Revise later
 deliveries as experiments provide evidence. This is a working plan, not a
 promise of a particular optimizer.
 
@@ -80,6 +81,9 @@ Implemented modules:
 | human_repertoire.py | Shared masters, bounded deletion, verified instruction transitions and ranks |
 | human_repertoire_io.py | Portable repertoire wrappers and independent rule/cost validation |
 | human_repertoire_render.py | Concrete cue lookup and compressed instruction-family guides |
+| shape_paths.py | Replay-checked open paths, frames, local loops and transport composition |
+| human_chunks.py | Bounded shared-piece grammar with typed inverse/rotation references |
+| template_human_repertoire.py | Symmetry-closed templates, case-target policies and actual-vocabulary chain scoring |
 
 Add symbolic backends when their responsibilities warrant separate modules.
 Extract shared internals rather than duplicate algebra or
@@ -99,9 +103,9 @@ selection.method.save("selected-method.json")
 selection.save("chain-search.json")
 restored = c.load_human_method("method.json")
 result = restored.apply(state)  # optional consumer; no GAP or new factorization
-repertoire = c.generator_human_repertoire(selection.method)
-repertoire.write_guide("generator-method.md")
-repertoire.save("generator-repertoire.json")
+repertoire = c.template_human_repertoire(shape, preference="memory")
+repertoire.write_guide("template-method.md")
+repertoire.save("template-repertoire.json")
 ```
 
 Artifacts retain reference specification/inventory/frame, exact group facts,
@@ -365,8 +369,8 @@ optimized example taught six shared masters over five stages.
 **Initial human review and resulting direction.** The user accepted the
 presentation, but found the generated algorithms too random and complicated to
 remember. For this puzzle the three reduced isotropy generators were easier to
-use with powers and cube rotations. Preserve the algorithm-optimization work,
-but shelve further improvements for now. The notebook now uses
+use with powers and cube rotations. The initial revision preserved the
+algorithm-optimization work and used
 `generator_human_repertoire(selection.method)` to retain the selected five-stage
 chain (orders 432 → 72 → 18 → 6 → 3 → 1), while expressing every correction using
 only those three original masters in analysis order. No additional learned
@@ -380,7 +384,8 @@ group witnesses. It retains exact finite-group preparation and an optional
 element cap. Existing guide, diagrams, recognition, application and portable
 save/load APIs remain available; loaded artifacts apply without GAP. This
 option provides a fixed vocabulary, without a shorter-word or human-quality
-claim. Shape restoration and symbolic scaling remain deferred.
+claim. The follow-up below replaces the notebook pipeline with template-aware
+selection. Shape restoration and symbolic scaling remain deferred.
 
 **Deferred review ideas.** The following are retained as possible work when
 human-quality improvements resume; they are not active delivery obligations.
@@ -398,6 +403,27 @@ legal root states
 without per-scramble factorization; include difficult cases and document human
 review separately from exhaustive computational proof. Move this earlier only
 if Delivery 4/5 choices cannot be assessed meaningfully without it.
+
+### Pocket Cube follow-up — Paths, symmetry templates and shared pieces
+
+The four improvements requested after reviewing the historical human solution
+are implemented in a new opt-in template compiler and the Pocket Cube notebook.
+Typed paths keep source/target shapes, frames and physical actions; local loops
+are transported through checked setups without becoming open reference-loop
+leaves. Original loop witnesses retain complete group coverage.
+
+Template selection includes valid symmetry variants before deletion. Complete
+case corrections target the next stabilizer with later features free. Automatic
+and bounded mixed chains are scored in their actual taught vocabulary. Additive
+fallbacks retain coverage; bounded physical search seeks cross-call cancellation.
+
+A shared dictionary mines repeated open pieces, inverse/rotation occurrences,
+and setup/body/undo patterns. It scores definitions and instructions alongside
+actual execution and recognition costs. The guide teaches pieces and templates
+and reuses mixed-grip recipes without introducing extra opaque definitions.
+All saved endpoints, actions, witnesses, policies, metrics and formulas are
+independently checked. Validation and measured Pocket Cube results are recorded
+with the implementation research artifact.
 
 ### Delivery 7 — Symbolic scaling
 

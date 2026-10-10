@@ -1,5 +1,16 @@
 # Human-method research results
 
+The [Pocket Cube solution comparison and loop research](pocket-cube-loop-research.md)
+compares the 2015 human templates with the current notebook, measures the
+vocabulary rebuild and symmetry effects over all 432 reference states, and
+proposes reusable shape paths and local-loop discovery. Its implemented
+follow-up now teaches two templates, averaging 83.72 HTM with a worst case of
+142, compared with the previous notebook's 126.94/247. The
+[implementation comparison](pocket-template-comparison.json) and independently
+loadable [template repertoire](pocket-template-repertoire.json) retain exhaustive
+432-state replay checks. Four reproduction scripts retain exact policy, action,
+shared-chunk and implementation measurements.
+
 Delivery 5's [repertoire and rule comparison](human-repertoire-compression.md)
 measures taught master definitions, compressed rule families and complete
 execution costs. Its artifacts distinguish computational memory proxies from

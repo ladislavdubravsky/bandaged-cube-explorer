@@ -942,11 +942,62 @@ learned definitions. Earlier stage features are restored at each whole
 correction's endpoint; intermediate master applications may disturb them.
 Saved repertoires use the existing format and load and apply without GAP.
 
-The BandagedPocketCube review notebook uses this path with its existing five
-stages and three reduced generators. Initial human review accepted the
-presentation and preferred this smaller vocabulary to the optimized algorithms.
-The optimizer below remains available; further human-quality improvements are
-shelved. This mode makes no shorter-word or human-memorability claim.
+This compiler remains available as a fixed-basis comparison. The Pocket Cube
+notebook now uses the template compiler below.
+
+## Select templates, symmetry variants and reusable pieces
+
+```python
+repertoire = c.template_human_repertoire(shape, preference="memory")
+repertoire.write_guide("method.md", diagram_mode=c.DiagramMode.OPPOSITE_CORNERS)
+repertoire.save("templates.json")
+loaded = c.load_human_repertoire("templates.json")
+assert loaded.apply(state).state.is_solved
+```
+
+The input can be a shape, isotropy analysis, stage plan or completed method.
+Shape-based preparation selects chains in the actual taught vocabulary. Passing
+an existing method retains its chain unless `select_chain=True`. Reference
+symmetries are included before template deletion, so an inverse or legal
+regripped template can share one definition. Each complete case correction is
+checked over its whole observation fiber and leaves later features free.
+
+Complete additive macro Dijkstra supplies fallback words. Bounded physical-word
+search seeks cancellations, while dictionary extraction identifies repeated
+open pieces, inverse/rotation references and setup/local-loop/undo patterns.
+The guide puts piece definitions under Shared piece recipes in the Algorithms
+section and spells out whole-cube rotations: x follows R, y follows U, z follows F.
+An exact input fallback is retained; selected mean and worst HTM may not exceed
+it by more than `max_cost_ratio` (default 1.0).
+
+`preference` accepts `memory`, `execution`, or `recognition`. Metadata records
+actual solve costs, dictionary and instruction symbols, case counts, the Pareto
+frontier and search scope. These are proxies, without a global quality or human
+review claim. Quality limits include `max_trials`, `max_applications`,
+`max_word_candidates`, `max_word_frontier`, `beam_width`,
+`max_chain_expansions`, `max_chain_methods` and `chunk_options`. Physical-word
+budgets apply per trial vocabulary; search counters report aggregate use.
+Exact preparation retains optional `max_group_elements`, GAP timeout and root
+controls. Saved artifacts load and apply without GAP.
+
+Open paths and chunks are also public APIs:
+
+```python
+setup = c.ShapePath.from_moves(shape, setup_moves)
+body = c.ShapePath.local_loop(setup.target_shape, loop_moves)
+loop = setup.transport_loop(body)
+dictionary = c.extract_algorithm_chunks(shape, {"A": loop.moves})
+assert dictionary.expand("A") == loop.moves
+```
+
+`ShapePath` checks source/target shapes, frame, physical moves and faithful
+action on construction, composition, inversion, rotation and portable loading.
+Only a closed reference path with a matching original-loop witness can compile
+into `LoopExpression`. `AlgorithmChunk`, `ChunkExpression` and `ChunkDictionary`
+retain exact source guards for every reused piece, verified formulas, costs and
+bounded search settings. Read the
+[full contract](../../docs/human-methods.md#select-symmetry-templates-and-shared-pieces)
+for details.
 
 ## Share a taught repertoire and verified recognition rules
 
@@ -1019,13 +1070,14 @@ repertoire.write_guide("method.md", diagram_mode=c.DiagramMode.OPPOSITE_CORNERS,
 ```
 
 Every recognition case has an embedded cube picture and its next instruction.
-In opposite-corner mode, light tints identify guaranteed solved blocks, the selected face colors
-identify the current target, and all other blocks are white, including blocks
+Dark grey identifies guaranteed solved blocks. Face-center stickers and the
+current target use the full selected face colors; all other stickers are white, including blocks
 with guaranteed placement but unfinished orientation. Initial and implied guarantees count. Placement
 cases show all possible target orientations together. Opposite-corner mode
 uses UFR and BLD views. Transparent mode looks along the UFR diagonal with an
-orthographic camera and colors only centers and current targets; every other
-sticker stays white and transparent. These diagrams need the optional `plots` extra.
+orthographic camera. Centers and solved grey stickers remain opaque;
+unfinished non-target stickers stay white and transparent.
+These diagrams need the optional `plots` extra.
 
 `face_colors` overrides any of U/R/F/D/L/B with Matplotlib colors; omitted faces
 keep the standard palette. It changes diagram colors only, preserving reference
@@ -1033,8 +1085,8 @@ face labels and the complete solving policy.
 Use names directly, for example `face_colors={"B": "blue", "L": "orange"}`;
 hex colors and RGB tuples are also accepted.
 Exact white face colors receive ten thin black stripes spanning the stickers
-carrying recognition colors. Plain white hidden stickers remain unmarked; transparent
-mode marks only white centers and current targets.
+carrying recognition colors. Only white centers and current targets receive
+these marks; grey solved stickers and plain white hidden stickers remain unmarked.
 
 Each instruction includes its identifier and the complete move sequence, such
 as `M1: R U R' U'`. Rotated instructions use a diagram showing their required

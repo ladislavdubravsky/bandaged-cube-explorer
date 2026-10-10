@@ -1,0 +1,2921 @@
+{
+  "current_displayed_repertoire": {
+    "generators": [
+      {
+        "face_word": "F' U L F U' R' F D R F' R' F D' F' R",
+        "htm": 15,
+        "id": 477
+      },
+      {
+        "face_word": "U F' L' F U' F' U L F U' R' F D R F'",
+        "htm": 15,
+        "id": 597
+      },
+      {
+        "face_word": "U F' L' F U2 R B2 R' U2 F' L F U'",
+        "htm": 13,
+        "id": 352
+      }
+    ],
+    "metadata": {
+      "baseline_metrics": {
+        "algorithm_count": 13,
+        "case_count_sum": 18,
+        "definition_htm": 459,
+        "definition_qtm": 492,
+        "macro_count": 12,
+        "macro_definition_htm": 429,
+        "mean_htm": 126.94212962962963,
+        "mean_qtm": 137.38888888888889,
+        "original_leaf_count": 3,
+        "original_leaf_htm": 43,
+        "rule_count": 12,
+        "states": 432,
+        "total_htm": 54839,
+        "total_qtm": 59352,
+        "visible_leaf_count": 3,
+        "worst_htm": 247,
+        "worst_qtm": 267
+      },
+      "basis": "reduced_generators",
+      "construction": "original_loop_bfs",
+      "coverage": "certified",
+      "exhaustive_repertoire_search": false,
+      "generator_ids": [
+        477,
+        597,
+        352
+      ],
+      "human_reviewed": false,
+      "selected_metrics": {
+        "algorithm_count": 13,
+        "case_count_sum": 18,
+        "definition_htm": 459,
+        "definition_qtm": 492,
+        "macro_count": 3,
+        "macro_definition_htm": 43,
+        "mean_htm": 126.94212962962963,
+        "mean_qtm": 137.38888888888889,
+        "original_leaf_count": 3,
+        "original_leaf_htm": 43,
+        "rule_count": 12,
+        "states": 432,
+        "total_htm": 54839,
+        "total_qtm": 59352,
+        "visible_leaf_count": 3,
+        "worst_htm": 247,
+        "worst_qtm": 267
+      }
+    },
+    "metrics": {
+      "algorithm_count": 13,
+      "definition_htm": 459,
+      "definition_qtm": 492,
+      "mean_htm": 126.94212962962963,
+      "mean_qtm": 137.38888888888889,
+      "original_leaf_count": 3,
+      "original_leaf_htm": 43,
+      "states": 432,
+      "total_htm": 54839,
+      "total_qtm": 59352,
+      "visible_leaf_count": 3,
+      "worst_htm": 247,
+      "worst_qtm": 267
+    }
+  },
+  "current_selected_before_repertoire_rebuild": {
+    "metrics": {
+      "algorithm_count": 13,
+      "definition_htm": 256,
+      "definition_qtm": 272,
+      "mean_htm": 70.52083333333333,
+      "mean_qtm": 74.91666666666667,
+      "original_leaf_count": 11,
+      "original_leaf_htm": 165,
+      "states": 432,
+      "total_htm": 30465,
+      "total_qtm": 32364,
+      "visible_leaf_count": 11,
+      "worst_htm": 118,
+      "worst_qtm": 124
+    }
+  },
+  "format": "bce-v2-pocket-human-comparison",
+  "group_order": 432,
+  "historical_C3_template_group_order": 432,
+  "historical_algorithms": {
+    "A1": {
+      "action": {
+        "composition": "execution-order",
+        "format": "bce-v2-block-action",
+        "indexing": "source-reference-block",
+        "notation": "(UBL+ DFR-)(UL+ BL+)([UFR-FR] [DBR-DR])",
+        "root_shape": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          3,
+          6,
+          6,
+          7,
+          8,
+          9,
+          3,
+          10,
+          11,
+          3,
+          6,
+          6,
+          7,
+          12,
+          12,
+          13,
+          12,
+          12,
+          13,
+          14,
+          14,
+          15
+        ],
+        "transitions": [
+          {
+            "destination": [
+              26
+            ],
+            "orientation_order": 3,
+            "phase": 1,
+            "rotation": [
+              -1,
+              -3,
+              -2
+            ],
+            "source": [
+              0
+            ]
+          },
+          {
+            "destination": [
+              1
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              1
+            ]
+          },
+          {
+            "destination": [
+              2,
+              5,
+              11,
+              14
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              2,
+              5,
+              11,
+              14
+            ]
+          },
+          {
+            "destination": [
+              9
+            ],
+            "orientation_order": 2,
+            "phase": 1,
+            "rotation": [
+              -3,
+              -1,
+              2
+            ],
+            "source": [
+              3
+            ]
+          },
+          {
+            "destination": [
+              4
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              4
+            ]
+          },
+          {
+            "destination": [
+              6,
+              7,
+              15,
+              16
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              6,
+              7,
+              15,
+              16
+            ]
+          },
+          {
+            "destination": [
+              20,
+              23
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              -2,
+              3,
+              -1
+            ],
+            "source": [
+              8,
+              17
+            ]
+          },
+          {
+            "destination": [
+              3
+            ],
+            "orientation_order": 2,
+            "phase": 1,
+            "rotation": [
+              -2,
+              3,
+              -1
+            ],
+            "source": [
+              9
+            ]
+          },
+          {
+            "destination": [
+              10
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              10
+            ]
+          },
+          {
+            "destination": [
+              12
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              12
+            ]
+          },
+          {
+            "destination": [
+              18,
+              19,
+              21,
+              22
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              18,
+              19,
+              21,
+              22
+            ]
+          },
+          {
+            "destination": [
+              8,
+              17
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              -3,
+              -1,
+              2
+            ],
+            "source": [
+              20,
+              23
+            ]
+          },
+          {
+            "destination": [
+              24,
+              25
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              24,
+              25
+            ]
+          },
+          {
+            "destination": [
+              0
+            ],
+            "orientation_order": 3,
+            "phase": 2,
+            "rotation": [
+              -1,
+              -3,
+              -2
+            ],
+            "source": [
+              26
+            ]
+          }
+        ],
+        "version": 1
+      },
+      "display_word": "R F' U' F R' rot F' R U2 R' F rot' R F' U F R'",
+      "face_word_historical_grip": "R F' U' F R2 D B2 D' R2 F' U F R'",
+      "face_word_notebook_grip": "R U' B' U R2 F D2 F' R2 U' B U R'",
+      "htm": 13,
+      "matching_current_master_regrips": [
+        {
+          "current_master": "M3",
+          "inverse": false,
+          "rotation": "x' z'"
+        }
+      ],
+      "matching_native_generators": [
+        {
+          "generator_id": 351,
+          "htm": 13,
+          "inverse": false,
+          "word": "R F' U' F R2 D B2 D' R2 F' U F R'"
+        }
+      ],
+      "power2_action": "()",
+      "qtm": 16
+    },
+    "A2": {
+      "action": {
+        "composition": "execution-order",
+        "format": "bce-v2-block-action",
+        "indexing": "source-reference-block",
+        "notation": "(UBL-)(UB+)(UL+)([UFR-FR] [DBR-DR])(DFR+)",
+        "root_shape": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          3,
+          6,
+          6,
+          7,
+          8,
+          9,
+          3,
+          10,
+          11,
+          3,
+          6,
+          6,
+          7,
+          12,
+          12,
+          13,
+          12,
+          12,
+          13,
+          14,
+          14,
+          15
+        ],
+        "transitions": [
+          {
+            "destination": [
+              0
+            ],
+            "orientation_order": 3,
+            "phase": 2,
+            "rotation": [
+              -2,
+              3,
+              -1
+            ],
+            "source": [
+              0
+            ]
+          },
+          {
+            "destination": [
+              1
+            ],
+            "orientation_order": 2,
+            "phase": 1,
+            "rotation": [
+              -1,
+              3,
+              2
+            ],
+            "source": [
+              1
+            ]
+          },
+          {
+            "destination": [
+              2,
+              5,
+              11,
+              14
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              2,
+              5,
+              11,
+              14
+            ]
+          },
+          {
+            "destination": [
+              3
+            ],
+            "orientation_order": 2,
+            "phase": 1,
+            "rotation": [
+              -3,
+              -2,
+              -1
+            ],
+            "source": [
+              3
+            ]
+          },
+          {
+            "destination": [
+              4
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              4
+            ]
+          },
+          {
+            "destination": [
+              6,
+              7,
+              15,
+              16
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              6,
+              7,
+              15,
+              16
+            ]
+          },
+          {
+            "destination": [
+              20,
+              23
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              -2,
+              3,
+              -1
+            ],
+            "source": [
+              8,
+              17
+            ]
+          },
+          {
+            "destination": [
+              9
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              9
+            ]
+          },
+          {
+            "destination": [
+              10
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              10
+            ]
+          },
+          {
+            "destination": [
+              12
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              12
+            ]
+          },
+          {
+            "destination": [
+              18,
+              19,
+              21,
+              22
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              18,
+              19,
+              21,
+              22
+            ]
+          },
+          {
+            "destination": [
+              8,
+              17
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              -3,
+              -1,
+              2
+            ],
+            "source": [
+              20,
+              23
+            ]
+          },
+          {
+            "destination": [
+              24,
+              25
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              24,
+              25
+            ]
+          },
+          {
+            "destination": [
+              26
+            ],
+            "orientation_order": 3,
+            "phase": 1,
+            "rotation": [
+              -2,
+              3,
+              -1
+            ],
+            "source": [
+              26
+            ]
+          }
+        ],
+        "version": 1
+      },
+      "display_word": "R F' U' F R' rot R F' U' R U R' U' R' F rot F' R U2 R' F rot' R F' U F R' rot'",
+      "face_word_historical_grip": "R F' U' F R' D R' B' D B D' B' D' R D' F L2 F' D2 R' B R D'",
+      "face_word_notebook_grip": "R U' B' U R' F R' D' F D F' D' F' R F' U L2 U' F2 R' D R F'",
+      "htm": 23,
+      "matching_current_master_regrips": [],
+      "matching_native_generators": [],
+      "power2_action": "(UBL+)(DFR-)",
+      "qtm": 25
+    },
+    "A3": {
+      "action": {
+        "composition": "execution-order",
+        "format": "bce-v2-block-action",
+        "indexing": "source-reference-block",
+        "notation": "(UBL DFR)(UL BL)([UFR-FR] [DBR-DR] [DFL-DF])",
+        "root_shape": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          3,
+          6,
+          6,
+          7,
+          8,
+          9,
+          3,
+          10,
+          11,
+          3,
+          6,
+          6,
+          7,
+          12,
+          12,
+          13,
+          12,
+          12,
+          13,
+          14,
+          14,
+          15
+        ],
+        "transitions": [
+          {
+            "destination": [
+              26
+            ],
+            "orientation_order": 3,
+            "phase": 0,
+            "rotation": [
+              2,
+              1,
+              -3
+            ],
+            "source": [
+              0
+            ]
+          },
+          {
+            "destination": [
+              1
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              1
+            ]
+          },
+          {
+            "destination": [
+              2,
+              5,
+              11,
+              14
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              2,
+              5,
+              11,
+              14
+            ]
+          },
+          {
+            "destination": [
+              9
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              3,
+              -2
+            ],
+            "source": [
+              3
+            ]
+          },
+          {
+            "destination": [
+              4
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              4
+            ]
+          },
+          {
+            "destination": [
+              6,
+              7,
+              15,
+              16
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              6,
+              7,
+              15,
+              16
+            ]
+          },
+          {
+            "destination": [
+              20,
+              23
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              -2,
+              3,
+              -1
+            ],
+            "source": [
+              8,
+              17
+            ]
+          },
+          {
+            "destination": [
+              3
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              -3,
+              2
+            ],
+            "source": [
+              9
+            ]
+          },
+          {
+            "destination": [
+              10
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              10
+            ]
+          },
+          {
+            "destination": [
+              12
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              12
+            ]
+          },
+          {
+            "destination": [
+              18,
+              19,
+              21,
+              22
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              18,
+              19,
+              21,
+              22
+            ]
+          },
+          {
+            "destination": [
+              24,
+              25
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              -2,
+              3,
+              -1
+            ],
+            "source": [
+              20,
+              23
+            ]
+          },
+          {
+            "destination": [
+              8,
+              17
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              -2,
+              3,
+              -1
+            ],
+            "source": [
+              24,
+              25
+            ]
+          },
+          {
+            "destination": [
+              0
+            ],
+            "orientation_order": 3,
+            "phase": 0,
+            "rotation": [
+              2,
+              1,
+              -3
+            ],
+            "source": [
+              26
+            ]
+          }
+        ],
+        "version": 1
+      },
+      "display_word": "R F' U' F R' F' R U F R' rot R' D R D' rot R F' U F R' rot",
+      "face_word_historical_grip": "R F' U' F R' F' R U F R' D' F L D F'",
+      "face_word_notebook_grip": "R U' B' U R' U' R B U R' F' U L F U'",
+      "htm": 15,
+      "matching_current_master_regrips": [
+        {
+          "current_master": "M2",
+          "inverse": false,
+          "rotation": "x' z'"
+        }
+      ],
+      "matching_native_generators": [
+        {
+          "generator_id": 591,
+          "htm": 15,
+          "inverse": false,
+          "word": "R F' U' F R' F' R U F R' D' F L D F'"
+        }
+      ],
+      "power2_action": "([UFR-FR] [DFL-DF] [DBR-DR])",
+      "qtm": 15
+    }
+  },
+  "historical_family_stage_policies": {
+    "BFS": {
+      "historical_literal_policy": false,
+      "metrics": {
+        "mean_htm": 89.46296296296296,
+        "mean_qtm": 97.83796296296296,
+        "states": 432,
+        "total_htm": 38648,
+        "total_qtm": 42266,
+        "worst_htm": 146,
+        "worst_qtm": 162
+      },
+      "policy": "generator-count BFS stage representative",
+      "stages": [
+        {
+          "corrections": [
+            {
+              "htm": 0,
+              "observation": [
+                1,
+                0,
+                3,
+                0,
+                7,
+                0
+              ],
+              "word": ""
+            },
+            {
+              "htm": 23,
+              "observation": [
+                1,
+                0,
+                3,
+                1,
+                7,
+                1
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F D' L D F'"
+            },
+            {
+              "htm": 36,
+              "observation": [
+                1,
+                0,
+                7,
+                0,
+                3,
+                0
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F D' L D F' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 13,
+              "observation": [
+                1,
+                0,
+                7,
+                1,
+                3,
+                1
+              ],
+              "word": "R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 23,
+              "observation": [
+                1,
+                1,
+                3,
+                0,
+                7,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D R' B R D'"
+            },
+            {
+              "htm": 23,
+              "observation": [
+                1,
+                1,
+                3,
+                1,
+                7,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R'"
+            },
+            {
+              "htm": 36,
+              "observation": [
+                1,
+                1,
+                7,
+                0,
+                3,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D R' B R D' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 27,
+              "observation": [
+                1,
+                1,
+                7,
+                1,
+                3,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R' D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 36,
+              "observation": [
+                3,
+                0,
+                1,
+                0,
+                7,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R' D R' B' R D2 F L2 F' D2 R' B R D'"
+            },
+            {
+              "htm": 36,
+              "observation": [
+                3,
+                0,
+                1,
+                1,
+                7,
+                1
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F D' L D F' D R' B' R D2 F L2 F' D2 R' B R D'"
+            },
+            {
+              "htm": 49,
+              "observation": [
+                3,
+                0,
+                7,
+                0,
+                1,
+                0
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F D' L D F' D R' B' R D2 F L2 F' D2 R' B R D' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 49,
+              "observation": [
+                3,
+                0,
+                7,
+                1,
+                1,
+                1
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R' D R' B' R D2 F L2 F' D2 R' B R D' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 27,
+              "observation": [
+                3,
+                1,
+                1,
+                0,
+                7,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D' F L2 F' D2 R' B R D'"
+            },
+            {
+              "htm": 13,
+              "observation": [
+                3,
+                1,
+                1,
+                1,
+                7,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D2 R' B R D'"
+            },
+            {
+              "htm": 40,
+              "observation": [
+                3,
+                1,
+                7,
+                0,
+                1,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D' F L2 F' D2 R' B R D' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 26,
+              "observation": [
+                3,
+                1,
+                7,
+                1,
+                1,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D2 R' B R D' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 49,
+              "observation": [
+                7,
+                0,
+                1,
+                0,
+                3,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R' F D' L' D F2 R U2 R' F2 D' L D F' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 26,
+              "observation": [
+                7,
+                0,
+                1,
+                1,
+                3,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F2 D' L D F' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 13,
+              "observation": [
+                7,
+                0,
+                3,
+                0,
+                1,
+                0
+              ],
+              "word": "F D' L' D F2 R U2 R' F2 D' L D F'"
+            },
+            {
+              "htm": 36,
+              "observation": [
+                7,
+                0,
+                3,
+                1,
+                1,
+                1
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R' F D' L' D F2 R U2 R' F2 D' L D F'"
+            },
+            {
+              "htm": 49,
+              "observation": [
+                7,
+                1,
+                1,
+                0,
+                3,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D R' B R D' F D' L' D F2 R U2 R' F2 D' L D F' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 40,
+              "observation": [
+                7,
+                1,
+                1,
+                1,
+                3,
+                0
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F' R U2 R' F2 D' L D F' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 36,
+              "observation": [
+                7,
+                1,
+                3,
+                0,
+                1,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D R' B R D' F D' L' D F2 R U2 R' F2 D' L D F'"
+            },
+            {
+              "htm": 27,
+              "observation": [
+                7,
+                1,
+                3,
+                1,
+                1,
+                0
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F' R U2 R' F2 D' L D F'"
+            }
+          ],
+          "family": "all three small edges",
+          "index": 24,
+          "nontrivial_cases": 23,
+          "order_after": 18,
+          "order_before": 432
+        },
+        {
+          "corrections": [
+            {
+              "htm": 0,
+              "observation": [
+                6,
+                0,
+                11,
+                0,
+                12,
+                0
+              ],
+              "word": ""
+            },
+            {
+              "htm": 51,
+              "observation": [
+                6,
+                0,
+                12,
+                0,
+                11,
+                0
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F' R U2 R' F D' F L F L' F' L D F' D' F L2 F' D R' D B D B' D' B R D' R F' U F R'"
+            },
+            {
+              "htm": 51,
+              "observation": [
+                11,
+                0,
+                6,
+                0,
+                12,
+                0
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D' F L2 F' D R' D B D B' D' B R D' R' D B2 D' R F' R U R U' R' U F R' F D' L D F'"
+            },
+            {
+              "htm": 30,
+              "observation": [
+                11,
+                0,
+                12,
+                0,
+                6,
+                0
+              ],
+              "word": "R F' U' F R' F' R U F R' D' F L D F' R F' U' F R' F' R U F R' D' F L D F'"
+            },
+            {
+              "htm": 30,
+              "observation": [
+                12,
+                0,
+                6,
+                0,
+                11,
+                0
+              ],
+              "word": "F D' L' F' D R F' U' R' F R F' U F R' F D' L' F' D R F' U' R' F R F' U F R'"
+            },
+            {
+              "htm": 51,
+              "observation": [
+                12,
+                0,
+                11,
+                0,
+                6,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R' D B2 D' R F' R U R U' R' U F R' F' R U2 R' F D' F L F L' F' L D F' D R' B R D'"
+            }
+          ],
+          "family": "all three big edges",
+          "index": 6,
+          "nontrivial_cases": 5,
+          "order_after": 3,
+          "order_before": 18
+        },
+        {
+          "corrections": [
+            {
+              "htm": 0,
+              "observation": [
+                0,
+                0,
+                13,
+                0
+              ],
+              "word": ""
+            },
+            {
+              "htm": 46,
+              "observation": [
+                0,
+                1,
+                13,
+                2
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R' D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R'"
+            },
+            {
+              "htm": 46,
+              "observation": [
+                0,
+                2,
+                13,
+                1
+              ],
+              "word": "R F' U' F R' D R' B' D B D' B' D' R D' F L2 F' D2 R' B R D' R F' U' F R' D R' B' D B D' B' D' R D' F L2 F' D2 R' B R D'"
+            }
+          ],
+          "family": "both free corners",
+          "index": 3,
+          "nontrivial_cases": 2,
+          "order_after": 1,
+          "order_before": 3
+        }
+      ]
+    },
+    "weighted": {
+      "historical_literal_policy": false,
+      "metrics": {
+        "mean_htm": 89.46296296296296,
+        "mean_qtm": 97.83796296296296,
+        "states": 432,
+        "total_htm": 38648,
+        "total_qtm": 42266,
+        "worst_htm": 146,
+        "worst_qtm": 162
+      },
+      "policy": "additive HTM shortest stage representative",
+      "stages": [
+        {
+          "corrections": [
+            {
+              "htm": 0,
+              "observation": [
+                1,
+                0,
+                3,
+                0,
+                7,
+                0
+              ],
+              "word": ""
+            },
+            {
+              "htm": 23,
+              "observation": [
+                1,
+                0,
+                3,
+                1,
+                7,
+                1
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F D' L D F'"
+            },
+            {
+              "htm": 36,
+              "observation": [
+                1,
+                0,
+                7,
+                0,
+                3,
+                0
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F D' L D F' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 13,
+              "observation": [
+                1,
+                0,
+                7,
+                1,
+                3,
+                1
+              ],
+              "word": "R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 23,
+              "observation": [
+                1,
+                1,
+                3,
+                0,
+                7,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D R' B R D'"
+            },
+            {
+              "htm": 23,
+              "observation": [
+                1,
+                1,
+                3,
+                1,
+                7,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R'"
+            },
+            {
+              "htm": 36,
+              "observation": [
+                1,
+                1,
+                7,
+                0,
+                3,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D R' B R D' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 27,
+              "observation": [
+                1,
+                1,
+                7,
+                1,
+                3,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R' D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 36,
+              "observation": [
+                3,
+                0,
+                1,
+                0,
+                7,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R' D R' B' R D2 F L2 F' D2 R' B R D'"
+            },
+            {
+              "htm": 36,
+              "observation": [
+                3,
+                0,
+                1,
+                1,
+                7,
+                1
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F D' L D F' D R' B' R D2 F L2 F' D2 R' B R D'"
+            },
+            {
+              "htm": 49,
+              "observation": [
+                3,
+                0,
+                7,
+                0,
+                1,
+                0
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F D' L D F' D R' B' R D2 F L2 F' D2 R' B R D' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 49,
+              "observation": [
+                3,
+                0,
+                7,
+                1,
+                1,
+                1
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R' D R' B' R D2 F L2 F' D2 R' B R D' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 27,
+              "observation": [
+                3,
+                1,
+                1,
+                0,
+                7,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D' F L2 F' D2 R' B R D'"
+            },
+            {
+              "htm": 13,
+              "observation": [
+                3,
+                1,
+                1,
+                1,
+                7,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D2 R' B R D'"
+            },
+            {
+              "htm": 40,
+              "observation": [
+                3,
+                1,
+                7,
+                0,
+                1,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D' F L2 F' D2 R' B R D' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 26,
+              "observation": [
+                3,
+                1,
+                7,
+                1,
+                1,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D2 R' B R D' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 49,
+              "observation": [
+                7,
+                0,
+                1,
+                0,
+                3,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R' F D' L' D F2 R U2 R' F2 D' L D F' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 26,
+              "observation": [
+                7,
+                0,
+                1,
+                1,
+                3,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F2 D' L D F' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 13,
+              "observation": [
+                7,
+                0,
+                3,
+                0,
+                1,
+                0
+              ],
+              "word": "F D' L' D F2 R U2 R' F2 D' L D F'"
+            },
+            {
+              "htm": 36,
+              "observation": [
+                7,
+                0,
+                3,
+                1,
+                1,
+                1
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R' F D' L' D F2 R U2 R' F2 D' L D F'"
+            },
+            {
+              "htm": 49,
+              "observation": [
+                7,
+                1,
+                1,
+                0,
+                3,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D R' B R D' F D' L' D F2 R U2 R' F2 D' L D F' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 40,
+              "observation": [
+                7,
+                1,
+                1,
+                1,
+                3,
+                0
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F' R U2 R' F2 D' L D F' R F' U' F R2 D B2 D' R2 F' U F R'"
+            },
+            {
+              "htm": 36,
+              "observation": [
+                7,
+                1,
+                3,
+                0,
+                1,
+                1
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D R' B R D' F D' L' D F2 R U2 R' F2 D' L D F'"
+            },
+            {
+              "htm": 27,
+              "observation": [
+                7,
+                1,
+                3,
+                1,
+                1,
+                0
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F' R U2 R' F2 D' L D F'"
+            }
+          ],
+          "family": "all three small edges",
+          "index": 24,
+          "nontrivial_cases": 23,
+          "order_after": 18,
+          "order_before": 432
+        },
+        {
+          "corrections": [
+            {
+              "htm": 0,
+              "observation": [
+                6,
+                0,
+                11,
+                0,
+                12,
+                0
+              ],
+              "word": ""
+            },
+            {
+              "htm": 51,
+              "observation": [
+                6,
+                0,
+                12,
+                0,
+                11,
+                0
+              ],
+              "word": "R F' U' F R2 D B2 D' R F' R U R U' R' U F R' F' R U2 R' F D' F L F L' F' L D F' D' F L2 F' D R' D B D B' D' B R D' R F' U F R'"
+            },
+            {
+              "htm": 51,
+              "observation": [
+                11,
+                0,
+                6,
+                0,
+                12,
+                0
+              ],
+              "word": "F D' L' D F2 R U2 R' F D' F L F L' F' L D F' D' F L2 F' D R' D B D B' D' B R D' R' D B2 D' R F' R U R U' R' U F R' F D' L D F'"
+            },
+            {
+              "htm": 30,
+              "observation": [
+                11,
+                0,
+                12,
+                0,
+                6,
+                0
+              ],
+              "word": "R F' U' F R' F' R U F R' D' F L D F' R F' U' F R' F' R U F R' D' F L D F'"
+            },
+            {
+              "htm": 30,
+              "observation": [
+                12,
+                0,
+                6,
+                0,
+                11,
+                0
+              ],
+              "word": "F D' L' F' D R F' U' R' F R F' U F R' F D' L' F' D R F' U' R' F R F' U F R'"
+            },
+            {
+              "htm": 51,
+              "observation": [
+                12,
+                0,
+                11,
+                0,
+                6,
+                0
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R' D B2 D' R F' R U R U' R' U F R' F' R U2 R' F D' F L F L' F' L D F' D R' B R D'"
+            }
+          ],
+          "family": "all three big edges",
+          "index": 6,
+          "nontrivial_cases": 5,
+          "order_after": 3,
+          "order_before": 18
+        },
+        {
+          "corrections": [
+            {
+              "htm": 0,
+              "observation": [
+                0,
+                0,
+                13,
+                0
+              ],
+              "word": ""
+            },
+            {
+              "htm": 46,
+              "observation": [
+                0,
+                1,
+                13,
+                2
+              ],
+              "word": "D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R' D R' B' R D2 F L2 F' D R' D B D B' D' B R D' R F' U F R'"
+            },
+            {
+              "htm": 46,
+              "observation": [
+                0,
+                2,
+                13,
+                1
+              ],
+              "word": "R F' U' F R' D R' B' D B D' B' D' R D' F L2 F' D2 R' B R D' R F' U' F R' D R' B' D B D' B' D' R D' F L2 F' D2 R' B R D'"
+            }
+          ],
+          "family": "both free corners",
+          "index": 3,
+          "nontrivial_cases": 2,
+          "order_after": 1,
+          "order_before": 3
+        }
+      ]
+    }
+  },
+  "historical_fixed_frame_basis_scan": {
+    "candidate_triples": 84,
+    "chosen_minimum_basis": [
+      "A1_rot0",
+      "A1_rot1",
+      "A3_rot0"
+    ],
+    "complete_triples": 51,
+    "minimum_definition_htm": 41,
+    "two_templates_A1_A3_with_C3_group_order": 432
+  },
+  "historical_literal_fixed_grip_group_order": 144,
+  "historical_reference_rotation": {
+    "article_rot_active_rotation_word": "x' y",
+    "article_rot_face_cycle": "R -> F -> D -> R",
+    "notebook_active_rotation_index": 14,
+    "notebook_active_rotation_word": "x'"
+  },
+  "historical_stage_macros": {
+    "big_cycle": {
+      "action": {
+        "composition": "execution-order",
+        "format": "bce-v2-block-action",
+        "indexing": "source-reference-block",
+        "notation": "([UFR-FR] [DFL-DF] [DBR-DR])",
+        "root_shape": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          3,
+          6,
+          6,
+          7,
+          8,
+          9,
+          3,
+          10,
+          11,
+          3,
+          6,
+          6,
+          7,
+          12,
+          12,
+          13,
+          12,
+          12,
+          13,
+          14,
+          14,
+          15
+        ],
+        "transitions": [
+          {
+            "destination": [
+              0
+            ],
+            "orientation_order": 3,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              0
+            ]
+          },
+          {
+            "destination": [
+              1
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              1
+            ]
+          },
+          {
+            "destination": [
+              2,
+              5,
+              11,
+              14
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              2,
+              5,
+              11,
+              14
+            ]
+          },
+          {
+            "destination": [
+              3
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              3
+            ]
+          },
+          {
+            "destination": [
+              4
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              4
+            ]
+          },
+          {
+            "destination": [
+              6,
+              7,
+              15,
+              16
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              6,
+              7,
+              15,
+              16
+            ]
+          },
+          {
+            "destination": [
+              24,
+              25
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              -3,
+              -1,
+              2
+            ],
+            "source": [
+              8,
+              17
+            ]
+          },
+          {
+            "destination": [
+              9
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              9
+            ]
+          },
+          {
+            "destination": [
+              10
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              10
+            ]
+          },
+          {
+            "destination": [
+              12
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              12
+            ]
+          },
+          {
+            "destination": [
+              18,
+              19,
+              21,
+              22
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              18,
+              19,
+              21,
+              22
+            ]
+          },
+          {
+            "destination": [
+              8,
+              17
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              -3,
+              -1,
+              2
+            ],
+            "source": [
+              20,
+              23
+            ]
+          },
+          {
+            "destination": [
+              20,
+              23
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              -3,
+              -1,
+              2
+            ],
+            "source": [
+              24,
+              25
+            ]
+          },
+          {
+            "destination": [
+              26
+            ],
+            "orientation_order": 3,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              26
+            ]
+          }
+        ],
+        "version": 1
+      },
+      "face_word": "R F' U' F R' F' R U F R' D' F L D F' R F' U' F R' F' R U F R' D' F L D F'",
+      "htm": 30,
+      "qtm": 30
+    },
+    "big_swap": {
+      "action": {
+        "composition": "execution-order",
+        "format": "bce-v2-block-action",
+        "indexing": "source-reference-block",
+        "notation": "([DBR-DR] [DFL-DF])",
+        "root_shape": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          3,
+          6,
+          6,
+          7,
+          8,
+          9,
+          3,
+          10,
+          11,
+          3,
+          6,
+          6,
+          7,
+          12,
+          12,
+          13,
+          12,
+          12,
+          13,
+          14,
+          14,
+          15
+        ],
+        "transitions": [
+          {
+            "destination": [
+              0
+            ],
+            "orientation_order": 3,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              0
+            ]
+          },
+          {
+            "destination": [
+              1
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              1
+            ]
+          },
+          {
+            "destination": [
+              2,
+              5,
+              11,
+              14
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              2,
+              5,
+              11,
+              14
+            ]
+          },
+          {
+            "destination": [
+              3
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              3
+            ]
+          },
+          {
+            "destination": [
+              4
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              4
+            ]
+          },
+          {
+            "destination": [
+              6,
+              7,
+              15,
+              16
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              6,
+              7,
+              15,
+              16
+            ]
+          },
+          {
+            "destination": [
+              8,
+              17
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              8,
+              17
+            ]
+          },
+          {
+            "destination": [
+              9
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              9
+            ]
+          },
+          {
+            "destination": [
+              10
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              10
+            ]
+          },
+          {
+            "destination": [
+              12
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              12
+            ]
+          },
+          {
+            "destination": [
+              18,
+              19,
+              21,
+              22
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              18,
+              19,
+              21,
+              22
+            ]
+          },
+          {
+            "destination": [
+              24,
+              25
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              -2,
+              3,
+              -1
+            ],
+            "source": [
+              20,
+              23
+            ]
+          },
+          {
+            "destination": [
+              20,
+              23
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              -3,
+              -1,
+              2
+            ],
+            "source": [
+              24,
+              25
+            ]
+          },
+          {
+            "destination": [
+              26
+            ],
+            "orientation_order": 3,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              26
+            ]
+          }
+        ],
+        "version": 1
+      },
+      "face_word": "R F' U' F R' D R' B' D B D' B' D' R D' F L2 F' D F D' L' F L F' L' F' D F' R U2 R' F R F' U' R U R' U' R' F R' D B2 D' R2 F' U F R'",
+      "htm": 51,
+      "qtm": 55
+    },
+    "corner_twist": {
+      "action": {
+        "composition": "execution-order",
+        "format": "bce-v2-block-action",
+        "indexing": "source-reference-block",
+        "notation": "(UBL+)(DFR-)",
+        "root_shape": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          3,
+          6,
+          6,
+          7,
+          8,
+          9,
+          3,
+          10,
+          11,
+          3,
+          6,
+          6,
+          7,
+          12,
+          12,
+          13,
+          12,
+          12,
+          13,
+          14,
+          14,
+          15
+        ],
+        "transitions": [
+          {
+            "destination": [
+              0
+            ],
+            "orientation_order": 3,
+            "phase": 1,
+            "rotation": [
+              -3,
+              -1,
+              2
+            ],
+            "source": [
+              0
+            ]
+          },
+          {
+            "destination": [
+              1
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              1
+            ]
+          },
+          {
+            "destination": [
+              2,
+              5,
+              11,
+              14
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              2,
+              5,
+              11,
+              14
+            ]
+          },
+          {
+            "destination": [
+              3
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              3
+            ]
+          },
+          {
+            "destination": [
+              4
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              4
+            ]
+          },
+          {
+            "destination": [
+              6,
+              7,
+              15,
+              16
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              6,
+              7,
+              15,
+              16
+            ]
+          },
+          {
+            "destination": [
+              8,
+              17
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              8,
+              17
+            ]
+          },
+          {
+            "destination": [
+              9
+            ],
+            "orientation_order": 2,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              9
+            ]
+          },
+          {
+            "destination": [
+              10
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              10
+            ]
+          },
+          {
+            "destination": [
+              12
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": null,
+            "source": [
+              12
+            ]
+          },
+          {
+            "destination": [
+              18,
+              19,
+              21,
+              22
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              18,
+              19,
+              21,
+              22
+            ]
+          },
+          {
+            "destination": [
+              20,
+              23
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              20,
+              23
+            ]
+          },
+          {
+            "destination": [
+              24,
+              25
+            ],
+            "orientation_order": 1,
+            "phase": 0,
+            "rotation": [
+              1,
+              2,
+              3
+            ],
+            "source": [
+              24,
+              25
+            ]
+          },
+          {
+            "destination": [
+              26
+            ],
+            "orientation_order": 3,
+            "phase": 2,
+            "rotation": [
+              -3,
+              -1,
+              2
+            ],
+            "source": [
+              26
+            ]
+          }
+        ],
+        "version": 1
+      },
+      "face_word": "R F' U' F R' D R' B' D B D' B' D' R D' F L2 F' D2 R' B R D' R F' U' F R' D R' B' D B D' B' D' R D' F L2 F' D2 R' B R D'",
+      "htm": 46,
+      "qtm": 50
+    }
+  },
+  "notes": [
+    "The article specifies stage recipes, not a complete case table; family-stage measurements use synthesized policies.",
+    "The three memorized templates plus C3 regrips represent nine fixed-frame executable algorithms.",
+    "A2 twists the two free corners in place in the verified action; the article describes an additional corner transposition.",
+    "Whole-cube regrips have zero face-turn cost; rotation/regrip count and human recognition cost are not scored."
+  ],
+  "same_chain_same_BFS_policy": {
+    "current_three": {
+      "metrics": {
+        "mean_htm": 126.94212962962963,
+        "mean_qtm": 137.38888888888889,
+        "states": 432,
+        "total_htm": 54839,
+        "total_qtm": 59352,
+        "worst_htm": 247,
+        "worst_qtm": 267
+      },
+      "policy": "existing first-representative generator-count BFS",
+      "stages": [
+        {
+          "cells": [
+            9
+          ],
+          "index": 6,
+          "order_after": 72,
+          "order_before": 432
+        },
+        {
+          "cells": [
+            19
+          ],
+          "index": 4,
+          "order_after": 18,
+          "order_before": 72
+        },
+        {
+          "cells": [
+            2,
+            5
+          ],
+          "index": 3,
+          "order_after": 6,
+          "order_before": 18
+        },
+        {
+          "cells": [
+            6,
+            7
+          ],
+          "index": 2,
+          "order_after": 3,
+          "order_before": 6
+        },
+        {
+          "cells": [
+            8
+          ],
+          "index": 3,
+          "order_after": 1,
+          "order_before": 3
+        }
+      ]
+    },
+    "historical_minimum_definition_three": {
+      "basis": [
+        "A1_rot0",
+        "A1_rot1",
+        "A3_rot0"
+      ],
+      "metrics": {
+        "mean_htm": 123.14583333333333,
+        "mean_qtm": 137.1064814814815,
+        "states": 432,
+        "total_htm": 53199,
+        "total_qtm": 59230,
+        "worst_htm": 238,
+        "worst_qtm": 265
+      },
+      "policy": "existing first-representative generator-count BFS",
+      "stages": [
+        {
+          "cells": [
+            9
+          ],
+          "index": 6,
+          "order_after": 72,
+          "order_before": 432
+        },
+        {
+          "cells": [
+            19
+          ],
+          "index": 4,
+          "order_after": 18,
+          "order_before": 72
+        },
+        {
+          "cells": [
+            2,
+            5
+          ],
+          "index": 3,
+          "order_after": 6,
+          "order_before": 18
+        },
+        {
+          "cells": [
+            6,
+            7
+          ],
+          "index": 2,
+          "order_after": 3,
+          "order_before": 6
+        },
+        {
+          "cells": [
+            8
+          ],
+          "index": 3,
+          "order_after": 1,
+          "order_before": 3
+        }
+      ]
+    },
+    "historical_templates_with_C3": {
+      "metrics": {
+        "mean_htm": 91.10185185185185,
+        "mean_qtm": 97.58333333333333,
+        "states": 432,
+        "total_htm": 39356,
+        "total_qtm": 42156,
+        "worst_htm": 173,
+        "worst_qtm": 185
+      },
+      "policy": "existing first-representative generator-count BFS",
+      "stages": [
+        {
+          "cells": [
+            9
+          ],
+          "index": 6,
+          "order_after": 72,
+          "order_before": 432
+        },
+        {
+          "cells": [
+            19
+          ],
+          "index": 4,
+          "order_after": 18,
+          "order_before": 72
+        },
+        {
+          "cells": [
+            2,
+            5
+          ],
+          "index": 3,
+          "order_after": 6,
+          "order_before": 18
+        },
+        {
+          "cells": [
+            6,
+            7
+          ],
+          "index": 2,
+          "order_after": 3,
+          "order_before": 6
+        },
+        {
+          "cells": [
+            8
+          ],
+          "index": 3,
+          "order_after": 1,
+          "order_before": 3
+        }
+      ]
+    },
+    "historical_three_complete": {
+      "basis": [
+        "A1_rot0",
+        "A1_rot1",
+        "A2_rot0"
+      ],
+      "metrics": {
+        "mean_htm": 167.52777777777777,
+        "mean_qtm": 190.0648148148148,
+        "states": 432,
+        "total_htm": 72372,
+        "total_qtm": 82108,
+        "worst_htm": 311,
+        "worst_qtm": 353
+      },
+      "policy": "existing first-representative generator-count BFS",
+      "stages": [
+        {
+          "cells": [
+            9
+          ],
+          "index": 6,
+          "order_after": 72,
+          "order_before": 432
+        },
+        {
+          "cells": [
+            19
+          ],
+          "index": 4,
+          "order_after": 18,
+          "order_before": 72
+        },
+        {
+          "cells": [
+            2,
+            5
+          ],
+          "index": 3,
+          "order_after": 6,
+          "order_before": 18
+        },
+        {
+          "cells": [
+            6,
+            7
+          ],
+          "index": 2,
+          "order_after": 3,
+          "order_before": 6
+        },
+        {
+          "cells": [
+            8
+          ],
+          "index": 3,
+          "order_after": 1,
+          "order_before": 3
+        }
+      ]
+    }
+  },
+  "scope": "all 432 reference-shape colored states; shape restoration excluded; full word simplified",
+  "shape_count": 580,
+  "source": "https://ladislavdubravsky.wordpress.com/2015/03/21/justin-pocket-cube-colored/",
+  "version": 1,
+  "weighted_full_group_controls": {
+    "current_three_fixed_grip": {
+      "metrics": {
+        "mean_htm": 70.00462962962963,
+        "mean_qtm": 75.81481481481481,
+        "states": 432,
+        "total_htm": 30242,
+        "total_qtm": 32752,
+        "worst_htm": 119,
+        "worst_qtm": 128
+      },
+      "objective": "shortest additive HTM over fixed macro alphabet; not shortest face word"
+    },
+    "historical_minimum_definition_three_fixed_grip": {
+      "metrics": {
+        "mean_htm": 69.36111111111111,
+        "mean_qtm": 78.73148148148148,
+        "states": 432,
+        "total_htm": 29964,
+        "total_qtm": 34012,
+        "worst_htm": 114,
+        "worst_qtm": 131
+      },
+      "objective": "shortest additive HTM over fixed macro alphabet; not shortest face word"
+    },
+    "historical_three_complete_fixed_grip": {
+      "metrics": {
+        "mean_htm": 75.06712962962963,
+        "mean_qtm": 85.72685185185185,
+        "states": 432,
+        "total_htm": 32429,
+        "total_qtm": 37034,
+        "worst_htm": 147,
+        "worst_qtm": 171
+      },
+      "objective": "shortest additive HTM over fixed macro alphabet; not shortest face word"
+    },
+    "historical_three_templates_with_C3": {
+      "metrics": {
+        "mean_htm": 44.00694444444444,
+        "mean_qtm": 47.495370370370374,
+        "states": 432,
+        "total_htm": 19011,
+        "total_qtm": 20518,
+        "worst_htm": 74,
+        "worst_qtm": 81
+      },
+      "objective": "shortest additive HTM over fixed macro alphabet; not shortest face word"
+    }
+  }
+}

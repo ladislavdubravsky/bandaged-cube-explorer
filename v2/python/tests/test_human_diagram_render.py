@@ -30,6 +30,7 @@ class HumanDiagramRenderTests(unittest.TestCase):
         with patch("subprocess.run", side_effect=AssertionError("portable pictures need no GAP")):
             cls.execution = c.load_human_repertoire(RESULTS / "alcatraz-execution-repertoire.json")
             cls.recognition = c.load_human_repertoire(RESULTS / "alcatraz-recognition-repertoire.json")
+            cls.template_pocket = c.load_human_repertoire(RESULTS / "pocket-template-repertoire.json")
             cls.pocket = (c.load_human_repertoire(POCKET_RECORD) if POCKET_RECORD.exists()
                           else cls.execution)
             cls.pictures = recognition_stage_diagrams(cls.pocket, 1)
@@ -46,38 +47,42 @@ class HumanDiagramRenderTests(unittest.TestCase):
                 if isinstance(collection, Poly3DCollection)
                 for color in collection.get_facecolor()]
 
-    def test_palette_hues_follow_physical_stickers_with_light_solved_and_white_unfinished(self):
+    def test_solved_stickers_are_grey_with_full_color_centers_and_targets(self):
         from matplotlib.colors import to_rgb
-        from bce_v2.graphics import _palette
-        from bce_v2.human_diagram_render import _SOLVED_WHITE_BLEND, _WHITE
+        from bce_v2.graphics import _FACE_CELLS, _palette
+        from bce_v2.human_diagram_render import _SOLVED_COLOR, _WHITE
         normal = {face: to_rgb(color) for face, color in _palette(None).items()}
-        light = {face: tuple(part * (1 - _SOLVED_WHITE_BLEND) + _SOLVED_WHITE_BLEND
-                            for part in color) for face, color in normal.items()}
         shifted_color = False
+        fused_solved_center = False
         seen_roles = set()
-        for repertoire in (self.execution, self.recognition, self.pocket):
+        for repertoire in (self.execution, self.recognition, self.pocket, self.template_pocket):
             for stage in repertoire.method.stages:
                 for variants in recognition_stage_diagrams(repertoire, stage.number).values():
                     for diagram in variants:
-                        colors = recognition_diagram_colors(diagram)
-                        self.assertEqual(len(colors), 54)
-                        for index, (role, face, color) in enumerate(zip(
-                                diagram.sticker_roles, diagram.state.facelets, colors)):
-                            seen_roles.add(role)
-                            expected = (light[face] if role == "solved" else
-                                        normal[face] if role == "current" else _WHITE)
-                            self.assertEqual(color, expected)
-                            shifted_color |= role == "current" and face != "URFDLB"[index // 9]
+                        for mode in c.DiagramMode:
+                            colors = recognition_diagram_colors(diagram, diagram_mode=mode)
+                            self.assertEqual(len(colors), 54)
+                            for index, (role, face, color) in enumerate(zip(
+                                    diagram.sticker_roles, diagram.state.facelets, colors)):
+                                seen_roles.add(role)
+                                expected = (normal[face] if index % 9 == 4 or role == "current" else
+                                            _SOLVED_COLOR if role == "solved" else _WHITE)
+                                self.assertEqual(color, expected)
+                                shifted_color |= role == "current" and face != "URFDLB"[index // 9]
+                                if index % 9 == 4 and role == "solved":
+                                    cell = _FACE_CELLS["URFDLB"[index // 9]][4]
+                                    labels = diagram.state.shape.labels
+                                    fused_solved_center |= labels.count(labels[cell]) > 1
         self.assertEqual(seen_roles, {"solved", "current", "placed", "unsolved"})
         self.assertTrue(shifted_color, "the test must include a moved sticker color")
-        luminance = lambda rgb: sum(a * b for a, b in zip(rgb, (0.2126, 0.7152, 0.0722)))
-        for face in "RFLB":
-            self.assertGreater(luminance(light[face]), luminance(normal[face]) + .25)
+        self.assertTrue(fused_solved_center, "check centers within larger solved blocks")
+        self.assertEqual(len(set(_SOLVED_COLOR)), 1, "solved stickers must be neutral grey")
+        self.assertLess(_SOLVED_COLOR[0], 1., "solved grey must differ from unfinished white")
         self.assertEqual(normal["U"], to_rgb("#f7f7f7"))
 
     def test_custom_face_palette_changes_only_displayed_physical_sticker_colors(self):
         from matplotlib.colors import to_rgb
-        from bce_v2.human_diagram_render import _SOLVED_WHITE_BLEND
+        from bce_v2.human_diagram_render import _SOLVED_COLOR
         custom = {"U": "purple", "R": (0.12, 0.34, 0.56), "F": "cyan",
                   "D": "pink", "L": "navy", "B": "#13ad6b"}
         palette = validate_face_colors(custom)
@@ -91,14 +96,12 @@ class HumanDiagramRenderTests(unittest.TestCase):
                                   diagram.state.facelets, diagram.sticker_roles))))
         original = (diagram.state, diagram.cell_roles, diagram.sticker_roles)
         colors = recognition_diagram_colors(diagram, face_colors=custom)
-        for face, role, color in zip(diagram.state.facelets, diagram.sticker_roles, colors):
-            if role == "current":
+        for index, (face, role, color) in enumerate(zip(
+                diagram.state.facelets, diagram.sticker_roles, colors)):
+            if index % 9 == 4 or role == "current":
                 self.assertEqual(color, palette[face])
             elif role == "solved":
-                self.assertTrue(all(part >= _SOLVED_WHITE_BLEND for part in color))
-                for component, original_component in zip(color, palette[face]):
-                    self.assertAlmostEqual(component, _SOLVED_WHITE_BLEND +
-                                           (1 - _SOLVED_WHITE_BLEND) * original_component)
+                self.assertEqual(color, _SOLVED_COLOR)
             else:
                 self.assertEqual(color, (1., 1., 1.))
         for mode in ("transparent", "opposite-corners"):
@@ -222,7 +225,8 @@ class HumanDiagramRenderTests(unittest.TestCase):
                    "D": (0, 0, -1), "L": (-1, 0, 0), "B": (0, 1, 0)}
         original = (self.diagram.state, self.diagram.cell_roles, self.diagram.sticker_roles)
         colors = recognition_diagram_colors(self.diagram, diagram_mode=c.DiagramMode.TRANSPARENT)
-        opacities = tuple(.95 if role == "current" else .72 if index % 9 == 4 else .06
+        opacities = tuple(1. if index % 9 == 4 or role == "solved" else
+                          .95 if role == "current" else .06
                           for index, role in enumerate(self.diagram.sticker_roles))
         expected = Counter((*rgb, alpha) for rgb, alpha in zip(colors, opacities))
         for word in _CANONICAL_WORDS.values():
@@ -306,9 +310,10 @@ class HumanDiagramRenderTests(unittest.TestCase):
         self.assertTrue(all(collection.get_alpha() == 1
                             for axis in figure.axes for collection in axis.collections))
 
-    def test_transparent_view_colors_only_centers_and_target_with_diagonal_projection(self):
+    def test_transparent_view_keeps_solved_grey_and_full_centers_with_diagonal_projection(self):
         from math import atan, degrees, sqrt
         from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+        from bce_v2.human_diagram_render import _SOLVED_COLOR
         placed_example = next(diagram for stage in self.recognition.method.stages
                               for variants in recognition_stage_diagrams(self.recognition, stage.number).values()
                               for diagram in variants if "placed" in diagram.sticker_roles)
@@ -324,6 +329,7 @@ class HumanDiagramRenderTests(unittest.TestCase):
             for index, (role, face, color) in enumerate(zip(
                     diagram.sticker_roles, diagram.state.facelets, expected)):
                 self.assertEqual(color, palette[face] if role == "current" or index % 9 == 4
+                                 else _SOLVED_COLOR if role == "solved"
                                  else (1., 1., 1.))
             roles = {f"cube-0-block-{label}": diagram.cell_roles[cell]
                      for cell, label in enumerate(diagram.state.shape.labels)}
@@ -332,7 +338,7 @@ class HumanDiagramRenderTests(unittest.TestCase):
                 role = roles[collection.get_gid().rsplit("-", 1)[0]]
                 if isinstance(collection, Poly3DCollection):
                     self.assertIsNone(alpha)
-                    self.assertTrue(all(color[3] in (.06, .72, .95)
+                    self.assertTrue(all(color[3] in (.06, .95, 1.)
                                         for color in collection.get_facecolor()))
                 elif role == "current":
                     self.assertGreater(alpha, .9)
@@ -353,6 +359,66 @@ class HumanDiagramRenderTests(unittest.TestCase):
         for index, axis in enumerate(figure.axes):
             self.assertEqual(axis.get_title(),
                              f"Orientation {index // 2 + 1} · {('UFR', 'BLD')[index % 2]}")
+
+    def test_placement_skip_keeps_both_visibly_distinct_edge_flips(self):
+        stage = self.template_pocket.method.stages[0]
+        self.assertEqual((stage.feature.kind, stage.block_name), ("place_block", "Edge DL"))
+        variants = recognition_stage_diagrams(self.template_pocket, 1)[stage.solved_observation]
+        self.assertEqual({diagram.phase for diagram in variants}, {0, 1})
+        palette = validate_face_colors()
+        for mode in c.DiagramMode:
+            current_colors = {
+                tuple(color for color, role in zip(
+                    recognition_diagram_colors(diagram, diagram_mode=mode), diagram.sticker_roles)
+                    if role == "current")
+                for diagram in variants
+            }
+            self.assertEqual(current_colors, {
+                (palette["D"], palette["L"]), (palette["L"], palette["D"]),
+            })
+        figure = recognition_diagram_figure(variants)
+        self.assertEqual(len(figure.axes), 4, "each valid edge flip keeps both views")
+
+    def test_fused_pairs_have_no_sticker_seams_in_either_diagram_mode(self):
+        from mpl_toolkits.mplot3d.art3d import Line3DCollection, Poly3DCollection
+
+        stage = self.template_pocket.method.stages[0]
+        diagram = recognition_stage_diagrams(self.template_pocket, 1)[stage.solved_observation][0]
+        label = diagram.state.shape.labels[c.UFL]
+        self.assertEqual(label, diagram.state.shape.labels[c.UF])
+        # The shared U and F face edges between UFL and UF are inside the pair.
+        internal_edges = {
+            ((1, 0, 3), (1, 1, 3)),
+            ((1, 0, 2), (1, 0, 3)),
+        }
+        for mode in c.DiagramMode:
+            figure = recognition_diagram_figure(diagram, diagram_mode=mode)
+            outlines = []
+            for axis in figure.axes:
+                for collection in axis.collections:
+                    if isinstance(collection, Poly3DCollection):
+                        self.assertEqual(len(collection.get_edgecolor()), 0)
+                    elif (isinstance(collection, Line3DCollection) and
+                          collection.get_gid().endswith(f"block-{label}-outline")):
+                        outlines.extend(tuple(sorted(tuple(point) for point in segment))
+                                        for segment in collection._segments3d)
+            self.assertTrue(outlines, "keep the pair's outer boundary")
+            self.assertTrue(internal_edges.isdisjoint(outlines))
+
+    def test_multiple_orientation_titles_leave_a_gap_below_the_previous_row(self):
+        variants = next(variants for stage in self.recognition.method.stages
+                        if stage.feature.kind == "place_block"
+                        for variants in recognition_stage_diagrams(self.recognition, stage.number).values()
+                        if len(variants) > 1)
+        figure = recognition_diagram_figure(variants, diagram_mode="opposite-corners")
+        figure.canvas.draw()
+        renderer = figure.canvas.get_renderer()
+        for row in range(1, len(variants)):
+            previous_bottom = min(axis.get_window_extent().y0
+                                  for axis in figure.axes[2 * row - 2:2 * row])
+            next_title_top = max(axis.title.get_window_extent(renderer).y1
+                                 for axis in figure.axes[2 * row:2 * row + 2])
+            self.assertGreater(previous_bottom - next_title_top, 0.15 * figure.dpi)
 
     def test_invalid_modes_and_mixed_cases_fail_before_drawing(self):
         with patch("bce_v2.human_diagram_render.draw_cubes") as drawing:
@@ -400,7 +466,11 @@ class HumanDiagramRenderTests(unittest.TestCase):
             self.assertEqual(image.call_count, len(expected))
             self.assertEqual(guide.count("### Case "), len(expected))
             self.assertEqual(guide.count("![Stage "), len(expected))
-            self.assertEqual(guide.count("Skip — already correct"), len(repertoire.stages))
+            self.assertEqual(guide.count("Skip — already correct"), sum(
+                stage.feature.kind == "solve_block" for stage in repertoire.method.stages))
+            self.assertEqual(guide.count("Skip — already placed"), sum(
+                stage.feature.kind == "place_block" for stage in repertoire.method.stages))
+            self.assertNotIn("Any shown sticker orientation belongs to this case.", guide)
             self.assertNotIn("### Complete cue lookup", guide)
             for call, (number, observation, instruction) in zip(image.call_args_list, expected):
                 from bce_v2.human_instruction_render import instruction_presentation

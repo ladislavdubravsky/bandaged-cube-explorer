@@ -84,7 +84,8 @@ def method_guide(method):
             destination = inventory.blocks[case.observation[0]]
             algorithm = next((algorithm for algorithm in method.algorithms
                               if algorithm.id == case.algorithm_id), None)
-            correction = ("Skip — already correct" if case.algorithm_id is None else
+            skip = "Skip — already placed" if stage.feature.kind == "place_block" else "Skip — already correct"
+            correction = (skip if case.algorithm_id is None else
                           f"`{case.algorithm_id}: {algorithm.turn_sequence or '(no moves)'}`")
             footprint = f"`{destination.compact_name}`"
             if stage.feature.kind == "place_block":
