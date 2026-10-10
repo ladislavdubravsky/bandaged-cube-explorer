@@ -68,6 +68,11 @@ class ShapeGraph:
         from .isotropy import isotropy_loops
         return isotropy_loops(self, root=self._vertex(root))
 
+    def draw(self, **kwargs):
+        """Draw the directed bandage graph, retaining every shape vertex."""
+        from .graph_render import draw_bandage_graph
+        return draw_bandage_graph(self, **kwargs)
+
     def to_networkx(self, *, undirected=False):
         """Build an optional NetworkX view of this graph.
 

@@ -507,6 +507,31 @@ from .human_diagrams import (  # noqa: E402
 from .human_move_notation import structured_move_notation  # noqa: E402
 from .human_diagram_modes import DiagramMode  # noqa: E402
 
+
+def bandage_graph_layout(graph_or_bandage, *, layout="symmetry", seed=0,
+                         iterations=300):
+    """Return positions for every fixed-frame shape vertex of a bandage graph."""
+    from .graph_render import bandage_graph_layout as position
+    return position(graph_or_bandage, layout=layout, seed=seed,
+                    iterations=iterations)
+
+
+def draw_bandage_graph(graph_or_bandage, *, layout="symmetry", show_shapes=False,
+                       edge_labels=False, face_colors=None, start=0,
+                       figsize=(12, 12), shape_size=0.6, seed=0, iterations=300,
+                       pos=None, diagram_mode=DiagramMode.OPPOSITE_CORNERS):
+    """Draw shape objects and directed clockwise face-turn actions.
+
+    Accept a ShapeGraph, or explore a Shape, State, or 27-cell bandage in QTM.
+    Returns a matplotlib figure that can be displayed or saved with savefig.
+    """
+    from .graph_render import draw_bandage_graph as draw
+    return draw(graph_or_bandage, layout=layout, show_shapes=show_shapes,
+                edge_labels=edge_labels, face_colors=face_colors, start=start,
+                figsize=figsize, shape_size=shape_size, seed=seed,
+                iterations=iterations, pos=pos, diagram_mode=diagram_mode)
+
+
 __all__ = [
     "Shape", "State", "ShapeGraph", "BlockedMoveError", "CELL_NAMES",
     "shape", "normalize", "do", "fixture", "fixture_names", "explore",
@@ -533,5 +558,6 @@ __all__ = [
     "template_human_repertoire",
     "HumanRecognitionDiagram", "recognition_block_roles", "recognition_case_diagrams",
     "recognition_stage_diagrams", "structured_move_notation", "DiagramMode",
-    "draw_cubes", "load_puzzle", "save_puzzle", "save_graph",
+    "draw_cubes", "draw_bandage_graph", "bandage_graph_layout",
+    "load_puzzle", "save_puzzle", "save_graph",
 ] + list(CELL_NAMES)

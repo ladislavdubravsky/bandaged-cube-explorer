@@ -5,6 +5,7 @@ from importlib import import_module, invalidate_caches, reload
 
 _RENDERERS = (
     "graphics",
+    "graph_render",
     "human_move_notation",
     "human_instruction_render",
     "human_diagram_stripes",

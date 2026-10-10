@@ -97,8 +97,9 @@ v2/.venv/bin/python -m pip install './v2/python[all]'
 ```
 
 Use `./v2/python` without extras for a dependency-free Python interface. The
-`plots` extra installs matplotlib; `graph` installs NetworkX; `notebooks` adds
-matplotlib and the IPython kernel; `all` includes all three.
+`plots` extra installs matplotlib; `graph` installs NetworkX, matplotlib, and
+SciPy for graph drawing and layouts; `notebooks` adds these graph dependencies
+and the IPython kernel; `all` includes all extras.
 These adapters import their dependencies only when used. The package distribution
 is named `bandaged-cube-explorer-v2`; its import name is `bce_v2`.
 
@@ -1215,6 +1216,70 @@ geometry = graph.to_networkx(undirected=True) # Graph for shape statistics
 
 The directed QTM view expands inverse traversals. The undirected view preserves
 shape distances in the declared metric, but its edges are a geometric projection.
+
+## Draw bandage graphs
+
+The bandage graph has one vertex for each fixed-frame shape (a colorless
+groupoid object) and a directed edge for each clockwise quarter face turn
+`U`, `R`, `F`, `D`, `L`, or `B`. Parallel actions and self-loops remain visible;
+inverse and half-turn edges are omitted, including when drawing an HTM graph.
+Whole-cube rotation variants retain their individual vertices.
+
+```python
+graph = c.explore(initial)
+figure = c.draw_bandage_graph(
+    graph, layout="symmetry", show_shapes=True, edge_labels=True,
+    face_colors={"U": "white", "F": "green"},
+    diagram_mode=c.DiagramMode.OPPOSITE_CORNERS,
+)
+figure.savefig("bandage-graph.svg")
+
+# A Shape, State, or ordinary 27-cell bandage is explored in QTM automatically.
+figure = c.draw_bandage_graph(initial, layout="kamada_kawai")
+figure = graph.draw(layout="spring", seed=4)
+
+# Reuse or adjust positions before drawing.
+positions = c.bandage_graph_layout(graph, layout="symmetry", seed=0)
+figure = c.draw_bandage_graph(graph, pos=positions)
+```
+
+Install `./v2/python[graph]` or `./v2/python[notebooks]` to use these helpers.
+The returned figure is a regular matplotlib figure. The
+[BandagedPocketCube notebook](../examples/BandagedPocketCube.ipynb) displays the
+full graph immediately after its shape and scramble counts, with editable
+`graph_layout`, `graph_show_shapes`, `graph_edge_labels`, `graph_figsize`, and
+`graph_shape_size` settings.
+
+`layout="symmetry"` uses a force layout constrained by a whole-cube rotation
+that acts within the explored component. For BandagedPocketCube, the selected
+threefold subgroup appears as a planar rotation. This displays a cyclic
+subgroup rather than the entire 24-element spatial rotation group in two
+dimensions. If the component has no suitable cyclic rotation symmetry, the
+layout falls back to a spring layout. Order-two symmetries appear as planar
+reflections, allowing distinct fixed vertices along the reflection axis.
+Other choices are [spring](https://networkx.org/documentation/stable/reference/generated/networkx.drawing.layout.spring_layout.html),
+[Kamada–Kawai](https://networkx.org/documentation/stable/reference/generated/networkx.drawing.layout.kamada_kawai_layout.html)
+(`"kamada_kawai"`, a distance-based energy layout), and
+[spectral](https://networkx.org/documentation/stable/reference/generated/networkx.drawing.layout.spectral_layout.html).
+`seed` makes randomized layouts reproducible, and `iterations` controls force
+relaxation. `bandage_graph_layout` returns an ID-to-`(x, y)` mapping; `pos`
+accepts such a mapping for custom or reused layouts.
+
+With `show_shapes=True`, vertex pictures use white for arbitrary stickers and
+face colors for the exterior stickers on blocks containing face centers.
+`diagram_mode` selects opposite-corner or transparent views. Picture size is
+proportional to directed incident degree, counting a loop twice; the `start`
+vertex (default ID `0`, also accepts a shape) always has the maximum size.
+Degree-two vertices keep their incident edges but display neither a marker nor
+a shape picture, except for the starting vertex. `shape_size` controls the
+maximum picture width in inches. Without pictures, marker sizes use the same degree rule.
+`edge_labels=True` shows Singmaster face labels. Edges use the selected face
+palette, with white rendered as black so it remains visible.
+
+Drawing a bounded `ShapeGraph` retains its partial status in the figure title;
+it does not fill in omitted shapes. Supplying a bandage directly explores its
+entire shape component. Use `c.explore(bandage, max_vertices=...)` first when a
+deliberately bounded graph is wanted.
 
 ## Galleries and reproducible records
 
