@@ -1,0 +1,147 @@
+{
+  "algebra_basis_count": 4,
+  "budget_seconds": 90,
+  "dictionary": {
+    "algorithm_count": 877,
+    "algorithm_limit_reached": false,
+    "available_effect_count": 877,
+    "candidate_count": 12000,
+    "conjugate_limit_reached": true,
+    "coverage_scope": "orientation span; retained native loops are separate witnesses",
+    "exhaustive_word_search": false,
+    "families": {
+      "(False, ('311', 'Corner', 'Edge'))": 95,
+      "(False, ('311', 'Corner', 'Edge', 'Pair'))": 299,
+      "(False, ('311', 'Edge'))": 72,
+      "(False, ('Corner', 'Edge'))": 74,
+      "(False, ('Corner', 'Edge', 'Pair'))": 172,
+      "(False, ('Corner', 'Pair'))": 12,
+      "(False, ('Edge',))": 88,
+      "(True, ('Corner', 'Edge'))": 50,
+      "(True, ('Corner',))": 8,
+      "(True, ('Edge',))": 7
+    },
+    "group_order": 10368,
+    "mining": {
+      "algorithm_count": 620,
+      "algorithm_limit_reached": false,
+      "candidate_limit_reached": true,
+      "collision_proposal_count": 4727,
+      "custom_expression_count": 0,
+      "duplicate_count": 9801,
+      "effect_count": 558,
+      "examined_count": 11892,
+      "exhaustive": false,
+      "expansion_pruned_count": 0,
+      "identity_count": 115,
+      "inverse_proposal_count": 126,
+      "length_pruned_count": 1138,
+      "literal_policy": "when a literal word has a smaller description cost",
+      "max_algorithms": 1024,
+      "max_candidates": 11892,
+      "max_expanded_moves": 400,
+      "max_htm_length": 80,
+      "max_seed_loops": 32,
+      "original_limit_reached": true,
+      "original_loop_count": 3336,
+      "proposal_budget_pruned": true,
+      "round_limit_reached": true,
+      "rounds": 4,
+      "rounds_completed": 4,
+      "seed_count": 32,
+      "symmetry_count": 0,
+      "symmetry_transfer_count": 0
+    },
+    "orientation_basis_count": 5,
+    "orientation_basis_independent": true,
+    "orientation_basis_max_htm": 37,
+    "orientation_basis_total_htm": 132,
+    "orientation_complete": true,
+    "orientation_missing_index": 1,
+    "orientation_primary_spans": {
+      "2": {
+        "order": 8,
+        "pivot_orders": [
+          2,
+          2,
+          2
+        ]
+      },
+      "3": {
+        "order": 9,
+        "pivot_orders": [
+          3,
+          3
+        ]
+      }
+    },
+    "orientation_span_method": "exact prime-power coordinate elimination",
+    "orientation_span_order": 72,
+    "orientation_target_order": 72,
+    "original_admission_limit_reached": true,
+    "original_loop_count": 3336,
+    "physical_original_loop_count": 36,
+    "quotient_order": 144,
+    "redundant_original_loop_count": 32,
+    "retained_original_effects": 75,
+    "settings": {
+      "max_algorithms": 1024,
+      "max_candidates": 12000,
+      "max_conjugates": 12000,
+      "max_expanded_moves": 400,
+      "max_htm_length": 80,
+      "max_original_loops": 32,
+      "max_seed_loops": 32,
+      "max_setup_depth": 2,
+      "max_setup_words": 384,
+      "rounds": 4
+    },
+    "setup_limit_reached": true,
+    "setup_word_count": 384,
+    "target_source": "exact reference group and placement quotient orders",
+    "work": {
+      "conjugates_examined": 12000,
+      "identity_proposals": 8,
+      "length_pruned": 24,
+      "original_proposals_examined": 108
+    }
+  },
+  "format": "bce-v2-implemented-dictionary-performance",
+  "group_order": 10368,
+  "measurement_note": "Concurrent test and GAP jobs were running; completion and exact kernel coverage are established, without an isolated before/after speedup ratio.",
+  "measurements": [
+    {
+      "phase": "analysis",
+      "status": "completed",
+      "wall_seconds": 3.607416935999936
+    },
+    {
+      "phase": "dictionary",
+      "status": "completed",
+      "wall_seconds": 40.515164306998486
+    },
+    {
+      "phase": "repeat_validation",
+      "status": "completed",
+      "wall_seconds": 3.9237998862518e-05
+    }
+  ],
+  "original_loop_count": 3336,
+  "puzzle": "MostSignaturesCube",
+  "runtime_patches": false,
+  "scope": "production dictionary only; no planner, repertoire or graph rendering",
+  "settings": {
+    "max_algorithms": 1024,
+    "max_candidates": 12000,
+    "max_conjugates": 12000,
+    "max_expanded_moves": 400,
+    "max_htm_length": 80,
+    "max_original_loops": 32,
+    "max_seed_loops": 32,
+    "max_setup_depth": 2,
+    "max_setup_words": 384,
+    "rounds": 4
+  },
+  "status": "completed",
+  "version": 1
+}

@@ -1,0 +1,527 @@
+{
+  "findings": [
+    "Both calls completed with 25 macros. Profiled fallback wall time was 48.54 seconds before and 11.33 seconds after.",
+    "Before, a canonical-root identity check scanned the 19,473-record alphabet for each recipe expansion: approximately 10.9 million record identity comparisons. Reusing the exact immutable owner mapping eliminated those scans.",
+    "Per-recipe full-alphabet HTM-table rebuilding produced approximately 5.34 million generator entries before. The owner now caches and shares that immutable table.",
+    "_build_algorithm cumulative time fell from 27.45 seconds for 274 calls to 3.56 seconds for 306 calls. expanded_moves cumulative time fell from 32.02 seconds for 560 calls to 6.22 seconds for 644 calls.",
+    "Validated methods sharing the same immutable complete group certificate reuse its equality proof; independently imported certificates still undergo complete membership checks."
+  ],
+  "format": "bce-v2-symbolic-fallback-profile-comparison",
+  "measurement_note": "Each profile ran in a separate process. The before process imported code before the owner/recipe-library fixes; the after process imported those fixes. Snapshot publication policy also changed between imports, and both probes ran alongside tests and other GAP computations. The different call counts and machine load preclude an isolated helper-only speed ratio. The after profile preceded the final small referenced-leaf membership checks and stored-owner cache changes. These are focused profiles, not the final notebook production benchmark.",
+  "original_loop_count": 19473,
+  "profiles": [
+    {
+      "completed": true,
+      "error": null,
+      "label": "before_owner_recipe_fixes",
+      "macros": 25,
+      "profile_top": [
+        {
+          "calls": 1,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/template_human_repertoire.py",
+          "function": "template_human_repertoire",
+          "line": 382,
+          "seconds": 48.513751121000006
+        },
+        {
+          "calls": 2,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/template_human_repertoire.py",
+          "function": "_template_human_repertoire",
+          "line": 461,
+          "seconds": 48.505409745
+        },
+        {
+          "calls": 2,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "symbolic_template_human_repertoire",
+          "line": 307,
+          "seconds": 48.487706925000005
+        },
+        {
+          "calls": 3,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_repertoire_core.py",
+          "function": "validate_symbolic_repertoire",
+          "line": 113,
+          "seconds": 41.830162452
+        },
+        {
+          "calls": 1,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "publish",
+          "line": 396,
+          "seconds": 34.382699921000004
+        },
+        {
+          "calls": 1,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/human_repertoire.py",
+          "function": "_validate_repertoire",
+          "line": 805,
+          "seconds": 34.373525604
+        },
+        {
+          "calls": 560,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "expanded_moves",
+          "line": 402,
+          "seconds": 32.015950067
+        },
+        {
+          "calls": 2,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_repertoire_core.py",
+          "function": "build_symbolic_repertoire",
+          "line": 77,
+          "seconds": 27.786716271000003
+        },
+        {
+          "calls": 274,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/human_repertoire.py",
+          "function": "_build_algorithm",
+          "line": 333,
+          "seconds": 27.453721098000003
+        },
+        {
+          "calls": 738,
+          "file": "~",
+          "function": "<built-in method builtins.all>",
+          "line": 0,
+          "seconds": 24.195391481
+        },
+        {
+          "calls": 1,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "_validate_symbolic_template_metadata",
+          "line": 432,
+          "seconds": 22.067861081
+        },
+        {
+          "calls": 10905440,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "<genexpr>",
+          "line": 410,
+          "seconds": 21.052233909
+        },
+        {
+          "calls": 309,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_repertoire_core.py",
+          "function": "algorithm",
+          "line": 143,
+          "seconds": 18.831265826000003
+        },
+        {
+          "calls": 10,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/human_methods.py",
+          "function": "_validate_method",
+          "line": 345,
+          "seconds": 13.740253552
+        },
+        {
+          "calls": 10,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/human_methods.py",
+          "function": "_validate_symbolic_method",
+          "line": 576,
+          "seconds": 13.72834055
+        },
+        {
+          "calls": 1,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "consider",
+          "line": 382,
+          "seconds": 10.965524821
+        },
+        {
+          "calls": 2,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_repertoire_core.py",
+          "function": "compile_symbolic_policies",
+          "line": 34,
+          "seconds": 10.471453379000002
+        },
+        {
+          "calls": 10928709,
+          "file": "~",
+          "function": "<method 'get' of 'mappingproxy' objects>",
+          "line": 0,
+          "seconds": 7.164016480000001
+        },
+        {
+          "calls": 560,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "_build",
+          "line": 609,
+          "seconds": 6.598836535
+        },
+        {
+          "calls": 5335876,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/human_repertoire.py",
+          "function": "<genexpr>",
+          "line": 347,
+          "seconds": 5.432925107
+        },
+        {
+          "calls": 10925147,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/isotropy.py",
+          "function": "generator_records",
+          "line": 152,
+          "seconds": 3.7119429470000003
+        },
+        {
+          "calls": 2,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "fallback",
+          "line": 151,
+          "seconds": 3.49032511
+        },
+        {
+          "calls": 70,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/human_repertoire.py",
+          "function": "_rules",
+          "line": 350,
+          "seconds": 3.1617735550000003
+        },
+        {
+          "calls": 1119,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "_records",
+          "line": 89,
+          "seconds": 3.1199795220000004
+        },
+        {
+          "calls": 52,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "alias",
+          "line": 81,
+          "seconds": 2.97839744
+        },
+        {
+          "calls": 104,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "word",
+          "line": 74,
+          "seconds": 2.929825895
+        },
+        {
+          "calls": 560,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "_human_score",
+          "line": 501,
+          "seconds": 2.878983455
+        },
+        {
+          "calls": 558,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "evaluate",
+          "line": 394,
+          "seconds": 2.7729527490000003
+        },
+        {
+          "calls": 10736,
+          "file": "~",
+          "function": "<built-in method builtins.max>",
+          "line": 0,
+          "seconds": 2.5946193390000003
+        },
+        {
+          "calls": 10186,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "<genexpr>",
+          "line": 509,
+          "seconds": 2.546548988
+        },
+        {
+          "calls": 10186,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "_effect",
+          "line": 488,
+          "seconds": 2.4621351700000003
+        },
+        {
+          "calls": 2,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_chains.py",
+          "function": "to_dict",
+          "line": 321,
+          "seconds": 2.445457105
+        },
+        {
+          "calls": 32,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_groups.py",
+          "function": "to_dict",
+          "line": 285,
+          "seconds": 2.4415833950000003
+        },
+        {
+          "calls": 26463,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "_evaluate",
+          "line": 429,
+          "seconds": 1.879138175
+        },
+        {
+          "calls": 3745,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "_power",
+          "line": 59,
+          "seconds": 0.807126203
+        }
+      ],
+      "wall_seconds": 48.54307742099991
+    },
+    {
+      "completed": true,
+      "error": null,
+      "label": "after_principal_owner_recipe_fixes",
+      "macros": 25,
+      "profile_top": [
+        {
+          "calls": 1,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/template_human_repertoire.py",
+          "function": "template_human_repertoire",
+          "line": 382,
+          "seconds": 11.32579697
+        },
+        {
+          "calls": 2,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/template_human_repertoire.py",
+          "function": "_template_human_repertoire",
+          "line": 508,
+          "seconds": 11.319158405000001
+        },
+        {
+          "calls": 2,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "symbolic_template_human_repertoire",
+          "line": 307,
+          "seconds": 11.317409584
+        },
+        {
+          "calls": 3,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_repertoire_core.py",
+          "function": "validate_symbolic_repertoire",
+          "line": 113,
+          "seconds": 8.426524711
+        },
+        {
+          "calls": 1,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "publish",
+          "line": 396,
+          "seconds": 6.847768318000001
+        },
+        {
+          "calls": 1,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/human_repertoire.py",
+          "function": "_validate_repertoire",
+          "line": 803,
+          "seconds": 6.841776105
+        },
+        {
+          "calls": 644,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "expanded_moves",
+          "line": 418,
+          "seconds": 6.220497377
+        },
+        {
+          "calls": 644,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "_build",
+          "line": 626,
+          "seconds": 6.188560504000001
+        },
+        {
+          "calls": 3,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_repertoire_core.py",
+          "function": "build_symbolic_repertoire",
+          "line": 77,
+          "seconds": 4.782010604
+        },
+        {
+          "calls": 1,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "_validate_symbolic_template_metadata",
+          "line": 432,
+          "seconds": 4.542815658
+        },
+        {
+          "calls": 11,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/human_methods.py",
+          "function": "_validate_method",
+          "line": 345,
+          "seconds": 3.7078995490000004
+        },
+        {
+          "calls": 11,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/human_methods.py",
+          "function": "_validate_symbolic_method",
+          "line": 576,
+          "seconds": 3.7000999340000003
+        },
+        {
+          "calls": 306,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/human_repertoire.py",
+          "function": "_build_algorithm",
+          "line": 333,
+          "seconds": 3.5550151600000004
+        },
+        {
+          "calls": 2,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "consider",
+          "line": 382,
+          "seconds": 3.230918534
+        },
+        {
+          "calls": 644,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "_human_score",
+          "line": 518,
+          "seconds": 3.030665787
+        },
+        {
+          "calls": 12268,
+          "file": "~",
+          "function": "<built-in method builtins.max>",
+          "line": 0,
+          "seconds": 2.7612802000000003
+        },
+        {
+          "calls": 11920,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "<genexpr>",
+          "line": 526,
+          "seconds": 2.718569978
+        },
+        {
+          "calls": 11920,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "_effect",
+          "line": 505,
+          "seconds": 2.61899401
+        },
+        {
+          "calls": 2,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_chains.py",
+          "function": "to_dict",
+          "line": 321,
+          "seconds": 2.2719832870000003
+        },
+        {
+          "calls": 32,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_groups.py",
+          "function": "to_dict",
+          "line": 285,
+          "seconds": 2.26474747
+        },
+        {
+          "calls": 309,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_repertoire_core.py",
+          "function": "algorithm",
+          "line": 143,
+          "seconds": 2.2129954400000003
+        },
+        {
+          "calls": 3,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_repertoire_core.py",
+          "function": "compile_symbolic_policies",
+          "line": 34,
+          "seconds": 2.178289819
+        },
+        {
+          "calls": 3,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "fallback",
+          "line": 151,
+          "seconds": 0.8827357170000001
+        },
+        {
+          "calls": 78,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "alias",
+          "line": 81,
+          "seconds": 0.7842593990000001
+        },
+        {
+          "calls": 156,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+          "function": "word",
+          "line": 74,
+          "seconds": 0.733322201
+        },
+        {
+          "calls": 1525,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_groups.py",
+          "function": "__contains__",
+          "line": 282,
+          "seconds": 0.678719602
+        },
+        {
+          "calls": 1525,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_groups.py",
+          "function": "contains",
+          "line": 279,
+          "seconds": 0.6769502820000001
+        },
+        {
+          "calls": 1525,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_groups.py",
+          "function": "sift",
+          "line": 275,
+          "seconds": 0.666782632
+        },
+        {
+          "calls": 1128,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/_moves.py",
+          "function": "_simplified_moves",
+          "line": 4,
+          "seconds": 0.639806847
+        },
+        {
+          "calls": 215446,
+          "file": "~",
+          "function": "<built-in method builtins.sorted>",
+          "line": 0,
+          "seconds": 0.5848296070000001
+        },
+        {
+          "calls": 21072,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/loop_algorithms.py",
+          "function": "expanded",
+          "line": 655,
+          "seconds": 0.571086199
+        },
+        {
+          "calls": 216524,
+          "file": "~",
+          "function": "<built-in method builtins.any>",
+          "line": 0,
+          "seconds": 0.5209602170000001
+        },
+        {
+          "calls": 1525,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_groups.py",
+          "function": "_permutation",
+          "line": 34,
+          "seconds": 0.517197039
+        },
+        {
+          "calls": 84,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/human_repertoire.py",
+          "function": "_rules",
+          "line": 348,
+          "seconds": 0.48063866400000005
+        },
+        {
+          "calls": 74725,
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_groups.py",
+          "function": "<genexpr>",
+          "line": 36,
+          "seconds": 0.468816973
+        }
+      ],
+      "wall_seconds": 11.33396902000095
+    }
+  ],
+  "puzzle": "BeltRoad",
+  "reproducer": "v2/.venv/bin/python v2/research/profile_symbolic_fallback.py --puzzle BeltRoad --seconds 120",
+  "runtime_patches": false,
+  "scope": "cProfile of c.template_human_repertoire(method, optimization_seconds=0, select_chain=False, allow_symmetry=False), with a separately prepared fully_solve_each_block symbolic method; excludes isotropy analysis, baseline preparation and rendering",
+  "version": 1
+}

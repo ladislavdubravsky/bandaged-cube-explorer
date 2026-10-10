@@ -1,0 +1,6280 @@
+{
+  "measurement_note": "Wall times depend on machine load; no before/after ratio is claimed.",
+  "measurements": [
+    {
+      "additive_htm": {
+        "mean": 140.16666666666666,
+        "mean_denominator": 6,
+        "mean_numerator": 841,
+        "worst": 295
+      },
+      "analysis_seconds": 16.429122366997035,
+      "backend": "symbolic",
+      "cases": 51,
+      "computation": {
+        "budget_scope": "shared optional quality passes after certified baseline; final validation excluded",
+        "elapsed_seconds": 147.242075,
+        "max_optimization_work": null,
+        "optimization_seconds": 120,
+        "optimization_work": 634389,
+        "stop_reason": "optimization_seconds",
+        "workload": {
+          "arc_count": 153594,
+          "discovery_policy": "bounded_physical_pool",
+          "estimated_explicit_block_entries": 23887872,
+          "explicit_group_eligible": false,
+          "graph_view": "summary",
+          "group_order": 1492992,
+          "observable_blocks": 16,
+          "original_loop_count": 19473,
+          "original_qtm_max": 39,
+          "original_qtm_sum": 394345,
+          "recommended_backend": "symbolic",
+          "reduced_generator_count": 5,
+          "reduced_qtm_max": 10,
+          "reduced_qtm_sum": 35,
+          "selected_backend": "symbolic",
+          "shape_count": 84584
+        }
+      },
+      "full_membership_check_seconds": 4.118684339002357,
+      "full_native_generator_coverage": true,
+      "group_order": 1492992,
+      "guide_bytes": 2664416,
+      "guide_render_seconds": 49.61675779300276,
+      "history_free_replays": [
+        {
+          "input_htm": 6,
+          "replay_verified": true,
+          "solution_htm": 141,
+          "wall_seconds": 0.011296556000161218
+        },
+        {
+          "input_htm": 15,
+          "replay_verified": true,
+          "solution_htm": 150,
+          "wall_seconds": 0.016393648998928256
+        },
+        {
+          "input_htm": 24,
+          "replay_verified": true,
+          "solution_htm": 151,
+          "wall_seconds": 0.017901194998557912
+        }
+      ],
+      "macros": 28,
+      "progress_events": [
+        {
+          "algebra_generators": 5,
+          "elapsed_seconds": 0.015,
+          "group_order": 1492992,
+          "optimization_work": 0,
+          "original_loops": 19473,
+          "phase": "analysis",
+          "shapes": 84584,
+          "status": "completed"
+        },
+        {
+          "arc_count": 153594,
+          "discovery_policy": "bounded_physical_pool",
+          "elapsed_seconds": 0.042,
+          "estimated_explicit_block_entries": 23887872,
+          "explicit_group_eligible": false,
+          "graph_view": "summary",
+          "group_order": 1492992,
+          "observable_blocks": 16,
+          "optimization_work": 0,
+          "original_loop_count": 19473,
+          "original_qtm_max": 39,
+          "original_qtm_sum": 394345,
+          "phase": "routing",
+          "recommended_backend": "symbolic",
+          "reduced_generator_count": 5,
+          "reduced_qtm_max": 10,
+          "reduced_qtm_sum": 35,
+          "selected_backend": "symbolic",
+          "shape_count": 84584,
+          "status": "completed"
+        },
+        {
+          "elapsed_seconds": 0.056,
+          "optimization_work": 0,
+          "phase": "symbolic_baseline",
+          "status": "running",
+          "strategy": "fully_solve_each_block"
+        },
+        {
+          "algebra_generators": 5,
+          "elapsed_seconds": 0.286,
+          "group_order": 1492992,
+          "native_generators": 19473,
+          "optimization_work": 0,
+          "phase": "symbolic_stage_planning",
+          "status": "running",
+          "strategy": "fully_solve_each_block"
+        },
+        {
+          "elapsed_seconds": 6.898,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 7.428,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 7.931,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 8.438,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 8.973,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 9.498,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 10.071,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 10.589,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 11.101,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 11.634,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 11.718,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 12.219,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 12.724,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 13.233,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 13.748,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 14.327,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 14.899,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 15.575,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 15.579,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 16.757,
+          "optimization_work": 0,
+          "phase": "symbolic_chain_validation",
+          "stage": 1,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 17.533,
+          "optimization_work": 0,
+          "phase": "symbolic_case_compilation",
+          "stage": 1,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 17.866,
+          "optimization_work": 0,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 18.369,
+          "optimization_work": 0,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "cases": 51,
+          "elapsed_seconds": 18.504,
+          "group_order": 1492992,
+          "optimization_work": 0,
+          "phase": "baseline",
+          "source": "fallback:fully_solve_each_block",
+          "stages": 9,
+          "status": "certified"
+        },
+        {
+          "elapsed_seconds": 18.512,
+          "mean_htm": 698.0972222222222,
+          "optimization_work": 0,
+          "phase": "method",
+          "source": "fallback:fully_solve_each_block",
+          "status": "retained",
+          "worst_htm": 1148
+        },
+        {
+          "elapsed_seconds": 18.513,
+          "optimization_work": 1,
+          "phase": "symbolic_control_chain",
+          "status": "running"
+        },
+        {
+          "algebra_generators": 5,
+          "elapsed_seconds": 18.555,
+          "group_order": 1492992,
+          "native_generators": 19473,
+          "optimization_work": 1,
+          "phase": "symbolic_stage_planning",
+          "status": "running",
+          "strategy": "placement_then_orientation"
+        },
+        {
+          "elapsed_seconds": 18.555,
+          "optimization_work": 1,
+          "phase": "algebra",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 22.951,
+          "optimization_work": 2,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 23.458,
+          "optimization_work": 41,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 23.969,
+          "optimization_work": 82,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 24.472,
+          "optimization_work": 129,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 24.667,
+          "optimization_work": 155,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 25.171,
+          "optimization_work": 243,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 25.682,
+          "optimization_work": 308,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 26.249,
+          "optimization_work": 312,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 26.936,
+          "optimization_work": 316,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 27.659,
+          "optimization_work": 319,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 28.251,
+          "optimization_work": 321,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 28.266,
+          "optimization_work": 322,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 28.343,
+          "optimization_work": 323,
+          "phase": "symbolic_chain_validation",
+          "stage": 1,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 28.669,
+          "optimization_work": 337,
+          "phase": "symbolic_dictionary",
+          "status": "running"
+        },
+        {
+          "algebra_generators": 5,
+          "elapsed_seconds": 28.669,
+          "optimization_work": 337,
+          "original_loops": 19473,
+          "phase": "dictionary",
+          "status": "started"
+        },
+        {
+          "elapsed_seconds": 28.67,
+          "optimization_work": 337,
+          "phase": "algebra",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 31.432,
+          "optimization_work": 338,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 31.938,
+          "optimization_work": 518,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 32.441,
+          "optimization_work": 650,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 32.945,
+          "optimization_work": 778,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 33.445,
+          "optimization_work": 905,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 33.951,
+          "optimization_work": 1030,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 34.452,
+          "optimization_work": 1199,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 34.961,
+          "optimization_work": 1310,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 35.462,
+          "optimization_work": 1415,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 35.964,
+          "optimization_work": 1534,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 36.465,
+          "optimization_work": 1694,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 36.967,
+          "optimization_work": 1831,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 37.467,
+          "optimization_work": 1982,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 37.971,
+          "optimization_work": 2149,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 38.472,
+          "optimization_work": 2333,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 38.975,
+          "optimization_work": 2514,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.475,
+          "optimization_work": 2696,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.976,
+          "optimization_work": 2861,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.478,
+          "optimization_work": 3036,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.982,
+          "optimization_work": 3174,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 41.485,
+          "optimization_work": 3316,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 41.987,
+          "optimization_work": 3520,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 42.489,
+          "optimization_work": 3722,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 42.991,
+          "optimization_work": 3866,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 43.492,
+          "optimization_work": 4013,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 43.994,
+          "optimization_work": 4168,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 44.494,
+          "optimization_work": 4351,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 44.994,
+          "optimization_work": 4507,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 45.498,
+          "optimization_work": 4675,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.0,
+          "optimization_work": 4792,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.501,
+          "optimization_work": 4962,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 47.005,
+          "optimization_work": 5123,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 47.508,
+          "optimization_work": 5263,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 48.009,
+          "optimization_work": 5421,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 48.51,
+          "optimization_work": 5559,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 49.013,
+          "optimization_work": 5727,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 49.517,
+          "optimization_work": 5927,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 50.019,
+          "optimization_work": 6089,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 50.52,
+          "optimization_work": 6197,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 51.021,
+          "optimization_work": 6360,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 51.522,
+          "optimization_work": 6602,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.024,
+          "optimization_work": 6800,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.525,
+          "optimization_work": 6944,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.025,
+          "optimization_work": 7120,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.528,
+          "optimization_work": 7344,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.031,
+          "optimization_work": 7674,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.534,
+          "optimization_work": 8040,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 55.041,
+          "optimization_work": 8307,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 55.543,
+          "optimization_work": 8519,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 56.047,
+          "optimization_work": 8628,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 56.548,
+          "optimization_work": 8761,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.049,
+          "optimization_work": 8924,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.549,
+          "optimization_work": 9052,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 58.052,
+          "optimization_work": 9145,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 58.555,
+          "optimization_work": 9219,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 59.055,
+          "optimization_work": 9358,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 59.558,
+          "optimization_work": 9584,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 60.062,
+          "optimization_work": 9916,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 60.562,
+          "optimization_work": 10375,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 61.064,
+          "optimization_work": 10759,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 61.566,
+          "optimization_work": 11167,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 62.068,
+          "optimization_work": 11468,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 62.57,
+          "optimization_work": 11695,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 63.072,
+          "optimization_work": 11855,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 63.574,
+          "optimization_work": 11966,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 64.078,
+          "optimization_work": 12104,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 64.581,
+          "optimization_work": 12254,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 66.642,
+          "optimization_work": 12338,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 67.142,
+          "optimization_work": 12862,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 67.644,
+          "optimization_work": 13122,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 68.144,
+          "optimization_work": 13410,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 68.645,
+          "optimization_work": 13674,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 69.147,
+          "optimization_work": 13919,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 69.647,
+          "optimization_work": 14153,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 70.151,
+          "optimization_work": 14384,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 70.652,
+          "optimization_work": 14543,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 71.153,
+          "optimization_work": 14828,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 71.654,
+          "optimization_work": 15101,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 72.155,
+          "optimization_work": 15377,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 72.656,
+          "optimization_work": 15667,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 73.159,
+          "optimization_work": 15977,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 73.66,
+          "optimization_work": 16291,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 74.161,
+          "optimization_work": 16590,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 74.662,
+          "optimization_work": 16885,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.164,
+          "optimization_work": 17087,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.664,
+          "optimization_work": 17220,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 76.166,
+          "optimization_work": 17435,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 76.666,
+          "optimization_work": 17632,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 77.166,
+          "optimization_work": 17830,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 77.667,
+          "optimization_work": 18017,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 78.167,
+          "optimization_work": 18280,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 78.668,
+          "optimization_work": 18515,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 79.17,
+          "optimization_work": 18712,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 79.671,
+          "optimization_work": 18870,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 80.172,
+          "optimization_work": 19056,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 80.673,
+          "optimization_work": 19272,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 81.174,
+          "optimization_work": 19515,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 81.675,
+          "optimization_work": 19770,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 82.176,
+          "optimization_work": 20055,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 82.678,
+          "optimization_work": 20223,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 83.18,
+          "optimization_work": 20407,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 83.681,
+          "optimization_work": 20589,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 84.182,
+          "optimization_work": 20784,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 84.683,
+          "optimization_work": 20988,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 85.185,
+          "optimization_work": 21232,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 85.686,
+          "optimization_work": 21480,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 86.186,
+          "optimization_work": 21766,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 86.686,
+          "optimization_work": 21950,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 87.187,
+          "optimization_work": 22129,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 87.69,
+          "optimization_work": 22290,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.193,
+          "optimization_work": 22482,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.694,
+          "optimization_work": 22647,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 89.196,
+          "optimization_work": 22825,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 89.696,
+          "optimization_work": 23033,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 90.196,
+          "optimization_work": 23231,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 90.699,
+          "optimization_work": 23458,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "algorithms": 1024,
+          "candidates": 12000,
+          "elapsed_seconds": 94.028,
+          "optimization_work": 23473,
+          "orientation_span_order": 216,
+          "orientation_target_order": 216,
+          "phase": "dictionary",
+          "status": "completed"
+        },
+        {
+          "elapsed_seconds": 94.042,
+          "optimization_work": 23474,
+          "phase": "symbolic_chain_policy",
+          "status": "running",
+          "strategy": "fully_solve_each_block"
+        },
+        {
+          "elapsed_seconds": 94.044,
+          "optimization_work": 23475,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 94.544,
+          "optimization_work": 23764,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 95.045,
+          "optimization_work": 24015,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 95.548,
+          "optimization_work": 24273,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.044,
+          "optimization_work": 24499,
+          "phase": "dictionary_policy",
+          "stage": 1,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.052,
+          "optimization_work": 24500,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.06,
+          "optimization_work": 24507,
+          "phase": "dictionary_policy",
+          "stage": 2,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.067,
+          "optimization_work": 24508,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.071,
+          "optimization_work": 24511,
+          "phase": "dictionary_policy",
+          "stage": 3,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.077,
+          "optimization_work": 24512,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.079,
+          "optimization_work": 24514,
+          "phase": "dictionary_policy",
+          "stage": 4,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.091,
+          "optimization_work": 24515,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.108,
+          "optimization_work": 24525,
+          "phase": "dictionary_policy",
+          "stage": 5,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.113,
+          "optimization_work": 24526,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.125,
+          "optimization_work": 24532,
+          "phase": "dictionary_policy",
+          "stage": 6,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.129,
+          "optimization_work": 24533,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.132,
+          "optimization_work": 24535,
+          "phase": "dictionary_policy",
+          "stage": 7,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.139,
+          "optimization_work": 24536,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.17,
+          "optimization_work": 24549,
+          "phase": "dictionary_policy",
+          "stage": 8,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.174,
+          "optimization_work": 24550,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.197,
+          "optimization_work": 24559,
+          "phase": "dictionary_policy",
+          "stage": 9,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.201,
+          "optimization_work": 24560,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.23,
+          "optimization_work": 24563,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.361,
+          "mean_htm": 140.16666666666666,
+          "optimization_work": 24604,
+          "phase": "method",
+          "source": "dictionary:fully_solve_each_block",
+          "status": "retained",
+          "worst_htm": 295
+        },
+        {
+          "elapsed_seconds": 96.371,
+          "optimization_work": 24605,
+          "phase": "symbolic_chain_policy",
+          "status": "running",
+          "strategy": "placement_then_orientation"
+        },
+        {
+          "elapsed_seconds": 96.391,
+          "optimization_work": 24606,
+          "phase": "symbolic_case_compilation",
+          "stage": 1,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.559,
+          "optimization_work": 24620,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.714,
+          "optimization_work": 24646,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 97.214,
+          "optimization_work": 24894,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 97.716,
+          "optimization_work": 25082,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 98.223,
+          "optimization_work": 25192,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 98.724,
+          "optimization_work": 25318,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.225,
+          "optimization_work": 25505,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.681,
+          "optimization_work": 25670,
+          "phase": "dictionary_policy",
+          "stage": 1,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.689,
+          "optimization_work": 25671,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.695,
+          "optimization_work": 25675,
+          "phase": "dictionary_policy",
+          "stage": 2,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.697,
+          "optimization_work": 25676,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.701,
+          "optimization_work": 25680,
+          "phase": "dictionary_policy",
+          "stage": 3,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.703,
+          "optimization_work": 25681,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.704,
+          "optimization_work": 25683,
+          "phase": "dictionary_policy",
+          "stage": 4,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.707,
+          "optimization_work": 25684,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.711,
+          "optimization_work": 25688,
+          "phase": "dictionary_policy",
+          "stage": 5,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.714,
+          "optimization_work": 25689,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.717,
+          "optimization_work": 25692,
+          "phase": "dictionary_policy",
+          "stage": 6,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.719,
+          "optimization_work": 25693,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.719,
+          "optimization_work": 25694,
+          "phase": "dictionary_policy",
+          "stage": 7,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.72,
+          "optimization_work": 25695,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.72,
+          "optimization_work": 25696,
+          "phase": "dictionary_policy",
+          "stage": 8,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.722,
+          "optimization_work": 25697,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.722,
+          "optimization_work": 25698,
+          "phase": "dictionary_policy",
+          "stage": 9,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.723,
+          "optimization_work": 25699,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.725,
+          "optimization_work": 25701,
+          "phase": "dictionary_policy",
+          "stage": 10,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.727,
+          "optimization_work": 25702,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.728,
+          "optimization_work": 25704,
+          "phase": "dictionary_policy",
+          "stage": 11,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.731,
+          "optimization_work": 25705,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.733,
+          "optimization_work": 25707,
+          "phase": "dictionary_policy",
+          "stage": 12,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.735,
+          "optimization_work": 25708,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.739,
+          "optimization_work": 25711,
+          "phase": "dictionary_policy",
+          "stage": 13,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.74,
+          "optimization_work": 25712,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.743,
+          "optimization_work": 25715,
+          "phase": "dictionary_policy",
+          "stage": 14,
+          "stages": 14,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.744,
+          "optimization_work": 25716,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.767,
+          "optimization_work": 25719,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.861,
+          "kind": 1,
+          "optimization_work": 25745,
+          "phase": "adaptive_chain",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.883,
+          "optimization_work": 25746,
+          "phase": "algebra",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 103.363,
+          "optimization_work": 25747,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 103.868,
+          "optimization_work": 25806,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 104.37,
+          "optimization_work": 25853,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 104.711,
+          "optimization_work": 25900,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 105.257,
+          "optimization_work": 26053,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 105.787,
+          "optimization_work": 26060,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 105.905,
+          "optimization_work": 26061,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 105.907,
+          "optimization_work": 26062,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 105.928,
+          "optimization_work": 26063,
+          "phase": "symbolic_chain_validation",
+          "stage": 1,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 106.017,
+          "optimization_work": 26072,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 106.519,
+          "optimization_work": 26303,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 107.019,
+          "optimization_work": 26485,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 107.521,
+          "optimization_work": 26744,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 108.021,
+          "optimization_work": 27059,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 108.521,
+          "optimization_work": 27300,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 108.876,
+          "optimization_work": 27442,
+          "phase": "symbolic_case_compilation",
+          "stage": 1,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 109.033,
+          "optimization_work": 27451,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 109.191,
+          "optimization_work": 27494,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 109.693,
+          "optimization_work": 27884,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 110.194,
+          "optimization_work": 28268,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 110.696,
+          "optimization_work": 28586,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.198,
+          "optimization_work": 28844,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.234,
+          "optimization_work": 28864,
+          "phase": "dictionary_policy",
+          "stage": 1,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.243,
+          "optimization_work": 28865,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.254,
+          "optimization_work": 28875,
+          "phase": "dictionary_policy",
+          "stage": 2,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.266,
+          "optimization_work": 28876,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.288,
+          "optimization_work": 28891,
+          "phase": "dictionary_policy",
+          "stage": 3,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.293,
+          "optimization_work": 28892,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.309,
+          "optimization_work": 28903,
+          "phase": "dictionary_policy",
+          "stage": 4,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.313,
+          "optimization_work": 28904,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.321,
+          "optimization_work": 28912,
+          "phase": "dictionary_policy",
+          "stage": 5,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.322,
+          "optimization_work": 28913,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.333,
+          "optimization_work": 28919,
+          "phase": "dictionary_policy",
+          "stage": 6,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.334,
+          "optimization_work": 28920,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.339,
+          "optimization_work": 28925,
+          "phase": "dictionary_policy",
+          "stage": 7,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.342,
+          "optimization_work": 28926,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.344,
+          "optimization_work": 28928,
+          "phase": "dictionary_policy",
+          "stage": 8,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.346,
+          "optimization_work": 28929,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.351,
+          "optimization_work": 28932,
+          "phase": "dictionary_policy",
+          "stage": 9,
+          "stages": 9,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.353,
+          "optimization_work": 28933,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.373,
+          "optimization_work": 28935,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.48,
+          "kind": 2,
+          "optimization_work": 28978,
+          "phase": "adaptive_chain",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.502,
+          "optimization_work": 28979,
+          "phase": "algebra",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 114.657,
+          "optimization_work": 28980,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 115.162,
+          "optimization_work": 29027,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 115.687,
+          "optimization_work": 29066,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 116.198,
+          "optimization_work": 29106,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 116.516,
+          "optimization_work": 29133,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 117.016,
+          "optimization_work": 29271,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 117.528,
+          "optimization_work": 29290,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 118.031,
+          "optimization_work": 29296,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 118.036,
+          "optimization_work": 29297,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 118.067,
+          "optimization_work": 29298,
+          "phase": "symbolic_chain_validation",
+          "stage": 1,
+          "stages": 11,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 118.221,
+          "optimization_work": 29309,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 118.723,
+          "optimization_work": 29543,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 119.226,
+          "optimization_work": 29743,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 119.726,
+          "optimization_work": 30032,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 120.23,
+          "optimization_work": 30215,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 120.732,
+          "optimization_work": 30437,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 121.233,
+          "optimization_work": 30609,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 121.746,
+          "optimization_work": 30652,
+          "phase": "symbolic_case_compilation",
+          "stage": 1,
+          "stages": 11,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 122.197,
+          "optimization_work": 30663,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 122.399,
+          "optimization_work": 30699,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 122.899,
+          "optimization_work": 30940,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 123.401,
+          "optimization_work": 31159,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 123.902,
+          "optimization_work": 31348,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 124.404,
+          "optimization_work": 31597,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 124.905,
+          "optimization_work": 31845,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.321,
+          "optimization_work": 32042,
+          "phase": "dictionary_policy",
+          "stage": 1,
+          "stages": 11,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.332,
+          "optimization_work": 32043,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.339,
+          "optimization_work": 32047,
+          "phase": "dictionary_policy",
+          "stage": 2,
+          "stages": 11,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.354,
+          "optimization_work": 32048,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.386,
+          "optimization_work": 32063,
+          "phase": "dictionary_policy",
+          "stage": 3,
+          "stages": 11,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.39,
+          "optimization_work": 32064,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.396,
+          "optimization_work": 32067,
+          "phase": "dictionary_policy",
+          "stage": 4,
+          "stages": 11,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.399,
+          "optimization_work": 32068,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.412,
+          "optimization_work": 32075,
+          "phase": "dictionary_policy",
+          "stage": 5,
+          "stages": 11,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.414,
+          "optimization_work": 32076,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.419,
+          "optimization_work": 32079,
+          "phase": "dictionary_policy",
+          "stage": 6,
+          "stages": 11,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.422,
+          "optimization_work": 32080,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.433,
+          "optimization_work": 32087,
+          "phase": "dictionary_policy",
+          "stage": 7,
+          "stages": 11,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.438,
+          "optimization_work": 32088,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.442,
+          "optimization_work": 32090,
+          "phase": "dictionary_policy",
+          "stage": 8,
+          "stages": 11,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.445,
+          "optimization_work": 32091,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.462,
+          "optimization_work": 32096,
+          "phase": "dictionary_policy",
+          "stage": 9,
+          "stages": 11,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.465,
+          "optimization_work": 32097,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.468,
+          "optimization_work": 32099,
+          "phase": "dictionary_policy",
+          "stage": 10,
+          "stages": 11,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.472,
+          "optimization_work": 32100,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.481,
+          "optimization_work": 32103,
+          "phase": "dictionary_policy",
+          "stage": 11,
+          "stages": 11,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.484,
+          "optimization_work": 32104,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 125.507,
+          "optimization_work": 32105,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "backend": "symbolic",
+          "elapsed_seconds": 125.827,
+          "optimization_work": 32182,
+          "phase": "templates",
+          "status": "started"
+        },
+        {
+          "elapsed_seconds": 126.131,
+          "optimization_work": 32183,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 127.182,
+          "optimization_work": 32309,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 127.682,
+          "optimization_work": 71901,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 128.183,
+          "optimization_work": 94505,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 128.684,
+          "optimization_work": 124778,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 129.184,
+          "optimization_work": 162590,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 129.684,
+          "optimization_work": 198502,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 130.184,
+          "optimization_work": 233130,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 130.685,
+          "optimization_work": 267415,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 131.185,
+          "optimization_work": 301663,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 131.686,
+          "optimization_work": 331059,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 132.186,
+          "optimization_work": 349535,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 132.686,
+          "optimization_work": 369168,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 133.19,
+          "optimization_work": 382342,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 133.693,
+          "optimization_work": 405636,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 134.193,
+          "optimization_work": 426924,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 134.693,
+          "optimization_work": 451445,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 135.193,
+          "optimization_work": 477404,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 135.693,
+          "optimization_work": 507479,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 136.193,
+          "optimization_work": 536758,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 136.693,
+          "optimization_work": 550030,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 137.193,
+          "optimization_work": 570241,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 137.763,
+          "optimization_work": 596319,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 138.263,
+          "optimization_work": 623337,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 138.505,
+          "optimization_work": 634389,
+          "phase": "chunk_parsing",
+          "reason": "optimization_seconds",
+          "status": "budget_exhausted"
+        },
+        {
+          "elapsed_seconds": 138.505,
+          "optimization_work": 634389,
+          "phase": "fallback",
+          "status": "started"
+        },
+        {
+          "elapsed_seconds": 138.544,
+          "optimization_work": 634389,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "backend": "symbolic",
+          "elapsed_seconds": 138.813,
+          "optimization_work": 634389,
+          "phase": "templates",
+          "status": "started"
+        },
+        {
+          "elapsed_seconds": 139.378,
+          "optimization_work": 634389,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 139.962,
+          "optimization_work": 634389,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 141.844,
+          "optimization_work": 634389,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 142.367,
+          "optimization_work": 634389,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 146.46,
+          "optimization_work": 634389,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 147.237,
+          "macros": 28,
+          "mean_htm": 140.16666666666666,
+          "optimization_work": 634389,
+          "phase": "repertoire",
+          "status": "retained",
+          "worst_htm": 295
+        },
+        {
+          "backend": "symbolic",
+          "elapsed_seconds": 147.237,
+          "macros": 28,
+          "optimization_work": 634389,
+          "phase": "templates",
+          "status": "completed"
+        },
+        {
+          "elapsed_seconds": 147.242,
+          "macros": 28,
+          "optimization_work": 634389,
+          "phase": "complete",
+          "status": "certified",
+          "stopped": true
+        }
+      ],
+      "puzzle": "BeltRoad",
+      "selected_metrics": {
+        "algorithm_count": 42,
+        "case_count_sum": 51,
+        "chunk_definition_moves": 0,
+        "chunk_definition_symbols": 0,
+        "chunk_recipe_symbols": 593,
+        "chunk_regrips": 0,
+        "definition_htm": 751,
+        "definition_qtm": 809,
+        "description_score": 680,
+        "dictionary_score": 593,
+        "instruction_symbols": 87,
+        "learned_body_count": 26,
+        "macro_count": 28,
+        "macro_definition_htm": 593,
+        "max_body_htm": 175,
+        "max_case_count": 12,
+        "mean_htm": 140.16666666666666,
+        "mean_qtm": 153.79166666666666,
+        "original_leaf_count": 21,
+        "original_leaf_htm": 130,
+        "rule_count": 38,
+        "stage_count": 9,
+        "states": 1492992,
+        "total_htm": 209267712,
+        "total_qtm": 229609728,
+        "visible_leaf_count": 21,
+        "worst_htm": 295,
+        "worst_qtm": 322
+      },
+      "solver_including_validation_seconds": 147.24481212300088,
+      "stages": 9,
+      "status": "completed",
+      "terminal_order": 1,
+      "total_analysis_solver_guide_seconds": 213.29069228300068
+    },
+    {
+      "additive_htm": {
+        "mean": 79.875,
+        "mean_denominator": 8,
+        "mean_numerator": 639,
+        "worst": 135
+      },
+      "analysis_seconds": 3.8519956939999247,
+      "backend": "symbolic",
+      "cases": 29,
+      "computation": {
+        "budget_scope": "shared optional quality passes after certified baseline; final validation excluded",
+        "elapsed_seconds": 59.903894,
+        "max_optimization_work": null,
+        "optimization_seconds": 120,
+        "optimization_work": 390744,
+        "stop_reason": null,
+        "workload": {
+          "arc_count": 154272,
+          "discovery_policy": "bounded_physical_pool",
+          "estimated_explicit_block_entries": 155520,
+          "explicit_group_eligible": true,
+          "graph_view": "summary",
+          "group_order": 10368,
+          "observable_blocks": 15,
+          "original_loop_count": 3336,
+          "original_qtm_max": 49,
+          "original_qtm_sum": 92731,
+          "recommended_backend": "symbolic",
+          "reduced_generator_count": 4,
+          "reduced_qtm_max": 14,
+          "reduced_qtm_sum": 43,
+          "selected_backend": "symbolic",
+          "shape_count": 92176
+        }
+      },
+      "full_membership_check_seconds": 0.28030331800255226,
+      "full_native_generator_coverage": true,
+      "group_order": 10368,
+      "guide_bytes": 1453589,
+      "guide_render_seconds": 9.262239079002029,
+      "history_free_replays": [
+        {
+          "input_htm": 5,
+          "replay_verified": true,
+          "solution_htm": 5,
+          "wall_seconds": 0.0007996770000318065
+        },
+        {
+          "input_htm": 18,
+          "replay_verified": true,
+          "solution_htm": 92,
+          "wall_seconds": 0.0037935960026516113
+        },
+        {
+          "input_htm": 31,
+          "replay_verified": true,
+          "solution_htm": 64,
+          "wall_seconds": 0.0055657510019955225
+        }
+      ],
+      "macros": 16,
+      "progress_events": [
+        {
+          "algebra_generators": 4,
+          "elapsed_seconds": 0.001,
+          "group_order": 10368,
+          "optimization_work": 0,
+          "original_loops": 3336,
+          "phase": "analysis",
+          "shapes": 92176,
+          "status": "completed"
+        },
+        {
+          "arc_count": 154272,
+          "discovery_policy": "bounded_physical_pool",
+          "elapsed_seconds": 0.001,
+          "estimated_explicit_block_entries": 155520,
+          "explicit_group_eligible": true,
+          "graph_view": "summary",
+          "group_order": 10368,
+          "observable_blocks": 15,
+          "optimization_work": 0,
+          "original_loop_count": 3336,
+          "original_qtm_max": 49,
+          "original_qtm_sum": 92731,
+          "phase": "routing",
+          "recommended_backend": "symbolic",
+          "reduced_generator_count": 4,
+          "reduced_qtm_max": 14,
+          "reduced_qtm_sum": 43,
+          "selected_backend": "symbolic",
+          "shape_count": 92176,
+          "status": "completed"
+        },
+        {
+          "elapsed_seconds": 0.002,
+          "optimization_work": 0,
+          "phase": "symbolic_baseline",
+          "status": "running",
+          "strategy": "fully_solve_each_block"
+        },
+        {
+          "algebra_generators": 4,
+          "elapsed_seconds": 0.005,
+          "group_order": 10368,
+          "native_generators": 3336,
+          "optimization_work": 0,
+          "phase": "symbolic_stage_planning",
+          "status": "running",
+          "strategy": "fully_solve_each_block"
+        },
+        {
+          "elapsed_seconds": 2.034,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 2.238,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 2.442,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 2.443,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 2.564,
+          "optimization_work": 0,
+          "phase": "symbolic_chain_validation",
+          "stage": 1,
+          "stages": 8,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 2.691,
+          "optimization_work": 0,
+          "phase": "symbolic_case_compilation",
+          "stage": 1,
+          "stages": 8,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 2.729,
+          "optimization_work": 0,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "cases": 29,
+          "elapsed_seconds": 2.765,
+          "group_order": 10368,
+          "optimization_work": 0,
+          "phase": "baseline",
+          "source": "fallback:fully_solve_each_block",
+          "stages": 8,
+          "status": "certified"
+        },
+        {
+          "elapsed_seconds": 2.765,
+          "mean_htm": 565.75,
+          "optimization_work": 0,
+          "phase": "method",
+          "source": "fallback:fully_solve_each_block",
+          "status": "retained",
+          "worst_htm": 926
+        },
+        {
+          "elapsed_seconds": 2.765,
+          "optimization_work": 1,
+          "phase": "symbolic_control_chain",
+          "status": "running"
+        },
+        {
+          "algebra_generators": 4,
+          "elapsed_seconds": 2.767,
+          "group_order": 10368,
+          "native_generators": 3336,
+          "optimization_work": 1,
+          "phase": "symbolic_stage_planning",
+          "status": "running",
+          "strategy": "placement_then_orientation"
+        },
+        {
+          "elapsed_seconds": 2.767,
+          "optimization_work": 1,
+          "phase": "algebra",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 5.173,
+          "optimization_work": 2,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 5.642,
+          "optimization_work": 29,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 6.073,
+          "optimization_work": 65,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 6.075,
+          "optimization_work": 66,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 6.081,
+          "optimization_work": 67,
+          "phase": "symbolic_chain_validation",
+          "stage": 1,
+          "stages": 10,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 6.116,
+          "optimization_work": 77,
+          "phase": "symbolic_dictionary",
+          "status": "running"
+        },
+        {
+          "algebra_generators": 4,
+          "elapsed_seconds": 6.117,
+          "optimization_work": 77,
+          "original_loops": 3336,
+          "phase": "dictionary",
+          "status": "started"
+        },
+        {
+          "elapsed_seconds": 6.117,
+          "optimization_work": 77,
+          "phase": "algebra",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 8.449,
+          "optimization_work": 78,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 8.952,
+          "optimization_work": 458,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 9.452,
+          "optimization_work": 704,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 9.953,
+          "optimization_work": 1078,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 10.453,
+          "optimization_work": 1476,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 10.954,
+          "optimization_work": 1853,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 11.459,
+          "optimization_work": 2164,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 11.96,
+          "optimization_work": 2479,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 12.46,
+          "optimization_work": 3011,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 12.96,
+          "optimization_work": 3618,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 13.461,
+          "optimization_work": 4158,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 13.961,
+          "optimization_work": 4641,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 14.461,
+          "optimization_work": 5170,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 14.962,
+          "optimization_work": 5708,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 15.462,
+          "optimization_work": 6085,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 15.963,
+          "optimization_work": 6587,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 16.465,
+          "optimization_work": 7057,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 16.965,
+          "optimization_work": 7641,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 17.466,
+          "optimization_work": 8647,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 17.967,
+          "optimization_work": 9084,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 18.468,
+          "optimization_work": 9764,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 18.969,
+          "optimization_work": 10515,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 19.47,
+          "optimization_work": 11293,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 19.97,
+          "optimization_work": 11646,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 20.474,
+          "optimization_work": 11876,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 20.991,
+          "optimization_work": 12003,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 21.497,
+          "optimization_work": 12065,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 23.392,
+          "optimization_work": 12078,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 23.893,
+          "optimization_work": 12868,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 24.394,
+          "optimization_work": 13354,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 24.895,
+          "optimization_work": 13806,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 25.395,
+          "optimization_work": 14236,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 25.895,
+          "optimization_work": 14676,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 26.396,
+          "optimization_work": 15120,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 26.896,
+          "optimization_work": 15575,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 27.396,
+          "optimization_work": 15976,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 27.901,
+          "optimization_work": 16215,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 28.401,
+          "optimization_work": 16480,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 28.902,
+          "optimization_work": 16911,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 29.402,
+          "optimization_work": 17379,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 29.903,
+          "optimization_work": 17856,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 30.403,
+          "optimization_work": 18331,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 30.903,
+          "optimization_work": 18793,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 31.404,
+          "optimization_work": 19258,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 31.905,
+          "optimization_work": 19727,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 32.406,
+          "optimization_work": 20182,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 32.906,
+          "optimization_work": 20645,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 33.406,
+          "optimization_work": 21074,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 33.907,
+          "optimization_work": 21525,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 34.407,
+          "optimization_work": 22016,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 34.908,
+          "optimization_work": 22486,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 35.408,
+          "optimization_work": 22957,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 35.909,
+          "optimization_work": 23420,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 36.409,
+          "optimization_work": 23878,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 37.053,
+          "optimization_work": 24067,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 37.554,
+          "optimization_work": 24442,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "algorithms": 877,
+          "candidates": 12000,
+          "elapsed_seconds": 38.863,
+          "optimization_work": 24461,
+          "orientation_span_order": 72,
+          "orientation_target_order": 72,
+          "phase": "dictionary",
+          "status": "completed"
+        },
+        {
+          "elapsed_seconds": 38.875,
+          "optimization_work": 24462,
+          "phase": "symbolic_chain_policy",
+          "status": "running",
+          "strategy": "fully_solve_each_block"
+        },
+        {
+          "elapsed_seconds": 38.876,
+          "optimization_work": 24463,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.377,
+          "optimization_work": 25093,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.546,
+          "optimization_work": 25340,
+          "phase": "dictionary_policy",
+          "stage": 1,
+          "stages": 8,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.551,
+          "optimization_work": 25341,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.552,
+          "optimization_work": 25343,
+          "phase": "dictionary_policy",
+          "stage": 2,
+          "stages": 8,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.556,
+          "optimization_work": 25344,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.558,
+          "optimization_work": 25348,
+          "phase": "dictionary_policy",
+          "stage": 3,
+          "stages": 8,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.561,
+          "optimization_work": 25349,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.561,
+          "optimization_work": 25351,
+          "phase": "dictionary_policy",
+          "stage": 4,
+          "stages": 8,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.564,
+          "optimization_work": 25352,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.565,
+          "optimization_work": 25355,
+          "phase": "dictionary_policy",
+          "stage": 5,
+          "stages": 8,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.568,
+          "optimization_work": 25356,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.57,
+          "optimization_work": 25359,
+          "phase": "dictionary_policy",
+          "stage": 6,
+          "stages": 8,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.574,
+          "optimization_work": 25360,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.581,
+          "optimization_work": 25369,
+          "phase": "dictionary_policy",
+          "stage": 7,
+          "stages": 8,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.584,
+          "optimization_work": 25370,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.588,
+          "optimization_work": 25376,
+          "phase": "dictionary_policy",
+          "stage": 8,
+          "stages": 8,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.59,
+          "optimization_work": 25377,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.596,
+          "optimization_work": 25379,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.622,
+          "mean_htm": 79.875,
+          "optimization_work": 25399,
+          "phase": "method",
+          "source": "dictionary:fully_solve_each_block",
+          "status": "retained",
+          "worst_htm": 135
+        },
+        {
+          "elapsed_seconds": 39.625,
+          "optimization_work": 25400,
+          "phase": "symbolic_chain_policy",
+          "status": "running",
+          "strategy": "placement_then_orientation"
+        },
+        {
+          "elapsed_seconds": 39.628,
+          "optimization_work": 25401,
+          "phase": "symbolic_case_compilation",
+          "stage": 1,
+          "stages": 10,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.668,
+          "optimization_work": 25411,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.714,
+          "optimization_work": 25427,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.217,
+          "optimization_work": 25957,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.495,
+          "optimization_work": 26304,
+          "phase": "dictionary_policy",
+          "stage": 1,
+          "stages": 10,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.501,
+          "optimization_work": 26305,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.503,
+          "optimization_work": 26309,
+          "phase": "dictionary_policy",
+          "stage": 2,
+          "stages": 10,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.512,
+          "optimization_work": 26310,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.513,
+          "optimization_work": 26312,
+          "phase": "dictionary_policy",
+          "stage": 3,
+          "stages": 10,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.519,
+          "optimization_work": 26313,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.521,
+          "optimization_work": 26317,
+          "phase": "dictionary_policy",
+          "stage": 4,
+          "stages": 10,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.524,
+          "optimization_work": 26318,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.526,
+          "optimization_work": 26321,
+          "phase": "dictionary_policy",
+          "stage": 5,
+          "stages": 10,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.529,
+          "optimization_work": 26322,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.53,
+          "optimization_work": 26324,
+          "phase": "dictionary_policy",
+          "stage": 6,
+          "stages": 10,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.532,
+          "optimization_work": 26325,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.533,
+          "optimization_work": 26327,
+          "phase": "dictionary_policy",
+          "stage": 7,
+          "stages": 10,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.535,
+          "optimization_work": 26328,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.536,
+          "optimization_work": 26330,
+          "phase": "dictionary_policy",
+          "stage": 8,
+          "stages": 10,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.538,
+          "optimization_work": 26331,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.539,
+          "optimization_work": 26333,
+          "phase": "dictionary_policy",
+          "stage": 9,
+          "stages": 10,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.542,
+          "optimization_work": 26334,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.55,
+          "optimization_work": 26337,
+          "phase": "dictionary_policy",
+          "stage": 10,
+          "stages": 10,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.561,
+          "optimization_work": 26338,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.595,
+          "optimization_work": 26341,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.666,
+          "kind": 1,
+          "optimization_work": 26357,
+          "phase": "adaptive_chain",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.688,
+          "optimization_work": 26358,
+          "phase": "algebra",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 43.654,
+          "optimization_work": 26359,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 44.183,
+          "optimization_work": 26379,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 44.299,
+          "optimization_work": 26386,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 44.528,
+          "optimization_work": 26417,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 44.53,
+          "optimization_work": 26418,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 44.537,
+          "optimization_work": 26419,
+          "phase": "symbolic_chain_validation",
+          "stage": 1,
+          "stages": 5,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 44.578,
+          "optimization_work": 26424,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 45.079,
+          "optimization_work": 26905,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 45.559,
+          "optimization_work": 27367,
+          "phase": "symbolic_case_compilation",
+          "stage": 1,
+          "stages": 5,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 45.637,
+          "optimization_work": 27372,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 45.721,
+          "optimization_work": 27400,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.223,
+          "optimization_work": 28258,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.294,
+          "optimization_work": 28343,
+          "phase": "dictionary_policy",
+          "stage": 1,
+          "stages": 5,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.309,
+          "optimization_work": 28344,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.321,
+          "optimization_work": 28352,
+          "phase": "dictionary_policy",
+          "stage": 2,
+          "stages": 5,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.329,
+          "optimization_work": 28353,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.336,
+          "optimization_work": 28361,
+          "phase": "dictionary_policy",
+          "stage": 3,
+          "stages": 5,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.339,
+          "optimization_work": 28362,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.343,
+          "optimization_work": 28367,
+          "phase": "dictionary_policy",
+          "stage": 4,
+          "stages": 5,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.345,
+          "optimization_work": 28368,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.357,
+          "optimization_work": 28378,
+          "phase": "dictionary_policy",
+          "stage": 5,
+          "stages": 5,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.36,
+          "optimization_work": 28379,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.378,
+          "optimization_work": 28385,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.435,
+          "kind": 2,
+          "optimization_work": 28413,
+          "phase": "adaptive_chain",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.459,
+          "optimization_work": 28414,
+          "phase": "algebra",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 50.162,
+          "optimization_work": 28415,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 50.495,
+          "optimization_work": 28442,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 50.69,
+          "optimization_work": 28475,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 50.692,
+          "optimization_work": 28476,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 50.696,
+          "optimization_work": 28477,
+          "phase": "symbolic_chain_validation",
+          "stage": 1,
+          "stages": 7,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 50.722,
+          "optimization_work": 28484,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 51.222,
+          "optimization_work": 29186,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 51.449,
+          "optimization_work": 29426,
+          "phase": "symbolic_case_compilation",
+          "stage": 1,
+          "stages": 7,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 51.503,
+          "optimization_work": 29433,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 51.563,
+          "optimization_work": 29456,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.063,
+          "optimization_work": 30363,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.087,
+          "optimization_work": 30398,
+          "phase": "dictionary_policy",
+          "stage": 1,
+          "stages": 7,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.094,
+          "optimization_work": 30399,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.097,
+          "optimization_work": 30403,
+          "phase": "dictionary_policy",
+          "stage": 2,
+          "stages": 7,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.1,
+          "optimization_work": 30404,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.102,
+          "optimization_work": 30407,
+          "phase": "dictionary_policy",
+          "stage": 3,
+          "stages": 7,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.105,
+          "optimization_work": 30408,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.108,
+          "optimization_work": 30413,
+          "phase": "dictionary_policy",
+          "stage": 4,
+          "stages": 7,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.111,
+          "optimization_work": 30414,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.12,
+          "optimization_work": 30426,
+          "phase": "dictionary_policy",
+          "stage": 5,
+          "stages": 7,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.122,
+          "optimization_work": 30427,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.123,
+          "optimization_work": 30429,
+          "phase": "dictionary_policy",
+          "stage": 6,
+          "stages": 7,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.126,
+          "optimization_work": 30430,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.133,
+          "optimization_work": 30436,
+          "phase": "dictionary_policy",
+          "stage": 7,
+          "stages": 7,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.135,
+          "optimization_work": 30437,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.141,
+          "optimization_work": 30439,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "backend": "symbolic",
+          "elapsed_seconds": 52.219,
+          "optimization_work": 30482,
+          "phase": "templates",
+          "status": "started"
+        },
+        {
+          "elapsed_seconds": 52.27,
+          "optimization_work": 30483,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 52.666,
+          "optimization_work": 30546,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.166,
+          "optimization_work": 66283,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.666,
+          "optimization_work": 103573,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.168,
+          "optimization_work": 134704,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.668,
+          "optimization_work": 170691,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 55.168,
+          "optimization_work": 206848,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 55.668,
+          "optimization_work": 227362,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 56.168,
+          "optimization_work": 269959,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 56.67,
+          "optimization_work": 308551,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.17,
+          "optimization_work": 349033,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.664,
+          "optimization_work": 370926,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 58.344,
+          "optimization_work": 370968,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 58.582,
+          "macros": 17,
+          "mean_htm": 79.875,
+          "optimization_work": 371030,
+          "phase": "repertoire",
+          "status": "retained",
+          "worst_htm": 135
+        },
+        {
+          "elapsed_seconds": 58.583,
+          "optimization_work": 371031,
+          "phase": "template_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 58.585,
+          "optimization_work": 371032,
+          "phase": "template_seeds",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 58.607,
+          "optimization_work": 371065,
+          "phase": "template_expressions",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 58.621,
+          "optimization_work": 371144,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 58.626,
+          "optimization_work": 371145,
+          "phase": "template_bodies",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 58.626,
+          "optimization_work": 371146,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 58.683,
+          "optimization_work": 371150,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 58.989,
+          "optimization_work": 371213,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 59.212,
+          "optimization_work": 390640,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 59.715,
+          "optimization_work": 390724,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 59.894,
+          "macros": 16,
+          "mean_htm": 79.875,
+          "optimization_work": 390744,
+          "phase": "repertoire",
+          "status": "retained",
+          "worst_htm": 135
+        },
+        {
+          "backend": "symbolic",
+          "elapsed_seconds": 59.895,
+          "macros": 16,
+          "optimization_work": 390744,
+          "phase": "templates",
+          "status": "completed"
+        },
+        {
+          "elapsed_seconds": 59.904,
+          "macros": 16,
+          "optimization_work": 390744,
+          "phase": "complete",
+          "status": "certified",
+          "stopped": false
+        }
+      ],
+      "puzzle": "MostSignaturesCube",
+      "selected_metrics": {
+        "algorithm_count": 21,
+        "case_count_sum": 29,
+        "chunk_definition_moves": 12,
+        "chunk_definition_symbols": 12,
+        "chunk_recipe_symbols": 100,
+        "chunk_regrips": 11,
+        "definition_htm": 302,
+        "definition_qtm": 371,
+        "description_score": 183,
+        "dictionary_score": 123,
+        "instruction_symbols": 60,
+        "learned_body_count": 16,
+        "macro_count": 16,
+        "macro_definition_htm": 149,
+        "max_body_htm": 11,
+        "max_case_count": 8,
+        "mean_htm": 79.875,
+        "mean_qtm": 100.58333333333333,
+        "original_leaf_count": 16,
+        "original_leaf_htm": 149,
+        "rule_count": 18,
+        "stage_count": 8,
+        "states": 10368,
+        "total_htm": 828144,
+        "total_qtm": 1042848,
+        "visible_leaf_count": 16,
+        "worst_htm": 135,
+        "worst_qtm": 171
+      },
+      "solver_including_validation_seconds": 59.91440625999894,
+      "stages": 8,
+      "status": "completed",
+      "terminal_order": 1,
+      "total_analysis_solver_guide_seconds": 73.0286410330009
+    },
+    {
+      "additive_htm": {
+        "mean": 222.76150793650794,
+        "mean_denominator": 2520,
+        "mean_numerator": 561359,
+        "worst": 384
+      },
+      "analysis_seconds": 3.1998818289976043,
+      "backend": "symbolic",
+      "cases": 104,
+      "computation": {
+        "budget_scope": "shared optional quality passes after certified baseline; final validation excluded",
+        "elapsed_seconds": 112.045196,
+        "max_optimization_work": null,
+        "optimization_seconds": 120,
+        "optimization_work": 1215654,
+        "stop_reason": null,
+        "workload": {
+          "arc_count": 11406,
+          "discovery_policy": "bounded_physical_pool",
+          "estimated_explicit_block_entries": 642105999360,
+          "explicit_group_eligible": false,
+          "graph_view": "summary",
+          "group_order": 40131624960,
+          "observable_blocks": 16,
+          "original_loop_count": 4968,
+          "original_qtm_max": 17,
+          "original_qtm_sum": 62432,
+          "recommended_backend": "symbolic",
+          "reduced_generator_count": 3,
+          "reduced_qtm_max": 8,
+          "reduced_qtm_sum": 21,
+          "selected_backend": "symbolic",
+          "shape_count": 4062
+        }
+      },
+      "full_membership_check_seconds": 0.5433180999971228,
+      "full_native_generator_coverage": true,
+      "group_order": 40131624960,
+      "guide_bytes": 5565875,
+      "guide_render_seconds": 28.960197751999658,
+      "history_free_replays": [
+        {
+          "input_htm": 6,
+          "replay_verified": true,
+          "solution_htm": 198,
+          "wall_seconds": 0.018163823002396384
+        },
+        {
+          "input_htm": 12,
+          "replay_verified": true,
+          "solution_htm": 317,
+          "wall_seconds": 0.01950738900268334
+        },
+        {
+          "input_htm": 18,
+          "replay_verified": true,
+          "solution_htm": 191,
+          "wall_seconds": 0.013896892000047956
+        }
+      ],
+      "macros": 21,
+      "progress_events": [
+        {
+          "algebra_generators": 3,
+          "elapsed_seconds": 0.0,
+          "group_order": 40131624960,
+          "optimization_work": 0,
+          "original_loops": 4968,
+          "phase": "analysis",
+          "shapes": 4062,
+          "status": "completed"
+        },
+        {
+          "arc_count": 11406,
+          "discovery_policy": "bounded_physical_pool",
+          "elapsed_seconds": 0.001,
+          "estimated_explicit_block_entries": 642105999360,
+          "explicit_group_eligible": false,
+          "graph_view": "summary",
+          "group_order": 40131624960,
+          "observable_blocks": 16,
+          "optimization_work": 0,
+          "original_loop_count": 4968,
+          "original_qtm_max": 17,
+          "original_qtm_sum": 62432,
+          "phase": "routing",
+          "recommended_backend": "symbolic",
+          "reduced_generator_count": 3,
+          "reduced_qtm_max": 8,
+          "reduced_qtm_sum": 21,
+          "selected_backend": "symbolic",
+          "shape_count": 4062,
+          "status": "completed"
+        },
+        {
+          "elapsed_seconds": 0.001,
+          "optimization_work": 0,
+          "phase": "symbolic_baseline",
+          "status": "running",
+          "strategy": "fully_solve_each_block"
+        },
+        {
+          "algebra_generators": 3,
+          "elapsed_seconds": 0.004,
+          "group_order": 40131624960,
+          "native_generators": 4968,
+          "optimization_work": 0,
+          "phase": "symbolic_stage_planning",
+          "status": "running",
+          "strategy": "fully_solve_each_block"
+        },
+        {
+          "elapsed_seconds": 6.482,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 6.81,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 7.33,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 7.581,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 7.599,
+          "optimization_work": 0,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 7.769,
+          "optimization_work": 0,
+          "phase": "symbolic_chain_validation",
+          "stage": 1,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 8.07,
+          "optimization_work": 0,
+          "phase": "symbolic_case_compilation",
+          "stage": 1,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 8.91,
+          "optimization_work": 0,
+          "phase": "symbolic_case_compilation",
+          "stage": 9,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 9.193,
+          "optimization_work": 0,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 9.701,
+          "optimization_work": 0,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "cases": 104,
+          "elapsed_seconds": 9.931,
+          "group_order": 40131624960,
+          "optimization_work": 0,
+          "phase": "baseline",
+          "source": "fallback:fully_solve_each_block",
+          "stages": 13,
+          "status": "certified"
+        },
+        {
+          "elapsed_seconds": 9.949,
+          "mean_htm": 6632.750198412698,
+          "optimization_work": 0,
+          "phase": "method",
+          "source": "fallback:fully_solve_each_block",
+          "status": "retained",
+          "worst_htm": 11965
+        },
+        {
+          "elapsed_seconds": 9.949,
+          "optimization_work": 1,
+          "phase": "symbolic_control_chain",
+          "status": "running"
+        },
+        {
+          "algebra_generators": 3,
+          "elapsed_seconds": 9.952,
+          "group_order": 40131624960,
+          "native_generators": 4968,
+          "optimization_work": 1,
+          "phase": "symbolic_stage_planning",
+          "status": "running",
+          "strategy": "placement_then_orientation"
+        },
+        {
+          "elapsed_seconds": 9.952,
+          "optimization_work": 1,
+          "phase": "algebra",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 16.825,
+          "optimization_work": 2,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 17.136,
+          "optimization_work": 41,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 17.71,
+          "optimization_work": 82,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 18.314,
+          "optimization_work": 86,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 18.851,
+          "optimization_work": 93,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 19.432,
+          "optimization_work": 101,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 19.444,
+          "optimization_work": 102,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 19.452,
+          "optimization_work": 103,
+          "phase": "symbolic_chain_validation",
+          "stage": 1,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 19.645,
+          "optimization_work": 125,
+          "phase": "symbolic_dictionary",
+          "status": "running"
+        },
+        {
+          "algebra_generators": 3,
+          "elapsed_seconds": 19.645,
+          "optimization_work": 125,
+          "original_loops": 4968,
+          "phase": "dictionary",
+          "status": "started"
+        },
+        {
+          "elapsed_seconds": 19.645,
+          "optimization_work": 125,
+          "phase": "algebra",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 21.256,
+          "optimization_work": 126,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 21.757,
+          "optimization_work": 631,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 22.257,
+          "optimization_work": 1047,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 22.758,
+          "optimization_work": 1377,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 23.259,
+          "optimization_work": 1760,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 23.79,
+          "optimization_work": 2118,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 24.291,
+          "optimization_work": 2382,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 24.791,
+          "optimization_work": 2700,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 25.291,
+          "optimization_work": 3167,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 25.792,
+          "optimization_work": 3628,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 26.293,
+          "optimization_work": 3967,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 26.793,
+          "optimization_work": 4435,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 27.294,
+          "optimization_work": 4865,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 27.795,
+          "optimization_work": 5163,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 28.296,
+          "optimization_work": 5461,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 28.796,
+          "optimization_work": 5748,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 29.296,
+          "optimization_work": 6084,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 29.796,
+          "optimization_work": 6773,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 30.296,
+          "optimization_work": 7467,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 30.797,
+          "optimization_work": 7970,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 31.298,
+          "optimization_work": 8443,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 31.799,
+          "optimization_work": 8924,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 32.3,
+          "optimization_work": 9385,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 32.801,
+          "optimization_work": 9903,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 33.301,
+          "optimization_work": 10619,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 33.801,
+          "optimization_work": 11329,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 34.302,
+          "optimization_work": 11831,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 35.481,
+          "optimization_work": 12126,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 35.981,
+          "optimization_work": 13019,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 36.484,
+          "optimization_work": 13350,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 36.987,
+          "optimization_work": 13538,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 37.487,
+          "optimization_work": 13882,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 37.988,
+          "optimization_work": 14253,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 38.488,
+          "optimization_work": 14571,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 38.989,
+          "optimization_work": 14859,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.49,
+          "optimization_work": 15164,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 39.99,
+          "optimization_work": 15491,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.491,
+          "optimization_work": 15847,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 40.991,
+          "optimization_work": 16101,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 41.492,
+          "optimization_work": 16466,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 41.993,
+          "optimization_work": 16775,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 42.494,
+          "optimization_work": 17168,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 42.994,
+          "optimization_work": 17627,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 43.494,
+          "optimization_work": 18033,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 43.996,
+          "optimization_work": 18370,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 44.496,
+          "optimization_work": 18658,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 44.997,
+          "optimization_work": 19152,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 45.498,
+          "optimization_work": 19537,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 45.998,
+          "optimization_work": 19904,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 46.499,
+          "optimization_work": 20288,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 47.0,
+          "optimization_work": 20727,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 47.5,
+          "optimization_work": 21164,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 48.0,
+          "optimization_work": 21578,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 48.501,
+          "optimization_work": 22059,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 49.001,
+          "optimization_work": 22611,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 49.501,
+          "optimization_work": 23171,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 50.004,
+          "optimization_work": 23632,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 50.507,
+          "optimization_work": 23905,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 51.007,
+          "optimization_work": 24112,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 51.508,
+          "optimization_work": 24468,
+          "phase": "dictionary",
+          "status": "running"
+        },
+        {
+          "algorithms": 1024,
+          "candidates": 12000,
+          "elapsed_seconds": 52.898,
+          "optimization_work": 24509,
+          "orientation_span_order": 3456,
+          "orientation_target_order": 3456,
+          "phase": "dictionary",
+          "status": "completed"
+        },
+        {
+          "elapsed_seconds": 52.923,
+          "optimization_work": 24510,
+          "phase": "symbolic_chain_policy",
+          "status": "running",
+          "strategy": "fully_solve_each_block"
+        },
+        {
+          "elapsed_seconds": 52.924,
+          "optimization_work": 24511,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.424,
+          "optimization_work": 25105,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.81,
+          "optimization_work": 25535,
+          "phase": "dictionary_policy",
+          "stage": 1,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.814,
+          "optimization_work": 25536,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.816,
+          "optimization_work": 25540,
+          "phase": "dictionary_policy",
+          "stage": 2,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.822,
+          "optimization_work": 25541,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.823,
+          "optimization_work": 25545,
+          "phase": "dictionary_policy",
+          "stage": 3,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.83,
+          "optimization_work": 25546,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.83,
+          "optimization_work": 25547,
+          "phase": "dictionary_policy",
+          "stage": 4,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.848,
+          "optimization_work": 25548,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.872,
+          "optimization_work": 25569,
+          "phase": "dictionary_policy",
+          "stage": 5,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.878,
+          "optimization_work": 25570,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.888,
+          "optimization_work": 25586,
+          "phase": "dictionary_policy",
+          "stage": 6,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.892,
+          "optimization_work": 25587,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.895,
+          "optimization_work": 25590,
+          "phase": "dictionary_policy",
+          "stage": 7,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.906,
+          "optimization_work": 25591,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.93,
+          "optimization_work": 25608,
+          "phase": "dictionary_policy",
+          "stage": 8,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.939,
+          "optimization_work": 25609,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.964,
+          "optimization_work": 25625,
+          "phase": "dictionary_policy",
+          "stage": 9,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 53.969,
+          "optimization_work": 25626,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.01,
+          "optimization_work": 25638,
+          "phase": "dictionary_policy",
+          "stage": 10,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.021,
+          "optimization_work": 25639,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.043,
+          "optimization_work": 25652,
+          "phase": "dictionary_policy",
+          "stage": 11,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.046,
+          "optimization_work": 25653,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.047,
+          "optimization_work": 25655,
+          "phase": "dictionary_policy",
+          "stage": 12,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.05,
+          "optimization_work": 25656,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.051,
+          "optimization_work": 25658,
+          "phase": "dictionary_policy",
+          "stage": 13,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.058,
+          "optimization_work": 25659,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.065,
+          "optimization_work": 25661,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 54.574,
+          "mean_htm": 2276.813492063492,
+          "optimization_work": 25751,
+          "phase": "method",
+          "source": "dictionary:fully_solve_each_block",
+          "status": "retained",
+          "worst_htm": 5055
+        },
+        {
+          "elapsed_seconds": 54.579,
+          "optimization_work": 25752,
+          "phase": "symbolic_chain_policy",
+          "status": "running",
+          "strategy": "placement_then_orientation"
+        },
+        {
+          "elapsed_seconds": 54.583,
+          "optimization_work": 25753,
+          "phase": "symbolic_case_compilation",
+          "stage": 1,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 55.086,
+          "optimization_work": 25761,
+          "phase": "symbolic_case_compilation",
+          "stage": 9,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 55.461,
+          "optimization_work": 25775,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 55.964,
+          "optimization_work": 25801,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 56.393,
+          "optimization_work": 25827,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 56.893,
+          "optimization_work": 26393,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.172,
+          "optimization_work": 26851,
+          "phase": "dictionary_policy",
+          "stage": 1,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.178,
+          "optimization_work": 26852,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.18,
+          "optimization_work": 26856,
+          "phase": "dictionary_policy",
+          "stage": 2,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.183,
+          "optimization_work": 26857,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.185,
+          "optimization_work": 26861,
+          "phase": "dictionary_policy",
+          "stage": 3,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.189,
+          "optimization_work": 26862,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.19,
+          "optimization_work": 26864,
+          "phase": "dictionary_policy",
+          "stage": 4,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.193,
+          "optimization_work": 26865,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.195,
+          "optimization_work": 26869,
+          "phase": "dictionary_policy",
+          "stage": 5,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.198,
+          "optimization_work": 26870,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.2,
+          "optimization_work": 26873,
+          "phase": "dictionary_policy",
+          "stage": 6,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.205,
+          "optimization_work": 26874,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.205,
+          "optimization_work": 26875,
+          "phase": "dictionary_policy",
+          "stage": 7,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.211,
+          "optimization_work": 26876,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.217,
+          "optimization_work": 26887,
+          "phase": "dictionary_policy",
+          "stage": 8,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.225,
+          "optimization_work": 26888,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.23,
+          "optimization_work": 26897,
+          "phase": "dictionary_policy",
+          "stage": 9,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.233,
+          "optimization_work": 26898,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.239,
+          "optimization_work": 26905,
+          "phase": "dictionary_policy",
+          "stage": 10,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.242,
+          "optimization_work": 26906,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.245,
+          "optimization_work": 26911,
+          "phase": "dictionary_policy",
+          "stage": 11,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.248,
+          "optimization_work": 26912,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.248,
+          "optimization_work": 26913,
+          "phase": "dictionary_policy",
+          "stage": 12,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.251,
+          "optimization_work": 26914,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.251,
+          "optimization_work": 26915,
+          "phase": "dictionary_policy",
+          "stage": 13,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.256,
+          "optimization_work": 26916,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.257,
+          "optimization_work": 26918,
+          "phase": "dictionary_policy",
+          "stage": 14,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.26,
+          "optimization_work": 26919,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.261,
+          "optimization_work": 26921,
+          "phase": "dictionary_policy",
+          "stage": 15,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.264,
+          "optimization_work": 26922,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.265,
+          "optimization_work": 26924,
+          "phase": "dictionary_policy",
+          "stage": 16,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.268,
+          "optimization_work": 26925,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.269,
+          "optimization_work": 26927,
+          "phase": "dictionary_policy",
+          "stage": 17,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.274,
+          "optimization_work": 26928,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.275,
+          "optimization_work": 26930,
+          "phase": "dictionary_policy",
+          "stage": 18,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.278,
+          "optimization_work": 26931,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.278,
+          "optimization_work": 26933,
+          "phase": "dictionary_policy",
+          "stage": 19,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.281,
+          "optimization_work": 26934,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.281,
+          "optimization_work": 26936,
+          "phase": "dictionary_policy",
+          "stage": 20,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.283,
+          "optimization_work": 26937,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.286,
+          "optimization_work": 26940,
+          "phase": "dictionary_policy",
+          "stage": 21,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.291,
+          "optimization_work": 26941,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.292,
+          "optimization_work": 26944,
+          "phase": "dictionary_policy",
+          "stage": 22,
+          "stages": 22,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.295,
+          "optimization_work": 26945,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.301,
+          "optimization_work": 26949,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.477,
+          "mean_htm": 2019.8166666666666,
+          "optimization_work": 27000,
+          "phase": "method",
+          "source": "dictionary:placement_then_orientation",
+          "status": "retained",
+          "worst_htm": 3510
+        },
+        {
+          "elapsed_seconds": 57.48,
+          "kind": 1,
+          "optimization_work": 27001,
+          "phase": "adaptive_chain",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 57.496,
+          "optimization_work": 27002,
+          "phase": "algebra",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 68.57,
+          "optimization_work": 27003,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 68.846,
+          "optimization_work": 27042,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 69.358,
+          "optimization_work": 27091,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 69.735,
+          "optimization_work": 27093,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 69.746,
+          "optimization_work": 27094,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 69.753,
+          "optimization_work": 27095,
+          "phase": "symbolic_chain_validation",
+          "stage": 1,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 69.893,
+          "optimization_work": 27108,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 70.394,
+          "optimization_work": 27741,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 70.895,
+          "optimization_work": 28274,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 71.396,
+          "optimization_work": 28642,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 71.87,
+          "optimization_work": 28894,
+          "phase": "symbolic_case_compilation",
+          "stage": 1,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 72.372,
+          "optimization_work": 28897,
+          "phase": "symbolic_case_compilation",
+          "stage": 4,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 72.911,
+          "optimization_work": 28903,
+          "phase": "symbolic_case_compilation",
+          "stage": 10,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 73.005,
+          "optimization_work": 28907,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 73.525,
+          "optimization_work": 28972,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 73.802,
+          "optimization_work": 28998,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 74.303,
+          "optimization_work": 30028,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 74.803,
+          "optimization_work": 30693,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 74.893,
+          "optimization_work": 30784,
+          "phase": "dictionary_policy",
+          "stage": 1,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 74.923,
+          "optimization_work": 30785,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 74.939,
+          "optimization_work": 30807,
+          "phase": "dictionary_policy",
+          "stage": 2,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 74.959,
+          "optimization_work": 30808,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 74.971,
+          "optimization_work": 30823,
+          "phase": "dictionary_policy",
+          "stage": 3,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 74.983,
+          "optimization_work": 30824,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 74.993,
+          "optimization_work": 30837,
+          "phase": "dictionary_policy",
+          "stage": 4,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.001,
+          "optimization_work": 30838,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.01,
+          "optimization_work": 30853,
+          "phase": "dictionary_policy",
+          "stage": 5,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.018,
+          "optimization_work": 30854,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.027,
+          "optimization_work": 30868,
+          "phase": "dictionary_policy",
+          "stage": 6,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.031,
+          "optimization_work": 30869,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.038,
+          "optimization_work": 30878,
+          "phase": "dictionary_policy",
+          "stage": 7,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.041,
+          "optimization_work": 30879,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.045,
+          "optimization_work": 30887,
+          "phase": "dictionary_policy",
+          "stage": 8,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.049,
+          "optimization_work": 30888,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.055,
+          "optimization_work": 30898,
+          "phase": "dictionary_policy",
+          "stage": 9,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.057,
+          "optimization_work": 30899,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.06,
+          "optimization_work": 30903,
+          "phase": "dictionary_policy",
+          "stage": 10,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.063,
+          "optimization_work": 30904,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.069,
+          "optimization_work": 30910,
+          "phase": "dictionary_policy",
+          "stage": 11,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.071,
+          "optimization_work": 30911,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.072,
+          "optimization_work": 30914,
+          "phase": "dictionary_policy",
+          "stage": 12,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.075,
+          "optimization_work": 30915,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.077,
+          "optimization_work": 30917,
+          "phase": "dictionary_policy",
+          "stage": 13,
+          "stages": 13,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.081,
+          "optimization_work": 30918,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.087,
+          "optimization_work": 30920,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.186,
+          "mean_htm": 222.76150793650794,
+          "optimization_work": 31010,
+          "phase": "method",
+          "source": "dictionary:manual",
+          "status": "retained",
+          "worst_htm": 384
+        },
+        {
+          "elapsed_seconds": 75.189,
+          "kind": 2,
+          "optimization_work": 31011,
+          "phase": "adaptive_chain",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 75.207,
+          "optimization_work": 31012,
+          "phase": "algebra",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 82.669,
+          "optimization_work": 31013,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 83.032,
+          "optimization_work": 31052,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 83.556,
+          "optimization_work": 31094,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 84.069,
+          "optimization_work": 31105,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 84.227,
+          "optimization_work": 31108,
+          "phase": "symbolic_certificate_roots",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 84.247,
+          "optimization_work": 31109,
+          "phase": "symbolic_certificate_membership",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 84.26,
+          "optimization_work": 31110,
+          "phase": "symbolic_chain_validation",
+          "stage": 1,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 84.41,
+          "optimization_work": 31128,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 84.91,
+          "optimization_work": 31878,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 85.411,
+          "optimization_work": 32437,
+          "phase": "adaptive_witnesses",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 85.873,
+          "optimization_work": 32791,
+          "phase": "symbolic_case_compilation",
+          "stage": 1,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 86.383,
+          "optimization_work": 32804,
+          "phase": "symbolic_case_compilation",
+          "stage": 14,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 86.484,
+          "optimization_work": 32809,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 86.988,
+          "optimization_work": 32869,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 87.125,
+          "optimization_work": 32876,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 87.625,
+          "optimization_work": 33784,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.125,
+          "optimization_work": 34478,
+          "phase": "dictionary_policy_catalog",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.204,
+          "optimization_work": 34539,
+          "phase": "dictionary_policy",
+          "stage": 1,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.214,
+          "optimization_work": 34540,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.217,
+          "optimization_work": 34544,
+          "phase": "dictionary_policy",
+          "stage": 2,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.251,
+          "optimization_work": 34545,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.274,
+          "optimization_work": 34562,
+          "phase": "dictionary_policy",
+          "stage": 3,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.285,
+          "optimization_work": 34563,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.294,
+          "optimization_work": 34572,
+          "phase": "dictionary_policy",
+          "stage": 4,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.301,
+          "optimization_work": 34573,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.306,
+          "optimization_work": 34581,
+          "phase": "dictionary_policy",
+          "stage": 5,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.313,
+          "optimization_work": 34582,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.317,
+          "optimization_work": 34588,
+          "phase": "dictionary_policy",
+          "stage": 6,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.323,
+          "optimization_work": 34589,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.326,
+          "optimization_work": 34594,
+          "phase": "dictionary_policy",
+          "stage": 7,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.334,
+          "optimization_work": 34595,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.344,
+          "optimization_work": 34604,
+          "phase": "dictionary_policy",
+          "stage": 8,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.348,
+          "optimization_work": 34605,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.352,
+          "optimization_work": 34611,
+          "phase": "dictionary_policy",
+          "stage": 9,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.355,
+          "optimization_work": 34612,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.358,
+          "optimization_work": 34616,
+          "phase": "dictionary_policy",
+          "stage": 10,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.362,
+          "optimization_work": 34617,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.363,
+          "optimization_work": 34619,
+          "phase": "dictionary_policy",
+          "stage": 11,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.365,
+          "optimization_work": 34620,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.366,
+          "optimization_work": 34622,
+          "phase": "dictionary_policy",
+          "stage": 12,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.369,
+          "optimization_work": 34623,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.371,
+          "optimization_work": 34626,
+          "phase": "dictionary_policy",
+          "stage": 13,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.373,
+          "optimization_work": 34627,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.375,
+          "optimization_work": 34630,
+          "phase": "dictionary_policy",
+          "stage": 14,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.379,
+          "optimization_work": 34631,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.379,
+          "optimization_work": 34633,
+          "phase": "dictionary_policy",
+          "stage": 15,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.382,
+          "optimization_work": 34634,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.39,
+          "optimization_work": 34640,
+          "phase": "dictionary_policy",
+          "stage": 16,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.394,
+          "optimization_work": 34641,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.396,
+          "optimization_work": 34643,
+          "phase": "dictionary_policy",
+          "stage": 17,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.399,
+          "optimization_work": 34644,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.4,
+          "optimization_work": 34646,
+          "phase": "dictionary_policy",
+          "stage": 18,
+          "stages": 18,
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.402,
+          "optimization_work": 34647,
+          "phase": "dictionary_policy_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 88.41,
+          "optimization_work": 34649,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "backend": "symbolic",
+          "elapsed_seconds": 88.63,
+          "optimization_work": 34806,
+          "phase": "templates",
+          "status": "started"
+        },
+        {
+          "elapsed_seconds": 88.823,
+          "optimization_work": 34807,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 89.674,
+          "optimization_work": 35080,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 90.174,
+          "optimization_work": 74964,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 90.674,
+          "optimization_work": 122146,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 91.175,
+          "optimization_work": 172418,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 91.676,
+          "optimization_work": 229221,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 92.176,
+          "optimization_work": 296288,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 92.676,
+          "optimization_work": 351219,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 93.176,
+          "optimization_work": 414224,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 93.676,
+          "optimization_work": 471375,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 94.176,
+          "optimization_work": 533262,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 94.676,
+          "optimization_work": 582183,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 95.176,
+          "optimization_work": 615002,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 95.676,
+          "optimization_work": 659173,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.176,
+          "optimization_work": 718263,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 96.676,
+          "optimization_work": 751864,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 97.176,
+          "optimization_work": 800533,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 97.676,
+          "optimization_work": 848100,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 98.177,
+          "optimization_work": 898874,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 98.677,
+          "optimization_work": 929870,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.177,
+          "optimization_work": 986391,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 99.677,
+          "optimization_work": 1039498,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 100.177,
+          "optimization_work": 1083555,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 100.677,
+          "optimization_work": 1130834,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 100.846,
+          "optimization_work": 1135217,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 102.542,
+          "optimization_work": 1135399,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 103.327,
+          "macros": 73,
+          "mean_htm": 222.76150793650794,
+          "optimization_work": 1135671,
+          "phase": "repertoire",
+          "status": "retained",
+          "worst_htm": 384
+        },
+        {
+          "elapsed_seconds": 103.328,
+          "optimization_work": 1135672,
+          "phase": "template_search",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 103.33,
+          "optimization_work": 1135673,
+          "phase": "template_seeds",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 103.35,
+          "optimization_work": 1135707,
+          "phase": "template_expressions",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 103.476,
+          "optimization_work": 1136459,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 103.492,
+          "optimization_work": 1136460,
+          "phase": "template_bodies",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 103.492,
+          "optimization_work": 1136461,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 103.963,
+          "optimization_work": 1136491,
+          "phase": "template_bodies",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 103.964,
+          "optimization_work": 1136492,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 104.441,
+          "optimization_work": 1136521,
+          "phase": "template_bodies",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 104.441,
+          "optimization_work": 1136522,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 104.951,
+          "optimization_work": 1136548,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 104.983,
+          "optimization_work": 1136550,
+          "phase": "template_bodies",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 104.983,
+          "optimization_work": 1136551,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 105.489,
+          "optimization_work": 1136574,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 105.662,
+          "optimization_work": 1136578,
+          "phase": "template_bodies",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 105.662,
+          "optimization_work": 1136579,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 106.172,
+          "optimization_work": 1136598,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 106.277,
+          "optimization_work": 1136605,
+          "phase": "template_bodies",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 106.277,
+          "optimization_work": 1136606,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 106.75,
+          "optimization_work": 1136631,
+          "phase": "template_bodies",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 106.75,
+          "optimization_work": 1136632,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 107.268,
+          "optimization_work": 1136654,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 107.312,
+          "optimization_work": 1136656,
+          "phase": "template_bodies",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 107.312,
+          "optimization_work": 1136657,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 107.678,
+          "optimization_work": 1136680,
+          "phase": "template_bodies",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 107.678,
+          "optimization_work": 1136681,
+          "phase": "template_scoring",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 108.362,
+          "optimization_work": 1136703,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 109.292,
+          "optimization_work": 1136976,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 109.793,
+          "optimization_work": 1191967,
+          "phase": "chunk_parsing",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 110.054,
+          "optimization_work": 1215200,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 111.203,
+          "optimization_work": 1215382,
+          "phase": "symbolic_method_validation",
+          "status": "running"
+        },
+        {
+          "elapsed_seconds": 112.03,
+          "macros": 21,
+          "mean_htm": 222.76150793650794,
+          "optimization_work": 1215654,
+          "phase": "repertoire",
+          "status": "retained",
+          "worst_htm": 384
+        },
+        {
+          "backend": "symbolic",
+          "elapsed_seconds": 112.031,
+          "macros": 21,
+          "optimization_work": 1215654,
+          "phase": "templates",
+          "status": "completed"
+        },
+        {
+          "elapsed_seconds": 112.045,
+          "macros": 21,
+          "optimization_work": 1215654,
+          "phase": "complete",
+          "status": "certified",
+          "stopped": false
+        }
+      ],
+      "puzzle": "FourPair",
+      "selected_metrics": {
+        "algorithm_count": 91,
+        "case_count_sum": 104,
+        "chunk_definition_moves": 19,
+        "chunk_definition_symbols": 19,
+        "chunk_recipe_symbols": 101,
+        "chunk_regrips": 3,
+        "definition_htm": 1264,
+        "definition_qtm": 1691,
+        "description_score": 744,
+        "dictionary_score": 123,
+        "instruction_symbols": 621,
+        "learned_body_count": 20,
+        "macro_count": 21,
+        "macro_definition_htm": 152,
+        "max_body_htm": 28,
+        "max_case_count": 16,
+        "mean_htm": 222.76150793650794,
+        "mean_qtm": 308.8230158730159,
+        "original_leaf_count": 17,
+        "original_leaf_htm": 76,
+        "rule_count": 87,
+        "stage_count": 13,
+        "states": 40131624960,
+        "total_htm": 8939781292032,
+        "total_qtm": 12393569452032,
+        "visible_leaf_count": 17,
+        "worst_htm": 384,
+        "worst_qtm": 536
+      },
+      "solver_including_validation_seconds": 112.05982548400061,
+      "stages": 13,
+      "status": "completed",
+      "terminal_order": 1,
+      "total_analysis_solver_guide_seconds": 144.21990506499787
+    }
+  ],
+  "optimization_seconds": 120,
+  "runtime_patches": false,
+  "scope": "updated notebook production APIs; analysis, certified solver and actual guide rendering timed separately; optional graph rendering excluded"
+}

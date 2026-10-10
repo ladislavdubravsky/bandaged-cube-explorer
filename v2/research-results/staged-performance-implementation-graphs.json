@@ -1,0 +1,129 @@
+{
+  "format": "bce-v2-staged-performance-implementation-graphs",
+  "measurements": [
+    {
+      "auto_draw_and_canvas_cpu_seconds": 0.44834532699999996,
+      "auto_draw_and_canvas_seconds": 1.0640167390010902,
+      "explore_seconds": 0.042990014000679366,
+      "native_shapes_materialized": false,
+      "puzzle": "BeltRoad",
+      "shapes": 84584,
+      "summary_title": "Complete graph \u00b7 84,584 shapes \u00b7 153,594 clockwise face turns"
+    },
+    {
+      "auto_draw_and_canvas_cpu_seconds": 0.3594166189999999,
+      "auto_draw_and_canvas_seconds": 0.5045080409981892,
+      "explore_seconds": 0.10430487099802122,
+      "native_shapes_materialized": false,
+      "puzzle": "MostSignaturesCube",
+      "shapes": 92176,
+      "summary_title": "Complete graph \u00b7 92,176 shapes \u00b7 154,272 clockwise face turns"
+    },
+    {
+      "auto_draw_and_canvas_cpu_seconds": 0.1423055670000002,
+      "auto_draw_and_canvas_seconds": 0.19048163699699217,
+      "explore_seconds": 0.0024430839985143393,
+      "native_shapes_materialized": false,
+      "puzzle": "FourPair",
+      "shapes": 4062,
+      "summary_title": "Complete graph \u00b7 4,062 shapes \u00b7 11,406 clockwise face turns"
+    }
+  ],
+  "notebook_api_check_scope": "Exact optional graph cells executed without analysis or solver cells: summary and skip for all ten examples; configured auto and radius-zero local for BeltRoad, MostSignaturesCube and FourPair. Public signature binding checked for every graph call.",
+  "notebook_api_checks": [
+    {
+      "configured_view": "auto",
+      "graph_cell_executed": true,
+      "notebook": "Alcatraz.ipynb",
+      "public_signature_matches": true,
+      "skip_cell_executed": true,
+      "summary_graph_shapes": 1449
+    },
+    {
+      "configured_view": "auto",
+      "graph_cell_executed": true,
+      "notebook": "BandagedPocketCube.ipynb",
+      "public_signature_matches": true,
+      "skip_cell_executed": true,
+      "summary_graph_shapes": 580
+    },
+    {
+      "configured_auto_cell_executed": true,
+      "configured_view": "auto",
+      "graph_cell_executed": true,
+      "local_cell_executed": true,
+      "notebook": "BeltRoad.ipynb",
+      "public_signature_matches": true,
+      "skip_cell_executed": true,
+      "summary_graph_shapes": 84584
+    },
+    {
+      "configured_view": "auto",
+      "graph_cell_executed": true,
+      "notebook": "Bicube.ipynb",
+      "public_signature_matches": true,
+      "skip_cell_executed": true,
+      "summary_graph_shapes": 440
+    },
+    {
+      "configured_view": "auto",
+      "graph_cell_executed": true,
+      "notebook": "BicubeFuse.ipynb",
+      "public_signature_matches": true,
+      "skip_cell_executed": true,
+      "summary_graph_shapes": 121
+    },
+    {
+      "configured_view": "auto",
+      "graph_cell_executed": true,
+      "notebook": "BlockClockPair.ipynb",
+      "public_signature_matches": true,
+      "skip_cell_executed": true,
+      "summary_graph_shapes": 23
+    },
+    {
+      "configured_view": "auto",
+      "graph_cell_executed": true,
+      "notebook": "DiamondCube.ipynb",
+      "public_signature_matches": true,
+      "skip_cell_executed": true,
+      "summary_graph_shapes": 110
+    },
+    {
+      "configured_auto_cell_executed": true,
+      "configured_view": "auto",
+      "graph_cell_executed": true,
+      "local_cell_executed": true,
+      "notebook": "FourPair.ipynb",
+      "public_signature_matches": true,
+      "skip_cell_executed": true,
+      "summary_graph_shapes": 4062
+    },
+    {
+      "configured_auto_cell_executed": true,
+      "configured_view": "auto",
+      "graph_cell_executed": true,
+      "local_cell_executed": true,
+      "notebook": "MostSignaturesCube.ipynb",
+      "public_signature_matches": true,
+      "skip_cell_executed": true,
+      "summary_graph_shapes": 92176
+    },
+    {
+      "configured_view": "auto",
+      "graph_cell_executed": true,
+      "notebook": "Unbandaged3x3.ipynb",
+      "public_signature_matches": true,
+      "skip_cell_executed": true,
+      "summary_graph_shapes": 1
+    }
+  ],
+  "policy": {
+    "max_vertices": 1000,
+    "show_shapes": true,
+    "view": "auto"
+  },
+  "scope": "Production automatic graph drawing and canvas rendering; full exploration measured separately.",
+  "timing_note": "Shared CPU; Matplotlib imports outside timing, native arc retrieval and canvas rendering included.",
+  "version": 1
+}

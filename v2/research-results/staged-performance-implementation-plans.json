@@ -1,0 +1,188 @@
+{
+  "measurements": [
+    {
+      "algebra_generator_count": 5,
+      "algebra_generator_ids": [
+        31,
+        86,
+        119,
+        1735,
+        1815
+      ],
+      "analysis": {
+        "python_cpu_seconds": 4.04118718,
+        "wall_seconds": 16.479320690999884
+      },
+      "case_count": 40,
+      "executable_compilation_including_validation": {
+        "python_cpu_seconds": 0.7829787509999999,
+        "wall_seconds": 0.7864019480002753
+      },
+      "fallback_additive_htm": {
+        "mean": 896.25,
+        "mean_denominator": 4,
+        "mean_numerator": 3585,
+        "worst": 1517
+      },
+      "full_native_coverage": true,
+      "history_free_replays": [
+        {
+          "input_htm": 6,
+          "python_cpu_seconds": 0.002257403999999852,
+          "solution_htm": 616,
+          "wall_seconds": 0.002255346000310965
+        },
+        {
+          "input_htm": 15,
+          "python_cpu_seconds": 0.004105685999999054,
+          "solution_htm": 949,
+          "wall_seconds": 0.004105719999643043
+        },
+        {
+          "input_htm": 24,
+          "python_cpu_seconds": 0.0015717259999998845,
+          "solution_htm": 680,
+          "wall_seconds": 0.0015719960028945934
+        }
+      ],
+      "independent_full_membership_check": {
+        "python_cpu_seconds": 1.6608185740000003,
+        "wall_seconds": 1.6624121079985343
+      },
+      "kernel_order": 216,
+      "native_generator_count": 19473,
+      "planning_including_full_certificate": {
+        "python_cpu_seconds": 5.955617249,
+        "wall_seconds": 9.606845228998282
+      },
+      "puzzle": "BeltRoad",
+      "quotient_order": 6912,
+      "reference_group_order": 1492992,
+      "shape_count": 84584,
+      "stage_count": 14,
+      "terminal_order": 1
+    },
+    {
+      "algebra_generator_count": 4,
+      "algebra_generator_ids": [
+        1048,
+        525,
+        2126,
+        5851
+      ],
+      "analysis": {
+        "python_cpu_seconds": 0.6600792000000002,
+        "wall_seconds": 2.992293477000203
+      },
+      "case_count": 26,
+      "executable_compilation_including_validation": {
+        "python_cpu_seconds": 0.13673448499999985,
+        "wall_seconds": 0.13675348100150586
+      },
+      "fallback_additive_htm": {
+        "mean": 572.0833333333334,
+        "mean_denominator": 12,
+        "mean_numerator": 6865,
+        "worst": 1011
+      },
+      "full_native_coverage": true,
+      "history_free_replays": [
+        {
+          "input_htm": 5,
+          "python_cpu_seconds": 0.0018026620000011206,
+          "solution_htm": 736,
+          "wall_seconds": 0.0018005620004259981
+        },
+        {
+          "input_htm": 18,
+          "python_cpu_seconds": 0.002525730000000337,
+          "solution_htm": 443,
+          "wall_seconds": 0.0025250209982914384
+        },
+        {
+          "input_htm": 31,
+          "python_cpu_seconds": 0.00158432899999994,
+          "solution_htm": 652,
+          "wall_seconds": 0.0015850509989832062
+        }
+      ],
+      "independent_full_membership_check": {
+        "python_cpu_seconds": 0.2140459099999994,
+        "wall_seconds": 0.21413442300035967
+      },
+      "kernel_order": 72,
+      "native_generator_count": 3336,
+      "planning_including_full_certificate": {
+        "python_cpu_seconds": 0.6721192239999993,
+        "wall_seconds": 1.933289947999583
+      },
+      "puzzle": "MostSignaturesCube",
+      "quotient_order": 144,
+      "reference_group_order": 10368,
+      "shape_count": 92176,
+      "stage_count": 10,
+      "terminal_order": 1
+    },
+    {
+      "algebra_generator_count": 3,
+      "algebra_generator_ids": [
+        45,
+        452,
+        578
+      ],
+      "analysis": {
+        "python_cpu_seconds": 0.8034905310000013,
+        "wall_seconds": 3.55597503899844
+      },
+      "case_count": 74,
+      "executable_compilation_including_validation": {
+        "python_cpu_seconds": 1.5879486390000004,
+        "wall_seconds": 3.134483261997957
+      },
+      "fallback_additive_htm": {
+        "mean": 7864.7797619047615,
+        "mean_denominator": 168,
+        "mean_numerator": 1321283,
+        "worst": 13422
+      },
+      "full_native_coverage": true,
+      "history_free_replays": [
+        {
+          "input_htm": 6,
+          "python_cpu_seconds": 0.008100801000001212,
+          "solution_htm": 9217,
+          "wall_seconds": 0.014173907002259512
+        },
+        {
+          "input_htm": 12,
+          "python_cpu_seconds": 0.006380377999999354,
+          "solution_htm": 7416,
+          "wall_seconds": 0.0071545549981237855
+        },
+        {
+          "input_htm": 18,
+          "python_cpu_seconds": 0.008689522000000949,
+          "solution_htm": 8933,
+          "wall_seconds": 0.008935077999922214
+        }
+      ],
+      "independent_full_membership_check": {
+        "python_cpu_seconds": 0.7946471259999974,
+        "wall_seconds": 1.2193862789972627
+      },
+      "kernel_order": 3456,
+      "native_generator_count": 4968,
+      "planning_including_full_certificate": {
+        "python_cpu_seconds": 3.6942488410000003,
+        "wall_seconds": 17.958604693998495
+      },
+      "puzzle": "FourPair",
+      "quotient_order": 11612160,
+      "reference_group_order": 40131624960,
+      "shape_count": 4062,
+      "stage_count": 22,
+      "terminal_order": 1
+    }
+  ],
+  "scope": "production reduced-basis symbolic control plans; full native certificate and physical witness validation retained; optional graph rendering and quality search excluded"
+}

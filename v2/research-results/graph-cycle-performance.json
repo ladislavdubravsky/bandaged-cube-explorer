@@ -1,0 +1,158 @@
+{
+  "format": "bce-v2-graph-cycle-performance",
+  "measurements": [
+    {
+      "current_cpu_seconds": 0.028777055999999968,
+      "current_wall_seconds": 0.06397276699863141,
+      "cycle_count": 1000,
+      "kind": "identity",
+      "linear_cpu_seconds": 0.0006193010000000165,
+      "linear_wall_seconds": 0.000617098998191068,
+      "same_ordered_cycles": true,
+      "size": 1000
+    },
+    {
+      "current_cpu_seconds": 0.013151946000000025,
+      "current_wall_seconds": 0.02525302600042778,
+      "cycle_count": 500,
+      "kind": "involution",
+      "linear_cpu_seconds": 0.00040135200000002147,
+      "linear_wall_seconds": 0.0003995869992650114,
+      "same_ordered_cycles": true,
+      "size": 1000
+    },
+    {
+      "current_cpu_seconds": 0.006488501000000035,
+      "current_wall_seconds": 0.013874965003196849,
+      "cycle_count": 250,
+      "kind": "four_cycles",
+      "linear_cpu_seconds": 0.0003070070000000258,
+      "linear_wall_seconds": 0.0003053799991903361,
+      "same_ordered_cycles": true,
+      "size": 1000
+    },
+    {
+      "current_cpu_seconds": 0.11674208099999994,
+      "current_wall_seconds": 0.23236955200263765,
+      "cycle_count": 2000,
+      "kind": "identity",
+      "linear_cpu_seconds": 0.0013073200000000007,
+      "linear_wall_seconds": 0.0013054160008323379,
+      "same_ordered_cycles": true,
+      "size": 2000
+    },
+    {
+      "current_cpu_seconds": 0.05679701100000001,
+      "current_wall_seconds": 0.11397847400075989,
+      "cycle_count": 1000,
+      "kind": "involution",
+      "linear_cpu_seconds": 0.0008192209999999811,
+      "linear_wall_seconds": 0.0008169089996954426,
+      "same_ordered_cycles": true,
+      "size": 2000
+    },
+    {
+      "current_cpu_seconds": 0.02939128099999999,
+      "current_wall_seconds": 0.058776431000296725,
+      "cycle_count": 500,
+      "kind": "four_cycles",
+      "linear_cpu_seconds": 0.000693454999999954,
+      "linear_wall_seconds": 0.0006913869983691256,
+      "same_ordered_cycles": true,
+      "size": 2000
+    },
+    {
+      "current_cpu_seconds": 0.396927158,
+      "current_wall_seconds": 0.8177044100011699,
+      "cycle_count": 4000,
+      "kind": "identity",
+      "linear_cpu_seconds": 0.00229392500000003,
+      "linear_wall_seconds": 0.005288634001772152,
+      "same_ordered_cycles": true,
+      "size": 4000
+    },
+    {
+      "current_cpu_seconds": 0.23766463199999988,
+      "current_wall_seconds": 0.5646015060010541,
+      "cycle_count": 2000,
+      "kind": "involution",
+      "linear_cpu_seconds": 0.0018359750000001007,
+      "linear_wall_seconds": 0.004975747000571573,
+      "same_ordered_cycles": true,
+      "size": 4000
+    },
+    {
+      "current_cpu_seconds": 0.10134010199999999,
+      "current_wall_seconds": 0.21132208400013042,
+      "cycle_count": 1000,
+      "kind": "four_cycles",
+      "linear_cpu_seconds": 0.0015955219999999048,
+      "linear_wall_seconds": 0.004967095999745652,
+      "same_ordered_cycles": true,
+      "size": 4000
+    },
+    {
+      "current_cpu_seconds": 1.9611904169999999,
+      "current_wall_seconds": 4.218972746999498,
+      "cycle_count": 8000,
+      "kind": "identity",
+      "linear_cpu_seconds": 0.005525996999999894,
+      "linear_wall_seconds": 0.012365496000711573,
+      "same_ordered_cycles": true,
+      "size": 8000
+    },
+    {
+      "current_cpu_seconds": 1.001403314,
+      "current_wall_seconds": 2.1649470390002534,
+      "cycle_count": 4000,
+      "kind": "involution",
+      "linear_cpu_seconds": 0.003049422000000135,
+      "linear_wall_seconds": 0.007043224002700299,
+      "same_ordered_cycles": true,
+      "size": 8000
+    },
+    {
+      "current_cpu_seconds": 0.4897818859999994,
+      "current_wall_seconds": 1.092237896998995,
+      "cycle_count": 2000,
+      "kind": "four_cycles",
+      "linear_cpu_seconds": 0.0031533660000002683,
+      "linear_wall_seconds": 0.006149852000817191,
+      "same_ordered_cycles": true,
+      "size": 8000
+    },
+    {
+      "current_cpu_seconds": 6.686853234999999,
+      "current_wall_seconds": 15.605233782000141,
+      "cycle_count": 16000,
+      "kind": "identity",
+      "linear_cpu_seconds": 0.018438071999998584,
+      "linear_wall_seconds": 0.05367632100023911,
+      "same_ordered_cycles": true,
+      "size": 16000
+    },
+    {
+      "current_cpu_seconds": 3.579520221000001,
+      "current_wall_seconds": 9.264795622999372,
+      "cycle_count": 8000,
+      "kind": "involution",
+      "linear_cpu_seconds": 0.007331388000000771,
+      "linear_wall_seconds": 0.017705184996884782,
+      "same_ordered_cycles": true,
+      "size": 16000
+    },
+    {
+      "current_cpu_seconds": 1.8186028850000007,
+      "current_wall_seconds": 7.1224005820004095,
+      "cycle_count": 4000,
+      "kind": "four_cycles",
+      "linear_cpu_seconds": 0.0061545489999979,
+      "linear_wall_seconds": 0.01893683299931581,
+      "same_ordered_cycles": true,
+      "size": 16000
+    }
+  ],
+  "scope": "Synthetic cycle permutations; exact ordered decomposition equivalence, no graph layout or rendering",
+  "timing_note": "Measurements run pinned to CPU 3 concurrently with one symbolic planning run on that core; CPU time preferable to wall time.",
+  "version": 1
+}

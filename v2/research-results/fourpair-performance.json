@@ -1,0 +1,797 @@
+{
+  "compact_dictionary_probe": {
+    "bandage": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      2,
+      0,
+      0,
+      0,
+      3,
+      0,
+      4,
+      1,
+      0,
+      2,
+      0,
+      0,
+      0,
+      3,
+      0,
+      4
+    ],
+    "claim_scope": "Exact complete orientation-kernel dictionary span only; an improved complete stage policy and its final execution costs were not compiled in this probe.",
+    "dictionary_summary": {
+      "algorithm_count": 1024,
+      "algorithm_limit_reached": true,
+      "available_effect_count": 1978,
+      "conjugate_limit_reached": false,
+      "coverage_scope": "orientation span; retained native loops are separate witnesses",
+      "exhaustive_word_search": false,
+      "families": {
+        "(False, ('Corner', 'Edge'))": 244,
+        "(False, ('Corner', 'Edge', 'Pair'))": 243,
+        "(False, ('Corner',))": 19,
+        "(False, ('Edge',))": 243,
+        "(True, ('Corner', 'Edge'))": 225,
+        "(True, ('Corner',))": 12,
+        "(True, ('Edge',))": 38
+      },
+      "group_order": 40131624960,
+      "mining": {
+        "algorithm_count": 1024,
+        "algorithm_limit_reached": true,
+        "candidate_limit_reached": true,
+        "collision_proposal_count": 2715,
+        "custom_expression_count": 0,
+        "duplicate_count": 8915,
+        "effect_count": 964,
+        "examined_count": 12000,
+        "exhaustive": false,
+        "expansion_pruned_count": 0,
+        "identity_count": 512,
+        "inverse_proposal_count": 124,
+        "length_pruned_count": 488,
+        "literal_policy": "when a literal word has a smaller description cost",
+        "max_algorithms": 1024,
+        "max_candidates": 12000,
+        "max_expanded_moves": 400,
+        "max_htm_length": 80,
+        "max_seed_loops": 32,
+        "original_limit_reached": true,
+        "original_loop_count": 34,
+        "proposal_budget_pruned": true,
+        "round_limit_reached": true,
+        "rounds": 4,
+        "rounds_completed": 4,
+        "seed_count": 32,
+        "symmetry_count": 3,
+        "symmetry_transfer_count": 384
+      },
+      "orientation_basis_count": 10,
+      "orientation_basis_independent": true,
+      "orientation_basis_max_htm": 28,
+      "orientation_basis_total_htm": 176,
+      "orientation_complete": true,
+      "orientation_missing_index": 1,
+      "orientation_primary_spans": {
+        "2": {
+          "order": 128,
+          "pivot_orders": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ]
+        },
+        "3": {
+          "order": 27,
+          "pivot_orders": [
+            3,
+            3,
+            3
+          ]
+        }
+      },
+      "orientation_span_method": "exact prime-power coordinate elimination",
+      "orientation_span_order": 3456,
+      "orientation_target_order": 3456,
+      "original_loop_count": 34,
+      "quotient_order": 11612160,
+      "retained_original_effects": 76,
+      "settings": {
+        "max_algorithms": 1024,
+        "max_candidates": 12000,
+        "max_conjugates": 12000,
+        "max_expanded_moves": 400,
+        "max_htm_length": 80,
+        "max_seed_loops": 32,
+        "max_setup_depth": 2,
+        "max_setup_words": 384,
+        "rounds": 4
+      },
+      "setup_limit_reached": true,
+      "setup_word_count": 384,
+      "target_source": "exact reference group and placement quotient orders",
+      "work": {
+        "conjugates_examined": 9984,
+        "identity_proposals": 12,
+        "untranslated_transfers": 25
+      }
+    },
+    "discovery_generator_count": 34,
+    "format": "bce-v2-fourpair-dictionary-performance",
+    "group_order": 40131624960,
+    "inventory_counts": {
+      "Center:111": 6,
+      "Corner:111": 4,
+      "Edge:111": 8,
+      "Pair:Pair": 4
+    },
+    "measurements": [
+      {
+        "budget_seconds": 90.0,
+        "child_cpu_seconds": 2.962694,
+        "moves": {},
+        "operation": "analyze_isotropy",
+        "self_cpu_seconds": 0.954574,
+        "status": "completed",
+        "wall_seconds": 3.9587761089969717
+      },
+      {
+        "budget_seconds": 90.0,
+        "child_cpu_seconds": 1.722727,
+        "moves": {
+          "cache_hits": 70044,
+          "native_reads": 34,
+          "property_reads": 70078
+        },
+        "operation": "dictionary_discovery_and_validation",
+        "self_cpu_seconds": 27.705728,
+        "status": "completed",
+        "wall_seconds": 31.83856426499915
+      }
+    ],
+    "original_generator_count": 4968,
+    "puzzle": "FourPair",
+    "reduced_generator_ids": [
+      45,
+      452,
+      578
+    ],
+    "reproduction": "v2/.venv/bin/python v2/research/profile_fourpair_dictionary.py --short-loops 32 --cache --hoist --no-profile --seconds 90 --output /tmp/fourpair-compact-dictionary-rerun.json",
+    "scope": "dictionary discovery and validation only; no planner, templates or graph",
+    "settings": {
+      "cprofile": false,
+      "native_word_cache": true,
+      "short_loops": 32,
+      "signature_hoist": true
+    },
+    "shape_count": 4062,
+    "subset": "GAP-certified 3-loop basis plus first 32 originals in native increasing QTM-length order, deduplicated to 34 physical witnesses. These share the full group verified by the compact method probe.",
+    "validation_completed": true,
+    "validation_entered": true,
+    "version": 1
+  },
+  "dictionary_default_validation_entered": false,
+  "dictionary_profile_probe": [
+    {
+      "budget_seconds": 20,
+      "moves": {},
+      "operation": "analyze_isotropy",
+      "python_cpu_seconds": 1.070776012,
+      "status": "completed",
+      "wall_seconds": 10.718784753000364
+    },
+    {
+      "budget_seconds": 45,
+      "moves": {
+        "native_reads": 10364,
+        "property_reads": 10364
+      },
+      "operation": "default_dictionary_profile",
+      "python_cpu_seconds": 30.219467194,
+      "status": "external_cutoff",
+      "wall_seconds": 45.031646283001464
+    }
+  ],
+  "dictionary_profile_top_cumulative": [
+    {
+      "calls": 1,
+      "cumulative_seconds": 45.038984135,
+      "file": "/tmp/probe_fourpair_perf.py",
+      "function": "measure",
+      "line": 45,
+      "primitive_calls": 1,
+      "self_seconds": 0.031609625
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 45.000070538,
+      "file": "/tmp/profile_fourpair_dictionary.py",
+      "function": "<lambda>",
+      "line": 11,
+      "primitive_calls": 1,
+      "self_seconds": 2.4969e-05
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 45.000045569,
+      "file": "v2/python/python/bce_v2/symbolic_dictionary.py",
+      "function": "discover_symbolic_dictionary",
+      "line": 323,
+      "primitive_calls": 1,
+      "self_seconds": 0.14730477
+    },
+    {
+      "calls": 4968,
+      "cumulative_seconds": 24.770717057000002,
+      "file": "v2/python/python/bce_v2/isotropy.py",
+      "function": "block_action",
+      "line": 49,
+      "primitive_calls": 4968,
+      "self_seconds": 0.11659912200000001
+    },
+    {
+      "calls": 4968,
+      "cumulative_seconds": 24.635190287,
+      "file": "v2/python/python/bce_v2/block_actions.py",
+      "function": "action",
+      "line": 244,
+      "primitive_calls": 4968,
+      "self_seconds": 7.165074616
+    },
+    {
+      "calls": 5396,
+      "cumulative_seconds": 13.20773329,
+      "file": "v2/python/python/bce_v2/symbolic_dictionary.py",
+      "function": "build",
+      "line": 364,
+      "primitive_calls": 5396,
+      "self_seconds": 0.023598518000000002
+    },
+    {
+      "calls": 5396,
+      "cumulative_seconds": 12.979744651,
+      "file": "v2/python/python/bce_v2/loop_algorithms.py",
+      "function": "build_algorithm",
+      "line": 802,
+      "primitive_calls": 5396,
+      "self_seconds": 0.058477869
+    },
+    {
+      "calls": 4968,
+      "cumulative_seconds": 11.671861978,
+      "file": "v2/python/python/bce_v2/block_actions.py",
+      "function": "_from_transitions",
+      "line": 291,
+      "primitive_calls": 4968,
+      "self_seconds": 0.8621875360000001
+    },
+    {
+      "calls": 1261872,
+      "cumulative_seconds": 8.695284892,
+      "file": "v2/python/python/bce_v2/block_actions.py",
+      "function": "_compose",
+      "line": 36,
+      "primitive_calls": 1261872,
+      "self_seconds": 4.45107956
+    },
+    {
+      "calls": 79488,
+      "cumulative_seconds": 8.590666703,
+      "file": "v2/python/python/bce_v2/block_actions.py",
+      "function": "_inverse",
+      "line": 42,
+      "primitive_calls": 79488,
+      "self_seconds": 0.230128629
+    },
+    {
+      "calls": 5396,
+      "cumulative_seconds": 8.548381821000001,
+      "file": "v2/python/python/bce_v2/loop_algorithms.py",
+      "function": "_build",
+      "line": 579,
+      "primitive_calls": 5396,
+      "self_seconds": 2.274397349
+    },
+    {
+      "calls": 178850,
+      "cumulative_seconds": 8.416025763,
+      "file": "~",
+      "function": "<built-in method builtins.next>",
+      "line": 0,
+      "primitive_calls": 178850,
+      "self_seconds": 0.15044933800000002
+    },
+    {
+      "calls": 79488,
+      "cumulative_seconds": 8.265575358000001,
+      "file": "v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 43,
+      "primitive_calls": 79488,
+      "self_seconds": 1.1674442120000001
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 6.168780437000001,
+      "file": "v2/python/python/bce_v2/gap_backend.py",
+      "function": "analyze_generators",
+      "line": 297,
+      "primitive_calls": 1,
+      "self_seconds": 0.000394893
+    },
+    {
+      "calls": 5396,
+      "cumulative_seconds": 4.350075243,
+      "file": "v2/python/python/bce_v2/loop_algorithms.py",
+      "function": "_records",
+      "line": 86,
+      "primitive_calls": 5396,
+      "self_seconds": 4.326806709
+    },
+    {
+      "calls": 5047488,
+      "cumulative_seconds": 4.244205332,
+      "file": "v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 38,
+      "primitive_calls": 5047488,
+      "self_seconds": 3.1495168770000004
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 4.109829557,
+      "file": "v2/python/python/bce_v2/gap_backend.py",
+      "function": "_run_gap",
+      "line": 271,
+      "primitive_calls": 1,
+      "self_seconds": 2.5054e-05
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 4.109802501,
+      "file": "/usr/lib/python3.12/subprocess.py",
+      "function": "run",
+      "line": 506,
+      "primitive_calls": 1,
+      "self_seconds": 5.6303000000000006e-05
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 4.107091015,
+      "file": "/usr/lib/python3.12/subprocess.py",
+      "function": "communicate",
+      "line": 1165,
+      "primitive_calls": 1,
+      "self_seconds": 2.0135000000000003e-05
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 4.107068455,
+      "file": "/usr/lib/python3.12/subprocess.py",
+      "function": "_communicate",
+      "line": 2062,
+      "primitive_calls": 1,
+      "self_seconds": 0.0030138920000000002
+    },
+    {
+      "calls": 170,
+      "cumulative_seconds": 4.101871482,
+      "file": "/usr/lib/python3.12/selectors.py",
+      "function": "select",
+      "line": 402,
+      "primitive_calls": 170,
+      "self_seconds": 0.0022909700000000002
+    },
+    {
+      "calls": 170,
+      "cumulative_seconds": 4.099154665,
+      "file": "~",
+      "function": "<method 'poll' of 'select.poll' objects>",
+      "line": 0,
+      "primitive_calls": 170,
+      "self_seconds": 4.099154665
+    },
+    {
+      "calls": 2066688,
+      "cumulative_seconds": 3.357634834,
+      "file": "~",
+      "function": "<built-in method builtins.all>",
+      "line": 0,
+      "primitive_calls": 2066688,
+      "self_seconds": 1.8153821890000001
+    },
+    {
+      "calls": 5395,
+      "cumulative_seconds": 2.345247052,
+      "file": "v2/python/python/bce_v2/loop_algorithms.py",
+      "function": "_human_score",
+      "line": 481,
+      "primitive_calls": 5395,
+      "self_seconds": 0.058079987000000007
+    },
+    {
+      "calls": 5993,
+      "cumulative_seconds": 2.307872996,
+      "file": "v2/python/python/bce_v2/loop_algorithms.py",
+      "function": "_effect",
+      "line": 468,
+      "primitive_calls": 5993,
+      "self_seconds": 1.035565133
+    },
+    {
+      "calls": 152575,
+      "cumulative_seconds": 2.095906361,
+      "file": "~",
+      "function": "<built-in method builtins.any>",
+      "line": 0,
+      "primitive_calls": 152575,
+      "self_seconds": 0.358308477
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 1.68255251,
+      "file": "v2/python/python/bce_v2/gap_backend.py",
+      "function": "_validated_images",
+      "line": 205,
+      "primitive_calls": 1,
+      "self_seconds": 0.179217744
+    },
+    {
+      "calls": 1088570,
+      "cumulative_seconds": 1.357857141,
+      "file": "~",
+      "function": "<built-in method builtins.isinstance>",
+      "line": 0,
+      "primitive_calls": 1088570,
+      "self_seconds": 0.5871721240000001
+    },
+    {
+      "calls": 2106432,
+      "cumulative_seconds": 1.2860670950000002,
+      "file": "v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 278,
+      "primitive_calls": 2106432,
+      "self_seconds": 1.2860670950000002
+    },
+    {
+      "calls": 10792,
+      "cumulative_seconds": 1.2763207200000002,
+      "file": "v2/python/python/bce_v2/loop_algorithms.py",
+      "function": "_evaluate",
+      "line": 409,
+      "primitive_calls": 5396,
+      "self_seconds": 0.072329875
+    },
+    {
+      "calls": 243432,
+      "cumulative_seconds": 1.266523399,
+      "file": "v2/python/python/bce_v2/gap_backend.py",
+      "function": "<genexpr>",
+      "line": 214,
+      "primitive_calls": 243432,
+      "self_seconds": 0.189113194
+    },
+    {
+      "calls": 5396,
+      "cumulative_seconds": 1.128374821,
+      "file": "v2/python/python/bce_v2/loop_algorithms.py",
+      "function": "_power",
+      "line": 56,
+      "primitive_calls": 5396,
+      "self_seconds": 0.775258266
+    },
+    {
+      "calls": 15760,
+      "cumulative_seconds": 1.1087608290000002,
+      "file": "v2/python/python/bce_v2/_moves.py",
+      "function": "_simplified_moves",
+      "line": 4,
+      "primitive_calls": 15760,
+      "self_seconds": 0.530541919
+    },
+    {
+      "calls": 3808996,
+      "cumulative_seconds": 1.108618278,
+      "file": "~",
+      "function": "<built-in method builtins.abs>",
+      "line": 0,
+      "primitive_calls": 3808996,
+      "self_seconds": 1.108618278
+    },
+    {
+      "calls": 10364,
+      "cumulative_seconds": 1.083624903,
+      "file": "v2/python/python/bce_v2/isotropy.py",
+      "function": "turn_sequence",
+      "line": 39,
+      "primitive_calls": 10364,
+      "self_seconds": 0.047079585
+    }
+  ],
+  "format": "bce-v2-fourpair-method-performance",
+  "group_order": 40131624960,
+  "inventory_counts": {
+    "Center:111": 6,
+    "Corner:111": 4,
+    "Edge:111": 8,
+    "Pair:Pair": 4
+  },
+  "legal_replay_solved_34_generators": true,
+  "legal_replay_solved_3_generators": true,
+  "measurement_context": "Concurrent investigations may contend for CPU; Python CPU excludes GAP child CPU in these retained runs. cProfile and move-counter overhead are identified separately.",
+  "measurements": [
+    {
+      "budget_seconds": 20,
+      "moves": {},
+      "operation": "analyze_isotropy",
+      "python_cpu_seconds": 1.175422864,
+      "status": "completed",
+      "wall_seconds": 5.032445368000481
+    },
+    {
+      "budget_seconds": 45,
+      "moves": {
+        "cache_hits": 818,
+        "property_reads": 818
+      },
+      "operation": "fixed_full_block_synthesis_3_generators",
+      "python_cpu_seconds": 4.283788338,
+      "status": "completed",
+      "wall_seconds": 12.768773973999487
+    },
+    {
+      "budget_seconds": 45,
+      "moves": {
+        "cache_hits": 274,
+        "property_reads": 274
+      },
+      "operation": "certify_3_generator_method_against_all_originals",
+      "python_cpu_seconds": 2.027626119,
+      "status": "completed",
+      "wall_seconds": 2.063490851000097
+    },
+    {
+      "budget_seconds": 45,
+      "moves": {
+        "cache_hits": 9022,
+        "property_reads": 9022
+      },
+      "operation": "fixed_method_repertoire_3_generators_minimal_compression",
+      "python_cpu_seconds": 32.682204818,
+      "status": "completed",
+      "wall_seconds": 34.61270659699949
+    },
+    {
+      "budget_seconds": 20,
+      "moves": {
+        "cache_hits": 70,
+        "property_reads": 70
+      },
+      "operation": "legal_replay_3_generators",
+      "python_cpu_seconds": 0.17634751300000318,
+      "status": "completed",
+      "wall_seconds": 0.1766403289984737
+    },
+    {
+      "budget_seconds": 45,
+      "moves": {
+        "cache_hits": 4820,
+        "property_reads": 4820
+      },
+      "operation": "fixed_full_block_synthesis_34_generators",
+      "python_cpu_seconds": 2.129999085999998,
+      "status": "completed",
+      "wall_seconds": 7.2798237210008665
+    },
+    {
+      "budget_seconds": 45,
+      "moves": {
+        "cache_hits": 880,
+        "property_reads": 880
+      },
+      "operation": "certify_34_generator_method_against_all_originals",
+      "python_cpu_seconds": 1.315126841999998,
+      "status": "completed",
+      "wall_seconds": 1.3248483319985098
+    },
+    {
+      "budget_seconds": 45,
+      "moves": {
+        "cache_hits": 51643,
+        "property_reads": 51643
+      },
+      "operation": "fixed_method_repertoire_34_generators_minimal_compression",
+      "python_cpu_seconds": 19.382480623,
+      "status": "completed",
+      "wall_seconds": 21.049968631999946
+    },
+    {
+      "budget_seconds": 20,
+      "moves": {
+        "cache_hits": 481,
+        "property_reads": 481
+      },
+      "operation": "legal_replay_34_generators",
+      "python_cpu_seconds": 0.0653748049999976,
+      "status": "completed",
+      "wall_seconds": 0.06549570599963772
+    }
+  ],
+  "note": "Runtime instrumentation only; other agents may use separate CPU cores.",
+  "original_generator_count": 4968,
+  "puzzle": "FourPair",
+  "quality_34_generators": {
+    "algorithm_count": 91,
+    "all_original_generator_memberships_checked": 4968,
+    "case_count_sum": 104,
+    "costs": {
+      "exact": true,
+      "htm": {
+        "mean": 666.3351190476191,
+        "mean_denominator": 1680,
+        "mean_numerator": 1119443,
+        "worst": 1172
+      },
+      "qtm": {
+        "mean": 737.5559523809524,
+        "mean_denominator": 840,
+        "mean_numerator": 619547,
+        "worst": 1314
+      },
+      "scope": "uniform_reference_group_before_boundary_cancellation"
+    },
+    "stage_count": 13
+  },
+  "quality_3_generators": {
+    "algorithm_count": 91,
+    "all_original_generator_memberships_checked": 4968,
+    "case_count_sum": 104,
+    "costs": {
+      "exact": true,
+      "htm": {
+        "mean": 3541.5051587301587,
+        "mean_denominator": 2520,
+        "mean_numerator": 8924593,
+        "worst": 6613
+      },
+      "qtm": {
+        "mean": 4026.6464285714287,
+        "mean_denominator": 280,
+        "mean_numerator": 1127461,
+        "worst": 7537
+      },
+      "scope": "uniform_reference_group_before_boundary_cancellation"
+    },
+    "stage_count": 13
+  },
+  "reduced_generator_ids": [
+    45,
+    452,
+    578
+  ],
+  "repertoire_34_generators": {
+    "algorithm_count": 91,
+    "case_count_sum": 104,
+    "chunk_definition_moves": 0,
+    "chunk_definition_symbols": 0,
+    "chunk_recipe_symbols": 5423,
+    "chunk_regrips": 0,
+    "definition_htm": 5575,
+    "definition_qtm": 6171,
+    "description_score": 5630,
+    "dictionary_score": 5423,
+    "instruction_symbols": 207,
+    "learned_body_count": 87,
+    "macro_count": 89,
+    "macro_definition_htm": 5423,
+    "max_body_htm": 129,
+    "max_case_count": 16,
+    "mean_htm": 666.3351190476191,
+    "mean_qtm": 737.5559523809524,
+    "original_leaf_count": 25,
+    "original_leaf_htm": 125,
+    "rule_count": 91,
+    "stage_count": 13,
+    "states": 40131624960,
+    "total_htm": 26741111095296,
+    "total_qtm": 29599318867968,
+    "visible_leaf_count": 25,
+    "worst_htm": 1172,
+    "worst_qtm": 1314
+  },
+  "repertoire_3_generators": {
+    "algorithm_count": 91,
+    "case_count_sum": 104,
+    "chunk_definition_moves": 0,
+    "chunk_definition_symbols": 0,
+    "chunk_recipe_symbols": 32775,
+    "chunk_regrips": 0,
+    "definition_htm": 33112,
+    "definition_qtm": 37661,
+    "description_score": 33005,
+    "dictionary_score": 32775,
+    "instruction_symbols": 230,
+    "learned_body_count": 90,
+    "macro_count": 90,
+    "macro_definition_htm": 32775,
+    "max_body_htm": 778,
+    "max_case_count": 16,
+    "mean_htm": 3541.5051587301587,
+    "mean_qtm": 4026.6464285714287,
+    "original_leaf_count": 3,
+    "original_leaf_htm": 19,
+    "rule_count": 91,
+    "stage_count": 13,
+    "states": 40131624960,
+    "total_htm": 142126356824064,
+    "total_qtm": 161595864317952,
+    "visible_leaf_count": 3,
+    "worst_htm": 6613,
+    "worst_qtm": 7537
+  },
+  "reproduction": [
+    "v2/.venv/bin/python v2/research/profile_fourpair_method.py --include-original --seconds 90 --output /tmp/fourpair-method-rerun.json",
+    "v2/.venv/bin/python v2/research/profile_fourpair_dictionary.py --no-profile --seconds 90 --output /tmp/fourpair-dictionary-rerun.json",
+    "v2/.venv/bin/python v2/research/profile_fourpair_dictionary.py --seconds 45 --output /tmp/fourpair-dictionary-profile-rerun.json",
+    "v2/.venv/bin/python v2/research/profile_fourpair_dictionary.py --short-loops 32 --cache --hoist --no-profile --seconds 90 --output /tmp/fourpair-compact-dictionary-rerun.json"
+  ],
+  "scope": "solver only; no graph or guide rendering. Exact additive physical HTM is before cancellation between stages.",
+  "shape_count": 4062,
+  "source": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/__init__.py",
+  "unchanged_default_dictionary_probe": [
+    {
+      "budget_seconds": 20,
+      "moves": {},
+      "operation": "analyze_isotropy",
+      "python_cpu_seconds": 0.896260579,
+      "status": "completed",
+      "wall_seconds": 2.9500144949997775
+    },
+    {
+      "budget_seconds": 90,
+      "moves": {
+        "native_reads": 71383,
+        "property_reads": 71383
+      },
+      "operation": "default_dictionary_discovery_and_validation",
+      "python_cpu_seconds": 65.440515801,
+      "status": "external_cutoff",
+      "wall_seconds": 90.03089710199856
+    }
+  ],
+  "unchanged_fixed_full_alphabet_probe": [
+    {
+      "budget_seconds": 20,
+      "moves": {},
+      "operation": "analyze_isotropy",
+      "python_cpu_seconds": 1.117320026,
+      "status": "completed",
+      "wall_seconds": 9.269482275001792
+    },
+    {
+      "budget_seconds": 90,
+      "moves": {},
+      "operation": "fixed_full_block_synthesis_unmodified",
+      "python_cpu_seconds": 6.6248716750000005,
+      "status": "external_cutoff",
+      "wall_seconds": 90.02476741599821
+    }
+  ],
+  "version": 1
+}

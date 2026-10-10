@@ -1,0 +1,679 @@
+{
+  "analysis_seconds": 12.347101531999215,
+  "arcs": 153594,
+  "block_types": {
+    "111": 10,
+    "Clock": 4,
+    "Pair": 4
+  },
+  "deadline_seconds": 90,
+  "group_order": 1492992,
+  "mode": "template",
+  "phases": [
+    {
+      "function": "bce_v2.symbolic_template_repertoire._prepare",
+      "seconds": 90.10334829300336,
+      "started": 0.0003454289981164038,
+      "status": "ProfileDeadline"
+    },
+    {
+      "function": "bce_v2.symbolic_chain_search.select_symbolic_human_chain",
+      "seconds": 90.10328786099853,
+      "started": 0.00040006400013226084,
+      "status": "ProfileDeadline"
+    },
+    {
+      "function": "bce_v2.human_chains.plan_human_stages",
+      "seconds": 90.10285953400307,
+      "started": 0.0008203539982787333,
+      "status": "ProfileDeadline"
+    },
+    {
+      "function": "bce_v2.symbolic_chains.plan_symbolic_stages",
+      "seconds": 90.10281058300097,
+      "started": 0.0008599259999755304,
+      "status": "ProfileDeadline"
+    }
+  ],
+  "profile_by_cumulative": [
+    {
+      "calls": 1,
+      "cumulative_seconds": 90.103459301,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/template_human_repertoire.py",
+      "function": "template_human_repertoire",
+      "line": 375,
+      "own_seconds": 3.8701e-05,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 90.103412672,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+      "function": "symbolic_template_human_repertoire",
+      "line": 289,
+      "own_seconds": 5.2073e-05,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 4,
+      "cumulative_seconds": 90.10335188500001,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/research/profile_staged_solver.py",
+      "function": "timed",
+      "line": 63,
+      "own_seconds": 8.276400000000001e-05,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 90.103336235,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_template_repertoire.py",
+      "function": "_prepare",
+      "line": 252,
+      "own_seconds": 3.3452000000000004e-05,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 90.103299503,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/human_chain_search.py",
+      "function": "select_human_chain",
+      "line": 248,
+      "own_seconds": 8.076e-06,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 90.103261191,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_chain_search.py",
+      "function": "select_symbolic_human_chain",
+      "line": 427,
+      "own_seconds": 6.704600000000001e-05,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 90.10283976100001,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/human_chains.py",
+      "function": "plan_human_stages",
+      "line": 478,
+      "own_seconds": 1.8601e-05,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 90.10279046000001,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_chains.py",
+      "function": "plan_symbolic_stages",
+      "line": 426,
+      "own_seconds": 0.13628637700000001,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 19473,
+      "cumulative_seconds": 75.564363707,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/isotropy.py",
+      "function": "block_action",
+      "line": 49,
+      "own_seconds": 0.3854262,
+      "primitive_calls": 19473
+    },
+    {
+      "calls": 19473,
+      "cumulative_seconds": 75.11672319200001,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "action",
+      "line": 244,
+      "own_seconds": 22.065297353000002,
+      "primitive_calls": 19473
+    },
+    {
+      "calls": 19473,
+      "cumulative_seconds": 34.766877418,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "_from_transitions",
+      "line": 291,
+      "own_seconds": 2.454594155,
+      "primitive_calls": 19473
+    },
+    {
+      "calls": 4790358,
+      "cumulative_seconds": 26.352540999000002,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "_compose",
+      "line": 36,
+      "own_seconds": 13.195320174,
+      "primitive_calls": 4790358
+    },
+    {
+      "calls": 311568,
+      "cumulative_seconds": 25.79661833,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "_inverse",
+      "line": 42,
+      "own_seconds": 0.654221951,
+      "primitive_calls": 311568
+    },
+    {
+      "calls": 701030,
+      "cumulative_seconds": 25.334910974000003,
+      "file": "~",
+      "function": "<built-in method builtins.next>",
+      "line": 0,
+      "own_seconds": 0.47588352,
+      "primitive_calls": 701030
+    },
+    {
+      "calls": 311568,
+      "cumulative_seconds": 24.85902656,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 43,
+      "own_seconds": 3.2991930440000004,
+      "primitive_calls": 311568
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 13.404932724,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/gap_backend.py",
+      "function": "_run_gap",
+      "line": 271,
+      "own_seconds": 1.7313000000000002e-05,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 13.404915411000001,
+      "file": "/usr/lib/python3.12/subprocess.py",
+      "function": "run",
+      "line": 506,
+      "own_seconds": 5.1468e-05,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 13.297868727,
+      "file": "/usr/lib/python3.12/subprocess.py",
+      "function": "communicate",
+      "line": 1165,
+      "own_seconds": 1.8480000000000003e-05,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 13.297849074,
+      "file": "/usr/lib/python3.12/subprocess.py",
+      "function": "_communicate",
+      "line": 2062,
+      "own_seconds": 0.015073899000000002,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 858,
+      "cumulative_seconds": 13.272584040000002,
+      "file": "/usr/lib/python3.12/selectors.py",
+      "function": "select",
+      "line": 402,
+      "own_seconds": 0.014696137000000001,
+      "primitive_calls": 858
+    },
+    {
+      "calls": 858,
+      "cumulative_seconds": 13.25532916,
+      "file": "~",
+      "function": "<method 'poll' of 'select.poll' objects>",
+      "line": 0,
+      "own_seconds": 13.255322458,
+      "primitive_calls": 858
+    },
+    {
+      "calls": 19161432,
+      "cumulative_seconds": 13.157220825000001,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 38,
+      "own_seconds": 9.75906952,
+      "primitive_calls": 19161432
+    },
+    {
+      "calls": 8022876,
+      "cumulative_seconds": 10.644352945000001,
+      "file": "~",
+      "function": "<built-in method builtins.all>",
+      "line": 0,
+      "own_seconds": 5.948095366,
+      "primitive_calls": 8022876
+    },
+    {
+      "calls": 8490228,
+      "cumulative_seconds": 3.9635498690000004,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 278,
+      "own_seconds": 3.9635498690000004,
+      "primitive_calls": 8490228
+    },
+    {
+      "calls": 7477635,
+      "cumulative_seconds": 3.432563152,
+      "file": "~",
+      "function": "<method 'items' of 'dict' objects>",
+      "line": 0,
+      "own_seconds": 3.432563152,
+      "primitive_calls": 7477635
+    },
+    {
+      "calls": 14371074,
+      "cumulative_seconds": 3.3981513050000003,
+      "file": "~",
+      "function": "<built-in method builtins.abs>",
+      "line": 0,
+      "own_seconds": 3.3981513050000003,
+      "primitive_calls": 14371074
+    },
+    {
+      "calls": 311568,
+      "cumulative_seconds": 2.393276579,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "_powers",
+      "line": 109,
+      "own_seconds": 0.9002196760000001,
+      "primitive_calls": 311568
+    },
+    {
+      "calls": 19474,
+      "cumulative_seconds": 1.630592129,
+      "file": "~",
+      "function": "<built-in method builtins.any>",
+      "line": 0,
+      "own_seconds": 0.28194156800000003,
+      "primitive_calls": 19474
+    },
+    {
+      "calls": 954177,
+      "cumulative_seconds": 1.348649985,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 256,
+      "own_seconds": 0.7987274010000001,
+      "primitive_calls": 954177
+    },
+    {
+      "calls": 19478,
+      "cumulative_seconds": 0.905746428,
+      "file": "~",
+      "function": "<method 'join' of 'str' objects>",
+      "line": 0,
+      "own_seconds": 0.285746687,
+      "primitive_calls": 5
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 0.9054615730000001,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/gap_backend.py",
+      "function": "_gap_images",
+      "line": 266,
+      "own_seconds": 0.000699251,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 1286091,
+      "cumulative_seconds": 0.776109801,
+      "file": "~",
+      "function": "<method 'append' of 'list' objects>",
+      "line": 0,
+      "own_seconds": 0.776109801,
+      "primitive_calls": 1286091
+    },
+    {
+      "calls": 1479948,
+      "cumulative_seconds": 0.73270771,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 279,
+      "own_seconds": 0.73270771,
+      "primitive_calls": 1479948
+    },
+    {
+      "calls": 954177,
+      "cumulative_seconds": 0.586414253,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/gap_backend.py",
+      "function": "<genexpr>",
+      "line": 267,
+      "own_seconds": 0.586414253,
+      "primitive_calls": 954177
+    },
+    {
+      "calls": 1889061,
+      "cumulative_seconds": 0.5795283440000001,
+      "file": "~",
+      "function": "<built-in method builtins.isinstance>",
+      "line": 0,
+      "own_seconds": 0.579522117,
+      "primitive_calls": 1889061
+    },
+    {
+      "calls": 370006,
+      "cumulative_seconds": 0.553642237,
+      "file": "~",
+      "function": "<built-in method builtins.sorted>",
+      "line": 0,
+      "own_seconds": 0.553623278,
+      "primitive_calls": 370006
+    },
+    {
+      "calls": 1285218,
+      "cumulative_seconds": 0.537269227,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 264,
+      "own_seconds": 0.537269227,
+      "primitive_calls": 1285218
+    },
+    {
+      "calls": 858528,
+      "cumulative_seconds": 0.401861313,
+      "file": "~",
+      "function": "<built-in method builtins.len>",
+      "line": 0,
+      "own_seconds": 0.401861313,
+      "primitive_calls": 858528
+    },
+    {
+      "calls": 311570,
+      "cumulative_seconds": 0.258612656,
+      "file": "~",
+      "function": "<method 'index' of 'tuple' objects>",
+      "line": 0,
+      "own_seconds": 0.258612656,
+      "primitive_calls": 311570
+    },
+    {
+      "calls": 350514,
+      "cumulative_seconds": 0.222037228,
+      "file": "~",
+      "function": "<method 'values' of 'dict' objects>",
+      "line": 0,
+      "own_seconds": 0.222037228,
+      "primitive_calls": 350514
+    }
+  ],
+  "profile_by_own": [
+    {
+      "calls": 19473,
+      "cumulative_seconds": 75.11672319200001,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "action",
+      "line": 244,
+      "own_seconds": 22.065297353000002,
+      "primitive_calls": 19473
+    },
+    {
+      "calls": 858,
+      "cumulative_seconds": 13.25532916,
+      "file": "~",
+      "function": "<method 'poll' of 'select.poll' objects>",
+      "line": 0,
+      "own_seconds": 13.255322458,
+      "primitive_calls": 858
+    },
+    {
+      "calls": 4790358,
+      "cumulative_seconds": 26.352540999000002,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "_compose",
+      "line": 36,
+      "own_seconds": 13.195320174,
+      "primitive_calls": 4790358
+    },
+    {
+      "calls": 19161432,
+      "cumulative_seconds": 13.157220825000001,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 38,
+      "own_seconds": 9.75906952,
+      "primitive_calls": 19161432
+    },
+    {
+      "calls": 8022876,
+      "cumulative_seconds": 10.644352945000001,
+      "file": "~",
+      "function": "<built-in method builtins.all>",
+      "line": 0,
+      "own_seconds": 5.948095366,
+      "primitive_calls": 8022876
+    },
+    {
+      "calls": 8490228,
+      "cumulative_seconds": 3.9635498690000004,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 278,
+      "own_seconds": 3.9635498690000004,
+      "primitive_calls": 8490228
+    },
+    {
+      "calls": 7477635,
+      "cumulative_seconds": 3.432563152,
+      "file": "~",
+      "function": "<method 'items' of 'dict' objects>",
+      "line": 0,
+      "own_seconds": 3.432563152,
+      "primitive_calls": 7477635
+    },
+    {
+      "calls": 14371074,
+      "cumulative_seconds": 3.3981513050000003,
+      "file": "~",
+      "function": "<built-in method builtins.abs>",
+      "line": 0,
+      "own_seconds": 3.3981513050000003,
+      "primitive_calls": 14371074
+    },
+    {
+      "calls": 311568,
+      "cumulative_seconds": 24.85902656,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 43,
+      "own_seconds": 3.2991930440000004,
+      "primitive_calls": 311568
+    },
+    {
+      "calls": 19473,
+      "cumulative_seconds": 34.766877418,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "_from_transitions",
+      "line": 291,
+      "own_seconds": 2.454594155,
+      "primitive_calls": 19473
+    },
+    {
+      "calls": 311568,
+      "cumulative_seconds": 2.393276579,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "_powers",
+      "line": 109,
+      "own_seconds": 0.9002196760000001,
+      "primitive_calls": 311568
+    },
+    {
+      "calls": 954177,
+      "cumulative_seconds": 1.348649985,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 256,
+      "own_seconds": 0.7987274010000001,
+      "primitive_calls": 954177
+    },
+    {
+      "calls": 1286091,
+      "cumulative_seconds": 0.776109801,
+      "file": "~",
+      "function": "<method 'append' of 'list' objects>",
+      "line": 0,
+      "own_seconds": 0.776109801,
+      "primitive_calls": 1286091
+    },
+    {
+      "calls": 1479948,
+      "cumulative_seconds": 0.73270771,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 279,
+      "own_seconds": 0.73270771,
+      "primitive_calls": 1479948
+    },
+    {
+      "calls": 311568,
+      "cumulative_seconds": 25.79661833,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "_inverse",
+      "line": 42,
+      "own_seconds": 0.654221951,
+      "primitive_calls": 311568
+    },
+    {
+      "calls": 954177,
+      "cumulative_seconds": 0.586414253,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/gap_backend.py",
+      "function": "<genexpr>",
+      "line": 267,
+      "own_seconds": 0.586414253,
+      "primitive_calls": 954177
+    },
+    {
+      "calls": 1889061,
+      "cumulative_seconds": 0.5795283440000001,
+      "file": "~",
+      "function": "<built-in method builtins.isinstance>",
+      "line": 0,
+      "own_seconds": 0.579522117,
+      "primitive_calls": 1889061
+    },
+    {
+      "calls": 370006,
+      "cumulative_seconds": 0.553642237,
+      "file": "~",
+      "function": "<built-in method builtins.sorted>",
+      "line": 0,
+      "own_seconds": 0.553623278,
+      "primitive_calls": 370006
+    },
+    {
+      "calls": 1285218,
+      "cumulative_seconds": 0.537269227,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "<genexpr>",
+      "line": 264,
+      "own_seconds": 0.537269227,
+      "primitive_calls": 1285218
+    },
+    {
+      "calls": 701030,
+      "cumulative_seconds": 25.334910974000003,
+      "file": "~",
+      "function": "<built-in method builtins.next>",
+      "line": 0,
+      "own_seconds": 0.47588352,
+      "primitive_calls": 701030
+    },
+    {
+      "calls": 858528,
+      "cumulative_seconds": 0.401861313,
+      "file": "~",
+      "function": "<built-in method builtins.len>",
+      "line": 0,
+      "own_seconds": 0.401861313,
+      "primitive_calls": 858528
+    },
+    {
+      "calls": 19473,
+      "cumulative_seconds": 75.564363707,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/isotropy.py",
+      "function": "block_action",
+      "line": 49,
+      "own_seconds": 0.3854262,
+      "primitive_calls": 19473
+    },
+    {
+      "calls": 19478,
+      "cumulative_seconds": 0.905746428,
+      "file": "~",
+      "function": "<method 'join' of 'str' objects>",
+      "line": 0,
+      "own_seconds": 0.285746687,
+      "primitive_calls": 5
+    },
+    {
+      "calls": 19474,
+      "cumulative_seconds": 1.630592129,
+      "file": "~",
+      "function": "<built-in method builtins.any>",
+      "line": 0,
+      "own_seconds": 0.28194156800000003,
+      "primitive_calls": 19474
+    },
+    {
+      "calls": 311570,
+      "cumulative_seconds": 0.258612656,
+      "file": "~",
+      "function": "<method 'index' of 'tuple' objects>",
+      "line": 0,
+      "own_seconds": 0.258612656,
+      "primitive_calls": 311570
+    },
+    {
+      "calls": 350514,
+      "cumulative_seconds": 0.222037228,
+      "file": "~",
+      "function": "<method 'values' of 'dict' objects>",
+      "line": 0,
+      "own_seconds": 0.222037228,
+      "primitive_calls": 350514
+    },
+    {
+      "calls": 389460,
+      "cumulative_seconds": 0.212561296,
+      "file": "~",
+      "function": "<built-in method builtins.iter>",
+      "line": 0,
+      "own_seconds": 0.212561296,
+      "primitive_calls": 389460
+    },
+    {
+      "calls": 19473,
+      "cumulative_seconds": 0.21831697400000002,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/block_actions.py",
+      "function": "_create",
+      "line": 338,
+      "own_seconds": 0.19168727600000002,
+      "primitive_calls": 19473
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 90.10279046000001,
+      "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/symbolic_chains.py",
+      "function": "plan_symbolic_stages",
+      "line": 426,
+      "own_seconds": 0.13628637700000001,
+      "primitive_calls": 1
+    },
+    {
+      "calls": 2,
+      "cumulative_seconds": 0.103414448,
+      "file": "~",
+      "function": "<built-in method posix.waitpid>",
+      "line": 0,
+      "own_seconds": 0.103414448,
+      "primitive_calls": 2
+    }
+  ],
+  "puzzle": "BeltRoad",
+  "raw_generator_count": 19473,
+  "reduced_generator_count": 5,
+  "scope": "solver only, cProfile enabled; analysis is timed separately",
+  "shapes": 84584,
+  "solver_seconds": 90.10740613400048,
+  "status": "deadline"
+}

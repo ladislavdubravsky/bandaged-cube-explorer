@@ -1,0 +1,342 @@
+{
+  "analysis": {
+    "child_cpu_seconds": 3.7199809999999998,
+    "self_cpu_seconds": 1.178712,
+    "wall_seconds": 5.915509815000405
+  },
+  "arc_count": 11406,
+  "bandage": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    2,
+    0,
+    0,
+    0,
+    3,
+    0,
+    4,
+    1,
+    0,
+    2,
+    0,
+    0,
+    0,
+    3,
+    0,
+    4
+  ],
+  "complete_loop_membership_verification": {
+    "child_cpu_seconds": 0.0,
+    "self_cpu_seconds": 0.5575130000000001,
+    "wall_seconds": 0.5648062910004228
+  },
+  "cpu_affinity": [
+    3
+  ],
+  "equivalence_scope": "Every original native loop belongs to the reduced portable certificate, with identical exact group order. Original-basis planner did not finish, so direct feature/case-table equality was not measured.",
+  "format": "bce-v2-symbolic-basis-performance",
+  "gap_timeout_seconds": 60,
+  "group_order": 40131624960,
+  "measurements": [
+    {
+      "basis": "reduced",
+      "cases": 104,
+      "child_cpu_seconds": 7.258588999999999,
+      "features": [
+        [
+          "solve_block",
+          [
+            9,
+            18
+          ],
+          4
+        ],
+        [
+          "solve_block",
+          [
+            11,
+            20
+          ],
+          3
+        ],
+        [
+          "solve_block",
+          [
+            15,
+            24
+          ],
+          2
+        ],
+        [
+          "solve_block",
+          [
+            0
+          ],
+          12
+        ],
+        [
+          "solve_block",
+          [
+            2
+          ],
+          9
+        ],
+        [
+          "solve_block",
+          [
+            6
+          ],
+          6
+        ],
+        [
+          "solve_block",
+          [
+            1
+          ],
+          16
+        ],
+        [
+          "solve_block",
+          [
+            3
+          ],
+          14
+        ],
+        [
+          "solve_block",
+          [
+            5
+          ],
+          12
+        ],
+        [
+          "solve_block",
+          [
+            7
+          ],
+          10
+        ],
+        [
+          "solve_block",
+          [
+            19
+          ],
+          8
+        ],
+        [
+          "solve_block",
+          [
+            21
+          ],
+          6
+        ],
+        [
+          "solve_block",
+          [
+            23
+          ],
+          2
+        ]
+      ],
+      "group_order": 40131624960,
+      "input_generator_count": 3,
+      "kernel_order": 3456,
+      "quotient_order": 11612160,
+      "self_cpu_seconds": 1.5976599999999999,
+      "stages": 13,
+      "status": "completed",
+      "strong_generator_counts": [
+        20,
+        16,
+        15,
+        14,
+        13,
+        11,
+        9,
+        8,
+        7,
+        6,
+        4,
+        3,
+        1,
+        0
+      ],
+      "terminal_order": 1,
+      "wall_seconds": 19.640406031001476
+    },
+    {
+      "basis": "original",
+      "child_cpu_seconds": 30.129837000000002,
+      "error": "GapTimeoutError",
+      "input_generator_count": 4968,
+      "message": "GAP symbolic stage planning exceeded its 60-second timeout",
+      "self_cpu_seconds": 6.187231000000001,
+      "status": "error",
+      "wall_seconds": 73.99252847000025
+    }
+  ],
+  "original_loop_count": 4968,
+  "puzzle": "FourPair",
+  "python_deadline_seconds": 90,
+  "reduced_certificate_covers_every_original_loop": true,
+  "reduced_ids": [
+    45,
+    452,
+    578
+  ],
+  "reduced_loop_count": 3,
+  "reduced_only_repeat": {
+    "analysis": {
+      "child_cpu_seconds": 3.219949,
+      "self_cpu_seconds": 0.997336,
+      "wall_seconds": 4.459656412000186
+    },
+    "complete_loop_membership_verification": {
+      "child_cpu_seconds": 0.0,
+      "self_cpu_seconds": 0.7137960000000003,
+      "wall_seconds": 0.8210447489982471
+    },
+    "measurements": [
+      {
+        "basis": "reduced",
+        "cases": 104,
+        "child_cpu_seconds": 5.770855000000001,
+        "features": [
+          [
+            "solve_block",
+            [
+              9,
+              18
+            ],
+            4
+          ],
+          [
+            "solve_block",
+            [
+              11,
+              20
+            ],
+            3
+          ],
+          [
+            "solve_block",
+            [
+              15,
+              24
+            ],
+            2
+          ],
+          [
+            "solve_block",
+            [
+              0
+            ],
+            12
+          ],
+          [
+            "solve_block",
+            [
+              2
+            ],
+            9
+          ],
+          [
+            "solve_block",
+            [
+              6
+            ],
+            6
+          ],
+          [
+            "solve_block",
+            [
+              1
+            ],
+            16
+          ],
+          [
+            "solve_block",
+            [
+              3
+            ],
+            14
+          ],
+          [
+            "solve_block",
+            [
+              5
+            ],
+            12
+          ],
+          [
+            "solve_block",
+            [
+              7
+            ],
+            10
+          ],
+          [
+            "solve_block",
+            [
+              19
+            ],
+            8
+          ],
+          [
+            "solve_block",
+            [
+              21
+            ],
+            6
+          ],
+          [
+            "solve_block",
+            [
+              23
+            ],
+            2
+          ]
+        ],
+        "group_order": 40131624960,
+        "input_generator_count": 3,
+        "kernel_order": 3456,
+        "quotient_order": 11612160,
+        "self_cpu_seconds": 1.3791289999999998,
+        "stages": 13,
+        "status": "completed",
+        "strong_generator_counts": [
+          20,
+          16,
+          15,
+          14,
+          13,
+          11,
+          9,
+          8,
+          7,
+          6,
+          4,
+          3,
+          1,
+          0
+        ],
+        "terminal_order": 1,
+        "wall_seconds": 7.547467108001001
+      }
+    ],
+    "reduced_certificate_covers_every_original_loop": true
+  },
+  "scope": "uncprofiled symbolic fully-solve baseline planning only; process pinned to CPU 3",
+  "shape_count": 4062,
+  "timing_note": "Initial runs shared CPU 3 briefly with cycle benchmark; CPU timings are preferable. Original basis GAP timeout measures subprocess only and excludes Python argument preparation. Reduced-only repeat will be appended separately.",
+  "version": 1
+}

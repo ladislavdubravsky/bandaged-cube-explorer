@@ -1,5 +1,16 @@
 # Human-method research results
 
+The [staged solution performance investigation](staged-solution-performance.md)
+separates graph drawing, symbolic preparation and repeated witness validation
+for BeltRoad, MostSignaturesCube and FourPair. Bounded profiles and equivalent
+local experiments support using reduced generators for algebra while retaining
+a richer physical algorithm pool. Reproduction scripts and machine measurements
+are linked in the report. The
+[implemented performance changes](staged-performance-implementation.md) now add
+bounded graph views, reduced-basis algebra, provenance caches, workload routing,
+progress and shared optimization budgets, with production measurements and
+coverage/replay checks.
+
 The minimal [ordinary-cube notebook](../examples/Unbandaged3x3.ipynb) mirrors
 `BandagedPocketCube`: shape input, group sizes, shape graph and a complete
 staged guide. Its symbolic compiler handles 43 quintillion colored states

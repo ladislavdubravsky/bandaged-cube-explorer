@@ -1,0 +1,145 @@
+{
+  "format": "bce-v2-fourpair-validation-performance",
+  "group_order": 40131624960,
+  "inventory_counts": {
+    "Center:111": 6,
+    "Corner:111": 4,
+    "Edge:111": 8,
+    "Pair:Pair": 4
+  },
+  "measurement_context": "Runtime-only counter and cache changes; no validation check removed; concurrent CPU contention. The fixture has 16 real algorithms and all 4968 original generators.",
+  "measurements": [
+    {
+      "budget_seconds": 20,
+      "moves": {},
+      "operation": "analyze_isotropy",
+      "python_cpu_seconds": 1.0581448629999999,
+      "status": "completed",
+      "wall_seconds": 9.272767901999032
+    },
+    {
+      "budget_seconds": 45,
+      "moves": {
+        "native_reads": 178864,
+        "property_reads": 178864
+      },
+      "operation": "original_validation_16_algorithms",
+      "python_cpu_seconds": 2.137255336,
+      "status": "completed",
+      "wall_seconds": 4.174068274001911
+    },
+    {
+      "budget_seconds": 45,
+      "moves": {
+        "native_reads": 14920,
+        "property_reads": 14920
+      },
+      "operation": "hoisted_signature_validation_16_algorithms",
+      "python_cpu_seconds": 0.33336817200000013,
+      "status": "completed",
+      "wall_seconds": 0.6635162500024308
+    },
+    {
+      "budget_seconds": 45,
+      "moves": {
+        "cache_hits": 9952,
+        "native_reads": 4968,
+        "property_reads": 14920
+      },
+      "operation": "hoisted_and_cached_validation_cold_16_algorithms",
+      "python_cpu_seconds": 0.2406791049999999,
+      "status": "completed",
+      "wall_seconds": 0.3464318199985428
+    },
+    {
+      "budget_seconds": 45,
+      "moves": {
+        "cache_hits": 14920,
+        "property_reads": 14920
+      },
+      "operation": "hoisted_and_cached_validation_warm_16_algorithms",
+      "python_cpu_seconds": 0.18654398499999925,
+      "status": "completed",
+      "wall_seconds": 0.1920626050014107
+    }
+  ],
+  "note": "Runtime instrumentation only; other agents may use separate CPU cores.",
+  "original_generator_count": 4968,
+  "puzzle": "FourPair",
+  "reduced_generator_ids": [
+    45,
+    452,
+    578
+  ],
+  "reproduction": "v2/.venv/bin/python v2/research/profile_fourpair_validation.py --algorithms 16 --output /tmp/fourpair-validation-rerun.json",
+  "script_reproduction_check": [
+    {
+      "budget_seconds": 30.0,
+      "child_cpu_seconds": 2.817851,
+      "moves": {},
+      "operation": "analyze_isotropy",
+      "self_cpu_seconds": 0.9091560000000001,
+      "status": "completed",
+      "wall_seconds": 3.761589986999752
+    },
+    {
+      "budget_seconds": 30.0,
+      "child_cpu_seconds": 0.0,
+      "moves": {
+        "native_reads": 178864,
+        "property_reads": 178864
+      },
+      "operation": "original_validation",
+      "self_cpu_seconds": 2.009907,
+      "status": "completed",
+      "wall_seconds": 2.24265810200086
+    },
+    {
+      "budget_seconds": 30.0,
+      "child_cpu_seconds": 0.0,
+      "moves": {
+        "native_reads": 14920,
+        "property_reads": 14920
+      },
+      "operation": "hoisted_signature_validation",
+      "self_cpu_seconds": 0.35780200000000023,
+      "status": "completed",
+      "wall_seconds": 0.5150685009975859
+    },
+    {
+      "budget_seconds": 30.0,
+      "child_cpu_seconds": 0.0,
+      "moves": {
+        "cache_hits": 9952,
+        "native_reads": 4968,
+        "property_reads": 14920
+      },
+      "operation": "hoisted_and_cached_validation_cold",
+      "self_cpu_seconds": 0.2501450000000002,
+      "status": "completed",
+      "wall_seconds": 0.33163536799838766
+    },
+    {
+      "budget_seconds": 30.0,
+      "child_cpu_seconds": 0.0,
+      "moves": {
+        "cache_hits": 14920,
+        "property_reads": 14920
+      },
+      "operation": "hoisted_and_cached_validation_warm",
+      "self_cpu_seconds": 0.1968559999999993,
+      "status": "completed",
+      "wall_seconds": 0.3103651070014166
+    }
+  ],
+  "shape_count": 4062,
+  "source": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/__init__.py",
+  "validation_fixture": {
+    "algorithm_count": 16,
+    "orientation_target_order": 3456,
+    "quotient_order": 11612160,
+    "same_dictionary_all_checks_retained": true,
+    "theoretical_signature_move_reads": 168912
+  },
+  "version": 1
+}

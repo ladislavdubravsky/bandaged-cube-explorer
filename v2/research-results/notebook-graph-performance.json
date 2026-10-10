@@ -1,0 +1,165 @@
+{
+  "format": "bce-v2-notebook-graph-performance",
+  "measurements": [
+    {
+      "default_iterations": 300,
+      "estimate_scope": "sampled exact repulsion kernel only; excludes attraction, symmetry projection and rendering; early convergence may reduce iterations",
+      "estimated_repulsion_cpu_seconds_300_iterations": 357844.19868637476,
+      "estimated_repulsion_cpu_seconds_per_iteration": 1192.8139956212492,
+      "estimated_repulsion_seconds_300_iterations": 609933.1118454544,
+      "estimated_repulsion_seconds_per_iteration": 2033.1103728181815,
+      "exploration_seconds": 0.10041333199842484,
+      "geometry_edges": 152064,
+      "networkx_geometry_seconds": 1.4018739589992038,
+      "ordered_repulsion_pairs_300_iterations": 2146335916800,
+      "ordered_repulsion_pairs_per_iteration": 7154453056,
+      "planar_symmetry_order": null,
+      "positive_actions": 153594,
+      "puzzle": "BeltRoad",
+      "sample_block_cpu_seconds": [
+        2.029191503,
+        1.8050717799999987,
+        1.9520561519999973,
+        1.6766064210000025,
+        1.1010494179999952
+      ],
+      "sample_block_rows": 128,
+      "sample_block_wall_seconds": [
+        2.6146678180011804,
+        3.0766826790022606,
+        4.911369928999193,
+        3.9596398020003107,
+        1.1591645459993742
+      ],
+      "shape_count": 84584,
+      "signature": {
+        "111": 10,
+        "Clock": 4,
+        "Pair": 4
+      },
+      "symmetry_detection": {
+        "interrupted_at": {
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/graph_render.py",
+          "function": "_cycles",
+          "line": 52
+        },
+        "seconds": 30.00048433900156,
+        "status": "cutoff"
+      },
+      "symmetry_equivalence_checked": false,
+      "symmetry_with_linear_cycle_scan": {
+        "interrupted_at": {
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/__init__.py",
+          "function": "__init__",
+          "line": 63
+        },
+        "seconds": 30.00178503799907,
+        "status": "cutoff"
+      },
+      "visible_node_diagrams": 54912
+    },
+    {
+      "default_iterations": 300,
+      "estimate_scope": "sampled exact repulsion kernel only; excludes attraction, symmetry projection and rendering; early convergence may reduce iterations",
+      "estimated_repulsion_cpu_seconds_300_iterations": 185419.80783112475,
+      "estimated_repulsion_cpu_seconds_per_iteration": 618.0660261037492,
+      "estimated_repulsion_seconds_300_iterations": 197136.55281890903,
+      "estimated_repulsion_seconds_per_iteration": 657.1218427296967,
+      "exploration_seconds": 0.06895289000021876,
+      "geometry_edges": 153856,
+      "networkx_geometry_seconds": 0.8674961950018769,
+      "ordered_repulsion_pairs_300_iterations": 2548924492800,
+      "ordered_repulsion_pairs_per_iteration": 8496414976,
+      "planar_symmetry_order": 4,
+      "positive_actions": 154272,
+      "puzzle": "MostSignaturesCube",
+      "sample_block_cpu_seconds": [
+        0.9122252460000055,
+        0.858276029999999,
+        0.8852947720000088,
+        0.7563465340000022,
+        0.7854729499999991
+      ],
+      "sample_block_rows": 128,
+      "sample_block_wall_seconds": [
+        1.165637625999807,
+        0.9125108039988845,
+        0.9766755919990828,
+        0.8489623349996691,
+        0.8507449030003045
+      ],
+      "shape_count": 92176,
+      "signature": {
+        "111": 9,
+        "311": 1,
+        "Clock": 4,
+        "Pair": 3
+      },
+      "symmetry_detection": {
+        "interrupted_at": {
+          "file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/graph_render.py",
+          "function": "_cycles",
+          "line": 52
+        },
+        "seconds": 30.000934650997806,
+        "status": "cutoff"
+      },
+      "symmetry_equivalence_checked": false,
+      "symmetry_with_linear_cycle_scan": {
+        "seconds": 27.825973614999384,
+        "status": "completed"
+      },
+      "visible_node_diagrams": 52064
+    },
+    {
+      "default_iterations": 300,
+      "estimate_scope": "sampled exact repulsion kernel only; excludes attraction, symmetry projection and rendering; early convergence may reduce iterations",
+      "estimated_repulsion_cpu_seconds_300_iterations": 307.50714098445525,
+      "estimated_repulsion_cpu_seconds_per_iteration": 1.0250238032815175,
+      "estimated_repulsion_seconds_300_iterations": 310.3839604495761,
+      "estimated_repulsion_seconds_per_iteration": 1.034613201498587,
+      "exploration_seconds": 0.001737195001624059,
+      "geometry_edges": 10560,
+      "networkx_geometry_seconds": 0.04413206000026548,
+      "ordered_repulsion_pairs_300_iterations": 4949953200,
+      "ordered_repulsion_pairs_per_iteration": 16499844,
+      "planar_symmetry_order": 3,
+      "positive_actions": 11406,
+      "puzzle": "FourPair",
+      "sample_block_cpu_seconds": [
+        0.03620471100001055,
+        0.03346739699999546,
+        0.02460021299999937,
+        0.03230011000000843,
+        0.03072904799999776
+      ],
+      "sample_block_rows": 128,
+      "sample_block_wall_seconds": [
+        0.03731256200262578,
+        0.033677433002594626,
+        0.025126671000180067,
+        0.032602286999463104,
+        0.030919576998712728
+      ],
+      "shape_count": 4062,
+      "signature": {
+        "111": 18,
+        "Pair": 4
+      },
+      "symmetry_detection": {
+        "seconds": 5.54597226199985,
+        "status": "completed"
+      },
+      "symmetry_equivalence_checked": true,
+      "symmetry_with_linear_cycle_scan": {
+        "seconds": 1.214414065998426,
+        "status": "completed"
+      },
+      "visible_node_diagrams": 4062
+    }
+  ],
+  "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39",
+  "python": "3.12.3",
+  "timing_conditions": "concurrent bounded research jobs; timings are diagnostic, not calibrated uncontended benchmarks",
+  "version": 1
+}

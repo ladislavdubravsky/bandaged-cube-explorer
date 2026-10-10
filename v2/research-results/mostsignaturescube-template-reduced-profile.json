@@ -1,0 +1,364 @@
+{
+  "additive_costs": {
+    "exact": true,
+    "htm": {
+      "mean": 141.33333333333334,
+      "mean_denominator": 3,
+      "mean_numerator": 424,
+      "worst": 224
+    },
+    "qtm": {
+      "mean": 171.33333333333334,
+      "mean_denominator": 3,
+      "mean_numerator": 514,
+      "worst": 272
+    },
+    "scope": "uniform_reference_group_before_boundary_cancellation"
+  },
+  "analysis_child_cpu_seconds": 1.8514210000000002,
+  "analysis_seconds": 2.3210092859990255,
+  "analysis_self_cpu_seconds": 0.7534040000000001,
+  "arcs": 154272,
+  "block_types": {
+    "111": 9,
+    "311": 1,
+    "Clock": 4,
+    "Pair": 3
+  },
+  "cases": 29,
+  "complete_original_generator_membership_verified": true,
+  "coverage": "certified",
+  "cprofile_enabled": false,
+  "deadline_seconds": 90,
+  "experimental_reduced_alphabet": true,
+  "group_order": 10368,
+  "history_free_samples": [
+    {
+      "replay_verified": true,
+      "scramble_htm": 6,
+      "solution_htm": 5
+    },
+    {
+      "replay_verified": true,
+      "scramble_htm": 9,
+      "solution_htm": 7
+    },
+    {
+      "replay_verified": true,
+      "scramble_htm": 15,
+      "solution_htm": 11
+    }
+  ],
+  "macros": 4,
+  "method_generator_count": 4,
+  "mode": "template",
+  "phases": [
+    {
+      "function": "bce_v2.symbolic_template_repertoire._prepare",
+      "seconds": 21.562699262001843,
+      "started": 4.5304997911443934e-05,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_chain_search.select_symbolic_human_chain",
+      "seconds": 21.56192719700266,
+      "started": 5.730399789172225e-05,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_chains.plan_human_stages",
+      "seconds": 1.4508203090008465,
+      "started": 0.00015979399904608727,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_chains.plan_symbolic_stages",
+      "seconds": 1.4508082259999355,
+      "started": 0.00016917600078159012,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_chains.plan_human_stages",
+      "seconds": 1.522926711000764,
+      "started": 1.4509825999994064,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_chains.plan_symbolic_stages",
+      "seconds": 1.5228984489986033,
+      "started": 1.4510040749992186,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_dictionary.discover_symbolic_dictionary",
+      "seconds": 9.641297018999467,
+      "started": 2.97395976199914,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.loop_algorithms.discover_loop_algorithms",
+      "seconds": 6.4604379660013365,
+      "started": 4.071646186999715,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_chain_search._compile_dictionary_policy",
+      "seconds": 0.9113595480012009,
+      "started": 13.01668901299854,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._compile_plan",
+      "seconds": 0.281351782999991,
+      "started": 13.016695785998309,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._compile_symbolic_plan",
+      "seconds": 0.28133709500252735,
+      "started": 13.016709619998437,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.2305903029991896,
+      "started": 13.066690053001366,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.2569674349979323,
+      "started": 13.670879997000156,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_chain_search._compile_dictionary_policy",
+      "seconds": 0.7908977029983362,
+      "started": 13.93285335499968,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._compile_plan",
+      "seconds": 0.26936258700152393,
+      "started": 13.93285613199987,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._compile_symbolic_plan",
+      "seconds": 0.26935453899932327,
+      "started": 13.932862371999363,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.2049836320002214,
+      "started": 13.995878425001138,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.16274352300024475,
+      "started": 14.560806194000179,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_chain_search._adaptive_plan",
+      "seconds": 1.8448145309994288,
+      "started": 14.726097852999374,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_chain_search._compile_dictionary_policy",
+      "seconds": 0.8752482339987182,
+      "started": 16.57091546800075,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._compile_plan",
+      "seconds": 0.2750862930006406,
+      "started": 16.57091951199982,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._compile_symbolic_plan",
+      "seconds": 0.27507612999761477,
+      "started": 16.570928613000433,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.21003083500181674,
+      "started": 16.635177242998907,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.17408222499943804,
+      "started": 17.271838017000846,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_chain_search._adaptive_plan",
+      "seconds": 2.739977812001598,
+      "started": 17.448587506998592,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_chain_search._compile_dictionary_policy",
+      "seconds": 1.3669637689999945,
+      "started": 20.18869898399862,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._compile_plan",
+      "seconds": 0.35523890599870356,
+      "started": 20.188703907999297,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._compile_symbolic_plan",
+      "seconds": 0.35522398200191674,
+      "started": 20.188715715998114,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.28030722699986654,
+      "started": 20.26220697499957,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.2557048550006584,
+      "started": 21.29965345399978,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.5167831160033529,
+      "started": 21.692157696998038,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_repertoire_core.build_symbolic_repertoire",
+      "seconds": 1.6442204820014013,
+      "started": 22.270607593000022,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.5491271649989358,
+      "started": 22.43685053399895,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_repertoire_core.validate_symbolic_repertoire",
+      "seconds": 0.9265672429974074,
+      "started": 22.98677200200109,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.42349742900114506,
+      "started": 22.98678738599847,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.4220923639986722,
+      "started": 23.410287694001454,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_repertoire_core.build_symbolic_repertoire",
+      "seconds": 1.4279668250019313,
+      "started": 29.33026159599831,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.32442426399938995,
+      "started": 29.46119965500111,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_repertoire_core.validate_symbolic_repertoire",
+      "seconds": 0.9705452999987756,
+      "started": 29.786330414000986,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.37920703000054345,
+      "started": 29.786345453998365,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.45147339400136843,
+      "started": 30.165557241998613,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_repertoire_core.validate_symbolic_repertoire",
+      "seconds": 2.458389542000077,
+      "started": 30.810478815998067,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.5615867879969301,
+      "started": 30.810498595001263,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.46599756499927025,
+      "started": 31.372088658001303,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_repertoire_core.build_symbolic_repertoire",
+      "seconds": 1.2694563769982778,
+      "started": 31.959708854999917,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.3296837090019835,
+      "started": 32.108428806997836,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.symbolic_repertoire_core.validate_symbolic_repertoire",
+      "seconds": 0.7889390750024177,
+      "started": 32.43903036199845,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.3143446469985065,
+      "started": 32.43904860800103,
+      "status": "completed"
+    },
+    {
+      "function": "bce_v2.human_methods._validate_method",
+      "seconds": 0.4158198210025148,
+      "started": 32.753395856998395,
+      "status": "completed"
+    }
+  ],
+  "profile_by_cumulative": [],
+  "profile_by_own": [],
+  "puzzle": "MostSignaturesCube",
+  "raw_generator_count": 3336,
+  "reduced_generator_count": 4,
+  "scope": "solver only; analysis is timed separately",
+  "shapes": 92176,
+  "solver_child_cpu_seconds": 6.414216,
+  "solver_seconds": 33.536597989001166,
+  "solver_self_cpu_seconds": 26.4812,
+  "stages": 7,
+  "status": "completed",
+  "terminal_order": 1
+}
