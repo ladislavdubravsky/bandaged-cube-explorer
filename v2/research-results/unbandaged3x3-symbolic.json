@@ -1,0 +1,754 @@
+{
+  "format": "bce-v2-unbandaged3x3-symbolic-probe",
+  "version": 1,
+  "group_order": "43252003274489856000",
+  "coverage": "exact_portable_subgroup_and_observation_certificates",
+  "quality": "computational_baseline",
+  "cost_scope": "exact_uniform_group_additive_before_boundary_cancellation",
+  "application_scope": "selected_imported_scrambles_with_legal_replay",
+  "probes": [
+    [
+      "Solved",
+      ""
+    ],
+    [
+      "Single R",
+      "R"
+    ],
+    [
+      "Single B",
+      "B"
+    ],
+    [
+      "Two turns",
+      "R U"
+    ],
+    [
+      "Commutator",
+      "R U R' U'"
+    ],
+    [
+      "Half turns",
+      "R2 U2 F2"
+    ],
+    [
+      "12 turns",
+      "R U2 F' L D2 B R2 U' F2 D L2 B'"
+    ],
+    [
+      "21 turns",
+      "R U2 F' L D2 B R2 U' F2 D L2 B' U R' F D' L2 U2 B2 R F'"
+    ]
+  ],
+  "preparation": [
+    {
+      "method": "fully_solve_each_block",
+      "seconds": 30.93206258400005,
+      "stages": 18,
+      "cases": 257,
+      "largest_case_table": 24,
+      "mean_htm": 1227.4133116883118,
+      "worst_htm": 1777
+    },
+    {
+      "method": "placement_then_orientation",
+      "seconds": 39.6719747090001,
+      "stages": 35,
+      "cases": 153,
+      "largest_case_table": 12,
+      "mean_htm": 2073.5382034632034,
+      "worst_htm": 3318
+    },
+    {
+      "method": "improved_full_blocks",
+      "seconds": 31.974571961000038,
+      "stages": 18,
+      "cases": 257,
+      "largest_case_table": 24,
+      "mean_htm": 886.6243506493506,
+      "worst_htm": 1294
+    }
+  ],
+  "applications": [
+    {
+      "case": "Solved",
+      "method": "fully_solve_each_block",
+      "status": "solved",
+      "htm_length": 0,
+      "steps": 0,
+      "replay_verified": true,
+      "seconds": 0.0001592759999766713
+    },
+    {
+      "case": "Solved",
+      "method": "placement_then_orientation",
+      "status": "solved",
+      "htm_length": 0,
+      "steps": 0,
+      "replay_verified": true,
+      "seconds": 0.0001287320001210901
+    },
+    {
+      "case": "Solved",
+      "method": "improved_full_blocks",
+      "status": "solved",
+      "htm_length": 0,
+      "steps": 0,
+      "replay_verified": true,
+      "seconds": 0.0001182570003948058
+    },
+    {
+      "case": "Single R",
+      "method": "fully_solve_each_block",
+      "status": "solved",
+      "htm_length": 1,
+      "steps": 1,
+      "replay_verified": true,
+      "seconds": 0.002625438999530161
+    },
+    {
+      "case": "Single R",
+      "method": "placement_then_orientation",
+      "status": "solved",
+      "htm_length": 1855,
+      "steps": 21,
+      "replay_verified": true,
+      "seconds": 0.03937359399969864
+    },
+    {
+      "case": "Single R",
+      "method": "improved_full_blocks",
+      "status": "solved",
+      "htm_length": 1,
+      "steps": 1,
+      "replay_verified": true,
+      "seconds": 0.0041060519997699885
+    },
+    {
+      "case": "Single B",
+      "method": "fully_solve_each_block",
+      "status": "solved",
+      "htm_length": 1,
+      "steps": 1,
+      "replay_verified": true,
+      "seconds": 0.004061880999870482
+    },
+    {
+      "case": "Single B",
+      "method": "placement_then_orientation",
+      "status": "solved",
+      "htm_length": 1773,
+      "steps": 21,
+      "replay_verified": true,
+      "seconds": 0.05771772600019176
+    },
+    {
+      "case": "Single B",
+      "method": "improved_full_blocks",
+      "status": "solved",
+      "htm_length": 1,
+      "steps": 1,
+      "replay_verified": true,
+      "seconds": 0.0022858250003991998
+    },
+    {
+      "case": "Two turns",
+      "method": "fully_solve_each_block",
+      "status": "solved",
+      "htm_length": 2,
+      "steps": 2,
+      "replay_verified": true,
+      "seconds": 0.0036121389994150377
+    },
+    {
+      "case": "Two turns",
+      "method": "placement_then_orientation",
+      "status": "solved",
+      "htm_length": 1893,
+      "steps": 22,
+      "replay_verified": true,
+      "seconds": 0.045740509999632195
+    },
+    {
+      "case": "Two turns",
+      "method": "improved_full_blocks",
+      "status": "solved",
+      "htm_length": 2,
+      "steps": 2,
+      "replay_verified": true,
+      "seconds": 0.003810609000538534
+    },
+    {
+      "case": "Commutator",
+      "method": "fully_solve_each_block",
+      "status": "solved",
+      "htm_length": 1217,
+      "steps": 16,
+      "replay_verified": true,
+      "seconds": 0.03397931099971174
+    },
+    {
+      "case": "Commutator",
+      "method": "placement_then_orientation",
+      "status": "solved",
+      "htm_length": 2137,
+      "steps": 25,
+      "replay_verified": true,
+      "seconds": 0.04909573700024339
+    },
+    {
+      "case": "Commutator",
+      "method": "improved_full_blocks",
+      "status": "solved",
+      "htm_length": 804,
+      "steps": 14,
+      "replay_verified": true,
+      "seconds": 0.02981281700067484
+    },
+    {
+      "case": "Half turns",
+      "method": "fully_solve_each_block",
+      "status": "solved",
+      "htm_length": 1047,
+      "steps": 15,
+      "replay_verified": true,
+      "seconds": 0.03230099099982908
+    },
+    {
+      "case": "Half turns",
+      "method": "placement_then_orientation",
+      "status": "solved",
+      "htm_length": 1560,
+      "steps": 20,
+      "replay_verified": true,
+      "seconds": 0.040547908999542415
+    },
+    {
+      "case": "Half turns",
+      "method": "improved_full_blocks",
+      "status": "solved",
+      "htm_length": 749,
+      "steps": 14,
+      "replay_verified": true,
+      "seconds": 0.029132145999938075
+    },
+    {
+      "case": "12 turns",
+      "method": "fully_solve_each_block",
+      "status": "solved",
+      "htm_length": 1355,
+      "steps": 18,
+      "replay_verified": true,
+      "seconds": 0.039796704000764294
+    },
+    {
+      "case": "12 turns",
+      "method": "placement_then_orientation",
+      "status": "solved",
+      "htm_length": 1640,
+      "steps": 19,
+      "replay_verified": true,
+      "seconds": 0.037815618000422546
+    },
+    {
+      "case": "12 turns",
+      "method": "improved_full_blocks",
+      "status": "solved",
+      "htm_length": 656,
+      "steps": 14,
+      "replay_verified": true,
+      "seconds": 0.02920629700020072
+    },
+    {
+      "case": "21 turns",
+      "method": "fully_solve_each_block",
+      "status": "solved",
+      "htm_length": 989,
+      "steps": 13,
+      "replay_verified": true,
+      "seconds": 0.02950705700004619
+    },
+    {
+      "case": "21 turns",
+      "method": "placement_then_orientation",
+      "status": "solved",
+      "htm_length": 2445,
+      "steps": 29,
+      "replay_verified": true,
+      "seconds": 0.057398136999836424
+    },
+    {
+      "case": "21 turns",
+      "method": "improved_full_blocks",
+      "status": "solved",
+      "htm_length": 793,
+      "steps": 16,
+      "replay_verified": true,
+      "seconds": 0.043897737999941455
+    }
+  ],
+  "improvement": {
+    "accepted": true,
+    "attempted_by_source": {
+      "feature_orbit": 763,
+      "inverse": 883,
+      "standalone_discovery": 1800
+    },
+    "backend": "symbolic",
+    "baseline_metrics": {
+      "additive_costs": {
+        "exact": true,
+        "htm": {
+          "mean": 1227.4133116883118,
+          "mean_denominator": 3080,
+          "mean_numerator": 3780433,
+          "worst": 1777
+        },
+        "qtm": {
+          "mean": 1321.6555555555556,
+          "mean_denominator": 90,
+          "mean_numerator": 118949,
+          "worst": 1921
+        },
+        "scope": "uniform_reference_group_before_boundary_cancellation"
+      },
+      "algorithm_count": 239,
+      "boundary_cancellation_included": false,
+      "definition_htm": 17228,
+      "definition_qtm": 18593,
+      "exact": true,
+      "mean_htm": 1227.4133116883118,
+      "mean_qtm": 1321.6555555555556,
+      "original_leaf_count": 6,
+      "scope": "uniform_reference_group_before_boundary_cancellation",
+      "states": 43252003274489856000,
+      "total_htm": 53088084576295295385600,
+      "total_qtm": 57164250416636598681600,
+      "visible_leaf_count": 6,
+      "worst_htm": 1777,
+      "worst_qtm": 1921
+    },
+    "candidate_limit_reached": false,
+    "candidates_built": 1910,
+    "candidates_examined": 3446,
+    "coverage": "certified",
+    "discovery_metadata": {
+      "algorithm_count": 686,
+      "algorithm_limit_reached": false,
+      "candidate_limit_reached": true,
+      "collision_proposal_count": 190,
+      "custom_expression_count": 0,
+      "duplicate_count": 811,
+      "effect_count": 664,
+      "examined_count": 1800,
+      "exhaustive": false,
+      "expansion_pruned_count": 0,
+      "identity_count": 0,
+      "inverse_proposal_count": 70,
+      "length_pruned_count": 0,
+      "literal_policy": "when a literal word has a smaller description cost",
+      "max_algorithms": 1800,
+      "max_candidates": 1800,
+      "max_expanded_moves": 480,
+      "max_htm_length": 120,
+      "max_seed_loops": 32,
+      "original_limit_reached": false,
+      "original_loop_count": 6,
+      "proposal_budget_pruned": true,
+      "round_limit_reached": true,
+      "rounds": 3,
+      "rounds_completed": 3,
+      "seed_count": 6,
+      "symmetry_count": 23,
+      "symmetry_transfer_count": 455
+    },
+    "duplicate_expressions": 972,
+    "exhaustive_word_search": false,
+    "expansion_pruned": 0,
+    "fallback_policy_retained": true,
+    "identity_candidates": 0,
+    "improved_metrics": {
+      "additive_costs": {
+        "exact": true,
+        "htm": {
+          "mean": 886.6243506493506,
+          "mean_denominator": 3080,
+          "mean_numerator": 2730803,
+          "worst": 1294
+        },
+        "qtm": {
+          "mean": 948.9812049062049,
+          "mean_denominator": 27720,
+          "mean_numerator": 26305759,
+          "worst": 1392
+        },
+        "scope": "uniform_reference_group_before_boundary_cancellation"
+      },
+      "algorithm_count": 239,
+      "boundary_cancellation_included": false,
+      "definition_htm": 12566,
+      "definition_qtm": 13492,
+      "exact": true,
+      "mean_htm": 886.6243506493506,
+      "mean_qtm": 948.9812049062049,
+      "original_leaf_count": 6,
+      "scope": "uniform_reference_group_before_boundary_cancellation",
+      "states": 43252003274489856000,
+      "total_htm": 38348279317528156569600,
+      "total_qtm": 41045338182032503603200,
+      "visible_leaf_count": 23,
+      "worst_htm": 1294,
+      "worst_qtm": 1392
+    },
+    "length_pruned": 261,
+    "macro_search_cost": "additive edge HTM and QTM; heuristic for simplified physical words",
+    "native_loop_count": 6,
+    "preparation_feature_observations": 257,
+    "preparation_group_elements": 0,
+    "proposed_metrics": {
+      "additive_costs": {
+        "exact": true,
+        "htm": {
+          "mean": 886.6243506493506,
+          "mean_denominator": 3080,
+          "mean_numerator": 2730803,
+          "worst": 1294
+        },
+        "qtm": {
+          "mean": 948.9812049062049,
+          "mean_denominator": 27720,
+          "mean_numerator": 26305759,
+          "worst": 1392
+        },
+        "scope": "uniform_reference_group_before_boundary_cancellation"
+      },
+      "algorithm_count": 239,
+      "boundary_cancellation_included": false,
+      "definition_htm": 12566,
+      "definition_qtm": 13492,
+      "exact": true,
+      "mean_htm": 886.6243506493506,
+      "mean_qtm": 948.9812049062049,
+      "original_leaf_count": 6,
+      "scope": "uniform_reference_group_before_boundary_cancellation",
+      "states": 43252003274489856000,
+      "total_htm": 38348279317528156569600,
+      "total_qtm": 41045338182032503603200,
+      "visible_leaf_count": 23,
+      "worst_htm": 1294,
+      "worst_qtm": 1392
+    },
+    "proposed_stages": [
+      {
+        "admissible_effects": 1384,
+        "cases": 24,
+        "changed_cases": 3,
+        "fallback_cases": 20,
+        "improved_cases": 3,
+        "stage_number": 1
+      },
+      {
+        "admissible_effects": 856,
+        "cases": 21,
+        "changed_cases": 10,
+        "fallback_cases": 10,
+        "improved_cases": 10,
+        "stage_number": 2
+      },
+      {
+        "admissible_effects": 620,
+        "cases": 18,
+        "changed_cases": 12,
+        "fallback_cases": 5,
+        "improved_cases": 12,
+        "stage_number": 3
+      },
+      {
+        "admissible_effects": 486,
+        "cases": 15,
+        "changed_cases": 14,
+        "fallback_cases": 0,
+        "improved_cases": 14,
+        "stage_number": 4
+      },
+      {
+        "admissible_effects": 365,
+        "cases": 12,
+        "changed_cases": 11,
+        "fallback_cases": 0,
+        "improved_cases": 11,
+        "stage_number": 5
+      },
+      {
+        "admissible_effects": 315,
+        "cases": 9,
+        "changed_cases": 8,
+        "fallback_cases": 0,
+        "improved_cases": 8,
+        "stage_number": 6
+      },
+      {
+        "admissible_effects": 284,
+        "cases": 6,
+        "changed_cases": 2,
+        "fallback_cases": 3,
+        "improved_cases": 2,
+        "stage_number": 7
+      },
+      {
+        "admissible_effects": 271,
+        "cases": 24,
+        "changed_cases": 1,
+        "fallback_cases": 22,
+        "improved_cases": 1,
+        "stage_number": 8
+      },
+      {
+        "admissible_effects": 225,
+        "cases": 22,
+        "changed_cases": 1,
+        "fallback_cases": 20,
+        "improved_cases": 1,
+        "stage_number": 9
+      },
+      {
+        "admissible_effects": 183,
+        "cases": 20,
+        "changed_cases": 2,
+        "fallback_cases": 17,
+        "improved_cases": 2,
+        "stage_number": 10
+      },
+      {
+        "admissible_effects": 158,
+        "cases": 18,
+        "changed_cases": 1,
+        "fallback_cases": 16,
+        "improved_cases": 1,
+        "stage_number": 11
+      },
+      {
+        "admissible_effects": 116,
+        "cases": 16,
+        "changed_cases": 2,
+        "fallback_cases": 13,
+        "improved_cases": 2,
+        "stage_number": 12
+      },
+      {
+        "admissible_effects": 88,
+        "cases": 14,
+        "changed_cases": 1,
+        "fallback_cases": 12,
+        "improved_cases": 1,
+        "stage_number": 13
+      },
+      {
+        "admissible_effects": 59,
+        "cases": 12,
+        "changed_cases": 0,
+        "fallback_cases": 11,
+        "improved_cases": 0,
+        "stage_number": 14
+      },
+      {
+        "admissible_effects": 43,
+        "cases": 10,
+        "changed_cases": 1,
+        "fallback_cases": 8,
+        "improved_cases": 1,
+        "stage_number": 15
+      },
+      {
+        "admissible_effects": 25,
+        "cases": 8,
+        "changed_cases": 2,
+        "fallback_cases": 5,
+        "improved_cases": 2,
+        "stage_number": 16
+      },
+      {
+        "admissible_effects": 8,
+        "cases": 6,
+        "changed_cases": 0,
+        "fallback_cases": 5,
+        "improved_cases": 0,
+        "stage_number": 17
+      },
+      {
+        "admissible_effects": 1,
+        "cases": 2,
+        "changed_cases": 0,
+        "fallback_cases": 1,
+        "improved_cases": 0,
+        "stage_number": 18
+      }
+    ],
+    "rounds_completed": 3,
+    "seed_action_count": 664,
+    "seed_loop_count": 6,
+    "selection": "case physical HTM, QTM; certified feature-orbit membership",
+    "settings": {
+      "max_alternatives": 3,
+      "max_candidates": 3600,
+      "max_expanded_moves": 480,
+      "max_htm_length": 120,
+      "max_seed_loops": 32,
+      "max_stage_generators": 32,
+      "max_states": 2000,
+      "max_word_length": 5,
+      "mode": "structured",
+      "rounds": 3
+    },
+    "stage_state_share_limit_reached": false,
+    "stages": [
+      {
+        "admissible_effects": 1384,
+        "cases": 24,
+        "changed_cases": 3,
+        "fallback_cases": 20,
+        "improved_cases": 3,
+        "stage_number": 1
+      },
+      {
+        "admissible_effects": 856,
+        "cases": 21,
+        "changed_cases": 10,
+        "fallback_cases": 10,
+        "improved_cases": 10,
+        "stage_number": 2
+      },
+      {
+        "admissible_effects": 620,
+        "cases": 18,
+        "changed_cases": 12,
+        "fallback_cases": 5,
+        "improved_cases": 12,
+        "stage_number": 3
+      },
+      {
+        "admissible_effects": 486,
+        "cases": 15,
+        "changed_cases": 14,
+        "fallback_cases": 0,
+        "improved_cases": 14,
+        "stage_number": 4
+      },
+      {
+        "admissible_effects": 365,
+        "cases": 12,
+        "changed_cases": 11,
+        "fallback_cases": 0,
+        "improved_cases": 11,
+        "stage_number": 5
+      },
+      {
+        "admissible_effects": 315,
+        "cases": 9,
+        "changed_cases": 8,
+        "fallback_cases": 0,
+        "improved_cases": 8,
+        "stage_number": 6
+      },
+      {
+        "admissible_effects": 284,
+        "cases": 6,
+        "changed_cases": 2,
+        "fallback_cases": 3,
+        "improved_cases": 2,
+        "stage_number": 7
+      },
+      {
+        "admissible_effects": 271,
+        "cases": 24,
+        "changed_cases": 1,
+        "fallback_cases": 22,
+        "improved_cases": 1,
+        "stage_number": 8
+      },
+      {
+        "admissible_effects": 225,
+        "cases": 22,
+        "changed_cases": 1,
+        "fallback_cases": 20,
+        "improved_cases": 1,
+        "stage_number": 9
+      },
+      {
+        "admissible_effects": 183,
+        "cases": 20,
+        "changed_cases": 2,
+        "fallback_cases": 17,
+        "improved_cases": 2,
+        "stage_number": 10
+      },
+      {
+        "admissible_effects": 158,
+        "cases": 18,
+        "changed_cases": 1,
+        "fallback_cases": 16,
+        "improved_cases": 1,
+        "stage_number": 11
+      },
+      {
+        "admissible_effects": 116,
+        "cases": 16,
+        "changed_cases": 2,
+        "fallback_cases": 13,
+        "improved_cases": 2,
+        "stage_number": 12
+      },
+      {
+        "admissible_effects": 88,
+        "cases": 14,
+        "changed_cases": 1,
+        "fallback_cases": 12,
+        "improved_cases": 1,
+        "stage_number": 13
+      },
+      {
+        "admissible_effects": 59,
+        "cases": 12,
+        "changed_cases": 0,
+        "fallback_cases": 11,
+        "improved_cases": 0,
+        "stage_number": 14
+      },
+      {
+        "admissible_effects": 43,
+        "cases": 10,
+        "changed_cases": 1,
+        "fallback_cases": 8,
+        "improved_cases": 1,
+        "stage_number": 15
+      },
+      {
+        "admissible_effects": 25,
+        "cases": 8,
+        "changed_cases": 2,
+        "fallback_cases": 5,
+        "improved_cases": 2,
+        "stage_number": 16
+      },
+      {
+        "admissible_effects": 8,
+        "cases": 6,
+        "changed_cases": 0,
+        "fallback_cases": 5,
+        "improved_cases": 0,
+        "stage_number": 17
+      },
+      {
+        "admissible_effects": 1,
+        "cases": 2,
+        "changed_cases": 0,
+        "fallback_cases": 1,
+        "improved_cases": 0,
+        "stage_number": 18
+      }
+    ],
+    "state_limit_reached": false,
+    "states_expanded": 868,
+    "transitions_examined": 20914
+  }
+}

@@ -209,6 +209,9 @@ def method_to_dict(method):
         "stages": [_stage_to_dict(stage) for stage in method.stages],
         "algorithms": [_algorithm_to_dict(algorithm) for algorithm in method.algorithms],
     }
+    if method._symbolic_chain is not None:
+        record["version"] = 2
+        record["symbolic_chain"] = method._symbolic_chain.to_dict()
     record["fingerprint"] = _fingerprint(record)
     return record
 
@@ -230,8 +233,10 @@ def method_from_dict(record):
     """
     from .human_methods import HumanMethod, HumanMethodCase, HumanMethodStage, _validate_method
 
-    _fields(record, _METHOD_FIELDS, "human method")
-    if any(not _same(record[key], value) for key, value in _CONVENTIONS.items()):
+    symbolic = isinstance(record, dict) and type(record.get("version")) is int and record["version"] == 2
+    _fields(record, _METHOD_FIELDS | ({"symbolic_chain"} if symbolic else set()), "human method")
+    conventions = {**_CONVENTIONS, "version": 2 if symbolic else 1}
+    if any(not _same(record[key], value) for key, value in conventions.items()):
         raise ValueError("unsupported human method format, model, frame, or conventions")
     fingerprint = record["fingerprint"]
     if (not isinstance(fingerprint, str) or _FINGERPRINT.fullmatch(fingerprint) is None
@@ -317,6 +322,16 @@ def method_from_dict(record):
     method = HumanMethod(shape, strategy, status, group_order, quotient_order, kernel_order,
                          root_vertex, generators, tuple(stages), tuple(algorithms), initial_features,
                          skipped_features, limit, reason, gap_version, inventory, frozenset())
+    if symbolic:
+        from dataclasses import replace
+        from .symbolic_chains import symbolic_plan_from_dict
+        if status != "completed":
+            raise ValueError("symbolic records require a complete method")
+        try:
+            chain = symbolic_plan_from_dict(record["symbolic_chain"], inventory, generators, group_order)
+        except (TypeError, RuntimeError) as error:
+            raise ValueError(f"invalid symbolic human method: {error}") from error
+        method = replace(method, _symbolic_chain=chain)
     try:
         method = _validate_method(method, complete_loops=complete_loops)
     except (TypeError, RuntimeError) as error:

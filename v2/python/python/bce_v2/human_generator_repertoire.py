@@ -42,6 +42,9 @@ def generator_human_repertoire(initial, *, strategy="fully_solve_each_block", fe
     if supplied_method is not None:
         if supplied_method.status != "completed":
             raise ValueError("generator repertoire requires a complete method")
+        if supplied_method.backend == "symbolic":
+            raise ValueError("generator repertoire currently requires the explicit backend; "
+                             "use improve_human_method for a symbolic policy")
         if features is not None or strategy != "fully_solve_each_block":
             raise ValueError("a supplied method retains its own stage chain")
         if root is not None:

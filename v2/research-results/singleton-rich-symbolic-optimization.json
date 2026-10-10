@@ -1,0 +1,388 @@
+{
+  "format": "bce-v2-singleton-rich-symbolic-optimization-probe",
+  "version": 1,
+  "reference_shape": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "fused_cells": [
+    "UFR",
+    "UR"
+  ],
+  "coverage_scope": "exact portable subgroup and feature certificates",
+  "cost_scope": "exact uniform-group additive before boundary cancellation",
+  "offline_reload_verified": true,
+  "case_examples_verified": 209,
+  "imported_loop_sources_replayed": 12,
+  "group_order": 75090283462656000,
+  "terminal_order": 1,
+  "selected_source": "dictionary:adaptive:1",
+  "stage_count": 16,
+  "case_count": 209,
+  "max_case_count": 22,
+  "additive_costs": {
+    "scope": "uniform_reference_group_before_boundary_cancellation",
+    "exact": true,
+    "htm": {
+      "mean": 358.67867965367964,
+      "mean_numerator": 3314191,
+      "mean_denominator": 9240,
+      "worst": 630
+    },
+    "qtm": {
+      "mean": 437.09199134199133,
+      "mean_numerator": 403873,
+      "mean_denominator": 924,
+      "worst": 759
+    }
+  },
+  "native_closed_sources": 12,
+  "checked": [
+    {
+      "source_htm": 1,
+      "solution_htm": 1,
+      "stage_steps": 1
+    },
+    {
+      "source_htm": 1,
+      "solution_htm": 1,
+      "stage_steps": 1
+    },
+    {
+      "source_htm": 1,
+      "solution_htm": 1,
+      "stage_steps": 1
+    },
+    {
+      "source_htm": 3,
+      "solution_htm": 3,
+      "stage_steps": 2
+    },
+    {
+      "source_htm": 3,
+      "solution_htm": 285,
+      "stage_steps": 11
+    },
+    {
+      "source_htm": 3,
+      "solution_htm": 3,
+      "stage_steps": 1
+    },
+    {
+      "source_htm": 3,
+      "solution_htm": 447,
+      "stage_steps": 14
+    },
+    {
+      "source_htm": 3,
+      "solution_htm": 400,
+      "stage_steps": 13
+    },
+    {
+      "source_htm": 3,
+      "solution_htm": 313,
+      "stage_steps": 15
+    },
+    {
+      "source_htm": 7,
+      "solution_htm": 284,
+      "stage_steps": 14
+    },
+    {
+      "source_htm": 9,
+      "solution_htm": 318,
+      "stage_steps": 14
+    },
+    {
+      "source_htm": 30,
+      "solution_htm": 343,
+      "stage_steps": 15
+    }
+  ],
+  "offline_reload_and_apply": true,
+  "adaptive_chains": [
+    {
+      "cases_improved": 176,
+      "dictionary_span_scope": "GAP working pool before exported-word expansion filtering",
+      "expansion_pruned": 0,
+      "kind_scope": "full_blocks",
+      "observation_states_expanded": 231,
+      "optimized_prefix_decision_limit": 4,
+      "pool_limit_rejections": 0,
+      "retained_algorithms": 1135,
+      "schreier_max_expanded_moves": 960,
+      "schreier_max_htm_length": 240,
+      "schreier_proposal_limit": 896,
+      "stage_edges_evaluated": 160,
+      "stages": [
+        {
+          "block_index": 16,
+          "case_count": 21,
+          "dictionary_cases_reached": 21,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 132,
+          "exact_group_order": 75090283462656000,
+          "kind": 1,
+          "new_schreier_effects": 131,
+          "retained_next_span_order": 3575727783936000,
+          "schreier_proposals": 126,
+          "short_generating_subset_size": 6,
+          "subset_order": 75090283462656000
+        },
+        {
+          "block_index": 23,
+          "case_count": 22,
+          "dictionary_cases_reached": 22,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 219,
+          "exact_group_order": 3575727783936000,
+          "kind": 1,
+          "new_schreier_effects": 174,
+          "retained_next_span_order": 162533081088000,
+          "schreier_proposals": 110,
+          "short_generating_subset_size": 5,
+          "subset_order": 3575727783936000
+        },
+        {
+          "block_index": 1,
+          "case_count": 20,
+          "dictionary_cases_reached": 20,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 262,
+          "exact_group_order": 162533081088000,
+          "kind": 1,
+          "new_schreier_effects": 148,
+          "retained_next_span_order": 8126654054400,
+          "schreier_proposals": 100,
+          "short_generating_subset_size": 5,
+          "subset_order": 162533081088000
+        },
+        {
+          "block_index": 0,
+          "case_count": 18,
+          "dictionary_cases_reached": 18,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 291,
+          "exact_group_order": 8126654054400,
+          "kind": 1,
+          "new_schreier_effects": 187,
+          "retained_next_span_order": 451480780800,
+          "schreier_proposals": 108,
+          "short_generating_subset_size": 6,
+          "subset_order": 8126654054400
+        },
+        {
+          "block_index": 2,
+          "case_count": 15,
+          "dictionary_cases_reached": 15,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 289,
+          "exact_group_order": 451480780800,
+          "kind": 1,
+          "new_schreier_effects": 83,
+          "retained_next_span_order": 30098718720,
+          "schreier_proposals": 60,
+          "short_generating_subset_size": 4,
+          "subset_order": 451480780800
+        },
+        {
+          "block_index": 6,
+          "case_count": 12,
+          "dictionary_cases_reached": 12,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 153,
+          "exact_group_order": 30098718720,
+          "kind": 1,
+          "new_schreier_effects": 74,
+          "retained_next_span_order": 2508226560,
+          "schreier_proposals": 60,
+          "short_generating_subset_size": 5,
+          "subset_order": 30098718720
+        },
+        {
+          "block_index": 18,
+          "case_count": 9,
+          "dictionary_cases_reached": 9,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 98,
+          "exact_group_order": 2508226560,
+          "kind": 1,
+          "new_schreier_effects": 45,
+          "retained_next_span_order": 278691840,
+          "schreier_proposals": 63,
+          "short_generating_subset_size": 7,
+          "subset_order": 2508226560
+        },
+        {
+          "block_index": 22,
+          "case_count": 6,
+          "dictionary_cases_reached": 6,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 75,
+          "exact_group_order": 278691840,
+          "kind": 1,
+          "new_schreier_effects": 58,
+          "retained_next_span_order": 46448640,
+          "schreier_proposals": 60,
+          "short_generating_subset_size": 10,
+          "subset_order": 278691840
+        },
+        {
+          "block_index": 3,
+          "case_count": 18,
+          "dictionary_cases_reached": 18,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 112,
+          "exact_group_order": 46448640,
+          "kind": 1,
+          "new_schreier_effects": 94,
+          "retained_next_span_order": 2580480,
+          "schreier_proposals": 144,
+          "short_generating_subset_size": 8,
+          "subset_order": 46448640
+        },
+        {
+          "block_index": 7,
+          "case_count": 16,
+          "dictionary_cases_reached": 16,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 166,
+          "exact_group_order": 2580480,
+          "kind": 1,
+          "new_schreier_effects": 9,
+          "retained_next_span_order": 161280,
+          "schreier_proposals": 65,
+          "short_generating_subset_size": 7,
+          "subset_order": 2580480
+        },
+        {
+          "block_index": 8,
+          "case_count": 14,
+          "dictionary_cases_reached": 14,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 131,
+          "exact_group_order": 161280,
+          "kind": 1,
+          "new_schreier_effects": 0,
+          "retained_next_span_order": 11520,
+          "schreier_proposals": 0,
+          "short_generating_subset_size": 6,
+          "subset_order": 161280
+        },
+        {
+          "block_index": 10,
+          "case_count": 12,
+          "dictionary_cases_reached": 12,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 49,
+          "exact_group_order": 11520,
+          "kind": 1,
+          "new_schreier_effects": 0,
+          "retained_next_span_order": 960,
+          "schreier_proposals": 0,
+          "short_generating_subset_size": 5,
+          "subset_order": 11520
+        },
+        {
+          "block_index": 13,
+          "case_count": 10,
+          "dictionary_cases_reached": 10,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 35,
+          "exact_group_order": 960,
+          "kind": 1,
+          "new_schreier_effects": 0,
+          "retained_next_span_order": 96,
+          "schreier_proposals": 0,
+          "short_generating_subset_size": 4,
+          "subset_order": 960
+        },
+        {
+          "block_index": 15,
+          "case_count": 8,
+          "dictionary_cases_reached": 8,
+          "dictionary_spans_after": false,
+          "dictionary_spans_before": true,
+          "eligible_algorithms": 11,
+          "exact_group_order": 96,
+          "kind": 1,
+          "new_schreier_effects": 0,
+          "retained_next_span_order": 1,
+          "schreier_proposals": 0,
+          "short_generating_subset_size": 3,
+          "subset_order": 96
+        },
+        {
+          "block_index": 17,
+          "case_count": 6,
+          "dictionary_cases_reached": 1,
+          "dictionary_spans_after": false,
+          "dictionary_spans_before": false,
+          "eligible_algorithms": 0,
+          "exact_group_order": 12,
+          "kind": 1,
+          "new_schreier_effects": 0,
+          "retained_next_span_order": 1,
+          "schreier_proposals": 0,
+          "short_generating_subset_size": 0,
+          "subset_order": 1
+        },
+        {
+          "block_index": 19,
+          "case_count": 2,
+          "dictionary_cases_reached": 1,
+          "dictionary_spans_after": true,
+          "dictionary_spans_before": false,
+          "eligible_algorithms": 0,
+          "exact_group_order": 2,
+          "kind": 1,
+          "new_schreier_effects": 0,
+          "retained_next_span_order": 1,
+          "schreier_proposals": 0,
+          "short_generating_subset_size": 0,
+          "subset_order": 1
+        }
+      ],
+      "state_limit_reached": false
+    }
+  ],
+  "seconds": 117.62218161800047
+}

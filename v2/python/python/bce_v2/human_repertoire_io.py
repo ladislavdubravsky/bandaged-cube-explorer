@@ -27,6 +27,11 @@ _FIELDS = set(_CONVENTIONS) | {
     "reference_shape", "root_vertex", "baseline", "method", "macros",
     "stages", "metadata", "fingerprint",
 }
+_SYMBOLIC_CONVENTIONS = {
+    **_CONVENTIONS, "version": 2, "backend": "symbolic",
+    "cost_scope": "uniform_reference_group_before_boundary_cancellation",
+}
+_SYMBOLIC_FIELDS = _FIELDS | {"backend", "cost_scope"}
 _MACRO_ID = re.compile(r"M[1-9][0-9]*")
 _ALGORITHM_FIELDS = {"id", "expression", "permutation", "turn_sequence", "htm_length", "qtm_length"}
 
@@ -88,7 +93,9 @@ def _stage_to_dict(stage):
 
 def repertoire_to_dict(repertoire):
     """Return the canonical complete wrapper and its content fingerprint."""
-    record = {**_CONVENTIONS, "reference_shape": repertoire.method.reference_shape.labels,
+    conventions = (_SYMBOLIC_CONVENTIONS if repertoire.method.backend == "symbolic"
+                   else _CONVENTIONS)
+    record = {**conventions, "reference_shape": repertoire.method.reference_shape.labels,
               "root_vertex": repertoire.method.root_vertex,
               "baseline": repertoire.baseline.to_dict(), "method": repertoire.method.to_dict(),
               "macros": [_algorithm_to_dict(macro.algorithm) for macro in repertoire.macros],
@@ -114,8 +121,10 @@ def repertoire_from_dict(record):
         HumanRepertoireMacro, HumanRepertoireStage, _validate_repertoire,
     )
 
-    _fields(record, _FIELDS, "human repertoire")
-    if any(not _same(record[key], value) for key, value in _CONVENTIONS.items()):
+    symbolic = isinstance(record, dict) and type(record.get("version")) is int and record["version"] == 2
+    conventions = _SYMBOLIC_CONVENTIONS if symbolic else _CONVENTIONS
+    _fields(record, _SYMBOLIC_FIELDS if symbolic else _FIELDS, "human repertoire")
+    if any(not _same(record[key], value) for key, value in conventions.items()):
         raise ValueError("unsupported repertoire format, model, frame, or conventions")
     fingerprint = record["fingerprint"]
     if (not isinstance(fingerprint, str) or _FINGERPRINT.fullmatch(fingerprint) is None
@@ -123,6 +132,8 @@ def repertoire_from_dict(record):
         raise ValueError("human repertoire fingerprint does not match its content")
     baseline = HumanMethod.from_dict(record["baseline"])
     method = HumanMethod.from_dict(record["method"])
+    if (baseline.backend == "symbolic") != symbolic or (method.backend == "symbolic") != symbolic:
+        raise ValueError("repertoire conventions disagree with its embedded method backends")
     if not _same(method.reference_shape.labels, record["reference_shape"]):
         raise ValueError("repertoire reference shape disagrees with its compiled method")
     if _integer(record["root_vertex"], "reference root vertex") != method.root_vertex:

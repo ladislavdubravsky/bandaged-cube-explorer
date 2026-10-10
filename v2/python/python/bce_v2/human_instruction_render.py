@@ -76,35 +76,42 @@ def _has_rotation(recipe):
     return recipe.kind == "rotated" or any(_has_rotation(child) for child in recipe.children)
 
 
-def _named_notation(recipe):
+def _named_notation(recipe, records=None):
     """Render exact regrips around learned masters without adding definitions."""
     from .human_move_notation import _conjugation_notation
+
+    if records is not None:
+        body = recipe
+        while body.kind in ("power", "rotated"):
+            body = body.children[0]
+        if body.kind == "macro" and len(records[body.macro_id].algorithm.turn_sequence.split()) == 1:
+            return _expand(recipe, records, 100000) or "()"
 
     if recipe.kind == "macro":
         return recipe.macro_id
     if recipe.kind == "sequence":
-        return " ".join(_named_notation(child) for child in recipe.children) or "()"
+        return " ".join(_named_notation(child, records) for child in recipe.children) or "()"
     if recipe.kind == "power":
         if not recipe.exponent:
             return "()"
         child = recipe.children[0]
-        body = _named_notation(child)
+        body = _named_notation(child, records)
         if recipe.exponent == 1:
             return body
         if child.kind != "macro":
             body = f"({body})"
         return f"{body}^{recipe.exponent}"
     if recipe.kind == "rotated":
-        body = _named_notation(recipe.children[0])
+        body = _named_notation(recipe.children[0], records)
         if not recipe.rotation:
             return body
         return f"{recipe.rotation} ({body}) {_inverse_moves(recipe.rotation)}"
     if recipe.kind == "commutator":
-        return f"[{_named_notation(recipe.children[0])}, {_named_notation(recipe.children[1])}]"
+        return f"[{_named_notation(recipe.children[0], records)}, {_named_notation(recipe.children[1], records)}]"
     setup, body = recipe.children
     exponent = HumanMacroRecipe.power(setup, -1)
     return _conjugation_notation(
-        _named_notation(body), _named_notation(exponent),
+        _named_notation(body, records), _named_notation(exponent, records),
         body_is_atom=body.kind in ("macro", "commutator"),
         exponent_is_atom=exponent.kind == "macro",
     )
@@ -183,7 +190,8 @@ def instruction_presentation(recipe, repertoire, *, rotate_diagram=True,
     local = _local_recipe(recipe, "", rotation)
     requires_definition = _has_rotation(local) and not preserve_templates
     turns = _expand(local, records, max_expanded_moves)
-    identifier = _named_notation(local) if preserve_templates else local.render()
+    native = (records if getattr(getattr(repertoire, "method", None), "backend", None) == "symbolic" else None)
+    identifier = _named_notation(local, native) if preserve_templates else local.render()
     return HumanInstructionPresentation(None if requires_definition else identifier,
                                         turns, rotation, local, requires_definition)
 

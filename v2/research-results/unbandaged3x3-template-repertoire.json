@@ -1,0 +1,793 @@
+{
+  "additive_cost_scope": "uniform_reference_group_before_stage_boundary_cancellation",
+  "baseline_additive_costs": {
+    "exact": true,
+    "htm": {
+      "mean": 246.25440115440117,
+      "mean_denominator": 6930,
+      "mean_numerator": 1706543,
+      "worst": 420
+    },
+    "qtm": {
+      "mean": 279.2911616161616,
+      "mean_denominator": 3960,
+      "mean_numerator": 1105993,
+      "worst": 497
+    },
+    "scope": "uniform_reference_group_before_boundary_cancellation"
+  },
+  "case_count": 256,
+  "coverage": "certified",
+  "format": "bce-v2-symbolic-template-measurement",
+  "globally_shortest_claim": false,
+  "group_order": 43252003274489856000,
+  "human_quality_proxies": {
+    "chunk_count": 5,
+    "chunk_metrics": {
+      "chunk_count": 5,
+      "dictionary_definition_moves": 31,
+      "dictionary_definition_symbols": 31,
+      "expanded_definition_moves": 127,
+      "master_count": 22,
+      "recipe_symbols": 64,
+      "regrip_count": 5,
+      "score": 100
+    },
+    "formal_recipe_symbols": 2274,
+    "instruction_symbols": 1746,
+    "macro_calls": {
+      "M1": 99,
+      "M10": 12,
+      "M11": 30,
+      "M12": 41,
+      "M13": 2,
+      "M14": 2,
+      "M15": 4,
+      "M16": 2,
+      "M17": 2,
+      "M18": 2,
+      "M19": 2,
+      "M2": 151,
+      "M20": 30,
+      "M21": 18,
+      "M22": 2,
+      "M3": 191,
+      "M4": 93,
+      "M5": 88,
+      "M6": 173,
+      "M7": 14,
+      "M8": 93,
+      "M9": 30
+    },
+    "macro_count": 22,
+    "macro_definition_htm": 127,
+    "macros_used_by_multiple_cases": 22,
+    "maximum_instruction_symbols": 92,
+    "maximum_macro_htm": 15,
+    "recipe_node_kinds": {
+      "commutator": 28,
+      "conjugate": 48,
+      "macro": 1081,
+      "power": 847,
+      "rotated": 270,
+      "sequence": 158
+    },
+    "rule_count": 223
+  },
+  "human_reviewed": false,
+  "independent_previous_policy_presentation": {
+    "cases": 257,
+    "elapsed_seconds": 0.5762087559996871,
+    "instruction_frame_checks": 478,
+    "macro_physical_replays": 22,
+    "offline": true,
+    "rotated_presentations": 51
+  },
+  "macro_definitions": [
+    {
+      "block_action": "(UBL- DBL+ DBR- UBR+)(UB+ BL+ DB+ BR+)",
+      "id": "M1",
+      "turn_sequence": "B"
+    },
+    {
+      "block_action": "(DBL DFL DFR DBR)(DB DL DF DR)",
+      "id": "M2",
+      "turn_sequence": "D"
+    },
+    {
+      "block_action": "(UFL+ UFR- DFR+ DFL-)(UF+ FR+ DF+ FL+)",
+      "id": "M3",
+      "turn_sequence": "F"
+    },
+    {
+      "block_action": "(UBL+ UFL- DFL+ DBL-)(UL FL DL BL)",
+      "id": "M4",
+      "turn_sequence": "L"
+    },
+    {
+      "block_action": "(UBR- DBR+ DFR- UFR+)(UR BR DR FR)",
+      "id": "M5",
+      "turn_sequence": "R"
+    },
+    {
+      "block_action": "(UBL UBR UFR UFL)(UB UR UF UL)",
+      "id": "M6",
+      "turn_sequence": "U"
+    },
+    {
+      "block_action": "(UBL- DFL DFR- DBL-)(BL+ DL DF DR+)",
+      "id": "M7",
+      "turn_sequence": "B D B'"
+    },
+    {
+      "block_action": "(UBR- DBR- DFL DFR-)(BR+ DL DF DR+)",
+      "id": "M8",
+      "turn_sequence": "B' D B"
+    },
+    {
+      "block_action": "(UBR+ DFL-)(BR+ DF+)(DBR- DFR+)(DL DR)",
+      "id": "M9",
+      "turn_sequence": "B' D2 B"
+    },
+    {
+      "block_action": "(UBL UBR DFL DFR)(UB DL DF DR)",
+      "id": "M10",
+      "turn_sequence": "B2 D B2"
+    },
+    {
+      "block_action": "(UBL- DBL-)(BL+ DB DR+)(DBR DFR-)",
+      "id": "M11",
+      "turn_sequence": "B D B' D'"
+    },
+    {
+      "block_action": "(UBL+ DFL+)(BL+ DB DL+)(DBL+ DBR)",
+      "id": "M12",
+      "turn_sequence": "B D' B' D"
+    },
+    {
+      "block_action": "(UL DL DR)",
+      "id": "M13",
+      "turn_sequence": "B D2 B' F L2 F'"
+    },
+    {
+      "block_action": "(UFL- DBR)(FL+ DL DF+)(DFL DFR+)",
+      "id": "M14",
+      "turn_sequence": "B' D F' D' F B"
+    },
+    {
+      "block_action": "(UB DL UR)(UL DF DR)",
+      "id": "M15",
+      "turn_sequence": "B2 D B2 F2 U' F2"
+    },
+    {
+      "block_action": "(UBL- UBR DFR+ DBR)(UB DB+ BR BL+)",
+      "id": "M16",
+      "turn_sequence": "B D2 B2 D2 B' D2 B' D2"
+    },
+    {
+      "block_action": "(UBL- UFR- UBR- DBL)(UB+ DR+ UF+ FR+)",
+      "id": "M17",
+      "turn_sequence": "B2 D2 B2 L' F L B2 D2 B2"
+    },
+    {
+      "block_action": "(UB+ DL BR DF+)(UFL- DFR+ DBR+ DFL-)",
+      "id": "M18",
+      "turn_sequence": "B D' L2 D B L B' D' L2 D B'"
+    },
+    {
+      "block_action": "(BL FR+ DR+)",
+      "id": "M19",
+      "turn_sequence": "B' D B D B2 D' U R2 U' B' D' B"
+    },
+    {
+      "block_action": "(UL+ DR+ BL)",
+      "id": "M20",
+      "turn_sequence": "B D B' D' L' B L B' D B D' L' B' L"
+    },
+    {
+      "block_action": "(DB DR DF)",
+      "id": "M21",
+      "turn_sequence": "B D B' R' D' R D B D' B' R' D R D'"
+    },
+    {
+      "block_action": "(UBL-)(UB+)(UBR- DBR DFR-)(UR+ BR BL)",
+      "id": "M22",
+      "turn_sequence": "B D2 B2 D2 B' D2 B' D2 F' U' L' B' L U F"
+    }
+  ],
+  "maximum_stage_cases": 24,
+  "measurement_source": "saved_repertoire",
+  "metadata": {
+    "baseline_metrics": {
+      "algorithm_count": 238,
+      "case_count_sum": 256,
+      "chunk_definition_moves": 44,
+      "chunk_definition_symbols": 44,
+      "chunk_recipe_symbols": 1620,
+      "chunk_regrips": 32,
+      "definition_htm": 2549,
+      "definition_qtm": 2949,
+      "description_score": 2259,
+      "dictionary_score": 1696,
+      "instruction_symbols": 563,
+      "learned_body_count": 125,
+      "macro_count": 127,
+      "macro_definition_htm": 1849,
+      "max_body_htm": 91,
+      "max_case_count": 24,
+      "mean_htm": 246.25440115440117,
+      "mean_qtm": 279.2911616161616,
+      "original_leaf_count": 6,
+      "original_leaf_htm": 6,
+      "rule_count": 237,
+      "stage_count": 18,
+      "states": 43252003274489856000,
+      "total_htm": 10650996165087697305600,
+      "total_qtm": 12079902236758297804800,
+      "visible_leaf_count": 6,
+      "worst_htm": 420,
+      "worst_qtm": 497
+    },
+    "basis": "templates",
+    "candidates": [
+      {
+        "admissible": true,
+        "id": "C1",
+        "metrics": {
+          "algorithm_count": 238,
+          "case_count_sum": 256,
+          "chunk_definition_moves": 44,
+          "chunk_definition_symbols": 44,
+          "chunk_recipe_symbols": 1620,
+          "chunk_regrips": 32,
+          "definition_htm": 2549,
+          "definition_qtm": 2949,
+          "description_score": 2259,
+          "dictionary_score": 1696,
+          "instruction_symbols": 563,
+          "learned_body_count": 125,
+          "macro_count": 127,
+          "macro_definition_htm": 1849,
+          "max_body_htm": 91,
+          "max_case_count": 24,
+          "mean_htm": 246.25440115440117,
+          "mean_qtm": 279.2911616161616,
+          "original_leaf_count": 6,
+          "original_leaf_htm": 6,
+          "rule_count": 237,
+          "stage_count": 18,
+          "states": 43252003274489856000,
+          "total_htm": 10650996165087697305600,
+          "total_qtm": 12079902236758297804800,
+          "visible_leaf_count": 6,
+          "worst_htm": 420,
+          "worst_qtm": 497
+        },
+        "source": "exact_baseline"
+      },
+      {
+        "admissible": true,
+        "id": "C2",
+        "metrics": {
+          "algorithm_count": 238,
+          "case_count_sum": 256,
+          "chunk_definition_moves": 31,
+          "chunk_definition_symbols": 31,
+          "chunk_recipe_symbols": 64,
+          "chunk_regrips": 5,
+          "definition_htm": 2549,
+          "definition_qtm": 2949,
+          "description_score": 1846,
+          "dictionary_score": 100,
+          "instruction_symbols": 1746,
+          "learned_body_count": 16,
+          "macro_count": 22,
+          "macro_definition_htm": 127,
+          "max_body_htm": 15,
+          "max_case_count": 24,
+          "mean_htm": 246.25440115440117,
+          "mean_qtm": 279.2911616161616,
+          "original_leaf_count": 6,
+          "original_leaf_htm": 6,
+          "rule_count": 223,
+          "stage_count": 18,
+          "states": 43252003274489856000,
+          "total_htm": 10650996165087697305600,
+          "total_qtm": 12079902236758297804800,
+          "visible_leaf_count": 6,
+          "worst_htm": 420,
+          "worst_qtm": 497
+        },
+        "source": "shared_witnessed_bodies"
+      }
+    ],
+    "construction": "symbolic_template_search",
+    "cost_scope": "exact uniform-group additive costs before cancellation between stages",
+    "coverage": "certified",
+    "exhaustive_repertoire_search": false,
+    "frontier": [
+      "C1",
+      "C2"
+    ],
+    "human_reviewed": false,
+    "pareto_dimensions": [
+      "description_score",
+      "instruction_symbols",
+      "macro_count",
+      "mean_htm",
+      "worst_htm",
+      "max_case_count",
+      "case_count_sum"
+    ],
+    "physical_shortest_claim": false,
+    "policy_scope": "the selected physical case words are retained exactly",
+    "preference_orders": {
+      "execution": [
+        "mean_htm",
+        "worst_htm",
+        "description_score",
+        "instruction_symbols",
+        "macro_count",
+        "max_case_count",
+        "case_count_sum"
+      ],
+      "memory": [
+        "description_score",
+        "instruction_symbols",
+        "macro_count",
+        "mean_htm",
+        "worst_htm",
+        "max_case_count",
+        "case_count_sum"
+      ],
+      "recognition": [
+        "max_case_count",
+        "case_count_sum",
+        "description_score",
+        "instruction_symbols",
+        "macro_count",
+        "mean_htm",
+        "worst_htm"
+      ]
+    },
+    "rotations": [
+      "",
+      "x",
+      "x'",
+      "x2",
+      "y",
+      "y'",
+      "y2",
+      "z",
+      "z'",
+      "z2",
+      "x y",
+      "x y'",
+      "x y2",
+      "x z",
+      "x z'",
+      "x z2",
+      "x' y",
+      "x' y'",
+      "x' z",
+      "x' z'",
+      "x2 y",
+      "x2 y'",
+      "x2 z",
+      "x2 z'"
+    ],
+    "search": {
+      "accepted_shared_bodies": 16,
+      "expression_limit_reached": 0,
+      "expression_nodes_examined": 3869,
+      "group_elements_enumerated": 0,
+      "shared_body_proposals": 40,
+      "template_trials_examined": 520
+    },
+    "search_scope": "bounded shared expression bodies and typed physical chunks; no group enumeration",
+    "selected_id": "C2",
+    "selected_metrics": {
+      "algorithm_count": 238,
+      "case_count_sum": 256,
+      "chunk_definition_moves": 31,
+      "chunk_definition_symbols": 31,
+      "chunk_recipe_symbols": 64,
+      "chunk_regrips": 5,
+      "definition_htm": 2549,
+      "definition_qtm": 2949,
+      "description_score": 1846,
+      "dictionary_score": 100,
+      "instruction_symbols": 1746,
+      "learned_body_count": 16,
+      "macro_count": 22,
+      "macro_definition_htm": 127,
+      "max_body_htm": 15,
+      "max_case_count": 24,
+      "mean_htm": 246.25440115440117,
+      "mean_qtm": 279.2911616161616,
+      "original_leaf_count": 6,
+      "original_leaf_htm": 6,
+      "rule_count": 223,
+      "stage_count": 18,
+      "states": 43252003274489856000,
+      "total_htm": 10650996165087697305600,
+      "total_qtm": 12079902236758297804800,
+      "visible_leaf_count": 6,
+      "worst_htm": 420,
+      "worst_qtm": 497
+    },
+    "settings": {
+      "allow_symmetry": true,
+      "beam_width": 3,
+      "chunk_options": {
+        "max_candidates": 256,
+        "max_chunk_length": 8,
+        "max_chunks": 12,
+        "max_word_moves": 96,
+        "min_chunk_length": 3
+      },
+      "max_applications": 6,
+      "max_chain_expansions": 64,
+      "max_chain_methods": 8,
+      "max_cost_ratio": 1.0,
+      "max_trials": 16,
+      "max_word_candidates": 100000,
+      "max_word_frontier": 2000,
+      "preference": "memory",
+      "select_chain": true
+    }
+  },
+  "notebook_run": {
+    "case_diagrams": 256,
+    "execution_seconds": 438.43768235099924,
+    "final_guide_rendered_offline": true,
+    "macro_count": 22,
+    "metrics": {
+      "algorithm_count": 238,
+      "case_count_sum": 256,
+      "chunk_definition_moves": 31,
+      "chunk_definition_symbols": 31,
+      "chunk_recipe_symbols": 64,
+      "chunk_regrips": 5,
+      "definition_htm": 2549,
+      "definition_qtm": 2949,
+      "description_score": 1846,
+      "dictionary_score": 100,
+      "instruction_symbols": 1746,
+      "learned_body_count": 16,
+      "macro_count": 22,
+      "macro_definition_htm": 127,
+      "max_body_htm": 15,
+      "max_case_count": 24,
+      "mean_htm": 246.25440115440117,
+      "mean_qtm": 279.2911616161616,
+      "original_leaf_count": 6,
+      "original_leaf_htm": 6,
+      "rule_count": 223,
+      "stage_count": 18,
+      "states": 43252003274489856000,
+      "total_htm": 10650996165087697305600,
+      "total_qtm": 12079902236758297804800,
+      "visible_leaf_count": 6,
+      "worst_htm": 420,
+      "worst_qtm": 497
+    },
+    "outputs": 3,
+    "stage_count": 18
+  },
+  "offline_execution_verified": true,
+  "offline_reload_verified": true,
+  "pipeline": "template_human_repertoire(analysis, preference='memory', backend='symbolic')",
+  "preparation_scope": "saved_repertoire_load",
+  "preparation_seconds": 22.212220358000195,
+  "reference_shape": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27
+  ],
+  "sample_cost_scope": "selected_and_seeded_imports_after_physical_simplification",
+  "samples": [
+    {
+      "case": "solved",
+      "htm": 0,
+      "qtm": 0,
+      "replay_verified": true,
+      "scramble": "",
+      "steps": 0
+    },
+    {
+      "case": "R",
+      "htm": 1,
+      "qtm": 1,
+      "replay_verified": true,
+      "scramble": "R",
+      "steps": 1
+    },
+    {
+      "case": "B",
+      "htm": 1,
+      "qtm": 1,
+      "replay_verified": true,
+      "scramble": "B",
+      "steps": 1
+    },
+    {
+      "case": "R U",
+      "htm": 2,
+      "qtm": 2,
+      "replay_verified": true,
+      "scramble": "R U",
+      "steps": 2
+    },
+    {
+      "case": "commutator",
+      "htm": 4,
+      "qtm": 4,
+      "replay_verified": true,
+      "scramble": "R U R' U'",
+      "steps": 2
+    },
+    {
+      "case": "half turns",
+      "htm": 239,
+      "qtm": 286,
+      "replay_verified": true,
+      "scramble": "R2 U2 F2",
+      "steps": 15
+    },
+    {
+      "case": "twelve turns",
+      "htm": 311,
+      "qtm": 360,
+      "replay_verified": true,
+      "scramble": "R U R' U' F2 D L2 B U2 R2 F' D'",
+      "steps": 18
+    },
+    {
+      "case": "twenty-one turns",
+      "htm": 177,
+      "qtm": 204,
+      "replay_verified": true,
+      "scramble": "R U2 F B R B2 R U2 L B2 R' U' D' R2 F R' L B2 U2 F2 D2",
+      "steps": 15
+    },
+    {
+      "case": "seeded-1",
+      "htm": 203,
+      "qtm": 240,
+      "replay_verified": true,
+      "scramble": "F U2 F' D2 F B F' U L' U U2 D' U2 B2 D' U U2 F2 R2 R2 F2 F2 F2 F2 U'",
+      "steps": 15
+    },
+    {
+      "case": "seeded-2",
+      "htm": 299,
+      "qtm": 347,
+      "replay_verified": true,
+      "scramble": "R2 D2 D2 B R L' B2 R2 U U' U2 F2 F2 F F' L' D2 R' R L B' R' L B2 U'",
+      "steps": 18
+    },
+    {
+      "case": "seeded-3",
+      "htm": 327,
+      "qtm": 378,
+      "replay_verified": true,
+      "scramble": "R' U B' D R B R2 U2 D2 U' U' D U F' L D' R U2 L2 R2 L2 R' U' R D'",
+      "steps": 18
+    },
+    {
+      "case": "seeded-4",
+      "htm": 180,
+      "qtm": 210,
+      "replay_verified": true,
+      "scramble": "B' R2 B' U2 B2 R2 F' D' L2 L F U2 R' L2 D R2 U' L2 L R2 D' B' U' D R2",
+      "steps": 13
+    },
+    {
+      "case": "seeded-5",
+      "htm": 242,
+      "qtm": 284,
+      "replay_verified": true,
+      "scramble": "D B R2 D2 D D2 F' L2 L2 L L2 F' U U' D B' L' F2 F' F' F' R' U' B' L'",
+      "steps": 14
+    },
+    {
+      "case": "seeded-6",
+      "htm": 170,
+      "qtm": 178,
+      "replay_verified": true,
+      "scramble": "L' B D F L' U2 D F2 D U' U L2 D D F F2 R2 U B2 D2 B' F L2 B2 R",
+      "steps": 16
+    },
+    {
+      "case": "seeded-7",
+      "htm": 141,
+      "qtm": 156,
+      "replay_verified": true,
+      "scramble": "U2 R R2 B B' D2 F2 U L2 U' U F R R' F2 R2 L' B' L2 R2 L2 F' B2 R' D'",
+      "steps": 15
+    },
+    {
+      "case": "seeded-8",
+      "htm": 208,
+      "qtm": 233,
+      "replay_verified": true,
+      "scramble": "U' D' B B2 R F' D U' B' D L' F F B' D D' L' U2 L2 D2 R' R2 D D D2",
+      "steps": 17
+    },
+    {
+      "case": "seeded-9",
+      "htm": 239,
+      "qtm": 271,
+      "replay_verified": true,
+      "scramble": "D' U2 U' D' B2 B2 F2 R L L2 D2 U D' B B' U2 U2 L L2 R' F' B' D' L2 F'",
+      "steps": 16
+    },
+    {
+      "case": "seeded-10",
+      "htm": 309,
+      "qtm": 355,
+      "replay_verified": true,
+      "scramble": "B R2 L2 R B B B' F L U B' B L' F2 L' B2 U B2 B2 U2 R R' U2 B F",
+      "steps": 17
+    },
+    {
+      "case": "seeded-11",
+      "htm": 221,
+      "qtm": 244,
+      "replay_verified": true,
+      "scramble": "L' U2 L' U2 U R F2 L2 L' U' U' F' B2 L R F R R2 B L' L R2 B2 B2 L",
+      "steps": 16
+    },
+    {
+      "case": "seeded-12",
+      "htm": 304,
+      "qtm": 338,
+      "replay_verified": true,
+      "scramble": "U' B2 U2 B U2 D' U B2 D' U2 R F2 D' R L2 R' U2 L R2 R L' B U' U F'",
+      "steps": 18
+    },
+    {
+      "case": "seeded-13",
+      "htm": 204,
+      "qtm": 233,
+      "replay_verified": true,
+      "scramble": "B D2 B' F D' U' L2 D' B2 U L2 U U' B U2 B2 B' D2 B D' R2 F2 L2 B2 L2",
+      "steps": 16
+    },
+    {
+      "case": "seeded-14",
+      "htm": 195,
+      "qtm": 216,
+      "replay_verified": true,
+      "scramble": "B2 D2 B L' D2 F2 R F' L D' F2 U' B F U L2 R' D L B2 B' F R2 R2 R'",
+      "steps": 15
+    },
+    {
+      "case": "seeded-15",
+      "htm": 251,
+      "qtm": 295,
+      "replay_verified": true,
+      "scramble": "B' B2 D' F2 R2 D2 U2 D' L2 U U U U' F F U2 F' F2 B' B2 R2 D2 B2 F2 U2",
+      "steps": 16
+    },
+    {
+      "case": "seeded-16",
+      "htm": 308,
+      "qtm": 352,
+      "replay_verified": true,
+      "scramble": "R2 B D2 D2 B R' U2 F2 D L B2 R2 U' L U' D2 U' F' L' R2 D' R B D D",
+      "steps": 18
+    },
+    {
+      "case": "seeded-17",
+      "htm": 201,
+      "qtm": 243,
+      "replay_verified": true,
+      "scramble": "B' R' R R B2 F2 R' U D R L U2 U R' U2 L L' B' L' B R' U U U U",
+      "steps": 16
+    },
+    {
+      "case": "seeded-18",
+      "htm": 208,
+      "qtm": 236,
+      "replay_verified": true,
+      "scramble": "R U2 D2 F' D2 B U2 B U' L2 D L' R' L2 B F2 L2 L D' U F2 F2 B2 B' F",
+      "steps": 17
+    },
+    {
+      "case": "seeded-19",
+      "htm": 277,
+      "qtm": 313,
+      "replay_verified": true,
+      "scramble": "D B U F' B2 D2 D L L R D2 U2 U' L2 U' F D L U' R2 B' U2 B2 F R'",
+      "steps": 16
+    },
+    {
+      "case": "seeded-20",
+      "htm": 159,
+      "qtm": 181,
+      "replay_verified": true,
+      "scramble": "R L F2 B' R2 D U L' R2 R' R' U2 L2 B' R L' L' U D' B2 D' U F B' F",
+      "steps": 13
+    },
+    {
+      "case": "seeded-21",
+      "htm": 257,
+      "qtm": 291,
+      "replay_verified": true,
+      "scramble": "U' L2 D' L R R2 U F R L R' L F F2 B R' F L D B' F F2 D R2 B2",
+      "steps": 15
+    },
+    {
+      "case": "seeded-22",
+      "htm": 214,
+      "qtm": 237,
+      "replay_verified": true,
+      "scramble": "D2 L' L L B2 B' L' L' F D D L2 U2 B U' L U' R' B' D' B2 B' D' B' R2",
+      "steps": 17
+    },
+    {
+      "case": "seeded-23",
+      "htm": 189,
+      "qtm": 212,
+      "replay_verified": true,
+      "scramble": "D B' F' R U2 B' R2 F D2 D2 L B B D' U L R2 L2 F' U2 L D' U' R' D'",
+      "steps": 17
+    },
+    {
+      "case": "seeded-24",
+      "htm": 202,
+      "qtm": 233,
+      "replay_verified": true,
+      "scramble": "B R2 D' D U D2 R2 U' L B2 U' B2 B L L2 R2 F D2 L' F R2 F2 U F' U'",
+      "steps": 16
+    }
+  ],
+  "selected_additive_costs": {
+    "exact": true,
+    "htm": {
+      "mean": 246.25440115440117,
+      "mean_denominator": 6930,
+      "mean_numerator": 1706543,
+      "worst": 420
+    },
+    "qtm": {
+      "mean": 279.2911616161616,
+      "mean_denominator": 3960,
+      "mean_numerator": 1105993,
+      "worst": 497
+    },
+    "scope": "uniform_reference_group_before_boundary_cancellation"
+  },
+  "stage_count": 18,
+  "terminal_order": 1,
+  "verification_seconds": 36.56773894100115,
+  "verified_case_examples": 256,
+  "verified_imported_scrambles": 32,
+  "version": 1
+}

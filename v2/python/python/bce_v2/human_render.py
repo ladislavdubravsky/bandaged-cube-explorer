@@ -21,9 +21,11 @@ def _feature_name(feature, inventory):
 def _algorithm_table(definitions):
     """Render exact turn words, their physical action, and their structure."""
     lines = ["| Turn sequence | Block action | Structure |", "| --- | --- | --- |"]
-    for identifier, word, action in definitions:
+    for definition in definitions:
+        identifier, word, action, *structure = definition
+        notation = structure[0] if structure else structured_move_notation(word)
         lines.append(f"| `{identifier}: {word or '(no moves)'}` | `{action.notation}` | "
-                     f"`{structured_move_notation(word)}` |")
+                     f"`{notation}` |")
     return [*lines, ""]
 
 
@@ -46,7 +48,9 @@ def method_guide(method):
     lines.extend([
         f"This computational baseline covers all **{method.group_order:,} reachable colored states** "
         "whose bandage shape is already the declared reference shape.", "",
-        "The stage policies and physical algorithms have been checked exhaustively. "
+        ("The stage policies have exact symbolic subgroup and orbit certificates; "
+         "every physical algorithm has been replayed. " if method.backend == "symbolic" else
+         "The stage policies and physical algorithms have been checked exhaustively. ") +
         "Human memorability and ease of execution have not been reviewed; some algorithms may be long.", "",
     ])
     if method.algorithms:
@@ -54,9 +58,13 @@ def method_guide(method):
                       "Singmaster notation uses U/R/F/D/L/B face turns, an apostrophe for the inverse, "
                       "and 2 for a half turn. Structured notation preserves the same turn order: "
                       "`S^A` means A⁻¹ S A, `[A, B]` means A B A⁻¹ B⁻¹, and `(A)n` repeats A "
-                      "n times.", ""])
-        lines.extend(_algorithm_table((algorithm.id, algorithm.turn_sequence, algorithm.block_action)
-                                      for algorithm in method.algorithms))
+                      "n times." + (" `[S: A]` means S A S⁻¹." if method.backend == "symbolic" else ""), ""])
+        definitions = ((algorithm.id, algorithm.turn_sequence, algorithm.block_action,
+                        algorithm.expression.render_moves(method.generators))
+                       for algorithm in method.algorithms) if method.backend == "symbolic" else (
+                           (algorithm.id, algorithm.turn_sequence, algorithm.block_action)
+                           for algorithm in method.algorithms)
+        lines.extend(_algorithm_table(definitions))
     if not method.stages:
         lines.extend(["The reference group is trivial: every reachable colored state in this "
                       "reference shape is already solved. No algorithms are needed.", ""])

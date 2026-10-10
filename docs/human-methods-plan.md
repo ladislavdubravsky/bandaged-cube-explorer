@@ -1,5 +1,9 @@
 # Human solving methods: evolving implementation plan
 
+The [symbolic staged methods implementation plan](symbolic-human-methods-plan.md)
+records the agreed 10 October 2026 sequence for the ordinary cube and other
+large groups. It extends Deliveries 7 and 8 below.
+
 Updated 9 October 2026. Deliveries 0–5 are complete. Initial Delivery 6 review
 accepted the presentation but preferred the reduced isotropy generators to the
 learned algorithms. The Pocket Cube follow-up resumes human-quality work with

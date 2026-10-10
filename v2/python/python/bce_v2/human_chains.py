@@ -476,7 +476,8 @@ def _check_kernel(group, structure):
 
 
 def plan_human_stages(initial, *, strategy="placement_then_orientation", features=None,
-                      max_group_elements=None, gap_executable="gap", timeout=None, root=None):
+                      max_group_elements=None, gap_executable="gap", timeout=None, root=None,
+                      backend="explicit"):
     """Build a complete finite stage skeleton from a reference shape alone.
 
     Also accepts complete ShapeGraphs, LoopGenerators, IsotropyAnalysis,
@@ -486,13 +487,32 @@ def plan_human_stages(initial, *, strategy="placement_then_orientation", feature
     cap. Supply max_group_elements to stop before enumeration of larger H.
     A stop has status=limit_reached, no group/stages, and no terminal claim.
 
+    backend='symbolic' uses exact stabilizers and small feature orbits instead
+    of enumerating the colored group. max_group_elements applies only to the
+    explicit backend and cannot be supplied for a symbolic plan.
+
     This explicit backend has been measured through order 10,368. It retains
     original-loop witnesses and exact cases, but no case correction policy,
     shortest-word guarantee, or human-quality claim.
     """
     gap_executable, timeout = _validated_options(gap_executable, timeout)
+    if backend not in ("explicit", "symbolic"):
+        raise ValueError("backend must be 'explicit' or 'symbolic'")
+    if backend == "symbolic" and max_group_elements is not None:
+        raise ValueError("max_group_elements only applies to backend='explicit'")
     if root is not None and (isinstance(root, bool) or not isinstance(root, int)):
         raise TypeError("root must be an integer vertex ID")
+    from .symbolic_chains import SymbolicStagePlan
+    symbolic_previous = initial if isinstance(initial, SymbolicStagePlan) else None
+    if symbolic_previous is not None:
+        if backend != "symbolic":
+            raise ValueError("a prepared symbolic plan requires backend='symbolic'")
+        if symbolic_previous.analysis is None:
+            raise ValueError("a prepared symbolic plan must retain its reference analysis")
+        if root is not None and root != symbolic_previous.analysis.loops.root_vertex:
+            raise ValueError("root differs from the supplied reference analysis")
+        if strategy == symbolic_previous.strategy and features is None:
+            return symbolic_previous.validate(expected_order=symbolic_previous.analysis.group_order)
     if max_group_elements is not None:
         if isinstance(max_group_elements, bool) or not isinstance(max_group_elements, int):
             raise TypeError("max_group_elements must be a positive integer or None")
@@ -510,7 +530,8 @@ def plan_human_stages(initial, *, strategy="placement_then_orientation", feature
         raise ValueError("features are only accepted with strategy='manual'")
     previous = initial if isinstance(initial, HumanStagePlan) else None
     structure = previous.block_structure if previous else initial if isinstance(initial, BlockStructure) else None
-    analysis = (previous.analysis if previous else structure.analysis if structure else
+    analysis = (symbolic_previous.analysis if symbolic_previous else
+                previous.analysis if previous else structure.analysis if structure else
                 initial if isinstance(initial, IsotropyAnalysis) else None)
     if analysis is None:
         analysis = analyze_isotropy(initial, gap_executable=gap_executable, timeout=timeout, root=root)
@@ -524,6 +545,10 @@ def plan_human_stages(initial, *, strategy="placement_then_orientation", feature
         cells = {block.cells for block in analysis.block_inventory.blocks}
         if any(f.cells not in cells for f in features):
             raise ValueError("each feature must name exactly one block in the actual reference inventory")
+    if backend == "symbolic":
+        from .symbolic_chains import plan_symbolic_stages
+        return plan_symbolic_stages(analysis, strategy=strategy, features=features,
+                                    gap_executable=gap_executable, timeout=timeout)
     if max_group_elements is not None and analysis.group_order > max_group_elements:
         return HumanStagePlan(analysis, strategy, "limit_reached", None, (), None, (), (),
                               max_group_elements, "group_order_exceeds_limit")

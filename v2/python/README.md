@@ -701,7 +701,7 @@ if plan.status == "completed":
 
 `plan_human_stages(initial, *, strategy="placement_then_orientation",
 features=None, max_group_elements=None, gap_executable="gap", timeout=None,
-root=None)` accepts the reference inputs used by the isotropy/block-structure
+root=None, backend="explicit")` accepts the reference inputs used by the isotropy/block-structure
 interfaces. A `State` supplies its reference specification. Every planned
 algorithm will start and finish at the selected root shape; human shape
 restoration remains separate work.
@@ -714,13 +714,13 @@ is `place_block` or `solve_block` and `cells` are the exact members of one
 reference block. Redundant manual features are recorded in `skipped_features`;
 a manual list must finish at the identity subgroup.
 
-Immutable `HumanStagePlan` and `HumanStage` records retain exact group,
+With the explicit backend, immutable `HumanStagePlan` and `HumanStage` records retain exact group,
 quotient and kernel orders; selected block features; observation cases;
 subgroup indices; and automatically implied features. Case counts include the
 already-solved observation. `plan.block_structure` also retains the witnessed
 independent orientation-kernel basis.
 
-A completed `plan.group` stores `permutations`, original `generators` and
+A completed explicit `plan.group` stores `permutations`, original `generators` and
 `inventory`. `group.witness(permutation)` reconstructs a `LoopExpression`
 through compact enumeration parents, so every group element has an executable
 original-loop witness. These witnesses are not yet a stage correction policy
@@ -756,7 +756,7 @@ if method.status == "completed":
 
 `synthesize_human_method(initial, *, strategy="placement_then_orientation",
 features=None, max_group_elements=None, gap_executable="gap", timeout=None,
-root=None)` accepts the same references, automatic/manual features and opt-in
+root=None, backend="explicit")` accepts the same references, automatic/manual features and opt-in
 limits as `plan_human_stages`. Passing a completed stage plan reuses its
 prepared group. The baseline inverts exact coset representatives to obtain
 case corrections and shares identical correction effects across the method.
@@ -804,6 +804,98 @@ no case policy. JSON and guide output then report the incomplete preparation.
 Read the [method guide](../../docs/human-methods.md#synthesize-a-complete-method-delivery-two)
 for exact semantics and the current quality limits.
 
+### Symbolic methods for large groups
+
+Use `backend="symbolic"` in `plan_human_stages` or `synthesize_human_method`
+to build exact stabilizers and small feature orbits without enumerating the
+colored group. The ordinary cube has about 43 quintillion states, but a fully
+solved block chain uses 18 stages and 257 cases including the solved cases.
+The placement/orientation chain uses 35 stages and 153 cases. These are
+complete computational baselines; generic witnesses can still be long.
+
+```python
+cube = c.Shape([0] * 27)
+method = c.synthesize_human_method(
+    cube, backend="symbolic", strategy="fully_solve_each_block", timeout=90)
+method.save("unbandaged3x3-method.json")
+method.write_guide("unbandaged3x3-method.md")
+scanned = c.State.from_facelets(c.State(cube).apply("B R U2 F'").facelets, cube)
+assert method.apply(scanned).state.is_solved
+print(method.additive_costs())
+```
+
+Symbolic methods use version-two artifacts with portable strong generating
+certificates. Loading independently reconstructs small point orbits, checks
+Schreier closure, verifies subgroup orders and feature stabilizers, and replays
+physical corrections. Loading and application need no GAP. The original six
+face loops remain available as witnesses even if the group analysis prunes a
+redundant generator. `max_group_elements` applies only to the explicit backend.
+Symbolic planning returns a `SymbolicStagePlan` whose `group` has an exact
+`order` and offline membership tests, rather than an element array. Its stage
+records retain certified before/after subgroups and witnessed representatives.
+A prepared native plan can be reused with `backend="symbolic"`.
+
+`improve_human_method` also accepts symbolic methods. It searches feature orbits
+using witnessed algorithms in each certified stabilizer and retains complete
+fallbacks. `additive_costs()` reports exact uniform-group mean and worst costs
+before cancellation between stages, with rational means; it does not claim
+exact costs of the simplified full solution. Chain selection also supports the
+symbolic backend and a shared physical dictionary, as described below.
+`template_human_repertoire` also supports symbolic shared bodies and recipes.
+The older `optimize_human_repertoire` search uses the explicit backend. Further
+work follows the [saved implementation sequence](../../docs/symbolic-human-methods-plan.md).
+
+The equivalent CLI starts with `python -m bce_v2 plan-method '[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]' --backend symbolic`.
+Add `--select-chain` to compare dictionary-aware chains.
+
+## Discover a dictionary and choose a symbolic chain
+
+Discover short algorithms from legal reference loops before choosing the
+feature order. The dictionary keeps native moves, corner and edge permutations,
+pure orientations and bounded legal setup conjugates. It checks the exact
+orientation span in the actual cyclic block coordinates, including order-four
+fused blocks; finding a few sparse effects does not establish full span.
+
+```python
+analysis = c.analyze_isotropy([0] * 27)
+dictionary = c.discover_symbolic_dictionary(analysis)
+print(dictionary.metadata["orientation_complete"])
+selection = c.select_human_chain(
+    analysis, backend="symbolic", dictionary=dictionary,
+    preference="execution", max_expansions=64, max_methods=2, timeout=180)
+selection.method.save("unbandaged3x3-optimized-method.json")
+print(selection.method.additive_costs())
+```
+
+`SymbolicAlgorithmDictionary` exposes `algorithms`, `orientation_basis`,
+`generators`, `inventory` and detached `metadata`. Its basis spans precisely the
+retained pure-orientation effects; `orientation_complete` compares that span
+with the exact kernel order obtained from the input and placement groups.
+Consuming a dictionary checks those orders against the method's portable
+certificates and independently replays its original-loop expressions.
+The richer pool stays available for stage choices and coupled parity moves.
+Discovery separately bounds mining proposals, retained algorithms, setup depth,
+setup words, conjugation proposals, physical length and witness expansion.
+`save`/`to_dict` retain the original-loop witnesses;
+`SymbolicAlgorithmDictionary.from_dict(record, initial=analysis)` validates and
+reconstructs the pool offline without remaking it. Standalone loading verifies
+physical words and coordinate span; a consuming method also checks the declared
+target against its independently certified group and quotient orders.
+
+`improve_human_method(method, dictionary=dictionary)` reuses the pool offline
+for a fixed symbolic chain. `select_human_chain(..., backend="symbolic")`
+compares both automatic chains and bounded dictionary-aware feature orders.
+Small observation-orbit paths supply corrections. Bounded Schreier words
+carry useful algorithms into later exact stabilizers, including coupled odd
+permutations that three-cycles alone cannot supply. The report records
+dictionary reachability and generating-subset orders separately from complete
+method coverage; long certified fallback corrections remain available.
+
+Symbolic candidate costs are exact additive means and worst lengths before
+cancellation between stages. The feature-order ranking is heuristic, and
+`beam_width` bounds a shortlist for one-step lookahead rather than an exhaustive
+chain search. Selected methods retain version-two offline certificates.
+
 ## Improve reusable stage algorithms
 
 Search for alternative corrections without changing the stage features or
@@ -822,7 +914,7 @@ print(search.metadata["baseline_metrics"], search.metadata["improved_metrics"])
 `improve_human_method(method, *, mode="structured", max_seed_loops=32,
 max_candidates=3000, max_word_length=3, rounds=1, max_states=2000,
 max_stage_generators=24, max_alternatives=3, max_htm_length=120,
-max_expanded_moves=480)` requires a completed `HumanMethod`. It regenerates
+max_expanded_moves=480, dictionary=None)` requires a completed `HumanMethod`. It regenerates
 native reference loops and independently validates the baseline, without GAP.
 It returns an immutable `HumanAlgorithmSearch` containing `baseline`, the
 selected `method`, per-case `alternatives` and copied `metadata`.
@@ -857,7 +949,7 @@ for budget and metric definitions.
 
 ## Select a chain using its correction algorithms
 
-Compare placement-first, block-first and bounded mixed-feature methods from
+The default explicit backend compares placement-first, block-first and bounded mixed-feature methods from
 the reference shape. New policies receive the same witnessed algorithm pool
 and complete case fallbacks; original BFS methods remain selectable controls:
 
@@ -876,7 +968,8 @@ print(selection.selected_id, selection.frontier)
 `select_human_chain(initial, *, strategy="placement_then_orientation",
 manual_features=None, preference="execution", beam_width=4, max_expansions=64,
 max_methods=16, discovery_options=None, max_group_elements=None,
-gap_executable="gap", timeout=None, root=None)` prepares one exact group and
+gap_executable="gap", timeout=None, root=None, backend="explicit", dictionary=None,
+dictionary_options=None)` prepares one exact group with the explicit backend and
 runs Delivery 3 discovery once using the origin `strategy`. `discovery_options`
 overrides the improvement defaults. The placement-first and block-first
 chains each retain their original BFS and pool-based policies as explicit
@@ -955,6 +1048,41 @@ repertoire.save("templates.json")
 loaded = c.load_human_repertoire("templates.json")
 assert loaded.apply(state).state.is_solved
 ```
+
+For the ordinary cube and other large groups, select the symbolic backend:
+
+```python
+analysis = c.analyze_isotropy([0] * 27)
+repertoire = c.template_human_repertoire(analysis, backend="symbolic", preference="memory")
+repertoire.write_guide("cube.md", diagram_mode=c.DiagramMode.OPPOSITE_CORNERS)
+```
+
+This prepares a physical dictionary, selects a certified feature chain, and
+shares witnessed algorithm bodies, inverses, legal symmetry variants and typed
+physical chunks. It searches the small case tables and their expression trees,
+without enumerating the reference group. Supplying an existing symbolic
+`HumanMethod` selects this backend automatically and retains its physical
+corrections and certified chain; template compilation, loading and application
+then work offline. Shape inputs use `dictionary_options` and `discovery_options`
+to configure discovery, or accept an existing `dictionary`.
+
+The symbolic compression phase compares an exact whole-word fallback with
+bounded shared-body recipes. It preserves every selected physical case word;
+the learned definitions and recipes change. `max_trials` bounds accepted shared
+bodies, `max_word_candidates` bounds inspected expression nodes, and
+`max_word_frontier` bounds candidate bodies. `max_applications` bounds the
+expression depth of eligible learned bodies; zero disables shared-body
+proposals. These budgets do not bound the complete case correction.
+`chunk_options` bounds separate substring mining.
+`max_chain_expansions` defaults to 64 for symbolic preparation and 12 for the
+explicit backend. Symbolic costs are exact additive costs under the uniform
+reference-group distribution, before cancellation between stages. Portable
+version-two repertoires retain this cost scope and independently verified
+subgroup, word, progress and recipe certificates. The resulting guide remains
+a computational method awaiting human review.
+
+The explicit backend remains the default for shape inputs and supplies the
+finite-group vocabulary search described below.
 
 The input can be a shape, isotropy analysis, stage plan or completed method.
 Shape-based preparation selects chains in the actual taught vocabulary. Passing
@@ -1052,13 +1180,14 @@ outside quality-search budgets, which preserve completed coverage when reached.
 `HumanRepertoire` retains `baseline`, selected expanded `method`, `macros`,
 `stages` and copied `metadata`, and exposes `recognize`, `next_step` and `apply`.
 Its `save`, `to_json` and `to_dict` write a self-contained
-`bce-v2-human-repertoire` version-one artifact; `from_dict` and
+`bce-v2-human-repertoire` version-one artifact for explicit methods or a
+cost-scoped version-two artifact for symbolic methods; `from_dict` and
 `load_human_repertoire(path)` validate methods, definitions and rule expansions
 independently without GAP. Loading rechecks actual baseline/selected costs and
 metadata consistency; historical candidate costs and search counts remain
 experiment records, without a minimum-repertoire claim. The fingerprint detects changes, while exact checks
-establish coverage. The selected expanded method keeps the existing version-one
-method format. `write_guide` writes the compressed guide. Read the
+establish coverage. The selected expanded method keeps its corresponding
+version-one or version-two method format. `write_guide` writes the compressed guide. Read the
 [repertoire contract](../../docs/human-methods.md#share-algorithms-and-compress-rules-delivery-five)
 for budget and metric semantics.
 
@@ -1249,6 +1378,12 @@ The returned figure is a regular matplotlib figure. The
 full graph immediately after its shape and scramble counts, with editable
 `graph_layout`, `graph_show_shapes`, `graph_edge_labels`, `graph_figsize`, and
 `graph_shape_size` settings.
+
+[Unbandaged3x3.ipynb](../examples/Unbandaged3x3.ipynb) applies the same workflow
+to the classic cube. It reports the template compiler's explicit group-size
+cutoff and compares bounded direct search with both loop factorization
+strategies on imported colored states, retaining timings, move counts, and
+replay-checked solutions.
 
 `layout="symmetry"` uses a force layout constrained by a whole-cube rotation
 that acts within the explored component. For BandagedPocketCube, the selected

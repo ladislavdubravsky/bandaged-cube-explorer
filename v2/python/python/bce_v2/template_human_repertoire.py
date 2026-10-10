@@ -376,9 +376,11 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
                               preference="memory", allow_symmetry=True, select_chain=None,
                               templates=(), max_trials=16, max_applications=6,
                               max_word_candidates=100000, max_word_frontier=2000,
-                              beam_width=3, max_chain_expansions=12, max_chain_methods=8,
+                              beam_width=3, max_chain_expansions=None, max_chain_methods=8,
                               max_cost_ratio=1.0, chunk_options=None,
-                              max_group_elements=None, gap_executable="gap", timeout=None, root=None):
+                              max_group_elements=None, gap_executable="gap", timeout=None, root=None,
+                              backend="explicit", dictionary=None, dictionary_options=None,
+                              discovery_options=None):
     """Build a complete guide using selected templates, regrips and shared pieces.
 
     Shape/analysis/plan inputs compare both automatic chains and bounded mixed
@@ -395,8 +397,35 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
     case instructions and recognition counts. No global quality claim is made.
     Physical-word budgets apply separately to each trial vocabulary; the saved
     search counters report totals across all trial vocabularies.
+
+    ``backend="symbolic"`` prepares a dictionary-aware certified chain without
+    enumerating its group, then shares repeated witnessed bodies and typed
+    physical chunks. A supplied symbolic method follows this path automatically
+    and needs no GAP. Its physical case corrections stay unchanged. Here
+    ``max_trials`` bounds accepted greedy body rounds, ``max_word_frontier``
+    bounds their proposal pool, ``max_word_candidates`` bounds inspected
+    expression nodes, and ``max_applications`` bounds eligible body expression
+    depth. Complete fallback words are retained independently of these caps.
+    The default chain expansion budget is 64 for symbolic and 12 for explicit.
     """
     supplied = isinstance(initial, HumanMethod)
+    if backend not in ("explicit", "symbolic"):
+        raise ValueError("backend must be explicit or symbolic")
+    if backend == "symbolic" or (supplied and initial.backend == "symbolic"):
+        from .symbolic_template_repertoire import symbolic_template_human_repertoire
+        return symbolic_template_human_repertoire(initial, strategy=strategy, features=features,
+            preference=preference, allow_symmetry=allow_symmetry, select_chain=select_chain,
+            templates=templates, max_trials=max_trials, max_applications=max_applications,
+            max_word_candidates=max_word_candidates, max_word_frontier=max_word_frontier,
+            beam_width=beam_width, max_chain_expansions=64 if max_chain_expansions is None else max_chain_expansions,
+            max_chain_methods=max_chain_methods, max_cost_ratio=max_cost_ratio,
+            chunk_options=chunk_options, max_group_elements=max_group_elements,
+            gap_executable=gap_executable, timeout=timeout, root=root, dictionary=dictionary,
+            dictionary_options=dictionary_options, discovery_options=discovery_options)
+    if dictionary is not None or dictionary_options is not None or discovery_options is not None:
+        raise ValueError("dictionary and discovery options require backend='symbolic'")
+    if max_chain_expansions is None:
+        max_chain_expansions = 12
     if preference not in _PREFERENCES:
         raise ValueError("preference must be memory, execution or recognition")
     if type(allow_symmetry) is not bool:
@@ -443,6 +472,9 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
     if supplied:
         if initial.status != "completed":
             raise ValueError("template repertoire requires a complete method")
+        if initial.backend == "symbolic":
+            raise ValueError("template repertoire optimization currently requires the explicit backend; "
+                             "use improve_human_method for a symbolic policy")
         if features is not None or strategy != "fully_solve_each_block":
             raise ValueError("a supplied method retains its own baseline features")
         if root is not None and root != initial.root_vertex:

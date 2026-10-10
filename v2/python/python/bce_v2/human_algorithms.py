@@ -293,7 +293,8 @@ def _collision_words(method, actions, paths, anchors):
 
 def improve_human_method(method, *, mode="structured", max_seed_loops=32, max_candidates=3000,
                          max_word_length=3, rounds=1, max_states=2000, max_stage_generators=24,
-                         max_alternatives=3, max_htm_length=120, max_expanded_moves=480):
+                         max_alternatives=3, max_htm_length=120, max_expanded_moves=480,
+                         dictionary=None):
     """Improve a fixed stage policy while retaining certified complete fallbacks.
 
     No GAP is required. Native root loops supplement the saved generating set;
@@ -319,6 +320,11 @@ def improve_human_method(method, *, mode="structured", max_seed_loops=32, max_ca
             raise TypeError(f"{name} must be an integer")
         if value < minimum:
             raise ValueError(f"{name} must be at least {minimum}")
+    if method.backend == "symbolic":
+        from .symbolic_human_algorithms import improve_symbolic_human_method
+        return improve_symbolic_human_method(method, dictionary=dictionary, **settings)
+    if dictionary is not None:
+        raise ValueError("a supplied dictionary currently requires a symbolic method")
     complete_loops = isotropy_loops(method.reference_shape)
     baseline = _validate_method(method, complete_loops=complete_loops)
     generators, seed_ids = _merge_seeds(baseline, complete_loops, max_seed_loops)

@@ -57,8 +57,9 @@ def _chunk_table(repertoire):
     return lines, dictionary.master_formulas
 
 
-def _instruction(presentation):
-    return f"`{presentation.identifier}: {presentation.turn_sequence or '(no moves)'}`"
+def _instruction(presentation, *, include_word=True):
+    return (f"`{presentation.identifier}: {presentation.turn_sequence or '(no moves)'}`" if include_word
+            else f"`{presentation.identifier}`")
 
 
 def _additional_algorithm_action(method, word, rotation):
@@ -85,19 +86,19 @@ def _cue(stage, observation, method):
     return f"{footprint}; {sticker}"
 
 
-def _rule_lines(rule, stage, method, presentations):
+def _rule_lines(rule, stage, method, presentations, *, include_word=True):
     """Present every instruction family with all its concrete case cues."""
     lines = [f"### {rule.id}", ""]
     if rule.kind == "cycle":
-        lines.extend([f"These cases form one cycle under {_instruction(presentations[rule.recipe])}. "
+        lines.extend([f"These cases form one cycle under {_instruction(presentations[rule.recipe], include_word=include_word)}. "
                       "Use the signed power below to reach this stage's solved observation.", "",
                       "Cycle in the fixed reference frame: "
                       + " → ".join(_cue(stage, observation, method) for observation in rule.cycle) + ".", ""])
     elif rule.kind == "powers":
-        lines.extend([f"These cases share {_instruction(presentations[rule.recipe])}. "
+        lines.extend([f"These cases share {_instruction(presentations[rule.recipe], include_word=include_word)}. "
                       "Choose its signed power using the block's concrete cue.", ""])
     else:
-        lines.extend([f"For the following cues, execute {_instruction(presentations[rule.recipe])} once.", ""])
+        lines.extend([f"For the following cues, execute {_instruction(presentations[rule.recipe], include_word=include_word)} once.", ""])
     if rule.kind in ("powers", "cycle"):
         lines.extend(["| Current cue | Signed power |", "| --- | ---: |"])
         for observation, exponent in zip(rule.observations, rule.exponents):
@@ -126,6 +127,7 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
         face_colors = validate_face_colors(face_colors)
 
     method, inventory = repertoire.method, repertoire.method.inventory
+    compact = method.backend == "symbolic" and repertoire.metadata.get("basis") == "templates"
     presentations, additional = _guide_instructions(repertoire, rotate_diagram=diagram_mode is not None)
     lines = ["# Solution from solved shape", "",
              f"This computational method covers all **{method.group_order:,} reachable colored states** "
@@ -140,7 +142,9 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
         if repertoire.metadata.get("basis") == "templates":
             lines.extend(["Singmaster notation uses U/R/F/D/L/B, an apostrophe for an inverse turn, "
                           "2 for a half turn, x/y/z represent whole cube rotations 90° in the "
-                          "direction of an R/U/F move respectively.", ""])
+                          "direction of an R/U/F move respectively. Structured recipes use "
+                          "`[A, B] = A B A⁻¹ B⁻¹`, `S^A = A⁻¹ S A`, and signed powers; "
+                          "a negative power executes the inverse algorithm.", ""])
         else:
             lines.extend(["Singmaster notation uses U/R/F/D/L/B, an apostrophe "
                           "for an inverse turn, and 2 for a half turn. Each algorithm starts and ends at "
@@ -148,7 +152,7 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
                           "`S^A` means A⁻¹ S A, `[A, B]` means A B A⁻¹ B⁻¹, and `(A)n` repeats A "
                           "n times.", ""])
         definitions = [(macro.id, macro.algorithm.turn_sequence, macro.algorithm.block_action)
-                       for macro in repertoire.macros]
+                       for macro in repertoire.macros if not compact or macro.algorithm.htm_length > 1]
         definitions.extend((identifier, word, _additional_algorithm_action(method, word, rotation))
                            for identifier, word, rotation in additional)
         lines.extend(_algorithm_table(definitions))
@@ -157,6 +161,8 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
             lines.extend(chunk_lines)
             lines.extend(["| Algorithm | Recipe |", "| --- | --- |"])
             for macro in repertoire.macros:
+                if compact and macro.algorithm.htm_length == 1:
+                    continue
                 lines.append(f"| `{macro.id}` | `{formulas[macro.id]}` |")
             lines.append("")
     if not method.stages:

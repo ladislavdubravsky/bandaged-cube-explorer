@@ -481,6 +481,13 @@ from .human_methods import (  # noqa: E402
     HumanMethod, HumanMethodApplication, HumanMethodCase, HumanMethodStage,
     HumanMethodStep, HumanRecognition, synthesize_human_method,
 )
+from .symbolic_groups import (  # noqa: E402
+    PermutationGroupCertificate, StabilizerLevel, StrongGenerator,
+)
+from .symbolic_chains import SymbolicStagePlan  # noqa: E402
+from .symbolic_dictionary import (  # noqa: E402
+    SymbolicAlgorithmDictionary, discover_symbolic_dictionary,
+)
 from .human_method_io import load_human_method  # noqa: E402
 from .human_algorithms import (  # noqa: E402
     HumanAlgorithmAlternative, HumanAlgorithmSearch, improve_human_method,
@@ -547,10 +554,12 @@ __all__ = [
     "bandage_symmetries",
     "AlgorithmSolution", "LoopSolutionOptions",
     "BlockFeature", "HumanStage", "HumanStagePlan", "WitnessedLoopGroup", "plan_human_stages",
+    "PermutationGroupCertificate", "StabilizerLevel", "StrongGenerator", "SymbolicStagePlan",
     "HumanMethod", "HumanMethodApplication", "HumanMethodCase", "HumanMethodStage",
     "HumanMethodStep", "HumanRecognition", "synthesize_human_method", "load_human_method",
     "HumanAlgorithmAlternative", "HumanAlgorithmSearch", "improve_human_method",
     "HumanChainCandidate", "HumanChainSearch", "select_human_chain",
+    "SymbolicAlgorithmDictionary", "discover_symbolic_dictionary",
     "HumanMacroRecipe", "HumanRecognitionRule", "HumanRepertoire", "HumanRepertoireApplication",
     "HumanRepertoireCase", "HumanRepertoireMacro", "HumanRepertoireStage", "HumanRepertoireStep",
     "optimize_human_repertoire", "load_human_repertoire", "generator_human_repertoire", "ShapePath",

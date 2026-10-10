@@ -52,6 +52,20 @@ class HumanMethodCommandTests(_CommandInvocation, unittest.TestCase):
     def backend(self, **options):
         return patch.object(c, "synthesize_human_method", create=True, **options)
 
+    def test_symbolic_backend_is_forwarded(self):
+        with self.backend(return_value=_MethodResult()) as synthesize:
+            status, _, errors = self.invoke("plan-method", "Alcatraz", "--backend", "symbolic")
+        self.assertEqual((status, errors), (0, ""))
+        self.assertEqual(synthesize.call_args.kwargs["backend"], "symbolic")
+
+    def test_symbolic_explicit_optimizers_and_element_cap_rejected_before_work(self):
+        for extra in (("--optimize-repertoire",), ("--max-group-elements", "324")):
+            with self.subTest(extra=extra):
+                with self.backend(side_effect=AssertionError("invalid options stop before preparation")):
+                    status, _, errors = self.invoke("plan-method", "Alcatraz", "--backend", "symbolic", *extra)
+                self.assertEqual(status, 1)
+                self.assertIn("explicit", errors)
+
     def test_fixture_options_and_both_artifacts(self):
         result = _MethodResult()
         with tempfile.TemporaryDirectory() as directory:

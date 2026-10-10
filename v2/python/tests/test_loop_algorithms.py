@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import patch
 
 import bce_v2 as c
-from bce_v2.loop_algorithms import _mining_expressions
+from bce_v2.loop_algorithms import _diverse_candidates, _mining_expressions
 
 
 IDENTITY = tuple(range(48))
@@ -453,6 +453,74 @@ class LoopAlgorithmDiscoveryTests(unittest.TestCase):
                     self.assertEqual(expected.edges, list(range(12)))
                     self.assertEqual(expected.flips, [0] * 12)
 
+    def test_inverse_and_mixed_sign_commutators_are_distinct_proposals(self):
+        loops = c.isotropy_loops(c.Shape())
+        library = c.discover_loop_algorithms(loops, rounds=0, max_candidates=16,
+                                             max_algorithms=16)
+        r, u = (library.build_algorithm(leaf_for(loops, move)) for move in ("R", "U"))
+        proposals = tuple(_mining_expressions((r, u)))
+        expected = (
+            c.LoopExpression.power(r.expression, -1),
+            c.LoopExpression.commutator(r.expression, c.LoopExpression.power(u.expression, -1)),
+            c.LoopExpression.commutator(c.LoopExpression.power(r.expression, -1), u.expression),
+        )
+        swapped = c.LoopExpression.commutator(u.expression, r.expression).evaluate(loops)
+        for expression in expected:
+            with self.subTest(expression=expression.render()):
+                self.assertIn(expression, proposals)
+                algorithm = library.build_algorithm(expression)
+                self.assert_algorithm(library, algorithm)
+                if expression.kind == "commutator":
+                    self.assertNotEqual(algorithm.permutation, swapped)
+
+    def test_frontier_reserves_corner_edge_and_orientation_families(self):
+        loops = c.isotropy_loops(c.Shape())
+        library = c.discover_loop_algorithms(loops, rounds=0, max_candidates=16,
+                                             max_algorithms=16)
+        u, r, f, d = (leaf_for(loops, move) for move in ("U", "R", "F", "D"))
+        edge = library.build_algorithm(c.LoopExpression.commutator(
+            c.LoopExpression.commutator(u, r), c.LoopExpression.commutator(f, d)))
+
+        def word_algorithm(word):
+            return library.build_algorithm(c.LoopExpression.sequence(*(
+                c.LoopExpression.power(leaf_for(loops, move[0]),
+                                       -1 if move.endswith("'") else 2 if move.endswith("2") else 1)
+                for move in word.split())))
+
+        corner = word_algorithm("B U F U' B' U F' U'")
+        twist = word_algorithm("B D B' U B D' B' L U R U' L' U R' U2")
+        candidates = [library.build_algorithm(c.LoopExpression.rotated(rotation, corner.expression))
+                      for rotation in ("", "x", "y", "z", "x2", "y2", "z2")]
+        candidates.extend((edge, twist, library.build_algorithm(u)))
+        frontier = tuple(_diverse_candidates(candidates))[:4]
+        families = {(algorithm.is_kernel,
+                     frozenset(loops.block_inventory.blocks[i].kind for i in algorithm.support))
+                    for algorithm in frontier}
+        self.assertEqual(families, {(False, frozenset({"Corner"})),
+                                    (False, frozenset({"Edge"})),
+                                    (False, frozenset({"Corner", "Edge"})),
+                                    (True, frozenset({"Corner"}))})
+
+    def test_unbandaged_discovery_finds_orientation_algorithms_before_method_compilation(self):
+        with patch("bce_v2.gap_backend._run_gap", side_effect=AssertionError("discovery called GAP")):
+            library = c.discover_loop_algorithms(c.Shape(), rounds=3, max_candidates=1800,
+                                                 max_algorithms=256)
+        self.assertGreater(library.collision_proposal_count, 0)
+        self.assertGreater(library.inverse_proposal_count, 0)
+        self.assertLessEqual(library.examined_count, 1800)
+        self.assertEqual(library.metadata["collision_proposal_count"],
+                         library.collision_proposal_count)
+        for kind in ("Corner", "Edge"):
+            candidates = [algorithm for algorithm in library.shortest
+                          if algorithm.is_kernel and len(algorithm.support) == 2
+                          and {library.loops.block_inventory.blocks[i].kind
+                               for i in algorithm.support} == {kind}]
+            self.assertTrue(candidates, f"discovery omitted pure two-{kind.lower()} orientation effects")
+            algorithm = min(candidates, key=lambda candidate: candidate.htm_length)
+            self.assertEqual(algorithm.block_action.destinations,
+                             tuple(range(len(library.loops.block_inventory.blocks))))
+            self.assert_algorithm(library, algorithm)
+
     def test_distinct_short_and_structured_representatives_of_one_exact_effect(self):
         loops = c.isotropy_loops(independent_faces())
         u, d = leaf_for(loops, "U"), leaf_for(loops, "D")
@@ -580,6 +648,19 @@ class LoopAlgorithmDiscoveryTests(unittest.TestCase):
             library.build_algorithm(large, max_expanded_moves=8)
         with self.assertRaises(ValueError):
             library.build_algorithm(c.LoopExpression.loop(999_999))
+
+    def test_discovery_tightens_expansion_budget_before_building_candidates(self):
+        library = c.discover_loop_algorithms(c.Shape(), rounds=2, max_candidates=100,
+                                             max_htm_length=120, max_expanded_moves=1)
+        self.assertEqual(library.max_expanded_moves, 1)
+        self.assertGreater(library.expansion_pruned_count, 0)
+        self.assertTrue(library.algorithms)
+        self.assertTrue(all(algorithm.htm_length == 1 for algorithm in library.algorithms))
+        for bad in (0, -1):
+            with self.assertRaises(ValueError):
+                c.discover_loop_algorithms(library.loops, max_expanded_moves=bad)
+        with self.assertRaises(TypeError):
+            c.discover_loop_algorithms(library.loops, max_expanded_moves=True)
 
 
 if __name__ == "__main__":

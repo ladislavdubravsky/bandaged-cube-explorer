@@ -248,7 +248,8 @@ def _dominates(first, second):
 def select_human_chain(initial, *, strategy="placement_then_orientation", manual_features=None,
                        preference="execution", beam_width=4, max_expansions=64, max_methods=16,
                        discovery_options=None, max_group_elements=None,
-                       gap_executable="gap", timeout=None, root=None):
+                       gap_executable="gap", timeout=None, root=None, backend="explicit",
+                       dictionary=None, dictionary_options=None):
     """Compare complete recognizable methods using a shared witnessed word pool.
 
     Exact preparation has the usual opt-in cap. Chain budgets bound additional
@@ -258,6 +259,19 @@ def select_human_chain(initial, *, strategy="placement_then_orientation", manual
     constraint on every search branch. No globally optimal or human-reviewed
     chain is claimed. Selected methods retain the portable version-one schema.
     """
+    if backend not in ("explicit", "symbolic"):
+        raise ValueError("backend must be explicit or symbolic")
+    if backend == "symbolic":
+        from .symbolic_chain_search import select_symbolic_human_chain
+        return select_symbolic_human_chain(
+            initial, strategy=strategy, manual_features=manual_features,
+            preference=preference, beam_width=beam_width, max_expansions=max_expansions,
+            max_methods=max_methods, discovery_options=discovery_options,
+            dictionary=dictionary, dictionary_options=dictionary_options,
+            max_group_elements=max_group_elements, gap_executable=gap_executable,
+            timeout=timeout, root=root)
+    if dictionary is not None or dictionary_options is not None:
+        raise ValueError("shared dictionary options currently require backend='symbolic'")
     if strategy not in ("placement_then_orientation", "fully_solve_each_block"):
         raise ValueError("chain search strategy must name an automatic baseline")
     if preference not in _PREFERENCES:

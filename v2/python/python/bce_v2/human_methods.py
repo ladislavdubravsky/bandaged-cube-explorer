@@ -14,7 +14,7 @@ from . import Shape, State
 from ._moves import _simplified_moves
 from .block_actions import BlockInventory
 from .human_chains import BlockFeature, plan_human_stages
-from .isotropy import LoopGenerator
+from .isotropy import LoopGenerator, LoopGenerators
 from .loop_algorithms import LoopAlgorithm, LoopExpression
 
 
@@ -185,7 +185,8 @@ class HumanMethod:
     reason: str | None
     gap_version: str
     _inventory: BlockInventory = field(repr=False, compare=False)
-    _permutations: frozenset = field(repr=False, compare=False)
+    _permutations: object = field(repr=False, compare=False)
+    _symbolic_chain: object | None = field(default=None, repr=False, compare=False)
 
     @property
     def inventory(self):
@@ -210,6 +211,34 @@ class HumanMethod:
     @property
     def terminal_order(self):
         return 1 if self.status == "completed" else None
+
+    @property
+    def backend(self):
+        return "symbolic" if self._symbolic_chain is not None else "explicit"
+
+    def additive_costs(self):
+        """Exact uniform-group costs before cancellation between stages.
+
+        Complete deterministic coset tables give independent, uniformly
+        distributed stage digits. These are sums of stored case-word costs,
+        not the length of the subsequently simplified concatenation.
+        """
+        from fractions import Fraction
+        _require(self.status == "completed", "costs require a complete method")
+        algorithms = {a.id: a for a in self.algorithms}
+        result = {"scope": "uniform_reference_group_before_boundary_cancellation", "exact": True}
+        for metric in ("htm", "qtm"):
+            means, worst = [], 0
+            for stage in self.stages:
+                costs = [0 if case.algorithm_id is None else
+                         getattr(algorithms[case.algorithm_id], metric + "_length")
+                         for case in stage.cases]
+                means.append(Fraction(sum(costs), len(costs)))
+                worst += max(costs)
+            mean = sum(means, Fraction())
+            result[metric] = {"mean": float(mean), "mean_numerator": mean.numerator,
+                              "mean_denominator": mean.denominator, "worst": worst}
+        return result
 
     def to_dict(self):
         from .human_method_io import method_to_dict
@@ -332,6 +361,8 @@ def _validate_method(method, *, complete_loops=None):
         return replace(method, _permutations=frozenset())
     _require(method.reason is None and complete_loops is not None and
              complete_loops.root_shape == method.reference_shape, "complete loop provenance is required")
+    if method._symbolic_chain is not None:
+        return _validate_symbolic_method(method, complete_loops=complete_loops)
     _require(method.max_group_elements is None or method.group_order <= method.max_group_elements,
              "completed method exceeds its declared group-element limit")
     initial = State(method.reference_shape)
@@ -422,21 +453,26 @@ def _validate_method(method, *, complete_loops=None):
 
 
 def synthesize_human_method(initial, *, strategy="placement_then_orientation", features=None,
-                            max_group_elements=None, gap_executable="gap", timeout=None, root=None):
+                            max_group_elements=None, gap_executable="gap", timeout=None, root=None,
+                            backend="explicit"):
     """Compile a complete reusable case policy from a reference shape alone.
 
-    Uses the explicit stage planner's reference inputs and optional limits.
+    Uses the stage planner's reference inputs and optional explicit limits.
+    backend='symbolic' compiles small feature orbits without enumerating H.
     Corrections invert deterministic BFS coset representatives; this is not
     an algorithm-quality optimizer or a shortest physical word guarantee.
     """
     plan = plan_human_stages(initial, strategy=strategy, features=features,
                              max_group_elements=max_group_elements, gap_executable=gap_executable,
-                             timeout=timeout, root=root)
+                             timeout=timeout, root=root, backend=backend)
     return _compile_plan(plan)
 
 
 def _compile_plan(plan):
     """Compile an internally prepared plan, retaining the full method proof."""
+    from .symbolic_chains import SymbolicStagePlan
+    if isinstance(plan, SymbolicStagePlan):
+        return _compile_symbolic_plan(plan)
     max_group_elements = plan.max_group_elements
     base = dict(reference_shape=plan.inventory.root_shape, strategy=plan.strategy, status=plan.status,
                 group_order=plan.group_order, quotient_order=plan.quotient_order, kernel_order=plan.kernel_order,
@@ -479,3 +515,108 @@ def _compile_plan(plan):
                                        stage.implied_features, tuple(cases)))
     return _validate_method(HumanMethod(**base, generators=group.generators, stages=tuple(stages),
                                         algorithms=tuple(algorithms)), complete_loops=plan.analysis.loops)
+
+
+def _compile_symbolic_plan(plan):
+    """Compile witnessed feature transversals, without listing group elements."""
+    generators = tuple(plan.analysis.loops.generators)
+    witness_loops = LoopGenerators(generators[0]._owner) if generators else None
+    records = {g.id: g for g in generators}
+    stages, algorithms, by_effect = [], [], {}
+    for stage in plan.stages:
+        cases = []
+        for representative in stage.representatives:
+            observation, permutation = representative.observation, representative.permutation
+            algorithm_id = None
+            if observation != stage.solved_observation:
+                correction = _inverse(permutation)
+                if correction not in by_effect:
+                    expression = LoopExpression.power(representative.expression, -1)
+                    moves = expression.expanded_moves(
+                        witness_loops, max_expanded_moves=max(1, _expression_bound(expression, records)))
+                    algorithm = LoopAlgorithm(
+                        f"A{len(algorithms) + 1}", expression, correction, moves, plan.inventory,
+                        tuple((g.id, g.htm_length) for g in generators), generators)
+                    algorithms.append(algorithm)
+                    by_effect[correction] = algorithm.id
+                algorithm_id = by_effect[correction]
+            cases.append(HumanMethodCase(observation, algorithm_id, permutation))
+        stages.append(HumanMethodStage(
+            stage.number, stage.feature, stage.block_index, stage.block_name,
+            stage.order_before, stage.order_after, stage.solved_observation,
+            stage.implied_features, tuple(cases)))
+    method = HumanMethod(
+        plan.inventory.root_shape, plan.strategy, "completed", plan.group_order,
+        plan.quotient_order, plan.kernel_order, plan.analysis.loops.root_vertex,
+        generators, tuple(stages), tuple(algorithms), plan.initial_features,
+        plan.skipped_features, None, None, plan.gap_version, plan.inventory,
+        plan.group, plan)
+    return _validate_method(method, complete_loops=plan.analysis.loops)
+
+
+def _validate_symbolic_method(method, *, complete_loops):
+    """Verify exact coset coverage using certified stabilizers and small orbits."""
+    _require(method.max_group_elements is None, "symbolic methods cannot declare an enumeration limit")
+    chain = method._symbolic_chain
+    chain.validate(inventory=method.inventory, generators=method.generators,
+                   expected_order=method.group_order)
+    _require((method.quotient_order, method.kernel_order) ==
+             (chain.quotient_order, chain.kernel_order), "symbolic placement/kernel orders disagree")
+    _require(method.strategy == chain.strategy and method.initial_features == chain.initial_features and
+             method.skipped_features == chain.skipped_features and method.gap_version == chain.gap_version,
+             "symbolic feature metadata is inconsistent")
+    _require(len(method.stages) == len(chain.stages), "symbolic method omits certified stages")
+    initial = State(method.reference_shape)
+    _require(len({g.id for g in method.generators}) == len(method.generators), "duplicate original loop IDs")
+    for generator in method.generators:
+        _require(type(generator.id) is int and generator.id >= 0, "invalid original loop ID")
+        replay = initial.apply(generator.moves)
+        _require(replay.shape == method.reference_shape and
+                 replay.sticker_permutation == generator.permutation,
+                 "original loop witness fails legal replay")
+    _require(all(g.permutation in chain.group for g in complete_loops.generators),
+             "symbolic generators omit part of the complete reference-loop group")
+    algorithms = {a.id: a for a in method.algorithms}
+    records = {g.id: g for g in method.generators}
+    witness_loops = LoopGenerators(method.generators[0]._owner) if method.generators else None
+    _require(len(algorithms) == len(method.algorithms), "duplicate shared algorithm IDs")
+    for algorithm in method.algorithms:
+        _require(isinstance(algorithm.id, str) and bool(algorithm.id) and
+                 algorithm.permutation != _IDENTITY and algorithm.permutation in chain.group,
+                 "invalid shared correction algorithm")
+        _require(algorithm._inventory.root_shape == method.reference_shape and
+                 algorithm._generators == method.generators,
+                 "algorithm refers to a different witness library")
+        _require(algorithm.expression.evaluate(method.generators) == algorithm.permutation,
+                 "algorithm expression disagrees with its full action")
+        moves = algorithm.expression.expanded_moves(
+            witness_loops, max_expanded_moves=max(1, _expression_bound(algorithm.expression, records)))
+        for word in (moves, algorithm.turn_sequence):
+            replay = initial.apply(word)
+            _require(replay.shape == method.reference_shape and
+                     replay.sticker_permutation == algorithm.permutation,
+                     "algorithm physical witness disagrees with its full action")
+    used = set()
+    for stage, certified in zip(method.stages, chain.stages):
+        _require((stage.number, stage.feature, stage.block_index, stage.block_name,
+                  stage.order_before, stage.order_after, stage.solved_observation, stage.implied_features) ==
+                 (certified.number, certified.feature, certified.block_index, certified.block_name,
+                  certified.order_before, certified.order_after, certified.solved_observation,
+                  certified.implied_features), "symbolic stage metadata disagrees with its certificate")
+        _require(stage.observations == certified.observations, "symbolic stage cases omit or reorder observations")
+        for case in stage.cases:
+            _require(case.representative in certified.group_before and
+                     _observe(method.inventory.action(case.representative), stage.block_index,
+                              stage.feature.kind) == case.observation,
+                     "case representative is outside its certified observation fiber")
+            if case.observation == stage.solved_observation:
+                _require(case.algorithm_id is None, "already-solved case must require no correction")
+            else:
+                _require(case.algorithm_id in algorithms, "case refers to a missing correction")
+                algorithm = algorithms[case.algorithm_id]
+                _require(algorithm.permutation in certified.group_before and
+                         _then(case.representative, algorithm.permutation) in certified.group_after,
+                         "case correction fails certified progress or protected features")
+                used.add(algorithm.id)
+    _require(used == set(algorithms), "method contains unused shared algorithms")
+    return replace(method, _permutations=chain.group)

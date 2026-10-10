@@ -61,6 +61,8 @@ def main(argv: list[str] | None = None) -> int:
     method.add_argument("puzzle", help="bundled name, inline JSON labels, label-list JSON file, or puzzle JSON file")
     method.add_argument("--strategy", choices=("placement_then_orientation", "fully_solve_each_block"),
                         default="placement_then_orientation")
+    method.add_argument("--backend", choices=("explicit", "symbolic"), default="explicit",
+                        help="symbolic certifies small feature orbits without enumerating the group")
     method.add_argument("--max-group-elements", type=int, default=None,
                         help="optional preflight bound on the exact reference-group order")
     method.add_argument("--gap-executable", default="gap", help="GAP executable path")
@@ -153,6 +155,10 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "plan-method":
             from . import synthesize_human_method
 
+            if args.backend == "symbolic" and args.optimize_repertoire:
+                raise ValueError("repertoire optimization currently requires --backend explicit")
+            if args.backend == "symbolic" and args.max_group_elements is not None:
+                raise ValueError("--max-group-elements only applies to --backend explicit")
             if args.search_report is not None and not args.improve_algorithms:
                 raise ValueError("--search-report requires --improve-algorithms")
             if args.chain_report is not None and not args.select_chain:
@@ -195,19 +201,21 @@ def main(argv: list[str] | None = None) -> int:
             if args.select_chain:
                 from . import select_human_chain
 
+                backend_options = {"backend": "symbolic"} if args.backend == "symbolic" else {}
                 selection = select_human_chain(
                     reference, strategy=args.strategy, preference=args.chain_preference,
                     beam_width=args.chain_beam_width, max_expansions=args.chain_max_expansions,
                     max_methods=args.chain_max_methods, discovery_options=search_options,
                     max_group_elements=args.max_group_elements,
-                    gap_executable=args.gap_executable, timeout=args.timeout)
+                    gap_executable=args.gap_executable, timeout=args.timeout, **backend_options)
                 method = selection.method
                 if args.chain_report is not None:
                     selection.save(args.chain_report)
             else:
+                backend_options = {"backend": "symbolic"} if args.backend == "symbolic" else {}
                 method = synthesize_human_method(
                     reference, strategy=args.strategy, max_group_elements=args.max_group_elements,
-                    gap_executable=args.gap_executable, timeout=args.timeout)
+                    gap_executable=args.gap_executable, timeout=args.timeout, **backend_options)
             if args.improve_algorithms and method.status == "completed":
                 from . import improve_human_method
 

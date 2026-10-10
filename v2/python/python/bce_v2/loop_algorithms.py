@@ -1,4 +1,4 @@
-"""Bounded discovery of witnessed powers, commutators and conjugates.
+"""Bounded discovery of witnessed powers, commutators, conjugates and collisions.
 
 Every leaf ultimately refers to an original loop at one reference root. Words
 execute left to right: [A, B] means A B A^-1 B^-1, and conj(S, A) means
@@ -6,6 +6,7 @@ S A S^-1. Discovery is a finite experiment, not a completeness or optimality
 claim. The complete original loop set is retained separately in each library.
 """
 
+from collections import deque
 from dataclasses import dataclass, field, replace
 from hashlib import sha256
 from itertools import zip_longest
@@ -689,6 +690,30 @@ def _register(pool, algorithm):
     return (shortest, structured) != previous
 
 
+def _discovery_family(algorithm):
+    """Reserve frontier space for each physical kind and orientation kernel."""
+    kinds = tuple(sorted({algorithm._inventory.blocks[index].kind
+                          for index in algorithm.support}))
+    return algorithm.is_kernel, kinds
+
+
+def _diverse_candidates(algorithms):
+    families = {}
+    for algorithm in algorithms:
+        families.setdefault(_discovery_family(algorithm), []).append(algorithm)
+    for candidates in families.values():
+        candidates.sort(key=lambda candidate: (
+            candidate.expression.kind not in ("commutator", "conjugate"),
+            len(candidate.support), candidate.structure_score,
+            candidate.htm_length, candidate.expression.render()))
+    # Deterministic round robin prevents a supply of corner three-cycles from
+    # excluding every edge algorithm, and kernels compete in their own family.
+    for batch in zip_longest(*(families[key] for key in sorted(families))):
+        for candidate in batch:
+            if candidate is not None:
+                yield candidate
+
+
 def _select(pool, original_effects, max_algorithms):
     rankings = (
         sorted(pool, key=lambda effect: (*_shortest_key(pool[effect][0]), effect)),
@@ -698,6 +723,8 @@ def _select(pool, original_effects, max_algorithms):
                                         pool[effect][0].htm_length, effect)),
         sorted(original_effects.intersection(pool),
                key=lambda effect: (*_shortest_key(pool[effect][0]), effect)),
+        [algorithm.permutation for algorithm in
+         _diverse_candidates(pair[0] for pair in pool.values())],
     )
     effects, seen = [], set()
     for batch in zip_longest(*rankings):
@@ -753,6 +780,8 @@ class AlgorithmLibrary:
     custom_expression_count: int = 0
     symmetry_count: int = 0
     symmetry_transfer_count: int = 0
+    collision_proposal_count: int = 0
+    inverse_proposal_count: int = 0
 
     @property
     def metadata(self):
@@ -761,7 +790,8 @@ class AlgorithmLibrary:
                  "identity_count", "duplicate_count", "length_pruned_count", "expansion_pruned_count",
                  "candidate_limit_reached", "algorithm_limit_reached", "original_limit_reached",
                  "round_limit_reached", "custom_expression_count", "symmetry_count",
-                 "symmetry_transfer_count")
+                 "symmetry_transfer_count", "collision_proposal_count",
+                 "inverse_proposal_count")
         return {**{name: getattr(self, name) for name in names}, "exhaustive": False,
                 "proposal_budget_pruned": self.original_limit_reached or self.round_limit_reached
                 or self.candidate_limit_reached,
@@ -818,6 +848,10 @@ class AlgorithmLibrary:
 
 
 def _mining_expressions(operands, symmetries=()):
+    def inverses():
+        for algorithm in operands:
+            yield LoopExpression.power(algorithm.expression, -1)
+
     def powers():
         for algorithm in operands:
             order = _order(algorithm.permutation)
@@ -849,6 +883,12 @@ def _mining_expressions(operands, symmetries=()):
                     continue
                 yield LoopExpression.commutator(first.expression, second.expression)
                 yield LoopExpression.commutator(second.expression, first.expression)
+                # Swapping operands gives an inverse commutator; it does not
+                # supply the distinct effects of mixed-sign operands.
+                yield LoopExpression.commutator(
+                    first.expression, LoopExpression.power(second.expression, -1))
+                yield LoopExpression.commutator(
+                    LoopExpression.power(first.expression, -1), second.expression)
 
     def conjugates():
         for index, setup in enumerate(operands):
@@ -857,13 +897,15 @@ def _mining_expressions(operands, symmetries=()):
                         or not set(setup.support).intersection(body.support)):
                     continue
                 yield LoopExpression.conjugate(setup.expression, body.expression)
+                yield LoopExpression.conjugate(
+                    LoopExpression.power(setup.expression, -1), body.expression)
 
     def transfers():
         for algorithm in operands:
             for rotation in symmetries:
                 yield LoopExpression.rotated(rotation, algorithm.expression)
 
-    for batch in zip_longest(powers(), commutators(), conjugates(), transfers()):
+    for batch in zip_longest(inverses(), powers(), commutators(), conjugates(), transfers()):
         for expression in batch:
             if expression is not None:
                 yield expression
@@ -871,30 +913,39 @@ def _mining_expressions(operands, symmetries=()):
 
 def discover_loop_algorithms(initial, *, max_seed_loops=32, rounds=2,
                              max_candidates=3000, max_algorithms=256,
-                             max_htm_length=120):
+                             max_htm_length=120, max_expanded_moves=None):
     """Mine bounded exact effects, retaining short and structured alternatives.
 
     No GAP is needed. Complete original loops remain available even when only
     a bounded subset supplies mining seeds. Support includes orientation-only
     effects. Constructions use actual legal root loops and certified bandage
     symmetries. Each round receives a share of the remaining proposal budget;
-    powers, commutators, conjugates and transfers are interleaved.
+    inverses, powers, commutators, conjugates and transfers are interleaved.
+    Equal-placement collisions yield orientation algorithms before any staged
+    method is compiled. Every collision consumes the same proposal budget as
+    the other constructions; discovery still makes no completeness claim.
+    The witness expansion cap defaults to four times ``max_htm_length`` and
+    can be tightened independently with ``max_expanded_moves``.
     """
     for name, value in (("max_seed_loops", max_seed_loops), ("rounds", rounds),
                         ("max_candidates", max_candidates), ("max_algorithms", max_algorithms),
                         ("max_htm_length", max_htm_length)):
         _integer(value, name, 0 if name == "rounds" else 1)
+    if max_expanded_moves is not None:
+        _integer(max_expanded_moves, "max_expanded_moves")
     loops = _reference(initial)
     symmetries = bandage_symmetries(loops.root_shape)
     records, words, evaluations, verified_turns = _records(loops), {}, {}, set()
     pool, originals, seen = {}, [], set()
     counts = dict(examined_count=0, identity_count=0, duplicate_count=0,
                   length_pruned_count=0, expansion_pruned_count=0,
-                  symmetry_transfer_count=0)
-    expansion_cap = max_htm_length * 4
+                  symmetry_transfer_count=0, collision_proposal_count=0,
+                  inverse_proposal_count=0)
+    expansion_cap = max_htm_length * 4 if max_expanded_moves is None else max_expanded_moves
     limited, round_limited = False, False
+    placement_representatives, collisions = {}, deque()
 
-    def attempt(expression):
+    def attempt(expression, *, collision=False):
         nonlocal limited
         if counts["examined_count"] >= max_candidates:
             limited = True
@@ -902,6 +953,10 @@ def discover_loop_algorithms(initial, *, max_seed_loops=32, rounds=2,
         counts["examined_count"] += 1
         if expression.kind == "rotated":
             counts["symmetry_transfer_count"] += 1
+        if collision:
+            counts["collision_proposal_count"] += 1
+        if expression.kind == "power" and expression.exponent == -1:
+            counts["inverse_proposal_count"] += 1
         if expression in seen:
             counts["duplicate_count"] += 1
             return None
@@ -920,6 +975,18 @@ def discover_loop_algorithms(initial, *, max_seed_loops=32, rounds=2,
             return None
         if not _register(pool, algorithm):
             counts["duplicate_count"] += 1
+        if not collision and not algorithm.is_kernel:
+            placement = algorithm.block_action.destinations
+            previous = placement_representatives.get(placement)
+            if previous is not None and previous.permutation != algorithm.permutation:
+                # A and B agree on every placement, so A B^-1 fixes all
+                # placements. Both operands are legal loops at this root.
+                collisions.append(LoopExpression.sequence(
+                    algorithm.expression, LoopExpression.power(previous.expression, -1)))
+                collisions.append(LoopExpression.sequence(
+                    previous.expression, LoopExpression.power(algorithm.expression, -1)))
+            if previous is None or _shortest_key(algorithm) < _shortest_key(previous):
+                placement_representatives[placement] = algorithm
         return algorithm
 
     original_budget = min(max_seed_loops, max_candidates,
@@ -942,11 +1009,23 @@ def discover_loop_algorithms(initial, *, max_seed_loops=32, rounds=2,
         remaining = max_candidates - counts["examined_count"]
         round_limit = counts["examined_count"] + max(1, remaining // (rounds - round_index))
         fresh = []
-        for expression in _mining_expressions(operands, symmetries):
+        proposals = iter(_mining_expressions(operands, symmetries))
+        mining_exhausted = False
+        prefer_collision = True
+        while collisions or not mining_exhausted:
             if counts["examined_count"] >= round_limit:
                 round_limited = True
                 break
-            algorithm = attempt(expression)
+            collision = bool(collisions) and (prefer_collision or mining_exhausted)
+            if collision:
+                expression = collisions.popleft()
+            else:
+                expression = next(proposals, None)
+                if expression is None:
+                    mining_exhausted = True
+                    continue
+            prefer_collision = not collision
+            algorithm = attempt(expression, collision=collision)
             if algorithm is None:
                 continue
             fresh.append(algorithm)
@@ -963,10 +1042,7 @@ def discover_loop_algorithms(initial, *, max_seed_loops=32, rounds=2,
         setup_count = min(len(seeds), max(1, max_seed_loops // 3))
         next_operands = list(seeds[:setup_count])
         effects = {algorithm.permutation for algorithm in next_operands}
-        for algorithm in sorted(fresh, key=lambda candidate: (
-                candidate.expression.kind not in ("commutator", "conjugate"),
-                len(candidate.support), candidate.structure_score,
-                candidate.htm_length, candidate.expression.render())):
+        for algorithm in _diverse_candidates(pair[0] for pair in pool.values()):
             if algorithm.permutation not in effects:
                 next_operands.append(algorithm)
                 effects.add(algorithm.permutation)

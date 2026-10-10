@@ -8,11 +8,12 @@ representative's stickers are not a placement recognition requirement.
 
 from __future__ import annotations
 
+from collections import deque
 from dataclasses import dataclass
 
 from . import State
 from .graphics import _FACE_CELLS
-from .human_methods import HumanMethod, _observe, _state_for_permutation
+from .human_methods import HumanMethod, _observe, _state_for_permutation, _then
 
 
 @dataclass(frozen=True)
@@ -95,6 +96,30 @@ def _diagram(method, stage, observation, permutation, roles):
         stage.feature.kind == "place_block")
 
 
+def _symbolic_orientation_representatives(method, stage):
+    """Explore the target's complete oriented observation orbit only.
+
+    Deduplication uses (destination, phase), rather than full permutations.
+    Retaining one permutation path for each observation supplies physical
+    pictures while the subgroup can have arbitrarily many elements.
+    """
+    group = method._symbolic_chain.stages[stage.number - 1].group_before
+    identity = tuple(range(48))
+    solved = _observe(method.inventory.action(identity), stage.block_index, "solve_block")
+    representatives = {solved: identity}
+    queue = deque([identity])
+    alphabet = tuple(generator.permutation for generator in group.strong_generators)
+    while queue:
+        permutation = queue.popleft()
+        for generator in alphabet:
+            successor = _then(permutation, generator)
+            observation = _observe(method.inventory.action(successor), stage.block_index, "solve_block")
+            if observation not in representatives:
+                representatives[observation] = successor
+                queue.append(successor)
+    return tuple(representatives[observation] for observation in sorted(representatives))
+
+
 def recognition_stage_diagrams(value, stage_number):
     """Map every exact observation to its tuple of physical case pictures.
 
@@ -118,7 +143,9 @@ def recognition_stage_diagrams(value, stage_number):
         phase = method.inventory.action(case.representative).phases[stage.block_index]
         representatives[case.observation][phase] = case.representative
     earlier = method.stages[:stage_number - 1]
-    for permutation in sorted(method._permutations):
+    permutations = (_symbolic_orientation_representatives(method, stage)
+                    if method._symbolic_chain is not None else sorted(method._permutations))
+    for permutation in permutations:
         action = method.inventory.action(permutation)
         if any(_observe(action, previous.block_index, previous.feature.kind)
                != previous.solved_observation for previous in earlier):

@@ -53,6 +53,15 @@ class HumanChainCommandTests(_CommandInvocation, unittest.TestCase):
     def backend(self, **options):
         return patch.object(c, "select_human_chain", create=True, **options)
 
+    def test_symbolic_chain_backend_is_forwarded(self):
+        with self.backend(return_value=_ChainResult()) as select, patch.object(
+                c, "synthesize_human_method") as synthesize:
+            status, _, errors = self.invoke(
+                "plan-method", "Alcatraz", "--select-chain", "--backend", "symbolic")
+        self.assertEqual((status, errors), (0, ""))
+        self.assertEqual(select.call_args.kwargs["backend"], "symbolic")
+        synthesize.assert_not_called()
+
     def test_selection_options_and_three_artifacts(self):
         result = _ChainResult()
         with tempfile.TemporaryDirectory() as directory:

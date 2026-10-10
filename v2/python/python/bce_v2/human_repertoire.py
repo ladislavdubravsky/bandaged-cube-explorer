@@ -18,7 +18,7 @@ from .human_chains import _inverse_moves
 from .human_move_notation import _conjugation_notation
 from .human_methods import (HumanMethod, _expression_bound, _inverse, _observe,
                             _require, _then, _validate_method)
-from .isotropy import isotropy_loops
+from .isotropy import LoopGenerators, isotropy_loops
 from .loop_algorithms import LoopAlgorithm, LoopExpression
 
 
@@ -333,7 +333,14 @@ class HumanRepertoire:
 def _build_algorithm(recipe, macros, method, identifier):
     expression = recipe.loop_expression(macros)
     records = {g.id: g for g in method.generators}
-    word = expression.expanded_moves(method.generators,
+    witness_loops = LoopGenerators(method.generators[0]._owner) if method.generators else ()
+    if method.generators:
+        # The method already carries these exact saved leaves and their root
+        # inventory. Seed the lazy wrapper instead of rebuilding either for
+        # every case, instruction and guide presentation.
+        object.__setattr__(witness_loops, "_generators", method.generators)
+        object.__setattr__(witness_loops, "_block_inventory", method.inventory)
+    word = expression.expanded_moves(witness_loops,
                                      max_expanded_moves=max(1, _expression_bound(expression, records)))
     return LoopAlgorithm(identifier, expression, expression.evaluate(method.generators),
                          _simplified_moves(word.split()), method.inventory,
@@ -360,7 +367,11 @@ def _rules(number, cases, method_stage, macros, actions, current):
                 while observation not in observed:
                     observed.append(observation)
                     representative = _then(representative, algorithm.permutation)
-                    observation = _observe(actions[representative], method_stage.block_index, method_stage.feature.kind)
+                    if current[0].backend == "symbolic":
+                        observation = _observe(current[0].inventory.action(representative),
+                                               method_stage.block_index, method_stage.feature.kind)
+                    else:
+                        observation = _observe(actions[representative], method_stage.block_index, method_stage.feature.kind)
                 if observation == method_stage.solved_observation and len(observed) == method_stage.case_count:
                     cycle = tuple(observed)
         kind = "cycle" if cycle else "powers" if len(entries) > 1 or any(e != 1 for _, e in entries) else "instruction"
@@ -553,6 +564,9 @@ class _Context:
 
 def _compile_policies(baseline, definitions, policies, actions, groups, loops):
     """Project complete named recipes into the shared method and rule format."""
+    if baseline.backend == "symbolic":
+        from .symbolic_repertoire_core import compile_symbolic_policies
+        return compile_symbolic_policies(baseline, definitions, policies, loops=loops)
     used = {i for cases in policies for c in cases for i in c.recipe.macro_ids}
     macros = tuple(m for m in definitions if m.id in used)
     stages, rules, algorithms = [], [], []
@@ -574,7 +588,11 @@ def _compile_policies(baseline, definitions, policies, actions, groups, loops):
 
 
 def _repertoire_metrics(method, macros, stages, actions):
-    result = _metrics(method, actions)
+    if method.backend == "symbolic":
+        from .symbolic_repertoire_core import symbolic_policy_metrics
+        result = symbolic_policy_metrics(method)
+    else:
+        result = _metrics(method, actions)
     result.update(macro_count=len(macros), macro_definition_htm=sum(m.algorithm.htm_length for m in macros),
                   rule_count=sum(len(s.rules) for s in stages),
                   case_count_sum=sum(len(s.cases) for s in stages))
@@ -589,7 +607,11 @@ def _baseline_metrics(method, actions):
                       for c in stage.cases if c.algorithm_id is not None}
                      for stage in method.stages)
     words = set().union(*by_stage) if by_stage else set()
-    result = _metrics(method, actions)
+    if method.backend == "symbolic":
+        from .symbolic_repertoire_core import symbolic_policy_metrics
+        result = symbolic_policy_metrics(method)
+    else:
+        result = _metrics(method, actions)
     result.update(macro_count=len(words), macro_definition_htm=sum(len(w.split()) for w in words),
                   rule_count=sum(len(w) for w in by_stage),
                   case_count_sum=sum(s.case_count for s in method.stages))
@@ -692,6 +714,9 @@ def optimize_human_repertoire(method, *, preference="memory", max_trials=64, max
     if (isinstance(max_cost_ratio, bool) or not isinstance(max_cost_ratio, (int, float)) or
             not isfinite(max_cost_ratio) or max_cost_ratio < 1):
         raise ValueError("max_cost_ratio must be finite and at least one")
+    if method.backend == "symbolic":
+        raise ValueError("this repertoire search requires the explicit backend; "
+                         "use template_human_repertoire for certified symbolic shared recipes")
     loops = isotropy_loops(method.reference_shape)
     baseline = _validate_method(method, complete_loops=loops)
     context = _Context(baseline, loops, settings)
@@ -779,6 +804,9 @@ def optimize_human_repertoire(method, *, preference="memory", max_trials=64, max
 
 def _validate_repertoire(repertoire, *, complete_loops=None):
     """Reprove the displayed vocabulary, rules, ranks and compiled projection."""
+    if repertoire.method.backend == "symbolic" or repertoire.baseline.backend == "symbolic":
+        from .symbolic_repertoire_core import validate_symbolic_repertoire
+        return validate_symbolic_repertoire(repertoire, complete_loops=complete_loops)
     loops = complete_loops or isotropy_loops(repertoire.method.reference_shape)
     baseline = _validate_method(repertoire.baseline, complete_loops=loops)
     method = _validate_method(repertoire.method, complete_loops=loops)
