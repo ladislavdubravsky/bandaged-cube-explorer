@@ -1,11 +1,11 @@
 # Familiar 3×3 algorithms transported through the shape graph
 
 The human strategy is useful and fits the architecture: reach a shape where a
-familiar algorithm works, execute it, and undo the setup. The existing code
-represents and checks that construction, but does not systematically discover
-these opportunities. A research implementation now scans a finite catalog
-across complete shape graphs and independently replays a bounded shortlist.
-No production solver or notebook behavior was changed.
+familiar algorithm works, execute it, and undo the setup. The research below
+scanned a finite catalog across complete shape graphs and independently replayed
+a bounded shortlist. Those measurements originally changed no production solver
+or notebook behavior. A bounded production source is now implemented and feeds
+the symbolic dictionary before stage selection; see [Production integration](#production-integration).
 
 The strongest result is that the proposed discovery is inexpensive on the
 three problem notebooks, and its usefulness differs sharply by puzzle. This
@@ -198,48 +198,64 @@ machinery, whose complete order is 10,368.
 The index-two result concerns only the bounded shortlists. Other vertices,
 alternate setup paths or further familiar bodies might supply more effects.
 It is nevertheless a concrete reason to preserve certified native coverage
-while using the familiar repertoire for quality. No actual staged method
-was compiled from these new candidates, so a solve-length improvement has
-not yet been measured.
+while using the familiar repertoire for quality. These research measurements
+did not compile an actual staged method, so the tables above do not establish
+a solve-length improvement.
 
 ## Production integration
 
-Existing [`ShapePath`](../python/python/bce_v2/shape_paths.py) already provides
-checked open setup paths, local loops and `transport_loop`. Human chunks can
-teach setup/body/undo extracted from an existing algorithm. In contrast,
+[`discover_familiar_algorithms`](../python/python/bce_v2/familiar_algorithm_transport.py)
+now supplies a bounded production `AlgorithmLibrary`. The cached
+[catalog and obstruction compiler](../python/python/bce_v2/familiar_algorithm_catalog.py)
+verify the same 27 bases and 552 physical forms without requiring NumPy.
+HTM breadth-first setup paths reach nearby shapes. Whole-word masks check exact
+legality and closure, including core bonds; a varied shortlist reserves base
+and family representatives before exact colored replay and rooted-effect
+deduplication. Forward and inverse candidates retain setup/body/undo separately
+from the shorter executable word. Only one shortest setup per shape and two
+nearest eligible occurrences per word are searched.
+
+The default limits are 2,048 shapes, setup depth 8, 100,000 word/shape tests and
+attempted HTM transitions, 128 materialized candidates and two seconds, including
+catalog/mask preparation. `max_proof_moves=100000` independently limits expanded
+QTM provenance. Limits are checked between indivisible operations. Complete
+native loop preparation precedes these optional-search budgets. Availability,
+cutoffs and retained human structures are exposed in
+`library.metadata["familiar_transport"]`; a bounded zero-hit result has no
+global impossibility meaning.
+
+The native loop library now retains each clockwise/inverse graph traversal's
+original generator ID and sign after identity/inverse deduplication.
+`loops.certify_root_loop(moves)` telescopes those fundamental-loop witnesses
+without GAP factorization and independently compares their action with colored
+replay. `loops.certified_root_turns(moves)` retains the short executable word
+with that original-loop child. Raw blocked or open words are rejected before
+cancellation, including at alternate graph roots.
+
 [`discover_symbolic_dictionary`](../python/python/bce_v2/symbolic_dictionary.py)
-currently uses concatenations of **closed reference loops** as setups. Those
-setups never reach a different geometric shape. Accidental familiar patterns
-can appear, but shape-wide catalog discovery is missing.
+adds this source before native mining and closed-reference-loop conjugation.
+Its `max_familiar_*` options control the source and
+`max_familiar_candidates=0` disables it. Checked literal `turns` expressions
+are now accepted and saved with their original-loop children; offline loading
+independently validates the physical action and provenance. Stage search uses
+physical execution bounds separately from proof length. The existing exact
+stabilizers protect prior features, and complete fallback policies remain
+available when the new vocabulary cannot supply a transition. Final dictionary
+selection still applies its algorithm cap and exact orientation-span checks.
+See the [public guide](../python/README.md#discover-a-dictionary-and-choose-a-symbolic-chain)
+for standalone discovery, dictionary reuse and settings.
 
-The natural integration is a bounded additional dictionary source before
-algorithm and chain improvement:
-
-1. Cache a verified catalog and its exact obstruction masks. Search reachable
-   shapes in setup-distance order with explicit work, depth and time budgets.
-2. Compute transported sticker actions, deduplicate by rooted effect and retain
-   short witnesses plus a small variety of useful supports and body families.
-   Several routes to one shape can place an algorithm on different colored
-   pieces; one shortest route is a starting point rather than complete coverage.
-3. Retain original-loop certificates without factoring each macro in GAP.
-   The native spanning tree gives a fundamental loop for each graph arc;
-   products telescope to certify any closed word. Expose an arc-to-retained-
-   original-generator/sign map after identity and inverse deduplication.
-4. Keep the complete stable witness library, but use a reduced generating basis
-   inside expensive algebra operations. Cache leaf actions and validated
-   signatures. A physically short transported word must have a separate length
-   budget from its potentially long expanded provenance proof.
-5. Feed candidates into the existing stage stabilizer and feature-orbit search.
-   It already filters exact endpoint actions through `group_before`, protecting
-   prior stages. Intermediate turns may disturb solved pieces; the complete
-   macro must restore the prior features. Keep certified fallback cases when
-   the extra vocabulary cannot supply a stage transition.
-
-The final `templates=` vocabulary-packing argument is not the main discovery
-hook: candidates need to influence case selection first. Current dictionary
-validation also excludes literal `turns` expressions from its accepted
-original-expression kinds; imported short physical words should be accepted
-only with checked original-loop children and matching independent replay.
+A [bounded FourPair production comparison](familiar-algorithm-transport-production.json)
+uses the same fixed symbolic chain and native mining/search limits with this
+source disabled and enabled. Mean additive HTM drops from 4,317.83 to 4,159.95;
+worst additive HTM increases from 8,338 to 8,858. The search favors mean cost,
+so this is a tradeoff rather than dominance. Six distinct familiar literal
+words occur in eleven selected cases, including edge cycles, edge OLL and
+opposite-edge flips. Both methods retain all 4,968 native witnesses and exact
+complete coverage of the 40,131,624,960-element reference group. These are
+uniform-group costs before cancellation between stages, not measured human
+execution costs or a shortest-solution claim. A separate smoke check reloaded
+the improved policy without GAP and solved five imported macro scrambles.
 
 Dispatch should use observed availability, setup cost, exact localized effects
 and stage usefulness. Singleton count is a hint, and Pair compatibility is
@@ -258,6 +274,7 @@ v2/.venv/bin/python v2/research/probe_familiar_algorithm_transport.py
 v2/.venv/bin/python v2/research/probe_algorithm_obstructions.py
 v2/.venv/bin/python v2/research/verify_familiar_algorithm_transport.py
 v2/.venv/bin/python v2/research/probe_additional_nested_algorithms.py
+v2/.venv/bin/python v2/research/compare_familiar_algorithm_transport.py
 ```
 
 Machine records:
@@ -266,8 +283,11 @@ Machine records:
 - [Full graph/mask comparison and exact group coverage](familiar-algorithm-transport-check.json)
 - [Independent random-partition and endpoint checks](algorithm-obstruction-check.json)
 - [Broader bounded nested-commutator sample for MostSignaturesCube](mostsignatures-additional-nested.json)
+- [Bounded production dictionary and fixed-chain comparison](familiar-algorithm-transport-production.json)
 
-Research scripts are isolated from the production solver. Notebook inputs are
+The reproduction scripts and retained measurements remain research artifacts.
+Notebook inputs are
 read as literal bandage assignments; notebook drawing and solver cells are not
-executed. Bounded discovery is concrete and reviewable, while complete staged
-integration and solution-quality comparisons remain future work.
+executed. Production uses a bounded nearby-shape scan rather than the full scans
+reported here. Broader catalogs, alternate colored setup routes and broader
+solution-quality studies remain followups.

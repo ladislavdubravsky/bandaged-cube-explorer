@@ -5,6 +5,9 @@ tests setup/body/undo discovery over complete shape graphs. A bounded 552-form
 catalog finds many usable loops on BeltRoad and FourPair, and none on
 MostSignaturesCube. Independent bond tests agree on almost 100 million
 word/shape pairs; native augmentations preserve complete group coverage.
+The bounded production source now feeds symbolic dictionary and stage choices.
+Its [fixed-chain comparison](familiar-algorithm-transport-production.json) records
+actual selected familiar cases and preserves complete native coverage.
 
 The [staged solution performance investigation](staged-solution-performance.md)
 separates graph drawing, symbolic preparation and repeated witness validation

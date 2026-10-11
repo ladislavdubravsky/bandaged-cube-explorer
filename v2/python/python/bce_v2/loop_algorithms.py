@@ -829,6 +829,7 @@ class AlgorithmLibrary:
     symmetry_transfer_count: int = 0
     collision_proposal_count: int = 0
     inverse_proposal_count: int = 0
+    familiar_transport_json: str | None = field(default=None, repr=False, compare=False)
 
     def __post_init__(self):
         for name in ("algorithms", "shortest", "structured"):
@@ -851,12 +852,21 @@ class AlgorithmLibrary:
                  "round_limit_reached", "custom_expression_count", "symmetry_count",
                  "symmetry_transfer_count", "collision_proposal_count",
                  "inverse_proposal_count")
-        return {**{name: getattr(self, name) for name in names}, "exhaustive": False,
+        metadata = {**{name: getattr(self, name) for name in names}, "exhaustive": False,
                 "proposal_budget_pruned": self.original_limit_reached or self.round_limit_reached
                 or self.candidate_limit_reached,
                 "original_loop_count": len(self.loops), "effect_count": len(self.shortest),
                 "algorithm_count": len(self.algorithms),
                 "literal_policy": "when a literal word has a smaller description cost"}
+        if self.familiar_transport_json is not None:
+            familiar = json.loads(self.familiar_transport_json)
+            retained_ids = {algorithm.id for algorithm in self.algorithms}
+            familiar["algorithms"] = {identifier: record
+                                      for identifier, record in familiar["algorithms"].items()
+                                      if identifier in retained_ids}
+            familiar["retained_transport_count"] = len(familiar["algorithms"])
+            metadata["familiar_transport"] = familiar
+        return metadata
 
     def build_algorithm(self, expression, *, max_expanded_moves=100_000, max_htm_length=None):
         """Evaluate a custom expression with a finite witness expansion budget.

@@ -850,9 +850,10 @@ Add `--select-chain` to compare dictionary-aware chains.
 
 ## Discover a dictionary and choose a symbolic chain
 
-Discover short algorithms from legal reference loops before choosing the
-feature order. The dictionary keeps native moves, corner and edge permutations,
-pure orientations and bounded legal setup conjugates. It checks the exact
+Discover short algorithms before choosing the feature order. The dictionary
+first adds familiar algorithms transported from nearby shapes, then supplements
+them with native moves, corner and edge permutations, pure orientations and
+bounded closed-loop setup conjugates. It checks the exact
 orientation span in the actual cyclic block coordinates, including order-four
 fused blocks; finding a few sparse effects does not establish full span.
 
@@ -876,11 +877,56 @@ certificates and independently replays its original-loop expressions.
 The richer pool stays available for stage choices and coupled parity moves.
 Discovery separately bounds mining proposals, retained algorithms, setup depth,
 setup words, conjugation proposals, physical length and witness expansion.
+The familiar source defaults to at most 2,048 reachable shapes, setup depth 8
+in HTM, 100,000 word/shape tests and transition attempts, 128 materialized
+forward/inverse candidates, and two seconds. Each physical body must be legal
+at every prefix and return to the exact setup shape, including core bonds.
+The verified catalog contains 27 bases and 552 physical forms up to inversion:
+adjacent two-face commutators and powers, plus selected nested commutators,
+OLLs, PLLs, edge cycles and pure edge flips. Whole words are tested with cached
+obstruction masks; ordinary-cube effects never substitute for bandage checks.
+
+Use `max_familiar_shapes`, `max_familiar_setup_depth`, `max_familiar_work`,
+`max_familiar_candidates` and `max_familiar_seconds` to change those limits;
+`max_familiar_seconds=None` uses the finite work bounds alone. Set
+`max_familiar_candidates=0` to disable this source. `max_proof_moves=100000`
+separately caps expanded QTM provenance, so a short executable word can retain
+a longer certificate. `metadata["familiar_transport"]` reports availability,
+cutoffs and exact setup/body/undo records; `dictionary_algorithm_ids` identifies
+the source witnesses retained after the final dictionary selection.
 `save`/`to_dict` retain the original-loop witnesses;
 `SymbolicAlgorithmDictionary.from_dict(record, initial=analysis)` validates and
 reconstructs the pool offline without remaking it. Standalone loading verifies
 physical words and coordinate span; a consuming method also checks the declared
 target against its independently certified group and quotient orders.
+
+The source is also usable without GAP or a staged method:
+
+```python
+library = c.discover_familiar_algorithms(analysis)
+for algorithm in library.shortest[:3]:
+    print(algorithm.turn_sequence, algorithm.htm_length)
+print(library.metadata["familiar_transport"]["limit_reached"])
+```
+
+Its options omit the `familiar_` prefix (`max_shapes`, `max_setup_depth`,
+`max_work`, `max_candidates`, `max_seconds`), alongside `max_algorithms`,
+`max_htm_length`, `max_expanded_moves` and `max_proof_moves`. It preserves the
+complete native loop alphabet. A single shortest setup to each scanned shape
+and two nearest occurrences per physical word supply a bounded shortlist;
+other routes can yield other colored effects. Zero hits and cutoffs preserve
+native fallback coverage and carry no global impossibility claim.
+Forms are scanned by body family over shapes in setup-distance order; at most
+one third of the work allowance prepares the nearby-shape setup tree. The
+metadata reports that allocation and any setup cutoff. Portable loop libraries
+without native graph certificates skip new discovery and retain their existing
+witness alphabet.
+
+`loops.certify_root_loop(moves, max_proof_moves=...)` expresses any legal closed
+root word in retained original-loop IDs by telescoping its graph arcs, without
+GAP factorization. `loops.certified_root_turns(...)` wraps that certificate in
+a checked short `LoopExpression.turns`. These methods require a native loop
+library; portable saved dictionaries retain their already checked certificates.
 
 `improve_human_method(method, dictionary=dictionary)` reuses the pool offline
 for a fixed symbolic chain. `select_human_chain(..., backend="symbolic")`

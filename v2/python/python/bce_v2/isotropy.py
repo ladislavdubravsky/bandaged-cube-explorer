@@ -216,6 +216,51 @@ class LoopGenerators:
             raise IndexError("vertex ID out of range")
         return self._native.transport(vertex)
 
+    def certify_root_loop(self, moves, *, max_proof_moves=1_000_000):
+        """Certify closed root turns in the original alphabet without GAP.
+
+        The native spanning tree factors every physical graph traversal into
+        retained original loops with signed powers, including inverse-duplicate
+        actions. The raw word must be legal and close at this library's exact
+        root. ``max_proof_moves`` bounds unsimplified QTM provenance expansion,
+        independently of the short physical word's execution length.
+        Portable libraries lack the graph/tree data required for this method.
+        """
+        from .loop_algorithms import LoopExpression
+
+        if not isinstance(moves, str):
+            raise TypeError("root loop moves must be a face-turn string")
+        if type(max_proof_moves) is not int:
+            raise TypeError("max_proof_moves must be an integer")
+        if max_proof_moves < 0:
+            raise ValueError("max_proof_moves must be nonnegative")
+        certify = getattr(self._native, "certify_root_loop", None)
+        if not callable(certify):
+            raise ValueError("root loop certification requires a native loop library; "
+                             "portable records do not retain graph paths")
+        steps = certify(moves)
+        records = self.generator_records
+        proof_length = sum(records[identifier].qtm_length * abs(exponent)
+                           for identifier, exponent in steps)
+        if proof_length > max_proof_moves:
+            raise ValueError("original-loop certificate exceeds max_proof_moves")
+        expression = LoopExpression.sequence(*(
+            LoopExpression.loop(identifier) if exponent == 1 else
+            LoopExpression.power(LoopExpression.loop(identifier), exponent)
+            for identifier, exponent in steps))
+        replay = State(self.root_shape).apply(moves)
+        if (replay.shape != self.root_shape or
+                replay.sticker_permutation != expression.evaluate(self)):
+            raise ValueError("root loop fails independent original-loop certificate replay")
+        return expression
+
+    def certified_root_turns(self, moves, *, max_proof_moves=1_000_000):
+        """Keep short physical turns with their checked original-loop child."""
+        from .loop_algorithms import LoopExpression
+
+        witness = self.certify_root_loop(moves, max_proof_moves=max_proof_moves)
+        return LoopExpression.turns(moves, witness)
+
     def analyze(self, *, gap_executable="gap", timeout=None):
         """Compute exact order and select original loops through GAP."""
         from .gap_backend import analyze_generators

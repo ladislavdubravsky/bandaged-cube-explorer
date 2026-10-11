@@ -120,6 +120,20 @@ struct Parent {
     movement: Move,
 }
 
+#[derive(Debug, Clone, Copy)]
+struct QuarterTransition {
+    target: usize,
+    /// Signed retained original ID plus one; zero denotes an identity loop.
+    generator: isize,
+}
+
+impl QuarterTransition {
+    const BLOCKED: Self = Self {
+        target: usize::MAX,
+        generator: 0,
+    };
+}
+
 /// A complete generating family after identity and inverse-duplicate removal.
 ///
 /// This is not yet an algebraically reduced generating set. The private tree
@@ -139,6 +153,8 @@ pub struct LoopGenerators {
     pub generators: Vec<LoopGenerator>,
     generator_indices: HashMap<usize, usize>,
     parents: Vec<Option<Parent>>,
+    /// Clockwise/inverse actions for all six faces, with original provenance.
+    transitions: Vec<[QuarterTransition; 12]>,
 }
 
 impl LoopGenerators {
@@ -242,6 +258,45 @@ impl LoopGenerators {
             .enumerate()
             .map(|(index, generator)| (generator.id, index))
             .collect();
+        let retained: HashMap<_, _> = generators
+            .iter()
+            .map(|generator| {
+                (
+                    generator.permutation.min(generator.permutation.inverse()),
+                    (generator.id, generator.permutation),
+                )
+            })
+            .collect();
+        let mut transitions = vec![[QuarterTransition::BLOCKED; 12]; n];
+        for (id, &(source, target, movement)) in graph.arcs.iter().enumerate() {
+            if movement.amount != Amount::Clockwise {
+                continue;
+            }
+            let generator = if tree_arcs[id] {
+                0
+            } else {
+                let permutation = transports[source]
+                    .then(move_actions[movement.index()])
+                    .then(transports[target].inverse());
+                if permutation.is_identity() {
+                    0
+                } else {
+                    let &(retained_id, action) = &retained[&permutation.min(permutation.inverse())];
+                    let signed = (retained_id + 1) as isize;
+                    if permutation == action {
+                        signed
+                    } else {
+                        -signed
+                    }
+                }
+            };
+            let face = movement.face.index() * 2;
+            transitions[source][face] = QuarterTransition { target, generator };
+            transitions[target][face + 1] = QuarterTransition {
+                target: source,
+                generator: -generator,
+            };
+        }
         Ok(Self {
             root_shape: graph.vertices[root],
             root_vertex: root,
@@ -252,6 +307,7 @@ impl LoopGenerators {
             generators,
             generator_indices,
             parents,
+            transitions,
         })
     }
 
@@ -287,6 +343,54 @@ impl LoopGenerators {
             vertex = parent.vertex;
         }
         Some(moves)
+    }
+
+    /// Certify a legal closed physical word in retained original generators.
+    ///
+    /// Each traversed arc contributes T_source a T_target^-1. Their product
+    /// telescopes to the input word at the root; identity actions disappear,
+    /// and duplicates use the retained original ID with the correct sign.
+    /// Half turns traverse two clockwise arcs. Legality is checked before any
+    /// cancellation, so a blocked a a^-1 cannot become a valid identity.
+    /// No colored-state search or permutation-group factorization is needed.
+    pub fn certify_root_loop(&self, moves: &[Move]) -> Result<Vec<(usize, isize)>, IsotropyError> {
+        let mut vertex = self.root_vertex;
+        let mut result: Vec<(usize, isize)> = Vec::new();
+        for movement in moves {
+            let index = movement.face.index() * 2
+                + usize::from(movement.amount == Amount::Counterclockwise);
+            let count = if movement.amount == Amount::Half {
+                2
+            } else {
+                1
+            };
+            for _ in 0..count {
+                let transition = self.transitions[vertex][index];
+                if transition.target == usize::MAX {
+                    return Err(IsotropyError(
+                        "root loop turns are blocked at their reached shape",
+                    ));
+                }
+                vertex = transition.target;
+                if transition.generator == 0 {
+                    continue;
+                }
+                let id = transition.generator.unsigned_abs() - 1;
+                let mut exponent = transition.generator.signum();
+                if result.last().is_some_and(|&(previous, _)| previous == id) {
+                    exponent += result.pop().unwrap().1;
+                }
+                if exponent != 0 {
+                    result.push((id, exponent));
+                }
+            }
+        }
+        if vertex != self.root_vertex {
+            return Err(IsotropyError(
+                "root loop must return to its exact root shape",
+            ));
+        }
+        Ok(result)
     }
 }
 

@@ -1,0 +1,120 @@
+{
+  "baseline_costs": {
+    "exact": true,
+    "htm": {
+      "mean": 7864.7797619047615,
+      "mean_denominator": 168,
+      "mean_numerator": 1321283,
+      "worst": 13422
+    },
+    "qtm": {
+      "mean": 8866.67857142857,
+      "mean_denominator": 28,
+      "mean_numerator": 248267,
+      "worst": 15164
+    },
+    "scope": "uniform_reference_group_before_boundary_cancellation"
+  },
+  "caveat": "Bounded repertoire and fixed chain; aggregate additive costs before stage-boundary cancellation.",
+  "comparison": {
+    "familiar_enabled": {
+      "candidates_examined": 324,
+      "changed_cases": 29,
+      "costs": {
+        "exact": true,
+        "htm": {
+          "mean": 4159.952380952381,
+          "mean_denominator": 21,
+          "mean_numerator": 87359,
+          "worst": 8858
+        },
+        "qtm": {
+          "mean": 4695.773809523809,
+          "mean_denominator": 84,
+          "mean_numerator": 394445,
+          "worst": 10026
+        },
+        "scope": "uniform_reference_group_before_boundary_cancellation"
+      },
+      "coverage": "certified",
+      "dictionary_algorithms": 250,
+      "elapsed_seconds": 3.1930421580000257,
+      "familiar_dictionary_literals": 84,
+      "group_order": 40131624960,
+      "native_generator_count": 4968,
+      "selected_algorithms_with_familiar_literals": 11,
+      "selected_cases_with_familiar_literals": 11,
+      "selected_distinct_familiar_literals": 6,
+      "selected_familiar_words": [
+        "B L' B' L U L U' L'",
+        "B' U' B U B U B U' B' U'",
+        "F' U' F U F U F U' F' U'",
+        "L' U' L U L U L U' L' U'",
+        "R' L F R' L D R' L B2 L' R D L' R F L' R U2",
+        "U R U R' U' R' U' R' U R"
+      ],
+      "states_expanded": 116,
+      "terminal_order": 1
+    },
+    "native_control": {
+      "candidates_examined": 227,
+      "changed_cases": 27,
+      "costs": {
+        "exact": true,
+        "htm": {
+          "mean": 4317.833333333333,
+          "mean_denominator": 6,
+          "mean_numerator": 25907,
+          "worst": 8338
+        },
+        "qtm": {
+          "mean": 4875.369047619048,
+          "mean_denominator": 84,
+          "mean_numerator": 409531,
+          "worst": 9439
+        },
+        "scope": "uniform_reference_group_before_boundary_cancellation"
+      },
+      "coverage": "certified",
+      "dictionary_algorithms": 159,
+      "elapsed_seconds": 2.7108614589999434,
+      "familiar_dictionary_literals": 0,
+      "group_order": 40131624960,
+      "native_generator_count": 4968,
+      "selected_algorithms_with_familiar_literals": 0,
+      "selected_cases_with_familiar_literals": 0,
+      "selected_distinct_familiar_literals": 0,
+      "selected_familiar_words": [],
+      "states_expanded": 107,
+      "terminal_order": 1
+    }
+  },
+  "dictionary_settings": {
+    "max_algorithms": 256,
+    "max_candidates": 256,
+    "max_conjugates": 64,
+    "max_familiar_seconds": null,
+    "max_seed_loops": 8,
+    "max_setup_words": 8,
+    "rounds": 1,
+    "timeout": 30
+  },
+  "discovery_scope": "Bounded production nearby-shape scan; one shortest HTM setup per shape",
+  "format": "bce-v2-familiar-transport-production-comparison",
+  "full_scan": false,
+  "improvement_settings": {
+    "max_alternatives": 2,
+    "max_candidates": 512,
+    "max_expanded_moves": 400,
+    "max_htm_length": 80,
+    "max_seed_loops": 8,
+    "max_stage_generators": 16,
+    "max_states": 256,
+    "max_word_length": 3,
+    "rounds": 1
+  },
+  "puzzle": "FourPair",
+  "runtime_patches": false,
+  "strategy": "placement_then_orientation",
+  "version": 1
+}

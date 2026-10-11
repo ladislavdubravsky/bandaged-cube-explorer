@@ -41,6 +41,14 @@ with additional independently checked path and dictionary records.
 comparison. See the [human-method guide](../docs/human-methods.md#select-symmetry-templates-and-shared-pieces)
 for the new path, chunk and template APIs.
 
+The symbolic algorithm dictionary now also discovers familiar algorithms at
+nearby shapes and transports them through legal setup/body/undo paths.
+`c.discover_familiar_algorithms(analysis)` exposes the bounded source directly
+without GAP factorization. Short physical words retain independently checked
+certificates in the complete native-loop alphabet, with separate length limits.
+See the [dictionary guide](python/README.md#discover-a-dictionary-and-choose-a-symbolic-chain)
+for settings and exact availability reports.
+
 [PuzzleSignatures.ipynb](examples/PuzzleSignatures.ipynb) explores the complete
 non-isomorphic atlas by block inventory. Its saved SQLite database supports
 queries such as puzzles containing a 222, maximum domino-only puzzles, and every

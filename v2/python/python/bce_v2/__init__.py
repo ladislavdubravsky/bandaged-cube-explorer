@@ -472,6 +472,11 @@ from .block_solver import (  # noqa: E402
 from .loop_algorithms import (  # noqa: E402
     AlgorithmLibrary, LoopAlgorithm, LoopExpression, discover_loop_algorithms,
 )
+from .familiar_algorithm_catalog import (  # noqa: E402
+    FamiliarAlgorithm, FamiliarAlgorithmCatalog, OrdinaryAlgorithmEffect,
+    WordObstruction, compile_word_obstruction, familiar_algorithm_catalog, shape_bond_bits,
+)
+from .familiar_algorithm_transport import discover_familiar_algorithms  # noqa: E402
 from .loop_rotations import bandage_symmetries  # noqa: E402
 from .loop_algorithm_solver import AlgorithmSolution, LoopSolutionOptions  # noqa: E402
 from .human_chains import (  # noqa: E402
@@ -561,6 +566,9 @@ __all__ = [
     "LoopSolver", "LoopSolution", "LoopStep", "solve_colored_loops",
     "BlockStructure", "KernelAlgorithm", "KernelStep", "analyze_block_structure",
     "LoopExpression", "LoopAlgorithm", "AlgorithmLibrary", "discover_loop_algorithms",
+    "FamiliarAlgorithm", "FamiliarAlgorithmCatalog", "OrdinaryAlgorithmEffect",
+    "WordObstruction", "compile_word_obstruction", "familiar_algorithm_catalog", "shape_bond_bits",
+    "discover_familiar_algorithms",
     "bandage_symmetries",
     "AlgorithmSolution", "LoopSolutionOptions",
     "BlockFeature", "HumanStage", "HumanStagePlan", "WitnessedLoopGroup", "plan_human_stages",

@@ -571,6 +571,11 @@ impl PyLoopGenerators {
             .map(move_string)
             .ok_or_else(|| input_error("vertex ID out of range"))
     }
+
+    fn certify_root_loop(&self, moves: &str) -> PyResult<Vec<(usize, isize)>> {
+        let moves = parse_moves(moves).map_err(input_error)?;
+        self.inner.certify_root_loop(&moves).map_err(input_error)
+    }
 }
 
 #[pymethods]

@@ -28,7 +28,9 @@ def validate_search_inputs(discovery_options=None, dictionary=None, dictionary_o
     """Reject malformed discovery settings before automatic routing runs GAP."""
     from inspect import signature
     from .gap_backend import _validated_options
-    from .symbolic_dictionary import SymbolicAlgorithmDictionary, discover_symbolic_dictionary
+    from .symbolic_dictionary import (
+        SymbolicAlgorithmDictionary, _validate_setting, discover_symbolic_dictionary,
+    )
     from .human_chain_search import _DISCOVERY_DEFAULTS
 
     if discovery_options is not None:
@@ -56,10 +58,7 @@ def validate_search_inputs(discovery_options=None, dictionary=None, dictionary_o
         for name, value in dictionary_options.items():
             if name in ("gap_executable", "timeout"):
                 continue
-            if type(value) is not int:
-                raise TypeError(f"{name} must be an integer")
-            if value < (1 if name in ("max_algorithms", "max_htm_length", "max_expanded_moves") else 0):
-                raise ValueError(f"invalid dictionary budget: {name}")
+            _validate_setting(name, value)
         _validated_options(dictionary_options.get("gap_executable", "gap"), dictionary_options.get("timeout"))
 
 

@@ -441,7 +441,9 @@ def select_symbolic_human_chain(initial, *, strategy="placement_then_orientation
                                 max_group_elements=None, gap_executable="gap", timeout=None, root=None):
     """Compare complete symbolic controls and bounded dictionary-aware chains."""
     from .human_chain_search import HumanChainCandidate, HumanChainSearch
-    from .symbolic_dictionary import SymbolicAlgorithmDictionary, discover_symbolic_dictionary
+    from .symbolic_dictionary import (
+        SymbolicAlgorithmDictionary, _validate_setting, discover_symbolic_dictionary,
+    )
 
     if max_group_elements is not None:
         raise ValueError("max_group_elements only applies to backend='explicit'")
@@ -464,8 +466,7 @@ def select_symbolic_human_chain(initial, *, strategy="placement_then_orientation
             raise ValueError("unknown dictionary option")
         for name,value in dictionary_options.items():
             if name not in ("gap_executable","timeout"):
-                _bounded_integer(value,name,1 if name in (
-                    "max_algorithms","max_htm_length","max_expanded_moves") else 0)
+                _validate_setting(name,value)
         _validated_options(dictionary_options.get("gap_executable",gap_executable),
                            dictionary_options.get("timeout",timeout))
     if discovery_options is not None and not isinstance(discovery_options,dict):
@@ -508,7 +509,8 @@ def select_symbolic_human_chain(initial, *, strategy="placement_then_orientation
                 options.setdefault(name,settings[name])
         if any(not settings[name] for name in (
                 "max_candidates","max_seed_loops","max_htm_length","max_expanded_moves")):
-            options.update(max_candidates=0,rounds=0,max_conjugates=0)
+            options.update(max_candidates=0,rounds=0,max_conjugates=0,
+                           max_familiar_candidates=0)
         dictionary = discover_symbolic_dictionary(analysis,**options)
     elif dictionary_options is not None:
         raise ValueError("dictionary_options cannot be supplied with a prepared dictionary")

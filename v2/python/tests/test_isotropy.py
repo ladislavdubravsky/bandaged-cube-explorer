@@ -27,6 +27,52 @@ def inverse_images(images):
 
 
 class LoopExtractionTests(unittest.TestCase):
+    def test_root_certificates_cover_all_small_graph_arcs_and_actual_roots(self):
+        for metric in ("QTM", "HTM"):
+            graph = c.explore(c.fixture("Bicube Fuse"), metric=metric)
+            for root in (0, len(graph) - 1):
+                loops = graph.isotropy_loops(root)
+                for source, target, movement in graph.arcs:
+                    undo = " ".join(move if move.endswith("2") else
+                                    move[:-1] if move.endswith("'") else move + "'"
+                                    for move in reversed(loops.transport(target).split()))
+                    word = " ".join((loops.transport(source), movement, undo))
+                    certificate = loops.certify_root_loop(word)
+                    self.assertTrue(set(certificate.base_ids).issubset(loops.generator_records))
+                    self.assertEqual(certificate.evaluate(loops),
+                                     c.State(loops.root_shape).apply(word).sticker_permutation)
+
+    def test_physical_word_and_proof_budgets_are_separate(self):
+        loops = c.isotropy_loops(c.fixture("Alcatraz"))
+        generator = next(generator for generator in loops if generator.qtm_length > generator.htm_length)
+        with self.assertRaisesRegex(ValueError, "max_proof_moves"):
+            loops.certify_root_loop(generator.turn_sequence,
+                                    max_proof_moves=generator.qtm_length - 1)
+        expression = loops.certified_root_turns(generator.turn_sequence,
+                                               max_proof_moves=generator.qtm_length)
+        self.assertEqual(expression.kind, "turns")
+        self.assertEqual(expression.children[0].base_ids, (generator.id,))
+        self.assertEqual(expression.expanded_moves(loops, max_expanded_moves=generator.htm_length),
+                         generator.turn_sequence)
+        self.assertEqual(expression.evaluate(loops), generator.permutation)
+
+    def test_root_certificate_rejects_open_or_raw_blocked_words_and_bad_budgets(self):
+        loops = c.isotropy_loops(one_face_shapes()[0], root=1)
+        with self.assertRaisesRegex(ValueError, "exact root shape"):
+            loops.certify_root_loop("U")
+        with self.assertRaisesRegex(ValueError, "blocked"):
+            loops.certify_root_loop("R R'")
+        self.assertEqual(loops.certify_root_loop("U2 U2", max_proof_moves=0).base_ids, ())
+        for bound in (True, 1.5, "1"):
+            with self.subTest(bound=bound), self.assertRaises(TypeError):
+                loops.certify_root_loop("", max_proof_moves=bound)
+        with self.assertRaises(ValueError):
+            loops.certify_root_loop("", max_proof_moves=-1)
+        with self.assertRaises(TypeError):
+            loops.certify_root_loop([])
+        with self.assertRaises(ValueError):
+            loops.certify_root_loop("x")
+
     def test_generator_display_combines_half_turns_in_both_directions(self):
         loops = c.isotropy_loops(c.fixture("Alcatraz"))
         generator = next(generator for generator in loops if generator.id == 142)

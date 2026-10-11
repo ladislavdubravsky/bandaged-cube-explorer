@@ -580,6 +580,17 @@ stages and complete corrections using its actual taught vocabulary.
 
 ## Select symmetry templates and shared pieces
 
+Familiar algorithm transport now supplies the production symbolic dictionary
+before stage and chain selection. `c.discover_symbolic_dictionary(analysis)`
+tests familiar bodies at nearby shapes, constructs legal setup/body/undo root
+loops, and retains exact native-loop certificates with their short physical
+words. Prior stage features are checked against each transported action;
+intermediate turns may disturb them, but the macro endpoint must restore them.
+Complete native fallback policies remain available. See the
+[dictionary guide](../v2/python/README.md#discover-a-dictionary-and-choose-a-symbolic-chain)
+for availability reports, separate physical/proof limits and standalone
+`c.discover_familiar_algorithms` use.
+
 ```python
 repertoire = c.template_human_repertoire(shape, preference="memory")
 repertoire.write_guide("method.md", diagram_mode=c.DiagramMode.OPPOSITE_CORNERS)

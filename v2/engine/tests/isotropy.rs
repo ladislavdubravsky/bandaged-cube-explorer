@@ -325,3 +325,101 @@ fn noncommuting_move_actions_use_gap_source_to_destination_convention() {
     assert_eq!(cube.sticker_permutation(), permutation);
     assert!(!permutation.is_identity());
 }
+
+#[test]
+fn root_word_certificates_cover_every_arc_after_identity_and_inverse_deduplication() {
+    let shape = fixtures::legacy()
+        .into_iter()
+        .find(|fixture| fixture.name == "Bicube Fuse")
+        .unwrap()
+        .partition;
+    for metric in [Metric::Qtm, Metric::Htm] {
+        let graph = explore_with_options(BondShape::from_partition(&shape), metric, None);
+        for root in [0, graph.vertices.len() - 1] {
+            let loops = LoopGenerators::from_graph(&graph, root).unwrap();
+            let actions: HashMap<_, _> = loops
+                .generators
+                .iter()
+                .map(|generator| (generator.id, generator.permutation))
+                .collect();
+            let mut saw_empty = false;
+            let mut saw_inverse = false;
+            for &(source, target, movement) in &graph.arcs {
+                let mut word = loops.transport(source).unwrap();
+                word.push(movement);
+                word.extend(
+                    loops
+                        .transport(target)
+                        .unwrap()
+                        .into_iter()
+                        .rev()
+                        .map(Move::inverse),
+                );
+                let certificate = loops.certify_root_loop(&word).unwrap();
+                saw_empty |= certificate.is_empty();
+                let mut certified = StickerPermutation::IDENTITY;
+                for (id, exponent) in certificate {
+                    saw_inverse |= exponent < 0;
+                    let action = if exponent < 0 {
+                        actions[&id].inverse()
+                    } else {
+                        actions[&id]
+                    };
+                    for _ in 0..exponent.unsigned_abs() {
+                        certified = certified.then(action);
+                    }
+                }
+                let mut physical =
+                    BandageSpec::new(graph.vertices[root].to_partition()).solved_state();
+                for movement in word {
+                    physical.try_turn(movement).unwrap();
+                }
+                assert_eq!(physical.shape(), loops.root_shape);
+                assert_eq!(physical.cube().sticker_permutation(), certified);
+            }
+            assert!(
+                saw_empty,
+                "tree and identity arcs must have empty certificates"
+            );
+            assert!(
+                saw_inverse,
+                "inverse duplicates must use signed original IDs"
+            );
+        }
+    }
+}
+
+#[test]
+fn root_word_certificates_check_raw_legality_closure_and_half_turns() {
+    let loops = LoopGenerators::from_graph(
+        &explore(BondShape::from_partition(&Partition::singletons())),
+        0,
+    )
+    .unwrap();
+    assert_eq!(
+        loops
+            .certify_root_loop(&parse_moves("R2 R'").unwrap())
+            .unwrap(),
+        vec![(1, 1)]
+    );
+    assert_eq!(
+        loops
+            .certify_root_loop(&parse_moves("R R'").unwrap())
+            .unwrap(),
+        vec![]
+    );
+    let loops =
+        LoopGenerators::from_graph(&explore(top_block(&[1, 4]).solved_state().shape()), 0).unwrap();
+    assert!(loops.certify_root_loop(&parse_moves("U").unwrap()).is_err());
+    assert!(
+        loops
+            .certify_root_loop(&parse_moves("R R'").unwrap())
+            .is_err()
+    );
+    assert_eq!(
+        loops
+            .certify_root_loop(&parse_moves("U2 U2").unwrap())
+            .unwrap(),
+        vec![]
+    );
+}

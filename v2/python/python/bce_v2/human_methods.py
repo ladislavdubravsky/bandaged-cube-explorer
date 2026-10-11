@@ -62,14 +62,14 @@ def _state_for_permutation(reference, permutation):
 
 
 def _expression_bound(expression, records):
-    """Bound this finite expression's expansion, including checked subwords."""
+    """Bound physical execution; literal provenance has a separate budget."""
     if expression.kind == "loop":
         return records[expression.generator_id].qtm_length
+    if expression.kind == "turns":
+        return len(expression.moves.split())
     sizes = tuple(_expression_bound(child, records) for child in expression.children)
     if expression.kind == "sequence":
         return sum(sizes)
-    if expression.kind == "turns":
-        return max(len(expression.moves.split()), sizes[0])
     if expression.kind == "rotated":
         return sizes[0]
     if expression.kind == "power":

@@ -10,7 +10,7 @@ from collections import Counter, deque
 from dataclasses import dataclass, field
 from itertools import zip_longest
 import json
-from math import gcd, prod
+from math import gcd, isfinite, prod
 from pathlib import Path
 
 from . import Shape, State
@@ -25,7 +25,36 @@ from .loop_rotations import normalize_rotation, rotate_moves, rotate_permutation
 
 
 _IDENTITY = tuple(range(48))
-_ORIGINAL_KINDS = {"loop", "sequence", "power", "commutator", "conjugate"}
+_ORIGINAL_KINDS = {"loop", "sequence", "power", "commutator", "conjugate", "turns"}
+
+
+def _validate_setting(name, value):
+    if name == "max_familiar_seconds":
+        if value is not None:
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                raise TypeError(f"{name} must be a finite nonnegative number or None")
+            if not isfinite(value) or value < 0:
+                raise ValueError(f"{name} must be finite and nonnegative")
+        return value
+    return _integer(value, name, 1 if name in (
+        "max_algorithms", "max_htm_length", "max_expanded_moves") else 0)
+
+
+def _proof_bound(expression, records):
+    """Count the original-loop proof separately from its literal execution."""
+    if expression.kind == "loop":
+        try:
+            return records[expression.generator_id].qtm_length
+        except KeyError:
+            raise ValueError(f"unknown original loop ID {expression.generator_id}") from None
+    sizes = tuple(_proof_bound(child, records) for child in expression.children)
+    if expression.kind == "turns":
+        return sizes[0]
+    if expression.kind == "sequence":
+        return sum(sizes)
+    if expression.kind == "power":
+        return max(1, abs(expression.exponent)) * sizes[0]
+    return 2 * sizes[0] + (2 if expression.kind == "commutator" else 1) * sizes[1]
 
 
 def _prime_parts(number):
@@ -223,11 +252,14 @@ class SymbolicAlgorithmDictionary:
         if self._validated:
             return self
         metadata = self.metadata
+        for name, value in metadata["settings"].items():
+            _validate_setting(name, value)
         initial = State(inventory.root_shape)
         if len({g.id for g in generators}) != len(generators):
             raise ValueError("dictionary has duplicate original loop IDs")
         self.loops.validate_witnesses()
         by_id = {}
+        records = {g.id: g for g in generators}
         for algorithm in self.algorithms:
             if algorithm.id in by_id or algorithm.permutation == _IDENTITY:
                 raise ValueError("dictionary has duplicate IDs or an identity algorithm")
@@ -238,6 +270,10 @@ class SymbolicAlgorithmDictionary:
 
             if not original(algorithm.expression):
                 raise ValueError("dictionary expression requires an unsupported leaf or transfer")
+            if ("max_proof_moves" in metadata["settings"] and
+                    _proof_bound(algorithm.expression, records) >
+                    metadata["settings"]["max_proof_moves"]):
+                raise ValueError("dictionary algorithm exceeds its original-loop proof bound")
             if (algorithm._inventory.root_shape != inventory.root_shape or
                     signatures(algorithm._generators) != signatures(generators) or
                     algorithm.expression.evaluate(generators) != algorithm.permutation):
@@ -338,11 +374,16 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
                                  max_setup_words=256, max_conjugates=12000,
                                  max_htm_length=80, max_expanded_moves=400,
                                  max_original_loops=32,
+                                 max_familiar_shapes=2048, max_familiar_setup_depth=8,
+                                 max_familiar_work=100000, max_familiar_candidates=128,
+                                 max_familiar_seconds=2.0, max_proof_moves=100000,
                                  gap_executable="gap", timeout=None):
     """Discover a bounded reusable repertoire and measure exact orientation span.
 
-    Setup words concatenate legal reference loops. A fused block's orientation
-    modulus comes from its actual rigid footprint. GAP computes only exact
+    Familiar bodies are tested at reachable shapes and transported through
+    legal open setups. Native-loop mining and closed-loop setup conjugates
+    supplement that repertoire. A fused block's orientation modulus comes
+    from its actual rigid footprint. GAP computes only exact
     input/placement orders; it never enumerates group elements or supplies
     long generic kernel words to this dictionary.
     """
@@ -350,9 +391,14 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
                     max_algorithms=max_algorithms,
                     max_setup_depth=max_setup_depth, max_setup_words=max_setup_words,
                     max_conjugates=max_conjugates, max_htm_length=max_htm_length,
-                    max_expanded_moves=max_expanded_moves, max_original_loops=max_original_loops)
+                    max_expanded_moves=max_expanded_moves, max_original_loops=max_original_loops,
+                    max_familiar_shapes=max_familiar_shapes,
+                    max_familiar_setup_depth=max_familiar_setup_depth,
+                    max_familiar_work=max_familiar_work,
+                    max_familiar_candidates=max_familiar_candidates,
+                    max_familiar_seconds=max_familiar_seconds, max_proof_moves=max_proof_moves)
     for name, value in settings.items():
-        _integer(value, name, 1 if name in ("max_algorithms", "max_htm_length", "max_expanded_moves") else 0)
+        _validate_setting(name, value)
     loops = _reference(initial)
     inventory, generators = loops.block_inventory, loops.generators
     analysis = initial if isinstance(initial, IsotropyAnalysis) else loops.analyze(
@@ -372,6 +418,9 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
     pool, counts = {}, Counter()
 
     def keep(algorithm):
+        if _proof_bound(algorithm.expression, records) > max_proof_moves:
+            counts["proof_pruned"] += 1
+            return None
         previous = pool.get(algorithm.permutation)
         if previous is None or _key(algorithm) < _key(previous):
             pool[algorithm.permutation] = algorithm
@@ -417,6 +466,17 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
                 originals.append(algorithm)
                 direct_words.setdefault(algorithm.turn_sequence, expression)
                 direct_effects.setdefault(algorithm.permutation, expression)
+
+    from .familiar_algorithm_transport import discover_familiar_algorithms
+
+    familiar = discover_familiar_algorithms(
+        loops, max_setup_depth=max_familiar_setup_depth, max_shapes=max_familiar_shapes,
+        max_work=max_familiar_work, max_seconds=max_familiar_seconds,
+        max_candidates=max_familiar_candidates, max_algorithms=max_algorithms,
+        max_htm_length=max_htm_length, max_expanded_moves=max_expanded_moves,
+        max_proof_moves=max_proof_moves)
+    for algorithm in familiar.algorithms:
+        keep(algorithm)
 
     mining = None
     mining_budget = max(0, max_candidates - counts["original_proposals_examined"])
@@ -494,6 +554,11 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
     if target % span:
         raise ValueError("discovered pure orientations exceed the exact reference-footprint kernel")
     family_counts = Counter(str(_family(a, inventory)) for a in selected)
+    familiar_metadata = familiar.metadata["familiar_transport"]
+    familiar_metadata["dictionary_algorithm_ids"] = [
+        a.id for a in selected if a.id in familiar_metadata["algorithms"]]
+    familiar_effects = {a.permutation for a in familiar.algorithms}
+    familiar_metadata["dictionary_effect_count"] = len(effects & familiar_effects)
     metadata = {"settings": settings, "exhaustive_word_search": False,
                 "group_order": analysis.group_order, "quotient_order": quotient,
                 "orientation_target_order": target, "orientation_span_order": span,
@@ -521,6 +586,7 @@ def discover_symbolic_dictionary(initial, *, max_candidates=12000, rounds=4, max
                                                 counts["conjugates_examined"] >= max_conjugates),
                 "families": dict(sorted(family_counts.items())), "work": dict(counts),
                 "mining": None if mining is None else mining.metadata,
+                "familiar_transport": familiar_metadata,
                 "target_source": "exact reference group and placement quotient orders",
                 "coverage_scope": "orientation span; retained native loops are separate witnesses"}
     result = SymbolicAlgorithmDictionary(loops, tuple(selected), basis,
