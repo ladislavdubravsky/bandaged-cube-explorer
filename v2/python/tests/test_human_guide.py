@@ -51,6 +51,33 @@ class HumanGuideTests(unittest.TestCase):
         self.assertEqual(before, self.repertoire.to_dict())
         self.assertTrue(all("expression" in macro for macro in before["macros"]))
 
+    def test_stage_summary_matches_exhaustive_solution_steps_including_skipped_cases(self):
+        from bce_v2.human_methods import _state_for_permutation
+
+        method = self.repertoire.method
+        stage_costs = [[] for _ in method.stages]
+        totals = []
+        for permutation in method._permutations:
+            result = method.apply(_state_for_permutation(method.reference_shape, permutation))
+            self.assertEqual(result.status, "solved")
+            costs = {step.stage_number: len(step.turn_sequence.split()) for step in result.steps}
+            for stage, samples in zip(method.stages, stage_costs):
+                samples.append(costs.get(stage.number, 0))
+            totals.append(sum(costs.values()))
+
+        guide = self.repertoire.write_guide()
+        summary = guide[guide.index("## Stages\n"):guide.index("## Algorithms\n")]
+        self.assertEqual(guide.count("In each stage's diagrams:"), 1)
+        self.assertIn("In each stage's diagrams:", summary)
+        self.assertLess(summary.index("In each stage's diagrams:"), summary.index("| Stage |"))
+        rows = [line for line in summary.splitlines() if line.startswith("| ")][2:]
+        expected = [(sum(totals) / len(totals), max(totals))]
+        expected.extend((sum(samples) / len(samples), max(samples)) for samples in stage_costs)
+        self.assertTrue(rows[0].startswith("| Whole solution |"))
+        self.assertEqual(len(rows), len(expected))
+        for row, (mean, worst) in zip(rows, expected):
+            self.assertTrue(row.endswith(f"| {mean:.2f} | {worst:,} |"), row)
+
     def test_expanded_method_all_words_are_up_front_without_generating_loop_appendix(self):
         method = self.repertoire.method
         before = method.to_dict()

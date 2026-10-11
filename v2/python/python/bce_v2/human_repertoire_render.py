@@ -6,6 +6,29 @@ from .human_diagram_modes import DiagramMode
 from .human_instruction_render import instruction_presentation
 
 
+def _stage_title(stage):
+    placed = all(case.observation[0] == stage.block_index for case in stage.cases)
+    verb = "Place" if stage.feature.kind == "place_block" else "Orient" if placed else "Solve"
+    return f"Stage {stage.number}: {verb} {stage.block_name}"
+
+
+def _stage_move_table(method):
+    """Uniform case averages, counting half turns once and keeping stage boundaries.
+
+    Certified coset cases are independent and equiprobable, so whole-solution
+    averages and worst costs add without enumerating the reference group.
+    """
+    whole = method.additive_costs()["htm"]
+    lines = ["| Stage | Avg moves | Worst moves |", "| --- | ---: | ---: |",
+             f"| Whole solution | {whole['mean']:.2f} | {whole['worst']:,} |"]
+    algorithms = {algorithm.id: algorithm for algorithm in method.algorithms}
+    for stage in method.stages:
+        costs = [0 if case.algorithm_id is None else algorithms[case.algorithm_id].htm_length
+                 for case in stage.cases]
+        lines.append(f"| {_stage_title(stage)} | {sum(costs) / len(costs):.2f} | {max(costs):,} |")
+    return [*lines, ""]
+
+
 def _guide_instructions(repertoire, *, rotate_diagram):
     """Collect exact case words and any additional definitions before teaching."""
     from dataclasses import replace
@@ -132,10 +155,12 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
     lines = ["# Solution from solved shape", "",
              f"This computational method covers all **{method.group_order:,} reachable colored states** "
              "whose bandage shape is already the declared reference shape.", "",
+             "## Stages", "",
              "In each stage's diagrams: face centers are colored to inform you how to orient the cube "
              "before algorithm application. Blocks already solved are dark grey. The block this stage "
              "requires you to identify is colored. Striped white color indicates a white sticker, "
              "plain white indicates unsolved sticker of any color.", ""]
+    lines.extend(_stage_move_table(method))
     chunk_lines, formulas = _chunk_table(repertoire)
     if repertoire.macros or additional:
         lines.extend(["## Algorithms", ""])
@@ -170,10 +195,8 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
                       "shape is already solved; no algorithms are needed.", ""])
     for stage, policy in zip(method.stages, repertoire.stages):
         block = inventory.blocks[stage.block_index]
-        placed = all(case.observation[0] == stage.block_index for case in stage.cases)
-        verb = "Place" if stage.feature.kind == "place_block" else "Orient" if placed else "Solve"
         families = "instruction family" if len(policy.rules) == 1 else "instruction families"
-        lines.extend([f"## Stage {stage.number}: {verb} {stage.block_name}", "",
+        lines.extend([f"## {_stage_title(stage)}", "",
                       f"This stage has {stage.case_count} exact cases and {len(policy.rules)} {families}. "
                       f"It reduces the remaining possibilities from {stage.order_before:,} "
                       f"to {stage.order_after:,}.", ""])
