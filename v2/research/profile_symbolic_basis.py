@@ -62,7 +62,7 @@ def main():
     args = parser.parse_args()
     if args.gap_seconds <= 0 or args.python_seconds <= 0:
         parser.error('time bounds must be positive')
-    bandage = bandage_from_notebook(base / 'examples' / (args.puzzle + '.ipynb'))
+    bandage = bandage_from_notebook(base / 'examples' / 'stabilizer-chain-methods' / (args.puzzle + '.ipynb'))
     before, start = cpu(), perf_counter()
     analysis = c.analyze_isotropy(bandage, timeout=args.gap_seconds)
     analysis_timing = timing(before, start)

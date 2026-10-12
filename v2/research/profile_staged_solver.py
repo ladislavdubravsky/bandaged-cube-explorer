@@ -101,7 +101,7 @@ def main():
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     base = Path(__file__).resolve().parents[1]
-    bandage = bandage_from_notebook(base / "examples" / (args.puzzle + ".ipynb"))
+    bandage = bandage_from_notebook(base / "examples" / "stabilizer-chain-methods" / (args.puzzle + ".ipynb"))
     begin = perf_counter()
     analysis_self = resource.getrusage(resource.RUSAGE_SELF)
     analysis_child = resource.getrusage(resource.RUSAGE_CHILDREN)

@@ -351,7 +351,7 @@ and symbolic scaling remain deferred as scoped above.
 
 ### Delivery 6 — Usability and thorough human review
 
-Review entry point: [BandagedPocketCube.ipynb](../v2/examples/BandagedPocketCube.ipynb)
+Review entry point: [BandagedPocketCube.ipynb](../v2/examples/stabilizer-chain-methods/BandagedPocketCube.ipynb)
 now generates all recognition cases as cube diagrams. Select transparent 3D or
 opposite-corner views through `DiagramMode` and face colors before evaluation.
 Opposite-corner views mark solved blocks with light tints, the current target

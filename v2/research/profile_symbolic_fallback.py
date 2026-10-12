@@ -39,7 +39,7 @@ def main():
     previous = signal.signal(signal.SIGALRM, expired)
     signal.alarm(args.seconds)
     try:
-        shape = c.Shape(bandage_from_notebook(base / "examples" / (args.puzzle + ".ipynb")))
+        shape = c.Shape(bandage_from_notebook(base / "examples" / "stabilizer-chain-methods" / (args.puzzle + ".ipynb")))
         start = perf_counter()
         analysis = c.analyze_isotropy(shape, timeout=min(60, args.seconds))
         record["analysis_seconds"] = perf_counter() - start

@@ -103,7 +103,7 @@ def timed(record, path, reads, operation, function, seconds):
 
 def analysis_record(record, path, reads, seconds):
     base = Path(__file__).resolve().parents[1]
-    bandage = bandage_from_notebook(base / 'examples/FourPair.ipynb')
+    bandage = bandage_from_notebook(base / 'examples/stabilizer-chain-methods/FourPair.ipynb')
     analysis = timed(record, path, reads, 'analyze_isotropy',
                      lambda: c.analyze_isotropy(bandage, timeout=seconds), seconds)
     if analysis is None:

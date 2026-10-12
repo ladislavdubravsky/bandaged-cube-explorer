@@ -11,12 +11,18 @@ python3 -m venv v2/.venv
 v2/.venv/bin/python -m pip install './v2/python[all]'
 ```
 
-Open [Alcatraz.ipynb](examples/Alcatraz.ipynb) in VS Code for an interactive
+The [example index](examples/README.md) separates the original
+`stabilizer-chain-methods`, compact `action-family-methods`, and
+`optimal-colored-search` notebooks. Action-family examples use the minimal
+bandage-to-guide workflow; optimal colored search reports complete distance
+statistics for small puzzles.
+
+Open [Alcatraz.ipynb](examples/stabilizer-chain-methods/Alcatraz.ipynb) in VS Code for an interactive
 research session with inline galleries. The workspace settings select
 `v2/.venv` and activate terminals automatically. Install the recommended Python
 and Jupyter extensions and choose the `v2/.venv` notebook kernel once if prompted.
 
-[BandagedPocketCube.ipynb](examples/BandagedPocketCube.ipynb) is a minimal
+[BandagedPocketCube.ipynb](examples/stabilizer-chain-methods/BandagedPocketCube.ipynb) is a minimal
 shape-only example: one cell displays exact counts and a reusable human solution
 with shared algorithm pieces, symmetry regrips and recognition diagrams. It
 calls `c.template_human_repertoire(analysis)`, selecting stage policies in the
@@ -56,7 +62,7 @@ signature with its class count. The [signature guide](../docs/block-signatures.m
 explains the 1,735 full-atlas signatures, 1,732 filtered signatures, and types
 distinguishing center/core placement, including 221Core, 321Core, and BigClock.
 
-The Python package is the primary research interface. [Alcatraz.ipynb](examples/Alcatraz.ipynb) combines shape exploration, facelet input, direct colored solving, loop generators with exact block actions and decorated cycles, exact group counts, colored distance profiles, and farthest-state views. [MostSignaturesCube.ipynb](examples/MostSignaturesCube.ipynb) uses loop-group analysis to count the colored states of the puzzle with the most shapes, with the same reference-block inventories and generator effects, together with a short colored solve. The [human-method compiler](../docs/human-methods.md) now turns a reference shape into exact stabilizer stages, a complete reusable case policy, legal correction algorithms, portable JSON and a Markdown guide. Its precompiled policy handles every reachable colored state already in that shape without factoring each scramble. Bounded stage-algorithm improvement supplements this policy with native-loop, shallow-word and structured searches while retaining complete fallbacks. Algorithm-aware chain selection compares original BFS controls with pool-based automatic and mixed-feature methods using one common witnessed word pool; separate reports retain physical costs, recognition and repertoire measures, and the Pareto frontier. Repertoire optimization shares taught master definitions and verifies compressed recognition rules while preserving complete fallback policies; independently loadable repertoire artifacts include comparison metadata. The stage backend is validated on both puzzles and the other named fixtures. The Pocket Cube follow-up adds symmetry templates, checked open paths and shared pieces, with stage and case selection scored in the actual taught vocabulary. The [evolving plan](../docs/human-methods-plan.md) records the delivered work and remaining research.
+The Python package is the primary research interface. [AlcatrazAnalyses.ipynb](examples/AlcatrazAnalyses.ipynb) combines shape exploration, facelet input, direct colored solving, loop generators with exact block actions and decorated cycles, exact group counts, colored distance profiles, and farthest-state views. [MostSignaturesCubeAnalysis.ipynb](examples/MostSignaturesCubeAnalysis.ipynb) uses loop-group analysis to count the colored states of the puzzle with the most shapes, with the same reference-block inventories and generator effects, together with a short colored solve. The [human-method compiler](../docs/human-methods.md) now turns a reference shape into exact stabilizer stages, a complete reusable case policy, legal correction algorithms, portable JSON and a Markdown guide. Its precompiled policy handles every reachable colored state already in that shape without factoring each scramble. Bounded stage-algorithm improvement supplements this policy with native-loop, shallow-word and structured searches while retaining complete fallbacks. Algorithm-aware chain selection compares original BFS controls with pool-based automatic and mixed-feature methods using one common witnessed word pool; separate reports retain physical costs, recognition and repertoire measures, and the Pareto frontier. Repertoire optimization shares taught master definitions and verifies compressed recognition rules while preserving complete fallback policies; independently loadable repertoire artifacts include comparison metadata. The stage backend is validated on both puzzles and the other named fixtures. The Pocket Cube follow-up adds symmetry templates, checked open paths and shared pieces, with stage and case selection scored in the actual taught vocabulary. The [evolving plan](../docs/human-methods-plan.md) records the delivered work and remaining research.
 
 The engine models connected partitions of the legacy 27-cell grid, including its virtual core, and the six outer faces of an ordinary fixed-center 3×3 cube. It supports quarter turns, half turns, and inverses in standard Singmaster notation. Noncuboid connected blocks are allowed; the narrower enumeration family in the roadmap is a separate concern.
 

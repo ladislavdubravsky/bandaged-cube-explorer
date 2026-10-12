@@ -33,11 +33,11 @@ total colored-state count additionally includes every reachable shape.
 | Unbandaged3x3 | 26 singleton | 1 | 6 | 6 | 43,252,003,274,489,856,000 |
 
 The saved `KeyboardInterrupt` stacks in
-[BeltRoad](../examples/BeltRoad.ipynb) and
-[MostSignaturesCube](../examples/MostSignaturesCube.ipynb) end in
+[BeltRoad](../examples/stabilizer-chain-methods/BeltRoad.ipynb) and
+[MostSignaturesCube](../examples/stabilizer-chain-methods/MostSignaturesCube.ipynb) end in
 `draw_bandage_graph → bandage_graph_layout → _symmetric_spring → np.linalg.norm`.
 The repertoire call follows this drawing in the same cell. The saved
-[FourPair](../examples/FourPair.ipynb) interruption instead ends in
+[FourPair](../examples/stabilizer-chain-methods/FourPair.ipynb) interruption instead ends in
 `SymbolicAlgorithmDictionary.validate → signatures → LoopGenerator.moves`.
 Thus changing solver discovery budgets alone would not address the first two
 recorded cancellations.

@@ -20,7 +20,7 @@ bounded graph views, reduced-basis algebra, provenance caches, workload routing,
 progress and shared optimization budgets, with production measurements and
 coverage/replay checks.
 
-The minimal [ordinary-cube notebook](../examples/Unbandaged3x3.ipynb) mirrors
+The minimal [ordinary-cube notebook](../examples/stabilizer-chain-methods/Unbandaged3x3.ipynb) mirrors
 `BandagedPocketCube`: shape input, group sizes, shape graph and a complete
 staged guide. Its symbolic compiler handles 43 quintillion colored states
 without enumerating them. Comparisons and replay experiments are saved here.

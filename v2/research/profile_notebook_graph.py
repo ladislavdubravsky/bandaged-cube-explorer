@@ -18,7 +18,7 @@ import bce_v2 as c
 from bce_v2 import graph_render as render
 
 
-EXAMPLES = Path(__file__).resolve().parent.parent / "examples"
+EXAMPLES = Path(__file__).resolve().parent.parent / "examples" / "stabilizer-chain-methods"
 
 
 def notebook_bandage(name):

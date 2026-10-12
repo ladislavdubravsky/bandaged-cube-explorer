@@ -164,7 +164,7 @@ human dictionary.
   ordinary cube. Standalone mining now includes inverse operands and placement
   collisions, with distinct effect families in its frontier. A bounded symbolic
   improvement path searches feature orbits and preserves complete fallbacks.
-- The [executed ordinary-cube notebook](../v2/examples/Unbandaged3x3.ipynb) and
+- The [executed ordinary-cube notebook](../v2/examples/stabilizer-chain-methods/Unbandaged3x3.ipynb) and
   [measurement record](../v2/research-results/unbandaged3x3-symbolic.json) contain
   both certified chains and an improved full-block policy. All three policies
   solved and legally replayed every selected imported scramble. The full-block
@@ -227,7 +227,7 @@ generating subset when available, reports its order, and preserves certified
 generic corrections whenever the bounded pool is incomplete. Fixed-chain
 improvement can reuse the same dictionary offline.
 
-The [executed notebook](../v2/examples/Unbandaged3x3.ipynb) and
+The [executed notebook](../v2/examples/stabilizer-chain-methods/Unbandaged3x3.ipynb) and
 [dictionary/chain measurement record](../v2/research-results/unbandaged3x3-dictionary-chain.json)
 retain the following exact additive costs before stage-boundary cancellation:
 

@@ -31,7 +31,7 @@ def main():
                         default=base / "research-results/familiar-algorithm-transport-production.json")
     args = parser.parse_args()
     analysis = c.analyze_isotropy(
-        bandage_from_notebook(base / "examples" / (args.puzzle + ".ipynb")), timeout=30)
+        bandage_from_notebook(base / "examples" / "stabilizer-chain-methods" / (args.puzzle + ".ipynb")), timeout=30)
     baseline = c.synthesize_human_method(analysis, backend="symbolic", timeout=30)
     dictionary_settings = dict(max_candidates=256, rounds=1, max_seed_loops=8,
                                max_algorithms=256, max_setup_words=8, max_conjugates=64,

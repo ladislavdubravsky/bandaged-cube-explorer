@@ -22,7 +22,7 @@ def main():
     args = parser.parse_args()
     if args.seconds <= 0:
         parser.error('seconds must be positive')
-    bandage = bandage_from_notebook(base / 'examples' / (args.puzzle + '.ipynb'))
+    bandage = bandage_from_notebook(base / 'examples' / 'stabilizer-chain-methods' / (args.puzzle + '.ipynb'))
     settings = dict(max_candidates=12000, rounds=4, max_seed_loops=32,
                     max_original_loops=32, max_algorithms=1024, max_setup_depth=2,
                     max_setup_words=384, max_conjugates=12000,

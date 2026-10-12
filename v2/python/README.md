@@ -116,7 +116,7 @@ and activate it in new terminals, including an existing terminal when the
 Python extension starts. Environment creation and package installation above
 are a one-time setup; opening the project does not reinstall packages.
 
-Open [Alcatraz.ipynb](../examples/Alcatraz.ipynb) for the main research example.
+Open [AlcatrazAnalyses.ipynb](../examples/AlcatrazAnalyses.ipynb) for the main research example.
 It has editable cells for the bandage list, scramble, full colored replay,
 facelet input, shape and colored solutions, loop generators, exact group and
 colored-state counts, distance profiles, galleries, and saved records.
@@ -236,7 +236,7 @@ means the unbandaged cube.
 
 Looking directly at a face also requires fixing its top edge: keep B at the top
 of U, F at the top of D, and U at the top of R/F/L/B. The numbered net in
-[Alcatraz.ipynb](../examples/Alcatraz.ipynb) shows the complete input
+[AlcatrazAnalyses.ipynb](../examples/AlcatrazAnalyses.ipynb) shows the complete input
 order. Inspect the colored scramble with the existing 3D renderer:
 
 ```python
@@ -1374,7 +1374,7 @@ component size still reports `complete=True`. Partial-graph paths and distances
 describe the retained vertices and cannot establish global optimality or
 unreachability. Graph exports are inspection artifacts, not imported proofs.
 
-The [Alcatraz notebook](../examples/Alcatraz.ipynb) also builds a table of shortest distances from
+The [Alcatraz analysis notebook](../examples/AlcatrazAnalyses.ipynb) also builds a table of shortest distances from
 solved and displays states at maximum distance. On a complete graph, use
 `distances = colored.distances(c.State(specification))` and
 `Counter(distances)` from Python's `collections` module for the counts. Select
@@ -1459,7 +1459,7 @@ figure = c.draw_bandage_graph(graph, pos=positions)
 
 Install `./v2/python[graph]` or `./v2/python[notebooks]` to use these helpers.
 The returned figure is a regular matplotlib figure. The
-[BandagedPocketCube notebook](../examples/BandagedPocketCube.ipynb) displays the
+[BandagedPocketCube notebook](../examples/stabilizer-chain-methods/BandagedPocketCube.ipynb) displays the
 graph in its third code cell, after the staged guide. All graph settings live
 in this optional drawing cell, with editable
 `graph_view`, `graph_max_vertices`, `graph_radius`,
@@ -1477,7 +1477,7 @@ explicitly requests the complete layout. These options also work on `graph.draw`
 Leave the optional graph cell unevaluated to omit the drawing.
 Calling `bandage_graph_layout` directly still explicitly requests a full layout.
 
-[Unbandaged3x3.ipynb](../examples/Unbandaged3x3.ipynb) applies the same workflow
+[Unbandaged3x3.ipynb](../examples/stabilizer-chain-methods/Unbandaged3x3.ipynb) applies the same workflow
 to the classic cube. It reports the template compiler's explicit group-size
 cutoff and compares bounded direct search with both loop factorization
 strategies on imported colored states, retaining timings, move counts, and
@@ -1540,7 +1540,7 @@ actual cell surfaces, including connected noncuboid blocks, and supports
 transparent views. `draw_cubes` also displays colored stickers with `colors=True`
 for `State` inputs and supports opposite UFR/BLD views. `draw_net(state)` provides
 an unfolded alternative. The
-[Alcatraz notebook](../examples/Alcatraz.ipynb) displays example galleries inline.
+[Alcatraz analysis notebook](../examples/AlcatrazAnalyses.ipynb) displays example galleries inline.
 
 Version-1 puzzle JSON records include reference labels and the validated move
 witness needed to reproduce full colors. Loading checks conventions and replays

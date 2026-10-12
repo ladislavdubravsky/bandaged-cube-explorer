@@ -2,8 +2,8 @@
 
 8 October 2026. Shape-loop generators expose exact physical block actions as
 well as their original 48-sticker permutations and legal move witnesses. The
-[Alcatraz](../v2/examples/Alcatraz.ipynb) and
-[Most Signatures Cube](../v2/examples/MostSignaturesCube.ipynb) notebooks show
+[Alcatraz](../v2/examples/AlcatrazAnalyses.ipynb) and
+[Most Signatures Cube](../v2/examples/MostSignaturesCubeAnalysis.ipynb) notebooks show
 reference inventories and one-line decorated cycles beside each reduced
 generator. Block actions require no GAP installation; GAP is needed for the
 exact group analysis and both loop-factorization strategies.

@@ -806,7 +806,7 @@ are parenthesized, as in `S^(X Y Z)`. For example,
 constructions and retains the expanded turns. Move counts and witness
 provenance are omitted from the guide; provenance remains in portable records.
 It does not commute turns or replace a word by a different action-equivalent
-algorithm. The minimal [BandagedPocketCube notebook](../v2/examples/BandagedPocketCube.ipynb)
+algorithm. The minimal [BandagedPocketCube notebook](../v2/examples/stabilizer-chain-methods/BandagedPocketCube.ipynb)
 lets you choose the view and face colors before evaluating the shape-only pipeline.
 Its cell calls `bce_v2.notebook.refresh_renderers()` before evaluation so edits
 to the rendering code take effect in an already running kernel. Plain repeated
@@ -922,7 +922,7 @@ selects Alcatraz, Bicube Fuse, Shark Fin Soup and the research alias
 Most Signatures Cube. The alias is a documented research shape, rather than a
 new native fixture; its labels match `MOST_SIGNATURES` in
 [`test_block_solver.py`](../v2/python/tests/test_block_solver.py) and the
-[`Most Signatures Cube notebook`](../v2/examples/MostSignaturesCube.ipynb).
+[`Most Signatures Cube notebook`](../v2/examples/stabilizer-chain-methods/MostSignaturesCube.ipynb).
 
 From the repository root, with the installed v2 Python environment and GAP:
 
