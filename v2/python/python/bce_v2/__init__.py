@@ -493,16 +493,8 @@ from .symbolic_chains import SymbolicStagePlan  # noqa: E402
 from .symbolic_dictionary import (  # noqa: E402
     SymbolicAlgorithmDictionary, discover_symbolic_dictionary,
 )
-from .human_method_io import load_human_method  # noqa: E402
-from .human_algorithms import (  # noqa: E402
-    HumanAlgorithmAlternative, HumanAlgorithmSearch, improve_human_method,
-)
-from .human_chain_search import (  # noqa: E402
-    HumanChainCandidate, HumanChainSearch, select_human_chain,
-)
-from .algorithm_targets import AlgorithmTarget, discover_algorithm_targets
-from .algorithm_palette import AlgorithmPalette, AlgorithmPaletteBody, AlgorithmPaletteSetup
-from .coarse_methods import CoarseMethod, compile_coarse_method, load_coarse_method
+from .algorithm_palette import AlgorithmPalette, AlgorithmPaletteBody, AlgorithmPaletteSetup  # noqa: E402
+from .coarse_methods import CoarseMethod, compile_coarse_method, load_coarse_method  # noqa: E402
 from .algorithm_profiles import (  # noqa: E402
     AlgorithmPreservationProfile, PaletteWorkspaceCandidate, PaletteGoalCandidate,
     PaletteProfileDiscovery, discover_palette_profiles, propose_palette_goals,
@@ -513,8 +505,28 @@ from .palette_policies import (  # noqa: E402
 from .coarse_search import (  # noqa: E402
     CoarseMethodCandidate, CoarseMethodSearch, discover_coarse_method,
 )
-from .notebook_methods import CachedCoarseMethod, cached_coarse_method, palette_from_turn_words
-from .automatic_palette import AutomaticPaletteResult, automatic_algorithm_palette
+from .assembly_goals import (  # noqa: E402
+    RelativeAssemblyGoal, AssemblyObservation, AssemblyProposalSet, AssemblyChoice,
+    observe_relative_assembly, propose_relative_assemblies, rank_relative_assemblies,
+)
+from .workspace_entry import ConstructiveEntryController, ConstructiveEntryCorrection  # noqa: E402
+from .workspace_goals import WorkspaceAnchorProposals, propose_workspace_anchors  # noqa: E402
+from .workspace_methods import (  # noqa: E402
+    WorkspaceMethod, WorkspaceMethodApplication, compile_workspace_method,
+)
+from .notebook_methods import CachedCoarseMethod, cached_coarse_method, palette_from_turn_words  # noqa: E402
+from .automatic_palette import AutomaticPaletteResult, automatic_algorithm_palette  # noqa: E402
+from .automatic_methods import (  # noqa: E402
+    AutomaticMethod, AutomaticMethodApplication, MethodDiscoveryResult, discover_method,
+)
+from .human_method_io import load_human_method  # noqa: E402
+from .human_algorithms import (  # noqa: E402
+    HumanAlgorithmAlternative, HumanAlgorithmSearch, improve_human_method,
+)
+from .human_chain_search import (  # noqa: E402
+    HumanChainCandidate, HumanChainSearch, select_human_chain,
+)
+from .algorithm_targets import AlgorithmTarget, discover_algorithm_targets  # noqa: E402
 from .human_repertoire import (  # noqa: E402
     HumanMacroRecipe, HumanRecognitionRule, HumanRepertoire, HumanRepertoireApplication,
     HumanRepertoireCase, HumanRepertoireMacro, HumanRepertoireStage, HumanRepertoireStep,
@@ -592,33 +604,22 @@ __all__ = [
     "HumanMethodStep", "HumanRecognition", "synthesize_human_method", "load_human_method",
     "HumanAlgorithmAlternative", "HumanAlgorithmSearch", "improve_human_method",
     "HumanChainCandidate", "HumanChainSearch", "select_human_chain",
-    "AlgorithmTarget",
-    "discover_algorithm_targets",
-    "AlgorithmPalette",
-    "AlgorithmPaletteBody",
-    "AlgorithmPaletteSetup",
-    "CoarseMethod",
-    "compile_coarse_method",
-    "load_coarse_method",
-    "AlgorithmPreservationProfile",
-    "PaletteWorkspaceCandidate",
-    "PaletteGoalCandidate",
-    "PaletteProfileDiscovery",
-    "discover_palette_profiles",
-    "propose_palette_goals",
-    "StagePalettePolicy",
-    "StagePolicyFrontier",
-    "recipe_taught_ids",
-    "stage_policy_frontier",
-    "CoarseMethodCandidate",
-    "CoarseMethodSearch",
-    "discover_coarse_method",
-    "CachedCoarseMethod",
-    "cached_coarse_method",
-    "palette_from_turn_words",
-    "AutomaticPaletteResult",
-    "automatic_algorithm_palette",
+    "AlgorithmTarget", "discover_algorithm_targets",
     "SymbolicAlgorithmDictionary", "discover_symbolic_dictionary",
+    "AlgorithmPalette", "AlgorithmPaletteBody", "AlgorithmPaletteSetup",
+    "CoarseMethod", "compile_coarse_method", "load_coarse_method",
+    "AlgorithmPreservationProfile", "PaletteWorkspaceCandidate", "PaletteGoalCandidate",
+    "PaletteProfileDiscovery", "discover_palette_profiles", "propose_palette_goals",
+    "StagePalettePolicy", "StagePolicyFrontier", "recipe_taught_ids", "stage_policy_frontier",
+    "CoarseMethodCandidate", "CoarseMethodSearch", "discover_coarse_method",
+    "RelativeAssemblyGoal", "AssemblyObservation", "AssemblyProposalSet", "AssemblyChoice",
+    "observe_relative_assembly", "propose_relative_assemblies", "rank_relative_assemblies",
+    "ConstructiveEntryController", "ConstructiveEntryCorrection",
+    "WorkspaceAnchorProposals", "propose_workspace_anchors",
+    "WorkspaceMethod", "WorkspaceMethodApplication", "compile_workspace_method",
+    "CachedCoarseMethod", "cached_coarse_method", "palette_from_turn_words",
+    "AutomaticPaletteResult", "automatic_algorithm_palette",
+    "AutomaticMethod", "AutomaticMethodApplication", "MethodDiscoveryResult", "discover_method",
     "HumanMacroRecipe", "HumanRecognitionRule", "HumanRepertoire", "HumanRepertoireApplication",
     "HumanRepertoireCase", "HumanRepertoireMacro", "HumanRepertoireStage", "HumanRepertoireStep",
     "optimize_human_repertoire", "load_human_repertoire", "generator_human_repertoire", "ShapePath",
