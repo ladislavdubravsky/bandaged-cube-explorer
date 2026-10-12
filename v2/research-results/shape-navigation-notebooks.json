@@ -1,0 +1,417 @@
+{
+  "all_checks_passed": true,
+  "notebook_count": 10,
+  "notebooks": [
+    {
+      "all_checks_passed": true,
+      "direct_history_free_shape_input": true,
+      "legal_scramble_alternative_matches_input": true,
+      "metrics": [
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 6144,
+          "complete": true,
+          "example_shortest_cost": 12,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 12,
+          "metric": "HTM",
+          "replayed_shortest_return_endpoints": 3,
+          "shape_count": 1449,
+          "stored_arc_count": 6144
+        },
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 4096,
+          "complete": true,
+          "example_shortest_cost": 15,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 16,
+          "metric": "QTM",
+          "replayed_shortest_return_endpoints": 4,
+          "shape_count": 1449,
+          "stored_arc_count": 2048
+        }
+      ],
+      "notebook": "examples/shapes-graph-navigation/Alcatraz.ipynb",
+      "notebook_sha256": "7f1617975872b781a08e57c157e80d96ae1638e2a79523be6499f1c4bb2e7b6d",
+      "optional_bounded_local_drawing_checked": true,
+      "original_bandage_input_preserved": true,
+      "qtm_metric_edit_and_display_cost_checked": true,
+      "same_shapes_in_both_metrics": true
+    },
+    {
+      "all_checks_passed": true,
+      "direct_history_free_shape_input": true,
+      "legal_scramble_alternative_matches_input": true,
+      "metrics": [
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 2484,
+          "complete": true,
+          "example_shortest_cost": 10,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 10,
+          "metric": "HTM",
+          "replayed_shortest_return_endpoints": 3,
+          "shape_count": 580,
+          "stored_arc_count": 2484
+        },
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 1656,
+          "complete": true,
+          "example_shortest_cost": 10,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 11,
+          "metric": "QTM",
+          "replayed_shortest_return_endpoints": 4,
+          "shape_count": 580,
+          "stored_arc_count": 828
+        }
+      ],
+      "notebook": "examples/shapes-graph-navigation/BandagedPocketCube.ipynb",
+      "notebook_sha256": "ed55098f6f3ab9d5b9e46133860938e0f1f34011e4fbd6c5a02fc969039188e2",
+      "optional_bounded_local_drawing_checked": true,
+      "original_bandage_input_preserved": true,
+      "qtm_metric_edit_and_display_cost_checked": true,
+      "same_shapes_in_both_metrics": true
+    },
+    {
+      "all_checks_passed": true,
+      "direct_history_free_shape_input": true,
+      "legal_scramble_alternative_matches_input": true,
+      "metrics": [
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 460782,
+          "complete": true,
+          "example_shortest_cost": 14,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 14,
+          "metric": "HTM",
+          "replayed_shortest_return_endpoints": 3,
+          "shape_count": 84584,
+          "stored_arc_count": 460782
+        },
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 307188,
+          "complete": true,
+          "example_shortest_cost": 16,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 19,
+          "metric": "QTM",
+          "replayed_shortest_return_endpoints": 4,
+          "shape_count": 84584,
+          "stored_arc_count": 153594
+        }
+      ],
+      "notebook": "examples/shapes-graph-navigation/BeltRoad.ipynb",
+      "notebook_sha256": "33d6658b0d629df50160fbe6607a1ef3103eb330d44430a1f5f8016ca0cbdb60",
+      "optional_bounded_local_drawing_checked": true,
+      "original_bandage_input_preserved": true,
+      "qtm_metric_edit_and_display_cost_checked": true,
+      "same_shapes_in_both_metrics": true
+    },
+    {
+      "all_checks_passed": true,
+      "direct_history_free_shape_input": true,
+      "legal_scramble_alternative_matches_input": true,
+      "metrics": [
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 1896,
+          "complete": true,
+          "example_shortest_cost": 11,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 11,
+          "metric": "HTM",
+          "replayed_shortest_return_endpoints": 3,
+          "shape_count": 440,
+          "stored_arc_count": 1896
+        },
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 1264,
+          "complete": true,
+          "example_shortest_cost": 14,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 15,
+          "metric": "QTM",
+          "replayed_shortest_return_endpoints": 4,
+          "shape_count": 440,
+          "stored_arc_count": 632
+        }
+      ],
+      "notebook": "examples/shapes-graph-navigation/Bicube.ipynb",
+      "notebook_sha256": "611d1aa5236c97b73427365f635dc5fbe0f64928f9551b385128509306da5564",
+      "optional_bounded_local_drawing_checked": true,
+      "original_bandage_input_preserved": true,
+      "qtm_metric_edit_and_display_cost_checked": true,
+      "same_shapes_in_both_metrics": true
+    },
+    {
+      "all_checks_passed": true,
+      "direct_history_free_shape_input": true,
+      "legal_scramble_alternative_matches_input": true,
+      "metrics": [
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 504,
+          "complete": true,
+          "example_shortest_cost": 6,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 6,
+          "metric": "HTM",
+          "replayed_shortest_return_endpoints": 3,
+          "shape_count": 121,
+          "stored_arc_count": 504
+        },
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 336,
+          "complete": true,
+          "example_shortest_cost": 6,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 7,
+          "metric": "QTM",
+          "replayed_shortest_return_endpoints": 4,
+          "shape_count": 121,
+          "stored_arc_count": 168
+        }
+      ],
+      "notebook": "examples/shapes-graph-navigation/BicubeFuse.ipynb",
+      "notebook_sha256": "dfcbbcc5ce93bccb2ca563fa3343c43531b19c8b92a159638ff4a14748bc09f6",
+      "optional_bounded_local_drawing_checked": true,
+      "original_bandage_input_preserved": true,
+      "qtm_metric_edit_and_display_cost_checked": true,
+      "same_shapes_in_both_metrics": true
+    },
+    {
+      "all_checks_passed": true,
+      "direct_history_free_shape_input": true,
+      "legal_scramble_alternative_matches_input": true,
+      "metrics": [
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 108,
+          "complete": true,
+          "example_shortest_cost": 4,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 4,
+          "metric": "HTM",
+          "replayed_shortest_return_endpoints": 3,
+          "shape_count": 23,
+          "stored_arc_count": 108
+        },
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 72,
+          "complete": true,
+          "example_shortest_cost": 5,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 6,
+          "metric": "QTM",
+          "replayed_shortest_return_endpoints": 4,
+          "shape_count": 23,
+          "stored_arc_count": 36
+        }
+      ],
+      "notebook": "examples/shapes-graph-navigation/BlockClockPair.ipynb",
+      "notebook_sha256": "c110436203836a1d12247ecb1c3869be9e8add699de42531b58021c88ca0ebdd",
+      "optional_bounded_local_drawing_checked": true,
+      "original_bandage_input_preserved": true,
+      "qtm_metric_edit_and_display_cost_checked": true,
+      "same_shapes_in_both_metrics": true
+    },
+    {
+      "all_checks_passed": true,
+      "direct_history_free_shape_input": true,
+      "legal_scramble_alternative_matches_input": true,
+      "metrics": [
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 696,
+          "complete": true,
+          "example_shortest_cost": 5,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 5,
+          "metric": "HTM",
+          "replayed_shortest_return_endpoints": 3,
+          "shape_count": 110,
+          "stored_arc_count": 696
+        },
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 464,
+          "complete": true,
+          "example_shortest_cost": 7,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 9,
+          "metric": "QTM",
+          "replayed_shortest_return_endpoints": 4,
+          "shape_count": 110,
+          "stored_arc_count": 232
+        }
+      ],
+      "notebook": "examples/shapes-graph-navigation/DiamondCube.ipynb",
+      "notebook_sha256": "69c344d20daaca482d47d26482b0b96693d92ddef5fbe10b53204babba6834a9",
+      "optional_bounded_local_drawing_checked": true,
+      "original_bandage_input_preserved": true,
+      "qtm_metric_edit_and_display_cost_checked": true,
+      "same_shapes_in_both_metrics": true
+    },
+    {
+      "all_checks_passed": true,
+      "direct_history_free_shape_input": true,
+      "legal_scramble_alternative_matches_input": true,
+      "metrics": [
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 34218,
+          "complete": true,
+          "example_shortest_cost": 7,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 7,
+          "metric": "HTM",
+          "replayed_shortest_return_endpoints": 3,
+          "shape_count": 4062,
+          "stored_arc_count": 34218
+        },
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 22812,
+          "complete": true,
+          "example_shortest_cost": 7,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 8,
+          "metric": "QTM",
+          "replayed_shortest_return_endpoints": 4,
+          "shape_count": 4062,
+          "stored_arc_count": 11406
+        }
+      ],
+      "notebook": "examples/shapes-graph-navigation/FourPair.ipynb",
+      "notebook_sha256": "a9e946055ac1e308549f6edd7fd01d645bff2a2a6e5dca0d27e0c3a78e57e7e9",
+      "optional_bounded_local_drawing_checked": true,
+      "original_bandage_input_preserved": true,
+      "qtm_metric_edit_and_display_cost_checked": true,
+      "same_shapes_in_both_metrics": true
+    },
+    {
+      "all_checks_passed": true,
+      "direct_history_free_shape_input": true,
+      "legal_scramble_alternative_matches_input": true,
+      "metrics": [
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 462816,
+          "complete": true,
+          "example_shortest_cost": 21,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 21,
+          "metric": "HTM",
+          "replayed_shortest_return_endpoints": 3,
+          "shape_count": 92176,
+          "stored_arc_count": 462816
+        },
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 308544,
+          "complete": true,
+          "example_shortest_cost": 26,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 29,
+          "metric": "QTM",
+          "replayed_shortest_return_endpoints": 4,
+          "shape_count": 92176,
+          "stored_arc_count": 154272
+        }
+      ],
+      "notebook": "examples/shapes-graph-navigation/MostSignaturesCube.ipynb",
+      "notebook_sha256": "a660d0a8f8e6b6e41c44be3c9b12a2c0cdf373c0b015d9d4b1aa160e103c148c",
+      "optional_bounded_local_drawing_checked": true,
+      "original_bandage_input_preserved": true,
+      "qtm_metric_edit_and_display_cost_checked": true,
+      "same_shapes_in_both_metrics": true
+    },
+    {
+      "all_checks_passed": true,
+      "direct_history_free_shape_input": true,
+      "legal_scramble_alternative_matches_input": true,
+      "metrics": [
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 18,
+          "complete": true,
+          "example_shortest_cost": 0,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 0,
+          "metric": "HTM",
+          "replayed_shortest_return_endpoints": 1,
+          "shape_count": 1,
+          "stored_arc_count": 18
+        },
+        {
+          "all_actions_have_legal_inverses": true,
+          "all_actions_replayed": true,
+          "all_legal_actions_retained": true,
+          "checked_action_count": 12,
+          "complete": true,
+          "example_shortest_cost": 0,
+          "independent_bfs_matches_all_distances": true,
+          "maximum_distance_from_reference": 0,
+          "metric": "QTM",
+          "replayed_shortest_return_endpoints": 1,
+          "shape_count": 1,
+          "stored_arc_count": 6
+        }
+      ],
+      "notebook": "examples/shapes-graph-navigation/Unbandaged3x3.ipynb",
+      "notebook_sha256": "e818f81149c19d351ed53d0b1f412a3d6c0c55fd7d0fedf68e18d91a5482a057",
+      "optional_bounded_local_drawing_checked": true,
+      "original_bandage_input_preserved": true,
+      "qtm_metric_edit_and_display_cost_checked": true,
+      "same_shapes_in_both_metrics": true
+    }
+  ],
+  "scope": "complete fixed-frame bandage shape components; colors ignored"
+}
