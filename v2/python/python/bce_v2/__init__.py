@@ -501,6 +501,20 @@ from .human_chain_search import (  # noqa: E402
     HumanChainCandidate, HumanChainSearch, select_human_chain,
 )
 from .algorithm_targets import AlgorithmTarget, discover_algorithm_targets
+from .algorithm_palette import AlgorithmPalette, AlgorithmPaletteBody, AlgorithmPaletteSetup
+from .coarse_methods import CoarseMethod, compile_coarse_method, load_coarse_method
+from .algorithm_profiles import (  # noqa: E402
+    AlgorithmPreservationProfile, PaletteWorkspaceCandidate, PaletteGoalCandidate,
+    PaletteProfileDiscovery, discover_palette_profiles, propose_palette_goals,
+)
+from .palette_policies import (  # noqa: E402
+    StagePalettePolicy, StagePolicyFrontier, recipe_taught_ids, stage_policy_frontier,
+)
+from .coarse_search import (  # noqa: E402
+    CoarseMethodCandidate, CoarseMethodSearch, discover_coarse_method,
+)
+from .notebook_methods import CachedCoarseMethod, cached_coarse_method, palette_from_turn_words
+from .automatic_palette import AutomaticPaletteResult, automatic_algorithm_palette
 from .human_repertoire import (  # noqa: E402
     HumanMacroRecipe, HumanRecognitionRule, HumanRepertoire, HumanRepertoireApplication,
     HumanRepertoireCase, HumanRepertoireMacro, HumanRepertoireStage, HumanRepertoireStep,
@@ -580,6 +594,30 @@ __all__ = [
     "HumanChainCandidate", "HumanChainSearch", "select_human_chain",
     "AlgorithmTarget",
     "discover_algorithm_targets",
+    "AlgorithmPalette",
+    "AlgorithmPaletteBody",
+    "AlgorithmPaletteSetup",
+    "CoarseMethod",
+    "compile_coarse_method",
+    "load_coarse_method",
+    "AlgorithmPreservationProfile",
+    "PaletteWorkspaceCandidate",
+    "PaletteGoalCandidate",
+    "PaletteProfileDiscovery",
+    "discover_palette_profiles",
+    "propose_palette_goals",
+    "StagePalettePolicy",
+    "StagePolicyFrontier",
+    "recipe_taught_ids",
+    "stage_policy_frontier",
+    "CoarseMethodCandidate",
+    "CoarseMethodSearch",
+    "discover_coarse_method",
+    "CachedCoarseMethod",
+    "cached_coarse_method",
+    "palette_from_turn_words",
+    "AutomaticPaletteResult",
+    "automatic_algorithm_palette",
     "SymbolicAlgorithmDictionary", "discover_symbolic_dictionary",
     "HumanMacroRecipe", "HumanRecognitionRule", "HumanRepertoire", "HumanRepertoireApplication",
     "HumanRepertoireCase", "HumanRepertoireMacro", "HumanRepertoireStage", "HumanRepertoireStep",
