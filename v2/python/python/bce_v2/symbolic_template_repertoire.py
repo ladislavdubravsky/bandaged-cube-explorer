@@ -268,24 +268,33 @@ def _augment(repertoire, dictionary):
 
 
 def _prepare(initial, settings, strategy, features, dictionary, dictionary_options,
-             discovery_options, gap_executable, timeout, root):
+             discovery_options, gap_executable, timeout, root, palette):
     if isinstance(initial, HumanMethod):
         if initial.backend != "symbolic" or initial.status != "completed":
             raise ValueError("symbolic template repertoire requires a complete symbolic method")
+        if any(stage.recognition_features for stage in initial.stages):
+            raise ValueError("template repertoires do not yet support independent recognition")
         if features is not None or strategy != "fully_solve_each_block":
             raise ValueError("a supplied method retains its own baseline features")
         if root is not None and root != initial.root_vertex:
             raise ValueError("root differs from the supplied method reference")
         if settings["select_chain"]:
             raise ValueError("a supplied symbolic method retains its certified chain; select a new chain first")
-        if dictionary is not None or dictionary_options is not None or discovery_options is not None:
+        if dictionary is not None or dictionary_options is not None or discovery_options is not None or palette is not None:
             raise ValueError("a supplied symbolic method already contains its policy witnesses")
         return initial
     from .human_chain_search import select_human_chain
     from .human_methods import synthesize_human_method
     if not settings["select_chain"]:
-        return synthesize_human_method(initial, strategy=strategy, features=features, backend="symbolic",
-                                       gap_executable=gap_executable, timeout=timeout, root=root)
+        method = synthesize_human_method(initial, strategy=strategy, features=features, backend="symbolic",
+                                         gap_executable=gap_executable, timeout=timeout, root=root)
+        if palette is not None:
+            from .symbolic_chain_search import _compile_dictionary_policy, _discovery_settings
+            palette.validate(inventory=method.inventory, generators=method.generators,
+                             group=method._symbolic_chain.group)
+            _, method, _ = _compile_dictionary_policy(method._symbolic_chain, palette.recipes,
+                _discovery_settings(discovery_options), baseline=method, direct_corrections=True)
+        return method
     if features is not None:
         raise ValueError("use a supplied symbolic method for an explicitly fixed feature chain")
     options = {"max_candidates": 16000, "max_states": 6000, "max_word_length": 16,
@@ -299,7 +308,7 @@ def _prepare(initial, settings, strategy, features, dictionary, dictionary_optio
         preference="recognition" if settings["preference"] == "recognition" else "execution",
         beam_width=settings["beam_width"], max_expansions=settings["max_chain_expansions"],
         max_methods=settings["max_chain_methods"], discovery_options=options,
-        dictionary=dictionary, dictionary_options=dictionary_options,
+        dictionary=dictionary, dictionary_options=dictionary_options, palette=palette,
         gap_executable=gap_executable, timeout=timeout, root=root)
     return search.method
 
@@ -308,7 +317,7 @@ def symbolic_template_human_repertoire(initial, *, strategy, features, preferenc
         allow_symmetry, select_chain, templates, max_trials, max_applications,
         max_word_candidates, max_word_frontier, beam_width, max_chain_expansions,
         max_chain_methods, max_cost_ratio, chunk_options, max_group_elements,
-        gap_executable, timeout, root, dictionary, dictionary_options, discovery_options):
+        gap_executable, timeout, root, dictionary, dictionary_options, discovery_options, palette=None):
     from .symbolic_repertoire_core import build_symbolic_repertoire
     from .template_human_repertoire import _BUDGETS, _CHUNK_OPTIONS, _dictionary
     if max_group_elements is not None:
@@ -360,12 +369,21 @@ def symbolic_template_human_repertoire(initial, *, strategy, features, preferenc
             raise TypeError("dictionary must be a SymbolicAlgorithmDictionary")
         if dictionary_options is not None:
             raise ValueError("dictionary_options cannot be supplied with a prepared dictionary")
+    if palette is not None:
+        from .algorithm_palette import AlgorithmPalette
+        if not isinstance(palette, AlgorithmPalette):
+            raise TypeError("palette must be an AlgorithmPalette")
+        from .symbolic_chain_search import _discovery_settings
+        _discovery_settings(discovery_options)
     baseline = _prepare(initial, settings, strategy, features, dictionary, dictionary_options,
-                        discovery_options, gap_executable, timeout, root)
+                        discovery_options, gap_executable, timeout, root, palette)
     loops = reference_loops(baseline)
     _validate_method(baseline, complete_loops=loops)
     retain_method(baseline)
     report_progress("templates", "started", backend="symbolic")
+    # Planning already sees the supplied vocabulary. Its bodies also seed the
+    # subsequent expression-factorization pass instead of arriving only here.
+    templates = (*templates, *(body.algorithm for body in palette.bodies)) if palette is not None else templates
     for template in templates:
         _require(template._inventory.root_shape == baseline.reference_shape and
                  template._generators == baseline.generators and

@@ -18,9 +18,14 @@ from .loop_solver import LoopStep
 
 
 _IDENTITY = tuple(range(48))
-_KINDS = ("place_block", "solve_block")
+_BLOCK_KINDS = ("place_block", "solve_block")
+_ALIGNMENT_KIND = "place_blocks_up_to_alignment"
+_RESIDUAL_KIND = "solve_blocks_up_to_actions"
+_ACTION_SET_KINDS = (_ALIGNMENT_KIND, _RESIDUAL_KIND)
+_COLLECTION_KINDS = ("place_blocks", "solve_blocks", "occupy_slots", _ALIGNMENT_KIND, _RESIDUAL_KIND)
+_KINDS = (*_BLOCK_KINDS, "orient_slots", *_COLLECTION_KINDS)
 _STRATEGIES = {
-    "placement_then_orientation": _KINDS,
+    "placement_then_orientation": _BLOCK_KINDS,
     "fully_solve_each_block": ("solve_block",),
 }
 
@@ -49,14 +54,41 @@ def _inverse_moves(moves):
 
 @dataclass(frozen=True)
 class BlockFeature:
-    """Place or fully solve one physical block, named by all reference cells."""
+    """An identity, collection, membership, alignment or orientation goal.
+
+    ``place_blocks`` fixes the destinations of each named component;
+    ``solve_blocks`` additionally fixes each component's phase. Both may
+    combine independent components with different footprints and orders.
+    ``occupy_slots`` retains the named identities in their collective home
+    region, allowing permutations and phases within that region.
+
+    ``place_blocks_up_to_alignment`` retains their relative placement under
+    an explicitly supplied finite group of physical endpoint adjustments.
+    ``alignment_permutations`` contains that group's complete 48-point
+    sticker permutations. Every adjustment must preserve the named region
+    and belong to the preceding stage subgroup. The observation transports
+    the entire set of allowed ordered placements, rather than taking an
+    arbitrary union of solved cases.
+
+    ``solve_blocks_up_to_actions`` retains full poses, including orientation,
+    up to the same explicitly supplied small physical action group. Its
+    observation is the transported set of permitted full-pose patterns. This
+    expresses completion with a residual action family without requiring
+    each phase to be zero or forgetting relative phases.
+
+    ``orient_slots`` names the union of one compatible class's reference
+    blocks. Its observation ignores occupant identities and reads their
+    phases at the named destinations. Inventory-dependent validation occurs
+    when the feature is resolved by a planner.
+    """
 
     kind: str
     cells: tuple[int, ...]
+    alignment_permutations: tuple[tuple[int, ...], ...] = ()
 
     def __post_init__(self):
         if self.kind not in _KINDS:
-            raise ValueError("feature kind must be place_block or solve_block")
+            raise ValueError("unknown feature kind: " + str(self.kind))
         cells = tuple(self.cells)
         if not cells:
             raise ValueError("a feature must name a nonempty reference block")
@@ -65,20 +97,179 @@ class BlockFeature:
         if any(not 0 <= cell < 27 for cell in cells) or len(set(cells)) != len(cells):
             raise ValueError("feature cells must be distinct indices from 0 through 26")
         object.__setattr__(self, "cells", tuple(sorted(cells)))
+        alignments = tuple(tuple(permutation) for permutation in self.alignment_permutations)
+        if self.kind not in _ACTION_SET_KINDS and alignments:
+            raise ValueError("alignment permutations require place_blocks_up_to_alignment or solve_blocks_up_to_actions")
+        if self.kind in _ACTION_SET_KINDS:
+            if not alignments:
+                raise ValueError("an alignment goal requires a nonempty adjustment group")
+            if any(len(permutation) != 48 or
+                   any(type(point) is not int for point in permutation) or
+                   set(permutation) != set(range(48)) for permutation in alignments):
+                raise ValueError("alignment permutations must permute sticker points 0 through 47")
+            if len(set(alignments)) != len(alignments):
+                raise ValueError("alignment permutations must be distinct")
+            group = set(alignments)
+            if _IDENTITY not in group or any(_then(first, second) not in group
+                                            for first in alignments for second in alignments):
+                raise ValueError("alignment permutations must form a complete group with identity")
+        object.__setattr__(self, "alignment_permutations", tuple(sorted(alignments)))
 
     def to_dict(self):
-        return {"kind": self.kind, "reference_cells": list(self.cells)}
+        record = {"kind": self.kind, "reference_cells": list(self.cells)}
+        if self.alignment_permutations:
+            record["alignment_permutations"] = [list(permutation)
+                                                 for permutation in self.alignment_permutations]
+        return record
 
 
 @dataclass(frozen=True)
 class _ActionSummary:
     destinations: tuple[int, ...]
     phases: tuple[int, ...]
+    inventory: object = field(default=None, compare=False, repr=False)
+
+
+def _transport_poses(row, action, inventory):
+    return tuple(value for offset in range(0, len(row), 2)
+                 for value in (action.destinations[row[offset]],
+                     (row[offset+1] + action.phases[row[offset]]) %
+                     inventory.blocks[row[offset]].orientation_order))
 
 
 def _observation(action, block, kind):
+    if kind == _RESIDUAL_KIND:
+        return tuple(value for row in sorted(_transport_poses(row, action, action.inventory)
+                                             for row in block) for value in row)
+    if kind == _ALIGNMENT_KIND:
+        return tuple(slot for row in sorted(tuple(action.destinations[slot] for slot in row)
+                                            for row in block) for slot in row)
+    if kind == "orient_slots":
+        by_destination = dict(zip(action.destinations, action.phases))
+        return tuple(by_destination[index] for index in block)
+    if kind == "occupy_slots":
+        return tuple(sorted(action.destinations[index] for index in block))
+    if kind == "place_blocks":
+        return tuple(action.destinations[index] for index in block)
+    if kind == "solve_blocks":
+        return tuple(value for index in block
+                     for value in (action.destinations[index], action.phases[index]))
     destination = action.destinations[block]
     return (destination,) if kind == "place_block" else (destination, action.phases[block])
+
+
+def _resolve_feature(inventory, feature):
+    """Resolve canonical feature cells to one identity or ordered slot region."""
+    if feature.kind in _BLOCK_KINDS:
+        for index, slot in enumerate(inventory.blocks):
+            if slot.cells == feature.cells:
+                return index
+        raise ValueError("each block feature must name exactly one block in the actual reference inventory")
+    cells = set(feature.cells)
+    indices = tuple(index for index, slot in enumerate(inventory.blocks)
+                    if cells.intersection(slot.cells))
+    if (not indices or set(cell for index in indices for cell in inventory.blocks[index].cells) != cells):
+        raise ValueError("feature cells must be a union of complete reference blocks")
+    if feature.kind in _ACTION_SET_KINDS:
+        rows = set()
+        for permutation in feature.alignment_permutations:
+            action = inventory.action(permutation)
+            destinations = tuple(action.destinations[index] for index in indices)
+            if set(destinations) != set(indices):
+                raise ValueError("alignment adjustments must preserve the named component region")
+            row = (destinations if feature.kind == _ALIGNMENT_KIND else
+                   tuple(value for index in indices
+                         for value in (action.destinations[index], action.phases[index])))
+            rows.add(row)
+        return tuple(sorted(rows))
+    if feature.kind in _COLLECTION_KINDS:
+        return indices
+    slots = tuple(inventory.blocks[index] for index in indices)
+    if any(slot.orientation_order == 1 for slot in slots):
+        raise ValueError("orientation slots must have nontrivial orientation")
+    if len({(slot.template_cells, slot.orientation_order) for slot in slots}) != 1:
+        raise ValueError("orientation slots must belong to one compatible footprint class")
+    return indices
+
+
+def _feature_name(inventory, block, kind):
+    if kind in _ACTION_SET_KINDS:
+        block = tuple(sorted(block[0] if kind == _ALIGNMENT_KIND else block[0][::2]))
+    return (", ".join(inventory.blocks[index].name for index in block)
+            if isinstance(block, tuple) else inventory.blocks[block].name)
+
+
+def _feature_metadata(inventory, feature):
+    block = _resolve_feature(inventory, feature)
+    return block, _feature_name(inventory, block, feature.kind)
+
+
+def _feature_indices(inventory, feature):
+    """Return the named physical components, independently of goal encoding."""
+    block = _resolve_feature(inventory, feature)
+    if feature.kind in _ACTION_SET_KINDS:
+        return tuple(sorted(block[0] if feature.kind == _ALIGNMENT_KIND else block[0][::2]))
+    return block if isinstance(block, tuple) else (block,)
+
+
+def _block_handle_record(block):
+    if not isinstance(block, tuple):
+        return block
+    return [list(row) for row in block] if block and isinstance(block[0], tuple) else list(block)
+
+
+def _feature_successor(observation, action, inventory, block, kind):
+    """Apply an endpoint action to a complete observation, without identities."""
+    if kind == _RESIDUAL_KIND:
+        width = len(block[0])
+        rows = (observation[offset:offset+width] for offset in range(0, len(observation), width))
+        return tuple(value for row in sorted(_transport_poses(row, action, inventory)
+                                             for row in rows) for value in row)
+    if kind == _ALIGNMENT_KIND:
+        width = len(block[0])
+        rows = (observation[offset:offset + width]
+                for offset in range(0, len(observation), width))
+        return tuple(slot for row in sorted(tuple(action.destinations[slot] for slot in row)
+                                            for row in rows) for slot in row)
+    if kind == "orient_slots":
+        positions = {slot: index for index, slot in enumerate(block)}
+        if {action.destinations[slot] for slot in block} != set(block):
+            raise ValueError("orientation slot region is not invariant under the action")
+        result = [0] * len(block)
+        for slot in block:
+            destination = action.destinations[slot]
+            result[positions[destination]] = (
+                observation[positions[slot]] + action.phases[slot]
+            ) % inventory.blocks[slot].orientation_order
+        return tuple(result)
+    if kind == "occupy_slots":
+        return tuple(sorted(action.destinations[slot] for slot in observation))
+    if kind == "place_blocks":
+        return tuple(action.destinations[slot] for slot in observation)
+    if kind == "solve_blocks":
+        result = []
+        for offset in range(0, len(observation), 2):
+            slot, phase = observation[offset:offset+2]
+            result.extend((action.destinations[slot],
+                           (phase + action.phases[slot]) % inventory.blocks[slot].orientation_order))
+        return tuple(result)
+    destination = action.destinations[observation[0]]
+    if kind == "place_block":
+        return (destination,)
+    order = inventory.blocks[observation[0]].orientation_order
+    return destination, (observation[1] + action.phases[observation[0]]) % order
+
+
+def _check_slot_invariance(actions, block):
+    slots = set(block)
+    if any({action.destinations[slot] for slot in block} != slots for action in actions):
+        raise ValueError("orientation slots must be invariant under the entire preceding subgroup")
+
+
+def _check_alignment_membership(feature, contains):
+    """Certify adjustments are legal endpoints that preserve prior goals."""
+    if any(not contains(permutation) for permutation in feature.alignment_permutations):
+        raise ValueError("alignment adjustments must belong to the entire preceding subgroup")
 
 
 @dataclass(frozen=True)
@@ -156,7 +347,7 @@ class HumanStage:
 
     number: int
     feature: BlockFeature
-    block_index: int
+    block_index: int | tuple[int, ...] | tuple[tuple[int, ...], ...]
     block_name: str
     members_before: tuple[int, ...] = field(repr=False)
     members_after: tuple[int, ...] = field(repr=False)
@@ -182,7 +373,7 @@ class HumanStage:
 
     def to_dict(self, *, include_elements=False):
         record = {"number": self.number, "feature": self.feature.to_dict(),
-                  "block_index": self.block_index, "block_name": self.block_name,
+                  "block_index": _block_handle_record(self.block_index), "block_name": self.block_name,
                   "order_before": str(self.order_before), "order_after": str(self.order_after),
                   "index": self.index, "observations": [list(o) for o in self.observations],
                   "solved_observation": list(self.solved_observation),
@@ -314,7 +505,7 @@ def _enumerate(analysis):
     for permutation in permutations:
         action = inventory.action(permutation)
         _check(action.to_permutation() == permutation, "block action fails faithful reconstruction")
-        summaries.append(_ActionSummary(action.destinations, action.phases))
+        summaries.append(_ActionSummary(action.destinations, action.phases, inventory))
     moduli = tuple(b.orientation_order for b in inventory.blocks)
     for index, action in enumerate(summaries):
         for generator in alphabet:
@@ -371,7 +562,7 @@ def _check_reused_group(group):
 def _fixed_features(group, members):
     fixed = []
     identity = group._summaries[0]
-    for kind in _KINDS:
+    for kind in _BLOCK_KINDS:
         for block, slot in enumerate(group.inventory.blocks):
             solved = _observation(identity, block, kind)
             if all(_observation(group._summaries[i], block, kind) == solved for i in members):
@@ -380,6 +571,8 @@ def _fixed_features(group, members):
 
 
 def _stage(group, current, feature, block, number, fixed):
+    if feature.kind == "orient_slots":
+        _check_slot_invariance((group._summaries[index] for index in current), block)
     solved = _observation(group._summaries[0], block, feature.kind)
     fibers = defaultdict(list)
     for i in current:
@@ -392,7 +585,7 @@ def _stage(group, current, feature, block, number, fixed):
                {group.permutations[i] for i in members}, "stage observations are not right cosets")
     after_fixed = _fixed_features(group, target)
     implied = tuple(f for f in after_fixed if f not in fixed and f != feature)
-    return (HumanStage(number, feature, block, group.inventory.blocks[block].name,
+    return (HumanStage(number, feature, block, _feature_name(group.inventory, block, feature.kind),
                        current, target, tuple(sorted(fibers)), solved, implied), after_fixed)
 
 
@@ -400,11 +593,15 @@ def _chains(group, strategy, features):
     current = tuple(range(len(group)))
     fixed = initial = _fixed_features(group, current)
     stages, skipped = [], []
-    by_cells = {block.cells: i for i, block in enumerate(group.inventory.blocks)}
     if strategy == "manual":
         choices = features
         for feature in choices:
-            block = by_cells[feature.cells]
+            block = _resolve_feature(group.inventory, feature)
+            if feature.alignment_permutations:
+                current_permutations = {group.permutations[index] for index in current}
+                _check_alignment_membership(feature, current_permutations.__contains__)
+            if feature.kind == "orient_slots":
+                _check_slot_invariance((group._summaries[index] for index in current), block)
             solved = _observation(group._summaries[0], block, feature.kind)
             if all(_observation(group._summaries[i], block, feature.kind) == solved for i in current):
                 skipped.append(feature)
@@ -482,7 +679,10 @@ def plan_human_stages(initial, *, strategy="placement_then_orientation", feature
 
     Also accepts complete ShapeGraphs, LoopGenerators, IsotropyAnalysis,
     BlockStructure, or a prepared HumanStagePlan. Original roots are retained.
-    Manual features must name exact inventory blocks and finish at identity;
+    Manual identity features name exact inventory blocks; collection features
+    name complete-component unions, and alignment features supply a group of
+    permitted physical adjustments. Orientation features name invariant unions
+    of compatible slots. All manual chains finish at identity;
     redundant features are recorded and skipped. There is no default resource
     cap. Supply max_group_elements to stop before enumeration of larger H.
     A stop has status=limit_reached, no group/stages, and no terminal claim.
@@ -547,9 +747,8 @@ def plan_human_stages(initial, *, strategy="placement_then_orientation", feature
     if previous is not None and previous.group is not None:
         _check(previous.group.analysis == analysis, "prepared group refers to a different analysis")
     if features is not None:
-        cells = {block.cells for block in analysis.block_inventory.blocks}
-        if any(f.cells not in cells for f in features):
-            raise ValueError("each feature must name exactly one block in the actual reference inventory")
+        for feature in features:
+            _resolve_feature(analysis.block_inventory, feature)
     if backend == "symbolic":
         from .symbolic_chains import plan_symbolic_stages
         return plan_symbolic_stages(analysis, strategy=strategy, features=features,

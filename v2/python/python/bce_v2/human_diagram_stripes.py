@@ -64,7 +64,7 @@ def add_white_sticker_stripes(figure, diagrams, face_colors=None, *, rotation=""
                 role = diagram.sticker_roles[index]
                 if sticker == 4:
                     category, opacity = "center", 1.
-                elif role == "current":
+                elif role == "current" and not diagram.orientation_slots:
                     category, opacity = "current", .95 if transparent else 1.
                 else:
                     continue

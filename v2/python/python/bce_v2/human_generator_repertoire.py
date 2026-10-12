@@ -5,7 +5,8 @@ import json
 
 from .human_algorithms import _stage_groups
 from .human_chains import plan_human_stages
-from .human_methods import HumanMethod, _compile_plan, _require, _then, _validate_method
+from .human_methods import (HumanMethod, _compile_plan, _require,
+                            _require_goal_only_recognition, _then, _validate_method)
 from .human_repertoire import (
     HumanMacroRecipe, HumanRepertoire, HumanRepertoireCase, HumanRepertoireMacro,
     _baseline_metrics, _compile_policies, _same_json, _validate_repertoire,
@@ -42,6 +43,7 @@ def generator_human_repertoire(initial, *, strategy="fully_solve_each_block", fe
     if supplied_method is not None:
         if supplied_method.status != "completed":
             raise ValueError("generator repertoire requires a complete method")
+        _require_goal_only_recognition(supplied_method, "generator repertoire")
         if supplied_method.backend == "symbolic":
             raise ValueError("generator repertoire currently requires the explicit backend; "
                              "use improve_human_method for a symbolic policy")

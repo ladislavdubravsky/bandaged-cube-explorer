@@ -13,7 +13,7 @@ import re
 from . import Shape
 from ._moves import _simplified_moves
 from .block_actions import BlockInventory
-from .human_chains import BlockFeature
+from .human_chains import BlockFeature, _ALIGNMENT_KIND, _RESIDUAL_KIND, _ACTION_SET_KINDS, _block_handle_record
 from .human_witnesses import stored_loop_generators
 from .isotropy import isotropy_loops
 from .loop_algorithms import LoopAlgorithm, LoopExpression
@@ -101,12 +101,37 @@ def _observation(value):
                  for item in _list(value, "observation"))
 
 
+def _block_handle(value, kind):
+    if kind in _ACTION_SET_KINDS:
+        rows = tuple(tuple(_integer(item, "alignment slot index")
+                           for item in _list(row, "alignment placement row"))
+                     for row in _list(value, "alignment placements"))
+        if (not rows or rows != tuple(sorted(set(rows))) or not rows[0] or
+                any(len(row) != len(rows[0]) or
+                    (kind == _ALIGNMENT_KIND and len(set(row)) != len(row)) or
+                    (kind == _RESIDUAL_KIND and (len(row) % 2 or len(set(row[::2])) != len(row)//2))
+                    for row in rows)):
+            raise ValueError("alignment placements must contain distinct canonical equal-width rows")
+        return rows
+    if kind not in ("orient_slots", "place_blocks", "solve_blocks", "occupy_slots"):
+        return _integer(value, "block index")
+    slots = tuple(_integer(item, "slot index") for item in _list(value, "slot indices"))
+    if not slots or slots != tuple(sorted(set(slots))):
+        raise ValueError("slot indices must be nonempty, distinct and in reference order")
+    return slots
+
+
 def _feature(record):
-    _fields(record, {"kind", "reference_cells"}, "feature")
+    aligned = isinstance(record, dict) and record.get("kind") in _ACTION_SET_KINDS
+    _fields(record, {"kind", "reference_cells"} |
+            ({"alignment_permutations"} if aligned else set()), "feature")
     feature = BlockFeature(_string(record["kind"], "feature kind"),
-                           tuple(_list(record["reference_cells"], "reference cells")))
+                           tuple(_list(record["reference_cells"], "reference cells")),
+                           tuple(_permutation(permutation) for permutation in
+                                 _list(record["alignment_permutations"], "alignment permutations"))
+                           if aligned else ())
     if not _same(feature.to_dict(), record):
-        raise ValueError("feature cells must use canonical reference order")
+        raise ValueError("feature cells and alignment permutations must use canonical order")
     return feature
 
 
@@ -180,14 +205,17 @@ def _algorithm_to_dict(algorithm):
 
 
 def _stage_to_dict(stage):
-    return {"number": stage.number, "feature": stage.feature.to_dict(),
-            "block_index": stage.block_index, "block_name": stage.block_name,
+    record = {"number": stage.number, "feature": stage.feature.to_dict(),
+            "block_index": _block_handle_record(stage.block_index), "block_name": stage.block_name,
             "order_before": str(stage.order_before), "order_after": str(stage.order_after),
             "index": stage.index, "case_count": stage.case_count,
             "solved_observation": list(stage.solved_observation),
             "implied_features": [feature.to_dict() for feature in stage.implied_features],
             "cases": [{"observation": list(case.observation), "algorithm_id": case.algorithm_id,
                        "representative": list(case.representative)} for case in stage.cases]}
+    if stage.recognition_features:
+        record["recognition_features"] = [feature.to_dict() for feature in stage.recognition_features]
+    return record
 
 
 def method_to_dict(method):
@@ -212,6 +240,8 @@ def method_to_dict(method):
     if method._symbolic_chain is not None:
         record["version"] = 2
         record["symbolic_chain"] = method._symbolic_chain.to_dict()
+    if any(stage.recognition_features for stage in method.stages):
+        record["version"] = 3
     record["fingerprint"] = _fingerprint(record)
     return record
 
@@ -233,9 +263,12 @@ def method_from_dict(record):
     """
     from .human_methods import HumanMethod, HumanMethodCase, HumanMethodStage, _validate_method
 
-    symbolic = isinstance(record, dict) and type(record.get("version")) is int and record["version"] == 2
+    version = record.get("version") if isinstance(record, dict) else None
+    symbolic = (isinstance(record, dict) and type(version) is int and
+                (version == 2 or version == 3 and "symbolic_chain" in record))
     _fields(record, _METHOD_FIELDS | ({"symbolic_chain"} if symbolic else set()), "human method")
-    conventions = {**_CONVENTIONS, "version": 2 if symbolic else 1}
+    conventions = {**_CONVENTIONS, "version": version if type(version) is int and
+                   version in (1, 2, 3) else None}
     if any(not _same(record[key], value) for key, value in conventions.items()):
         raise ValueError("unsupported human method format, model, frame, or conventions")
     fingerprint = record["fingerprint"]
@@ -299,7 +332,10 @@ def method_from_dict(record):
     stage_fields = {"number", "feature", "block_index", "block_name", "order_before", "order_after",
                     "index", "case_count", "solved_observation", "implied_features", "cases"}
     for item in _list(record["stages"], "stages"):
-        _fields(item, stage_fields, "stage")
+        refined = isinstance(item, dict) and "recognition_features" in item
+        if refined and version != 3:
+            raise ValueError("independent recognition requires human method format version 3")
+        _fields(item, stage_fields | ({"recognition_features"} if refined else set()), "stage")
         cases = []
         for case in _list(item["cases"], "cases"):
             _fields(case, {"observation", "algorithm_id", "representative"}, "case")
@@ -308,14 +344,17 @@ def method_from_dict(record):
                                          _permutation(case["representative"])))
         _integer(item["index"], "stage index", 1)
         _integer(item["case_count"], "case count", 1)
+        feature = _feature(item["feature"])
         stage = HumanMethodStage(
-            _integer(item["number"], "stage number", 1), _feature(item["feature"]),
-            _integer(item["block_index"], "block index"), _string(item["block_name"], "block name"),
+            _integer(item["number"], "stage number", 1), feature,
+            _block_handle(item["block_index"], feature.kind), _string(item["block_name"], "block name"),
             _order(item["order_before"], "stage group order"),
             _order(item["order_after"], "stage stabilizer order"),
             _observation(item["solved_observation"]),
             tuple(_feature(feature) for feature in _list(item["implied_features"], "implied features")),
-            tuple(cases))
+            tuple(cases), tuple(_feature(feature) for feature in
+                                _list(item["recognition_features"], "recognition features"))
+            if refined else ())
         if not _same(_stage_to_dict(stage), item):
             raise ValueError("stage metadata disagrees with its cases")
         stages.append(stage)

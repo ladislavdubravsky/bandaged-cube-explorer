@@ -6,15 +6,19 @@ separate from later searches for shorter, easier-to-remember algorithms.
 
 from __future__ import annotations
 
-from collections import defaultdict
+from collections import defaultdict, deque
+from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
 from pathlib import Path
+from types import SimpleNamespace
 
 from . import Shape, State
 from ._moves import _simplified_moves
 from .block_actions import BlockInventory
 from .computation import checkpoint
-from .human_chains import BlockFeature, plan_human_stages
+from .human_chains import (BlockFeature, _check_alignment_membership, _check_slot_invariance, _feature_name,
+                           _feature_successor, _observation, _resolve_feature,
+                           plan_human_stages)
 from .isotropy import LoopGenerator, LoopGenerators
 from .loop_algorithms import LoopAlgorithm, LoopExpression
 
@@ -39,8 +43,107 @@ def _inverse(permutation):
 
 
 def _observe(action, block, kind):
-    return ((action.destinations[block],) if kind == "place_block" else
-            (action.destinations[block], action.phases[block]))
+    return _observation(action, block, kind)
+
+
+def _recognition_spec(inventory, stage):
+    """Resolve independent observers; the goal remains an explicit projection.
+
+    Requiring the goal among the observers is a deliberately sufficient
+    recovery rule. It avoids treating a lucky representative as evidence
+    that every state with the same recognition pattern has the same goal.
+    """
+    _require(isinstance(stage.recognition_features, tuple),
+             "recognition features must be a tuple of block features")
+    features = stage.recognition_features or (stage.feature,)
+    _require(features and
+             all(isinstance(feature, BlockFeature) for feature in features),
+             "recognition features must be a nonempty tuple of block features")
+    _require(len(set(features)) == len(features) and stage.feature in features,
+             "recognition features must be distinct and explicitly include the stage goal")
+    return tuple((feature, _resolve_feature(inventory, feature)) for feature in features)
+
+
+def _recognition_observation(action, spec):
+    return tuple(value for feature, block in spec
+                 for value in _observe(action, block, feature.kind))
+
+
+def _stage_observation(action, stage, inventory):
+    """Read a case pattern, independently of the stage's committed goal."""
+    return _recognition_observation(action, _recognition_spec(inventory, stage))
+
+
+def _goal_observation(observation, inventory, stage):
+    """Project a recognition pattern onto its explicitly included goal."""
+    identity, offset = inventory.action(_IDENTITY), 0
+    for feature, block in _recognition_spec(inventory, stage):
+        size = len(_observe(identity, block, feature.kind))
+        if feature == stage.feature:
+            return observation[offset:offset + size]
+        offset += size
+    raise ValueError("recognition does not recover the stage goal")
+
+
+def _recognition_inputs(plan, recognition):
+    if recognition is None:
+        return {}
+    if not isinstance(recognition, Mapping):
+        raise TypeError("recognition must map stage numbers to feature sequences")
+    result = {}
+    for number, features in recognition.items():
+        if type(number) is not int or not 1 <= number <= len(plan.stages):
+            raise ValueError("recognition stage number is outside the compiled plan")
+        features = (features,) if isinstance(features, BlockFeature) else tuple(features)
+        _require(bool(features), "recognition features must explicitly include the stage goal")
+        # Skeleton stages intentionally commit only a goal. Resolve using a
+        # method-stage view, without changing the planner's subgroup chain.
+        stage = SimpleNamespace(feature=plan.stages[number - 1].feature,
+                                recognition_features=features)
+        _recognition_spec(plan.inventory, stage)
+        result[number] = features
+    return result
+
+
+def _require_goal_only_recognition(method, operation):
+    """Keep older policy optimizers from silently interpreting finer patterns."""
+    _require(all(not stage.recognition_features or stage.recognition_features == (stage.feature,)
+                 for stage in method.stages),
+             f"{operation} does not yet support independent recognition features")
+
+
+def _recognition_orbit(inventory, certified, stage):
+    """Enumerate only the joint observation orbit, retaining physical members.
+
+    Every observer has a well-defined action, so orbit closure covers all
+    reachable patterns even when the preceding group itself is enormous.
+    """
+    spec = _recognition_spec(inventory, stage)
+    identity = inventory.action(_IDENTITY)
+    sizes = tuple(len(_observe(identity, block, feature.kind)) for feature, block in spec)
+    actions = tuple((generator.permutation, inventory.action(generator.permutation))
+                    for generator in certified.group_before.strong_generators)
+    for feature, block in spec:
+        _check_alignment_membership(feature, certified.group_before.contains)
+        if feature.kind == "orient_slots":
+            _check_slot_invariance((action for _, action in actions), block)
+    solved = _recognition_observation(identity, spec)
+    representatives, queue = {solved: _IDENTITY}, deque([solved])
+    while queue:
+        checkpoint("independent_recognition_orbit", stage=stage.number,
+                   observations=len(representatives))
+        observation = queue.popleft()
+        for permutation, action in actions:
+            offset, successor = 0, []
+            for (feature, block), size in zip(spec, sizes):
+                successor.extend(_feature_successor(observation[offset:offset + size],
+                                                   action, inventory, block, feature.kind))
+                offset += size
+            successor = tuple(successor)
+            if successor not in representatives:
+                representatives[successor] = _then(representatives[observation], permutation)
+                queue.append(successor)
+    return representatives
 
 
 def _fixed_features(inventory, actions, members):
@@ -88,13 +191,14 @@ class HumanMethodCase:
 class HumanMethodStage:
     number: int
     feature: BlockFeature
-    block_index: int
+    block_index: int | tuple[int, ...]
     block_name: str
     order_before: int
     order_after: int
     solved_observation: tuple[int, ...]
     implied_features: tuple[BlockFeature, ...]
     cases: tuple[HumanMethodCase, ...]
+    recognition_features: tuple[BlockFeature, ...] = ()
 
     @property
     def index(self):
@@ -220,13 +324,24 @@ class HumanMethod:
     def additive_costs(self):
         """Exact uniform-group costs before cancellation between stages.
 
-        Complete deterministic coset tables give independent, uniformly
-        distributed stage digits. These are sums of stored case-word costs,
-        not the length of the subsequently simplified concatenation.
+        Deterministic goal coset tables give independent, uniformly distributed
+        stage digits. Refined observers retain this calculation when correction
+        effects and costs depend only on the goal coordinate. These are sums of
+        stored case-word costs, before simplifying the concatenation.
         """
         from fractions import Fraction
         _require(self.status == "completed", "costs require a complete method")
         algorithms = {a.id: a for a in self.algorithms}
+        for stage in self.stages:
+            effects = defaultdict(set)
+            for case in stage.cases:
+                goal = _goal_observation(case.observation, self.inventory, stage)
+                algorithm = None if case.algorithm_id is None else algorithms[case.algorithm_id]
+                effects[goal].add((_IDENTITY, 0, 0) if algorithm is None else
+                                  (algorithm.permutation, algorithm.htm_length,
+                                   algorithm.qtm_length))
+            _require(all(len(values) == 1 for values in effects.values()),
+                     "exact additive costs require one correction effect and cost per goal observation")
         result = {"scope": "uniform_reference_group_before_boundary_cancellation", "exact": True}
         for metric in ("htm", "qtm"):
             means, worst = [], 0
@@ -293,8 +408,9 @@ class HumanMethod:
             return HumanRecognition("solved")
         action = self.inventory.action(state.sticker_permutation)
         for stage in self.stages:
-            observation = _observe(action, stage.block_index, stage.feature.kind)
-            if observation != stage.solved_observation:
+            goal = _observe(action, stage.block_index, stage.feature.kind)
+            if goal != stage.solved_observation:
+                observation = _stage_observation(action, stage, self.inventory)
                 case = next((c for c in stage.cases if c.observation == observation), None)
                 _require(case is not None and case.algorithm_id is not None,
                          "compiled method is missing a required case correction")
@@ -412,28 +528,36 @@ def _validate_method(method, *, complete_loops=None):
     current, used = known, set()
     fixed = _fixed_features(method.inventory, actions, current)
     _require(method.initial_features == fixed, "initial guaranteed features are inconsistent")
-    by_cells = {b.cells: i for i, b in enumerate(method.inventory.blocks)}
     for number, stage in enumerate(method.stages, 1):
-        _require(stage.feature.cells in by_cells, "stage feature is not an exact reference block")
-        block = by_cells[stage.feature.cells]
+        block = _resolve_feature(method.inventory, stage.feature)
+        _check_alignment_membership(stage.feature, current.__contains__)
+        if stage.feature.kind == "orient_slots":
+            _check_slot_invariance((actions[p] for p in current), block)
         _require(stage.number == number and stage.block_index == block and
-                 stage.block_name == method.inventory.blocks[block].name,
+                 stage.block_name == _feature_name(method.inventory, block, stage.feature.kind),
                  "stage identity or reference block metadata is inconsistent")
         solved = _observe(actions[_IDENTITY], block, stage.feature.kind)
-        fibers = defaultdict(set)
+        spec = _recognition_spec(method.inventory, stage)
+        for observed_feature, observed_block in spec:
+            _check_alignment_membership(observed_feature, current.__contains__)
+            if observed_feature.kind == "orient_slots":
+                _check_slot_invariance((actions[p] for p in current), observed_block)
+        fibers, goals = defaultdict(set), defaultdict(set)
         for p in current:
-            fibers[_observe(actions[p], block, stage.feature.kind)].add(p)
-        target = fibers[solved]
+            fibers[_recognition_observation(actions[p], spec)].add(p)
+            goals[_observe(actions[p], block, stage.feature.kind)].add(p)
+        target = goals[solved]
         _require(stage.solved_observation == solved and stage.order_before == len(current) and
-                 stage.order_after == len(target) and len(fibers) > 1 and
-                 len(current) == len(target) * len(fibers), "stage order or solved observation is inconsistent")
+                 stage.order_after == len(target) and len(goals) > 1 and
+                 len(current) == len(target) * len(goals), "stage order or solved observation is inconsistent")
         _require(stage.observations == tuple(sorted(fibers)), "stage cases omit, duplicate or reorder observations")
+        recognition_target = fibers[_recognition_observation(actions[_IDENTITY], spec)]
         for case in stage.cases:
             fiber = fibers[case.observation]
             _require(case.representative in fiber, "case representative is outside its exact observation fiber")
-            _require({_then(k, case.representative) for k in target} == fiber,
+            _require({_then(k, case.representative) for k in recognition_target} == fiber,
                      "case observation is not an exact right coset")
-            if case.observation == solved:
+            if _goal_observation(case.observation, method.inventory, stage) == solved:
                 _require(case.algorithm_id is None, "already-solved case must require no correction")
             else:
                 _require(case.algorithm_id in algorithms, "case refers to a missing correction")
@@ -448,12 +572,16 @@ def _validate_method(method, *, complete_loops=None):
         fixed, current = after_fixed, target
     _require(current == {_IDENTITY}, "method leaves a nontrivial terminal subgroup")
     _require(used == set(algorithms), "method contains unused shared algorithms")
-    _require(all(f.cells in by_cells and f in fixed for f in method.skipped_features),
-             "skipped feature metadata is inconsistent")
+    for feature in method.skipped_features:
+        block = _resolve_feature(method.inventory, feature)
+        solved = _observe(actions[_IDENTITY], block, feature.kind)
+        _require(all(_observe(actions[p], block, feature.kind) == solved for p in current),
+                 "skipped feature metadata is inconsistent")
     return replace(method, _permutations=frozenset(known))
 
 
 def synthesize_human_method(initial, *, strategy="placement_then_orientation", features=None,
+                            recognition=None,
                             max_group_elements=None, gap_executable="gap", timeout=None, root=None,
                             backend="explicit", progress=None):
     """Compile a complete reusable case policy from a reference shape alone.
@@ -462,11 +590,14 @@ def synthesize_human_method(initial, *, strategy="placement_then_orientation", f
     backend='symbolic' compiles small feature orbits without enumerating H.
     Corrections invert deterministic BFS coset representatives; this is not
     an algorithm-quality optimizer or a shortest physical word guarantee.
+    ``recognition`` optionally maps compiled stage numbers to feature tuples
+    that explicitly include the goal and may observe additional pieces.
     """
     from .computation import Computation, current_computation, report_progress, retain_method
     if progress is not None and current_computation() is None:
         with Computation(progress=progress).activate():
             return synthesize_human_method(initial, strategy=strategy, features=features,
+                recognition=recognition,
                 max_group_elements=max_group_elements, gap_executable=gap_executable,
                 timeout=timeout, root=root, backend=backend)
     if backend == "auto":
@@ -479,17 +610,18 @@ def synthesize_human_method(initial, *, strategy="placement_then_orientation", f
                              max_group_elements=max_group_elements, gap_executable=gap_executable,
                              timeout=timeout, root=root, backend=backend)
     report_progress("policy", "started", backend=backend)
-    method = _compile_plan(plan)
+    method = _compile_plan(plan, recognition=recognition)
     retain_method(method)
     report_progress("policy", "completed", backend=backend, coverage=method.coverage)
     return method
 
 
-def _compile_plan(plan):
+def _compile_plan(plan, *, recognition=None):
     """Compile an internally prepared plan, retaining the full method proof."""
     from .symbolic_chains import SymbolicStagePlan
+    recognition = _recognition_inputs(plan, recognition)
     if isinstance(plan, SymbolicStagePlan):
-        return _compile_symbolic_plan(plan)
+        return _compile_symbolic_plan(plan, recognition=recognition)
     max_group_elements = plan.max_group_elements
     base = dict(reference_shape=plan.inventory.root_shape, strategy=plan.strategy, status=plan.status,
                 group_order=plan.group_order, quotient_order=plan.quotient_order, kernel_order=plan.kernel_order,
@@ -503,19 +635,26 @@ def _compile_plan(plan):
     by_id = {g.id: g for g in group.generators}
     generator_lengths = tuple((g.id, g.htm_length) for g in group.generators)
     for stage in plan.stages:
-        representatives = {}
+        features = recognition.get(stage.number, ())
+        view = SimpleNamespace(feature=stage.feature, recognition_features=features)
+        spec = _recognition_spec(plan.inventory, view)
+        representatives, goal_representatives = {}, {}
         for i in stage.members_before:
-            observation = _observe(group._summaries[i], stage.block_index, stage.feature.kind)
+            observation = _recognition_observation(group._summaries[i], spec)
             representatives.setdefault(observation, i)
+            goal = _observe(group._summaries[i], stage.block_index, stage.feature.kind)
+            goal_representatives.setdefault(goal, i)
         cases = []
-        for observation in stage.observations:
+        for observation in sorted(representatives):
             index = representatives[observation]
             representative = group.permutations[index]
             algorithm_id = None
-            if observation != stage.solved_observation:
-                permutation = _inverse(representative)
+            goal = _observe(group._summaries[index], stage.block_index, stage.feature.kind)
+            if goal != stage.solved_observation:
+                goal_index = goal_representatives[goal]
+                permutation = _inverse(group.permutations[goal_index])
                 if permutation not in by_effect:
-                    expression = LoopExpression.power(group.witness_for_index(index), -1)
+                    expression = LoopExpression.power(group.witness_for_index(goal_index), -1)
                     # The BFS tree bounds the word length; this is an exact
                     # expansion size, not an implicit synthesis resource cap.
                     steps = expression.loop_steps(max_syllables=len(group))
@@ -530,12 +669,12 @@ def _compile_plan(plan):
             cases.append(HumanMethodCase(observation, algorithm_id, representative))
         stages.append(HumanMethodStage(stage.number, stage.feature, stage.block_index, stage.block_name,
                                        stage.order_before, stage.order_after, stage.solved_observation,
-                                       stage.implied_features, tuple(cases)))
+                                       stage.implied_features, tuple(cases), features))
     return _validate_method(HumanMethod(**base, generators=group.generators, stages=tuple(stages),
                                         algorithms=tuple(algorithms)), complete_loops=plan.analysis.loops)
 
 
-def _compile_symbolic_plan(plan):
+def _compile_symbolic_plan(plan, *, recognition=None):
     """Compile witnessed feature transversals, without listing group elements."""
     generators = tuple(plan.analysis.loops.generators)
     witness_loops = plan.analysis.loops
@@ -544,12 +683,20 @@ def _compile_symbolic_plan(plan):
     stages, algorithms, by_effect = [], [], {}
     for stage in plan.stages:
         checkpoint("symbolic_case_compilation", stage=stage.number, stages=len(plan.stages))
+        features = (recognition or {}).get(stage.number, ())
+        view = HumanMethodStage(stage.number, stage.feature, stage.block_index, stage.block_name,
+                                stage.order_before, stage.order_after, stage.solved_observation,
+                                stage.implied_features, (), features)
+        representatives = (_recognition_orbit(plan.inventory, stage, view) if features else
+                           {r.observation: r.permutation for r in stage.representatives})
+        goal_representatives = {r.observation: r for r in stage.representatives}
         cases = []
-        for representative in stage.representatives:
-            observation, permutation = representative.observation, representative.permutation
+        for observation, permutation in sorted(representatives.items()):
             algorithm_id = None
-            if observation != stage.solved_observation:
-                correction = _inverse(permutation)
+            goal = _goal_observation(observation, plan.inventory, view)
+            if goal != stage.solved_observation:
+                representative = goal_representatives[goal]
+                correction = _inverse(representative.permutation)
                 if correction not in by_effect:
                     expression = LoopExpression.power(representative.expression, -1)
                     moves = expression.expanded_moves(
@@ -564,7 +711,7 @@ def _compile_symbolic_plan(plan):
         stages.append(HumanMethodStage(
             stage.number, stage.feature, stage.block_index, stage.block_name,
             stage.order_before, stage.order_after, stage.solved_observation,
-            stage.implied_features, tuple(cases)))
+            stage.implied_features, tuple(cases), features))
     method = HumanMethod(
         plan.inventory.root_shape, plan.strategy, "completed", plan.group_order,
         plan.quotient_order, plan.kernel_order, plan.analysis.loops.root_vertex,
@@ -625,13 +772,16 @@ def _validate_symbolic_method(method, *, complete_loops):
                  (certified.number, certified.feature, certified.block_index, certified.block_name,
                   certified.order_before, certified.order_after, certified.solved_observation,
                   certified.implied_features), "symbolic stage metadata disagrees with its certificate")
-        _require(stage.observations == certified.observations, "symbolic stage cases omit or reorder observations")
+        observations = (tuple(sorted(_recognition_orbit(method.inventory, certified, stage)))
+                        if stage.recognition_features else certified.observations)
+        _require(stage.observations == observations,
+                 "symbolic stage cases omit or reorder observations")
         for case in stage.cases:
             _require(case.representative in certified.group_before and
-                     _observe(method.inventory.action(case.representative), stage.block_index,
-                              stage.feature.kind) == case.observation,
+                     _stage_observation(method.inventory.action(case.representative), stage,
+                                        method.inventory) == case.observation,
                      "case representative is outside its certified observation fiber")
-            if case.observation == stage.solved_observation:
+            if _goal_observation(case.observation, method.inventory, stage) == stage.solved_observation:
                 _require(case.algorithm_id is None, "already-solved case must require no correction")
             else:
                 _require(case.algorithm_id in algorithms, "case refers to a missing correction")
@@ -639,6 +789,10 @@ def _validate_symbolic_method(method, *, complete_loops):
                 _require(algorithm.permutation in certified.group_before and
                          _then(case.representative, algorithm.permutation) in certified.group_after,
                          "case correction fails certified progress or protected features")
+                # The observer explicitly projects onto the certified goal.
+                # Its whole fiber is therefore contained in the goal coset,
+                # and endpoint membership certifies the same correction for
+                # every member, rather than only for this representative.
                 used.add(algorithm.id)
     _require(used == set(algorithms), "method contains unused shared algorithms")
     return replace(method, _permutations=chain.group)

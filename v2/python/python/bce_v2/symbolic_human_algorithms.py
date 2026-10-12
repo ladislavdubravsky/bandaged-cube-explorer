@@ -13,6 +13,7 @@ import json
 
 from .computation import checkpoint, report_progress, retain_method
 from .human_methods import _expression_bound, _inverse, _observe, _validate_method
+from .human_chains import _feature_successor
 from .loop_algorithms import AlgorithmLibrary, LoopExpression, _loops_from_records, discover_loop_algorithms
 from .preparation import reference_loops
 
@@ -39,22 +40,24 @@ def _additive_metrics(method):
     return result
 
 
-def _successor(observation, action, inventory):
-    destination = action.destinations[observation[0]]
-    if len(observation) == 1:
-        return (destination,)
-    order = inventory.blocks[observation[0]].orientation_order
-    return destination, (observation[1] + action.phases[observation[0]]) % order
+def _successor(observation, action, inventory, kind=None, block_index=None):
+    kind = kind or ("place_block" if len(observation) == 1 else "solve_block")
+    if kind == "orient_slots" and block_index is None:
+        raise ValueError("slot orientation transitions require their slot indices")
+    return _feature_successor(observation, action, inventory, block_index, kind)
 
 
 def _orbit_edges(candidates, stage, inventory, maximum):
     """Reserve edges for orbit coverage before adding redundant cheap actions."""
     observations = stage.observations
+    kind = getattr(getattr(stage, "feature", None), "kind", None)
+    block = getattr(stage, "block_index", None)
     distinct = {}
     for item in candidates:
         checkpoint("algorithm_orbit_edges", work=1, stage=getattr(stage, "number", None))
         action = inventory.action(item.algorithm.permutation)
-        mapping = tuple(_successor(value, action, inventory) for value in observations)
+        mapping = tuple(_successor(value, action, inventory, kind, block)
+                        for value in observations)
         if mapping == observations:
             continue
         previous = distinct.get(mapping)
@@ -285,7 +288,8 @@ def improve_symbolic_human_method(method, *, mode, max_seed_loops, max_candidate
                     continue
                 for edge, action in actions:
                     counts["transitions_examined"] += 1
-                    successor = _successor(observation, action, baseline.inventory)
+                    successor = _successor(observation, action, baseline.inventory,
+                                           stage.feature.kind, stage.block_index)
                     if successor not in observations:
                         raise ValueError("stage algorithm leaves its certified observation orbit")
                     next_state = successor, depth + 1

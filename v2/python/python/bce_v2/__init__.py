@@ -500,6 +500,7 @@ from .human_algorithms import (  # noqa: E402
 from .human_chain_search import (  # noqa: E402
     HumanChainCandidate, HumanChainSearch, select_human_chain,
 )
+from .algorithm_targets import AlgorithmTarget, discover_algorithm_targets
 from .human_repertoire import (  # noqa: E402
     HumanMacroRecipe, HumanRecognitionRule, HumanRepertoire, HumanRepertoireApplication,
     HumanRepertoireCase, HumanRepertoireMacro, HumanRepertoireStage, HumanRepertoireStep,
@@ -577,6 +578,8 @@ __all__ = [
     "HumanMethodStep", "HumanRecognition", "synthesize_human_method", "load_human_method",
     "HumanAlgorithmAlternative", "HumanAlgorithmSearch", "improve_human_method",
     "HumanChainCandidate", "HumanChainSearch", "select_human_chain",
+    "AlgorithmTarget",
+    "discover_algorithm_targets",
     "SymbolicAlgorithmDictionary", "discover_symbolic_dictionary",
     "HumanMacroRecipe", "HumanRecognitionRule", "HumanRepertoire", "HumanRepertoireApplication",
     "HumanRepertoireCase", "HumanRepertoireMacro", "HumanRepertoireStage", "HumanRepertoireStep",

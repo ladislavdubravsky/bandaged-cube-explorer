@@ -12,6 +12,8 @@ from .human_diagrams import HumanRecognitionDiagram
 DIAGRAM_MODES = tuple(DiagramMode)
 _SOLVED_COLOR = (0.5, 0.5, 0.5)  # RGB: 0 = black; 1 = white.
 _WHITE = (1.0, 1.0, 1.0)
+_ORIENTATION_COLOR = (0.3, 0.7, 0.9)
+_ORIENTATION_BACKGROUND = (0.85, 0.92, 0.97)
 
 
 def validate_diagram_mode(mode):
@@ -52,15 +54,19 @@ def recognition_diagram_colors(diagram, *, face_colors=None,
                                diagram_mode: DiagramMode = DiagramMode.OPPOSITE_CORNERS):
     """Return each physical sticker's role color in 54-facelet URFDLB order.
 
-    Solved blocks use dark grey. Face centers and current targets retain
-    their full physical sticker colors. Other blocks stay white,
+    Solved blocks use dark grey. Face centers and identified-piece targets
+    retain their physical sticker colors; anonymous orientation slots use
+    a blue facet marker with neutral remaining facets. Other blocks stay white,
     including correctly placed blocks whose orientation is still unsolved.
     """
     if not isinstance(diagram, HumanRecognitionDiagram):
         raise TypeError("diagram must be a HumanRecognitionDiagram")
     validate_diagram_mode(diagram_mode)
     palette = validate_face_colors(face_colors)
-    return tuple(palette[face] if index % 9 == 4 or role == "current" else
+    return tuple(palette[face] if index % 9 == 4 else
+                 _ORIENTATION_COLOR if index in diagram.orientation_markers else
+                 _ORIENTATION_BACKGROUND if diagram.orientation_slots and role == "current" else
+                 palette[face] if role == "current" else
                  _SOLVED_COLOR if role == "solved" else _WHITE
                  for index, (face, role) in enumerate(zip(
                      diagram.state.facelets, diagram.sticker_roles)))

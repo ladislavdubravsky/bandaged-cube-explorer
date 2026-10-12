@@ -29,6 +29,9 @@ def then(first, second):
 
 
 def observe(action, stage):
+    if stage.feature.kind == "orient_slots":
+        by_destination = dict(zip(action.destinations, action.phases))
+        return tuple(by_destination[slot] for slot in stage.block_index)
     return ((action.destinations[stage.block_index],) if stage.feature.kind == "place_block" else
             (action.destinations[stage.block_index], action.phases[stage.block_index]))
 

@@ -1,12 +1,20 @@
 """Concrete recognition cues and shared witnessed master definitions."""
 
 from .block_actions import _CELL_POINTS
-from .human_render import _algorithm_table, _feature_name, _sticker
+from .human_render import (_algorithm_table, _feature_name, _orientation_cue,
+                           _orientation_explanation, _recognition_cue, _sticker)
 from .human_diagram_modes import DiagramMode
 from .human_instruction_render import instruction_presentation
 
 
 def _stage_title(stage):
+    if stage.feature.kind == "orient_slots":
+        return f"Stage {stage.number}: Orient slots {stage.block_name}"
+    if stage.feature.kind in ("place_blocks", "solve_blocks", "occupy_slots", "place_blocks_up_to_alignment", "solve_blocks_up_to_actions"):
+        verb = {"place_blocks": "Place", "solve_blocks": "Solve", "occupy_slots": "Retain region",
+                "place_blocks_up_to_alignment": "Place up to alignment",
+                "solve_blocks_up_to_actions": "Prepare remaining actions"}[stage.feature.kind]
+        return f"Stage {stage.number}: {verb} {stage.block_name}"
     placed = all(case.observation[0] == stage.block_index for case in stage.cases)
     verb = "Place" if stage.feature.kind == "place_block" else "Orient" if placed else "Solve"
     return f"Stage {stage.number}: {verb} {stage.block_name}"
@@ -97,6 +105,10 @@ def _additional_algorithm_action(method, word, rotation):
 
 
 def _cue(stage, observation, method):
+    if stage.recognition_features or isinstance(stage.block_index, tuple) and stage.feature.kind != "orient_slots":
+        return _recognition_cue(stage, observation, method.inventory)
+    if stage.feature.kind == "orient_slots":
+        return _orientation_cue(stage, observation, method.inventory)
     block = method.inventory.blocks[stage.block_index]
     destination = method.inventory.blocks[observation[0]]
     footprint = f"`{destination.compact_name}`"
@@ -119,7 +131,7 @@ def _rule_lines(rule, stage, method, presentations, *, include_word=True):
                       + " → ".join(_cue(stage, observation, method) for observation in rule.cycle) + ".", ""])
     elif rule.kind == "powers":
         lines.extend([f"These cases share {_instruction(presentations[rule.recipe], include_word=include_word)}. "
-                      "Choose its signed power using the block's concrete cue.", ""])
+                      "Choose its signed power using the stage's recognition cue.", ""])
     else:
         lines.extend([f"For the following cues, execute {_instruction(presentations[rule.recipe], include_word=include_word)} once.", ""])
     if rule.kind in ("powers", "cycle"):
@@ -158,7 +170,8 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
              "## Stages", "",
              "In each stage's diagrams: face centers are colored to inform you how to orient the cube "
              "before algorithm application. Blocks already solved are dark grey. The block this stage "
-             "requires you to identify is colored. Striped white color indicates a white sticker, "
+             "requires you to identify is colored; orientation-only slots use blue facet markers and the "
+             "printed slot pattern. Striped white color indicates a white sticker, "
              "plain white indicates unsolved sticker of any color.", ""]
     lines.extend(_stage_move_table(method))
     chunk_lines, formulas = _chunk_table(repertoire)
@@ -194,12 +207,16 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
         lines.extend(["The reference group is trivial. Every reachable colored state in this reference "
                       "shape is already solved; no algorithms are needed.", ""])
     for stage, policy in zip(method.stages, repertoire.stages):
-        block = inventory.blocks[stage.block_index]
+        orientation = stage.feature.kind == "orient_slots"
+        collection = stage.feature.kind in ("place_blocks", "solve_blocks", "occupy_slots", "place_blocks_up_to_alignment")
+        block = None if orientation or collection else inventory.blocks[stage.block_index]
         families = "instruction family" if len(policy.rules) == 1 else "instruction families"
         lines.extend([f"## {_stage_title(stage)}", "",
                       f"This stage has {stage.case_count} exact cases and {len(policy.rules)} {families}. "
                       f"It reduces the remaining possibilities from {stage.order_before:,} "
                       f"to {stage.order_after:,}.", ""])
+        if orientation:
+            lines.extend([_orientation_explanation(stage, inventory), ""])
         if diagram_mode is not None:
             pictures = recognition_stage_diagrams(method, stage.number)
             if stage.feature.kind == "place_block":
@@ -212,6 +229,9 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
                                f"Execute {_instruction(presentation)}.")
                 variants = pictures[case.observation]
                 lines.extend([f"### Case {index}", "", instruction, ""])
+                if orientation:
+                    lines.extend(["Slot orientations: " + _orientation_cue(stage, case.observation, inventory)
+                                  + ". Blue marks the orientation facet; occupant colors are ignored.", ""])
                 image = recognition_diagram_image(variants, diagram_mode=diagram_mode,
                                                   face_colors=face_colors,
                                                   rotation="" if presentation is None else presentation.rotation)
@@ -226,20 +246,31 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
         lines.extend(["### Complete cue lookup", "",
                       "Use these instructions until the solved case appears. Each row gives the next "
                       "whole instruction rather than a new word to memorize.", ""])
-        if stage.feature.kind == "place_block":
+        if collection:
+            lines.extend(["| Collection pattern | Instruction | Rank |", "| --- | --- | ---: |"])
+        elif orientation:
+            lines.extend(["| Slot orientations | Instruction | Rank |", "| --- | --- | ---: |"])
+        elif stage.feature.kind == "place_block":
             lines.extend(["| Current footprint | Instruction | Rank |", "| --- | --- | ---: |"])
         else:
             lines.extend(["| Current footprint | Reference sticker currently at | Phase | Instruction | Rank |",
                           "| --- | --- | --- | --- | ---: |"])
-        points = tuple(point for cell in block.cells for point in _CELL_POINTS[cell])
+        points = (() if block is None else
+                  tuple(point for cell in block.cells for point in _CELL_POINTS[cell]))
         anchor = points[0] if points else None
         representatives = {case.observation: case.representative for case in stage.cases}
         for case in policy.cases:
-            destination = inventory.blocks[case.observation[0]]
-            footprint = f"`{destination.compact_name}`"
             skip = "Skip — already placed" if stage.feature.kind == "place_block" else "Skip — already correct"
             instruction = (skip if case.instruction is None else
                            _instruction(presentations[case.instruction]))
+            if collection:
+                lines.append(f"| {_recognition_cue(stage, case.observation, inventory)} | {instruction} | {case.rank} |")
+                continue
+            if orientation:
+                lines.append(f"| {_orientation_cue(stage, case.observation, inventory)} | {instruction} | {case.rank} |")
+                continue
+            destination = inventory.blocks[case.observation[0]]
+            footprint = f"`{destination.compact_name}`"
             if stage.feature.kind == "place_block":
                 lines.append(f"| {footprint} | {instruction} | {case.rank} |")
             else:

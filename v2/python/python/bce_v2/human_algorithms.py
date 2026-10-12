@@ -16,7 +16,8 @@ from pathlib import Path
 
 from ._moves import _simplified_moves
 from .computation import checkpoint, report_progress, retain_method
-from .human_methods import HumanMethod, _expression_bound, _inverse, _observe, _then, _validate_method
+from .human_methods import (HumanMethod, _expression_bound, _inverse, _observe,
+                            _require_goal_only_recognition, _then, _validate_method)
 from .human_witnesses import stored_loop_generators
 from .loop_algorithms import (
     AlgorithmLibrary, LoopAlgorithm, LoopExpression, _loops_from_records, _mining_expressions,
@@ -316,6 +317,7 @@ def improve_human_method(method, *, mode="structured", max_seed_loops=32, max_ca
         raise TypeError("improvement requires a compiled HumanMethod")
     if method.status != "completed":
         raise ValueError("algorithm improvement requires a complete baseline method")
+    _require_goal_only_recognition(method, "algorithm improvement")
     if mode not in ("original", "shallow", "structured"):
         raise ValueError("mode must be original, shallow or structured")
     settings = dict(mode=mode, max_seed_loops=max_seed_loops, max_candidates=max_candidates,

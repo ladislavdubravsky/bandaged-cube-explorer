@@ -11,9 +11,11 @@ from dataclasses import dataclass, field, replace
 import json
 from pathlib import Path
 
+from .algorithm_targets import _discover_targets_from_actions
+from .computation import checkpoint
 from .human_algorithms import _Candidate, _metrics, improve_human_method
 from .human_chains import (BlockFeature, HumanStage, _chains, _fixed_features,
-                           _observation, _stage, plan_human_stages)
+                           _feature_metadata, _observation, _stage, plan_human_stages)
 from .human_methods import (HumanMethod, HumanMethodCase, HumanMethodStage, _compile_plan,
                             _expression_bound, _inverse, _validate_method)
 from .loop_algorithms import LoopAlgorithm, LoopExpression
@@ -96,7 +98,7 @@ def _signature(features):
 
 
 class _Context:
-    def __init__(self, plan, baseline, discovery):
+    def __init__(self, plan, baseline, discovery, target_settings=None, discovery_settings=None):
         self.plan, self.group, self.baseline = plan, plan.group, baseline
         self.generators = discovery._generators
         self.records = {g.id: g for g in self.generators}
@@ -107,6 +109,10 @@ class _Context:
                               for kind in ("place_block", "solve_block") for b in plan.inventory.blocks)
         self.actions = dict(zip(self.group.permutations, self.group._summaries))
         self.edges, self.fixed, self.fallbacks, self.rollouts = {}, {}, {}, {}
+        self.target_settings = target_settings or {}
+        self.discovery_settings = discovery_settings or {}
+        self.phase_targets, self.phase_choices = {}, {}
+        self.target_groups_examined = 0
         self.edge_evaluations, self.cache_hits = 0, 0
 
     def fallback(self, index):
@@ -126,7 +132,7 @@ class _Context:
             self.cache_hits += 1
             return self.edges[key]
         self.edge_evaluations += 1
-        block = self.blocks[feature.cells]
+        block, _ = _feature_metadata(self.plan.inventory, feature)
         solved = _observation(self.group._summaries[0], block, feature.kind)
         representatives = {}
         for i in members:
@@ -146,6 +152,9 @@ class _Context:
                 observation = _observation(self.actions[_inverse(effect)], block, feature.kind)
                 if observation not in by_case or candidate.key < by_case[observation].key:
                     by_case[observation] = candidate
+        for observation, candidate in self.phase_choices.get(key, {}).items():
+            if observation not in by_case or candidate.key < by_case[observation].key:
+                by_case[observation] = candidate
         cases, choices = [], []
         for observation in stage.observations:
             index = representatives[observation]
@@ -160,8 +169,63 @@ class _Context:
         self.edges[key] = edge
         return edge
 
+    def orientation_targets(self, members):
+        """Complete phase goals, bounded independently of full-group enumeration."""
+        if members in self.phase_targets:
+            return self.phase_targets[members]
+        settings = self.target_settings
+        enabled = (settings.get("max_observations", 0) >= 2 and
+                   settings.get("max_candidates", 0) > 0 and
+                   settings.get("max_methods", 0) > 0 and
+                   self.target_groups_examined < settings.get("max_prefixes", 0))
+        if not enabled:
+            self.phase_targets[members] = ()
+            return ()
+        checkpoint("explicit_attribute_targets")
+        self.target_groups_examined += 1
+        permitted = {self.group.permutations[index] for index in members}
+        eligible = tuple(candidate for candidate in self.pool if candidate.algorithm.permutation in permitted)
+        # Pool records can share display IDs; private palette IDs make recipes
+        # unambiguous without changing any public witnessed definitions.
+        by_id = {f"P{index}": candidate for index, candidate in enumerate(eligible)}
+        catalog = tuple((replace(candidate.algorithm, id=identifier),
+                         self.actions[candidate.algorithm.permutation])
+                        for identifier, candidate in by_id.items())
+        targets = _discover_targets_from_actions(
+            self.plan.inventory, tuple(self.group._summaries[index] for index in members), catalog,
+            max_observations=settings["max_observations"], max_candidates=settings["max_candidates"])
+        complete = []
+        for target in targets:
+            if not target.complete:
+                continue
+            choices = {}
+            for observation, recipe in zip(target.observations, target.recipes):
+                if not recipe:
+                    continue
+                checkpoint("explicit_attribute_recipes")
+                expression = LoopExpression.sequence(*(by_id[identifier].algorithm.expression
+                                                       for identifier in recipe))
+                maximum = self.discovery_settings.get("max_expanded_moves", 0)
+                if _expression_bound(expression, self.records) > maximum:
+                    continue
+                moves = expression.expanded_moves(self.generators, max_expanded_moves=maximum)
+                algorithm = LoopAlgorithm(
+                    "phase", expression, expression.evaluate(self.generators), moves,
+                    self.plan.inventory, self.lengths, self.generators)
+                if algorithm.htm_length > self.discovery_settings.get("max_htm_length", 0):
+                    continue
+                choices[observation] = _Candidate(
+                    algorithm, "phase_pattern", expression.structure_cost(self.generators))
+            if len(choices) == target.case_count-1:
+                self.phase_choices[members, target.feature] = choices
+                self.edges.pop((members, target.feature), None)
+                complete.append(target)
+        self.phase_targets[members] = tuple(complete)
+        return self.phase_targets[members]
+
     def next_edges(self, members):
-        return tuple(edge for feature in self.features if (edge := self.edge(members, feature)) is not None)
+        features = (*self.features, *(target.feature for target in self.orientation_targets(members)))
+        return tuple(edge for feature in features if (edge := self.edge(members, feature)) is not None)
 
     def suffix(self, members):
         """Complete minimum-index full-block rollout; no partial-policy claim."""
@@ -249,7 +313,7 @@ def select_human_chain(initial, *, strategy="placement_then_orientation", manual
                        preference="execution", beam_width=4, max_expansions=64, max_methods=16,
                        discovery_options=None, max_group_elements=None,
                        gap_executable="gap", timeout=None, root=None, backend="explicit",
-                       dictionary=None, dictionary_options=None, optimization_seconds=None,
+                       dictionary=None, dictionary_options=None, target_options=None, palette=None, optimization_seconds=None,
                        max_optimization_work=None, progress=None):
     """Select a complete chain with a shared budget after certified fallback.
 
@@ -257,11 +321,21 @@ def select_human_chain(initial, *, strategy="placement_then_orientation", manual
     ``max_optimization_work``. A cutoff retains a certified policy. Initial
     certification continues to use the independent per-GAP ``timeout`` cap.
     ``backend='auto'`` routes on measured group and witnessed-loop workload.
+    With the symbolic backend, ``palette`` admits witnessed bodies and complete
+    setup recipes before chain selection. Certified unrestricted fallbacks
+    remain available; strict palette coverage is a separate compilation check.
     """
     from .computation import Computation, OptimizationBudgetExceeded, current_computation
     from .preparation import route_preparation
     if backend not in ("explicit", "symbolic", "auto"):
         raise ValueError("backend must be explicit, symbolic or auto")
+    if palette is not None:
+        from .algorithm_palette import AlgorithmPalette
+        if not isinstance(palette, AlgorithmPalette):
+            raise TypeError("palette must be an AlgorithmPalette")
+    if target_options is not None:
+        from .symbolic_chain_search import _target_settings
+        _target_settings(target_options)
     if backend == "auto":
         if strategy not in ("placement_then_orientation", "fully_solve_each_block"):
             raise ValueError("chain search strategy must name an automatic baseline")
@@ -283,7 +357,7 @@ def select_human_chain(initial, *, strategy="placement_then_orientation", manual
         beam_width=beam_width, max_expansions=max_expansions, max_methods=max_methods,
         discovery_options=discovery_options, max_group_elements=max_group_elements,
         gap_executable=gap_executable, timeout=timeout, root=root, backend=backend,
-        dictionary=dictionary, dictionary_options=dictionary_options)
+        dictionary=dictionary, dictionary_options=dictionary_options, target_options=target_options, palette=palette)
     context = current_computation()
     if context is not None:
         if backend == "auto":
@@ -323,7 +397,7 @@ def _select_human_chain(initial, *, strategy="placement_then_orientation", manua
                        preference="execution", beam_width=4, max_expansions=64, max_methods=16,
                        discovery_options=None, max_group_elements=None,
                        gap_executable="gap", timeout=None, root=None, backend="explicit",
-                       dictionary=None, dictionary_options=None):
+                       dictionary=None, dictionary_options=None, target_options=None, palette=None):
     """Compare complete recognizable methods using a shared witnessed word pool.
 
     Exact preparation has the usual opt-in cap. Chain budgets bound additional
@@ -342,10 +416,13 @@ def _select_human_chain(initial, *, strategy="placement_then_orientation", manua
             preference=preference, beam_width=beam_width, max_expansions=max_expansions,
             max_methods=max_methods, discovery_options=discovery_options,
             dictionary=dictionary, dictionary_options=dictionary_options,
+            target_options=target_options, palette=palette,
             max_group_elements=max_group_elements, gap_executable=gap_executable,
             timeout=timeout, root=root)
-    if dictionary is not None or dictionary_options is not None:
+    if dictionary is not None or dictionary_options is not None or palette is not None:
         raise ValueError("shared dictionary options currently require backend='symbolic'")
+    from .symbolic_chain_search import _target_settings
+    target_settings = _target_settings(target_options)
     if strategy not in ("placement_then_orientation", "fully_solve_each_block"):
         raise ValueError("chain search strategy must name an automatic baseline")
     if preference not in _PREFERENCES:
@@ -377,7 +454,7 @@ def _select_human_chain(initial, *, strategy="placement_then_orientation", manua
             raise TypeError("manual_features must contain BlockFeature instances")
     settings = dict(strategy=strategy, preference=preference, beam_width=beam_width,
                     max_expansions=max_expansions, max_methods=max_methods,
-                    discovery_options=discovery_settings,
+                    discovery_options=discovery_settings, target_options=target_settings,
                     manual_features=None if manual_features is None else [f.to_dict() for f in manual_features])
     plan = plan_human_stages(initial, strategy=strategy, max_group_elements=max_group_elements,
                              gap_executable=gap_executable, timeout=timeout, root=root)
@@ -385,6 +462,7 @@ def _select_human_chain(initial, *, strategy="placement_then_orientation", manua
                 "pareto_dimensions": _EXECUTION, "exhaustive_chain_search": False,
                 "human_reviewed": False, "coverage": "partial", "nodes_expanded": 0,
                 "additional_methods_evaluated": 0, "stage_edges_evaluated": 0,
+                "attribute_methods_evaluated": 0,
                 "stage_cache_hits": 0, "discovery": None,
                 "rank_scope": "complete additive minimum-index full-block rollout; physical-cost proxy"}
     baseline = _compile_plan(plan)
@@ -400,22 +478,25 @@ def _select_human_chain(initial, *, strategy="placement_then_orientation", manua
             replace(plan, strategy=name, stages=stages, initial_features=fixed, skipped_features=skipped))
         raw_controls.append((name, raw))
     if manual_features is not None:
-        cells = {b.cells for b in plan.inventory.blocks}
-        if any(f.cells not in cells for f in manual_features):
-            raise ValueError("each manual feature must name an exact reference inventory block")
+        for feature in manual_features:
+            _feature_metadata(plan.inventory, feature)
         stages, _, skipped = _chains(plan.group, "manual", manual_features)
         controls.append(("manual", tuple(s.feature for s in stages), "manual", skipped))
     discovery = improve_human_method(baseline, **discovery_settings)
     retain_method(discovery.method, source="dictionary")
-    context = _Context(plan, baseline, discovery)
+    context = _Context(plan, baseline, discovery, target_settings, discovery_settings)
     candidates, seen = [], set()
 
     def complete(features, source, method_strategy="manual", skipped=()):
         signature = _signature(features)
         if source in ("greedy", "beam"):
+            attribute_method = any(feature.kind == "orient_slots" for feature in features)
             if signature in seen or metadata["additional_methods_evaluated"] >= max_methods:
                 return
+            if attribute_method and metadata["attribute_methods_evaluated"] >= target_settings["max_methods"]:
+                return
             metadata["additional_methods_evaluated"] += 1
+            metadata["attribute_methods_evaluated"] += int(attribute_method)
         method, metrics = context.compile(features, method_strategy, skipped)
         retain_method(method, source=source, metrics=metrics)
         candidates.append(HumanChainCandidate(f"C{len(candidates) + 1}", source, method,
@@ -476,6 +557,10 @@ def _select_human_chain(initial, *, strategy="placement_then_orientation", manua
                     discovery_origin=strategy, shared_pool_effects=len({c.algorithm.permutation for c in context.pool}),
                     shared_pool_words=len(context.pool), stage_edges_evaluated=context.edge_evaluations,
                     stage_cache_hits=context.cache_hits,
+                    attribute_prefixes_evaluated=context.target_groups_examined,
+                    attribute_targets=[dict(group_order=len(members), target=target.to_dict())
+                                       for members, targets in context.phase_targets.items()
+                                       for target in targets],
                     node_limit_reached=metadata["nodes_expanded"] >= max_expansions,
                     method_limit_reached=metadata["additional_methods_evaluated"] >= max_methods,
                     selected_source=selected.source)

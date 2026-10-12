@@ -702,6 +702,8 @@ def optimize_human_repertoire(method, *, preference="memory", max_trials=64, max
         raise TypeError("repertoire optimization requires a compiled HumanMethod")
     if method.status != "completed":
         raise ValueError("repertoire optimization requires a complete method")
+    from .human_methods import _require_goal_only_recognition
+    _require_goal_only_recognition(method, "repertoire optimization")
     if preference not in _PREFERENCES:
         raise ValueError("preference must be memory or execution")
     settings = dict(preference=preference, max_trials=max_trials, max_recipes=max_recipes,
@@ -809,6 +811,9 @@ def optimize_human_repertoire(method, *, preference="memory", max_trials=64, max
 
 def _validate_repertoire(repertoire, *, complete_loops=None):
     """Reprove the displayed vocabulary, rules, ranks and compiled projection."""
+    from .human_methods import _require_goal_only_recognition
+    _require_goal_only_recognition(repertoire.method, "repertoire validation")
+    _require_goal_only_recognition(repertoire.baseline, "repertoire validation")
     if repertoire.method.backend == "symbolic" or repertoire.baseline.backend == "symbolic":
         from .symbolic_repertoire_core import validate_symbolic_repertoire
         return validate_symbolic_repertoire(repertoire, complete_loops=complete_loops)

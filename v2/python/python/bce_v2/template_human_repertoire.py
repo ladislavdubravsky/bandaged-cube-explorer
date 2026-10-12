@@ -17,7 +17,8 @@ from types import SimpleNamespace
 from . import State
 from ._moves import _simplified_moves
 from .human_algorithms import _stage_groups
-from .human_chains import BlockFeature, _inverse_moves, plan_human_stages
+from .human_chains import (BlockFeature, _check_slot_invariance, _feature_name,
+                           _inverse_moves, _resolve_feature, plan_human_stages)
 from .human_methods import (HumanMethod, HumanMethodCase, HumanMethodStage,
                             _compile_plan, _expression_bound, _fixed_features,
                             _inverse, _observe, _require, _then, _validate_method)
@@ -275,7 +276,9 @@ class _Context:
         key = current, feature
         if key in self.edges:
             return self.edges[key]
-        block = self.blocks[feature.cells]
+        block = _resolve_feature(self.baseline.inventory, feature)
+        if feature.kind == "orient_slots":
+            _check_slot_invariance((self.actions[p] for p in current), block)
         solved = _observe(self.actions[_IDENTITY], block, feature.kind)
         fibers = defaultdict(list)
         for permutation in sorted(current):
@@ -287,7 +290,8 @@ class _Context:
         before = _fixed_features(self.baseline.inventory, self.actions, current)
         after = _fixed_features(self.baseline.inventory, self.actions, target)
         implied = tuple(f for f in after if f not in before and f != feature)
-        stage = HumanMethodStage(1, feature, block, self.baseline.inventory.blocks[block].name,
+        stage = HumanMethodStage(1, feature, block,
+            _feature_name(self.baseline.inventory, block, feature.kind),
             len(current), len(target), solved, implied,
             tuple(HumanMethodCase(observation, None, members[0])
                   for observation, members in sorted(fibers.items())))
@@ -387,7 +391,7 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
                               max_cost_ratio=1.0, chunk_options=None,
                               max_group_elements=None, gap_executable="gap", timeout=None, root=None,
                               backend="explicit", dictionary=None, dictionary_options=None,
-                              discovery_options=None, optimization_seconds=None,
+                              discovery_options=None, palette=None, optimization_seconds=None,
                               max_optimization_work=None, progress=None):
     """Build a certified guide with shared optional quality-search limits.
 
@@ -399,11 +403,18 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
     validation are outside that allowance. ``timeout`` remains a per-GAP cap.
     ``progress`` receives phase/status dictionaries, including baseline and
     completion events. None preserves the existing unlimited quality budget.
+    A symbolic ``palette`` supplies witnessed bodies before chain and policy
+    selection. ``templates`` supplies optional bodies to factor the selected
+    policy afterward. Prepared ``dictionary`` inputs keep their existing route.
     """
     from .computation import Computation, OptimizationBudgetExceeded, current_computation
     from .preparation import route_preparation
     if backend not in ("explicit", "symbolic", "auto"):
         raise ValueError("backend must be explicit, symbolic or auto")
+    if palette is not None:
+        from .algorithm_palette import AlgorithmPalette
+        if not isinstance(palette, AlgorithmPalette):
+            raise TypeError("palette must be an AlgorithmPalette")
     if backend == "auto":
         # Automatic routing must not launch analysis before ordinary argument
         # errors have been rejected. Backend-specific checks still follow it.
@@ -449,7 +460,8 @@ def template_human_repertoire(initial, *, strategy="fully_solve_each_block", fea
         max_chain_expansions=max_chain_expansions, max_chain_methods=max_chain_methods,
         max_cost_ratio=max_cost_ratio, chunk_options=chunk_options, max_group_elements=max_group_elements,
         gap_executable=gap_executable, timeout=timeout, root=root, backend=backend,
-        dictionary=dictionary, dictionary_options=dictionary_options, discovery_options=discovery_options)
+        dictionary=dictionary, dictionary_options=dictionary_options, discovery_options=discovery_options,
+        palette=palette)
     # Nested preparation shares the same counters and deadline; it cannot
     # silently buy another allowance for a second chain or template pass.
     if current_computation() is not None:
@@ -504,7 +516,7 @@ def _template_human_repertoire(initial, *, strategy="fully_solve_each_block", fe
                               max_cost_ratio=1.0, chunk_options=None,
                               max_group_elements=None, gap_executable="gap", timeout=None, root=None,
                               backend="explicit", dictionary=None, dictionary_options=None,
-                              discovery_options=None):
+                              discovery_options=None, palette=None):
     """Build a complete guide using selected templates, regrips and shared pieces.
 
     Shape/analysis/plan inputs compare both automatic chains and bounded mixed
@@ -533,6 +545,8 @@ def _template_human_repertoire(initial, *, strategy="fully_solve_each_block", fe
     The default chain expansion budget is 64 for symbolic and 12 for explicit.
     """
     supplied = isinstance(initial, HumanMethod)
+    if supplied and any(stage.recognition_features for stage in initial.stages):
+        raise ValueError("template repertoires do not yet support independent recognition")
     if backend not in ("explicit", "symbolic"):
         raise ValueError("backend must be explicit or symbolic")
     if backend == "symbolic" or (supplied and initial.backend == "symbolic"):
@@ -545,8 +559,8 @@ def _template_human_repertoire(initial, *, strategy="fully_solve_each_block", fe
             max_chain_methods=max_chain_methods, max_cost_ratio=max_cost_ratio,
             chunk_options=chunk_options, max_group_elements=max_group_elements,
             gap_executable=gap_executable, timeout=timeout, root=root, dictionary=dictionary,
-            dictionary_options=dictionary_options, discovery_options=discovery_options)
-    if dictionary is not None or dictionary_options is not None or discovery_options is not None:
+            dictionary_options=dictionary_options, discovery_options=discovery_options, palette=palette)
+    if dictionary is not None or dictionary_options is not None or discovery_options is not None or palette is not None:
         raise ValueError("dictionary and discovery options require backend='symbolic'")
     if max_chain_expansions is None:
         max_chain_expansions = 12

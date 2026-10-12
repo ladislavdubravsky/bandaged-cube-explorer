@@ -17,7 +17,10 @@ from . import State
 from .block_actions import _CELL_POINTS
 from .computation import checkpoint, report_progress
 from .gap_backend import GapError, _gap_images, _run_gap, _validated_options
-from .human_chains import BlockFeature, _KINDS, _STRATEGIES, _observation
+from .human_chains import (BlockFeature, _ALIGNMENT_KIND, _RESIDUAL_KIND, _ACTION_SET_KINDS, _BLOCK_KINDS, _COLLECTION_KINDS, _STRATEGIES,
+                           _block_handle_record,
+                           _check_alignment_membership, _check_slot_invariance, _feature_metadata,
+                           _feature_successor, _observation, _resolve_feature)
 from .loop_algorithms import LoopExpression
 from .symbolic_groups import PermutationGroupCertificate, StabilizerLevel, StrongGenerator
 
@@ -33,10 +36,51 @@ _PROGRAM = r'''
 SetPrintFormattingStatus("*stdout*", false);;
 BCEChooseFeature := fail;;
 BCENewFeatureStabilizer := fail;;
+BCEOrientationImages := [];;
+BCEOrientationSpecs := [];;
+BCEOrientationMap := fail;;
+BCEOnSlotPhases := fail;;
+BCECompositePoints := [];;
+BCEAlignmentAdjustments := [];;
+BCEBlockMap := fail;;
+BCEOnBlockSets := function(point, p)
+    return List(point, slot -> OnSets(slot, p));
+end;;
+BCEOnRegion := function(point, p)
+    return OnSets(point, Image(BCEBlockMap, p));
+end;;
+BCEOnAlignedPlacements := function(point, p)
+    local projection;
+    projection := Image(BCEBlockMap, p);
+    return Set(point, row -> OnTuples(row, projection));
+end;;
+BCEOnResidualPoses := function(point, p)
+    return Set(point, row -> OnTuples(row, p));
+end;;
+BCECheckAlignment := function(H, block, physicalBlockCount)
+    local offset;
+    offset := block-physicalBlockCount-Length(BCEOrientationSpecs);
+    if not ForAll(BCEAlignmentAdjustments[offset], p -> PermList(p) in H) then
+        Error("alignment adjustments must belong to the entire preceding subgroup");
+    fi;
+end;;
+BCEFeatureAction := function(kind)
+    if kind = 3 then return BCEOnSlotPhases;
+    elif kind = 4 then return BCEOnBlockSets;
+    elif kind = 6 then return BCEOnRegion;
+    elif kind = 7 then return BCEOnAlignedPlacements;
+    elif kind = 8 then return BCEOnResidualPoses;
+    elif kind = 0 then return OnSets;
+    else return OnTuples; fi;
+end;;
+BCEOnSlotPhases := function(point, p)
+    return OnSets(point, Image(BCEOrientationMap, p));
+end;;
 BCESymbolicChain := function(images, blockImages, points, phases, manual)
     local roots, projections, H, full, P, map, epi, wordPerms, wordValues, wordFor, certFor,
           groups, steps, skipped, choices, choice, kind, block, action,
-          orbit, next, reps, p, t, current, candidates, i, order, kernel, imageCert;
+          orbit, next, reps, p, t, current, candidates, i, order, kernel, imageCert,
+          physicalBlockCount, frameGroup, slots;
     roots := List(images, PermList);
     H := GroupWithGenerators(roots, ());
     StabChain(H, rec(random := 1000));
@@ -48,7 +92,19 @@ BCESymbolicChain := function(images, blockImages, points, phases, manual)
     if map = fail or not IsSurjective(map) then
         Error("block projection is not a surjective homomorphism");
     fi;
+    BCEBlockMap := map;
     kernel := Size(H) / Size(P);
+    physicalBlockCount := Length(points);
+    if Length(BCEOrientationSpecs) > 0 then
+        frameGroup := GroupWithGenerators(List(BCEOrientationImages, PermList), ());
+        BCEOrientationMap := GroupHomomorphismByImages(H, frameGroup, roots,
+                                                      List(BCEOrientationImages, PermList));
+        if BCEOrientationMap = fail or not IsSurjective(BCEOrientationMap) then
+            Error("orientation-port projection is not a surjective homomorphism");
+        fi;
+        points := Concatenation(points, List(BCEOrientationSpecs, spec -> spec[2]));
+    fi;
+    points := Concatenation(points, BCECompositePoints);
     epi := EpimorphismFromFreeGroup(H);
     if MappingGeneratorsImages(epi)[2] <> roots then
         Error("free-group map changed the original-loop order");
@@ -92,7 +148,7 @@ BCESymbolicChain := function(images, blockImages, points, phases, manual)
         return [Size(G), List(GeneratorsOfGroup(G), g -> ListPerm(g,degree)-1),
                 List(pool, g -> [ListPerm(g,degree)-1, wordFor(lift(g))]), levels];
     end;
-    imageCert := certFor(P, Length(points), g -> PreImagesRepresentative(map,g));
+    imageCert := certFor(P, physicalBlockCount, g -> PreImagesRepresentative(map,g));
     groups := [certFor(H,48,g -> g)]; steps := []; skipped := [];
     for kind in phases do
         if manual then
@@ -106,7 +162,17 @@ BCESymbolicChain := function(images, blockImages, points, phases, manual)
                 if current > Length(choices) then break; fi;
                 choice := choices[current]; current := current+1;
                 block := choice[2]+1;
-                if choice[1] = 0 then action := OnSets; else action := OnTuples; fi;
+                if choice[1] = 3 then
+                    if block <= physicalBlockCount or block > Length(points) then
+                        Error("orientation feature has an invalid slot-region index");
+                    fi;
+                    slots := BCEOrientationSpecs[block-physicalBlockCount][1];
+                    if not ForAll(GeneratorsOfGroup(H), g -> OnSets(slots, Image(map,g)) = slots) then
+                        Error("orientation slots are not invariant under the entire preceding subgroup");
+                    fi;
+                fi;
+                if choice[1] in [7,8] then BCECheckAlignment(H,block,physicalBlockCount); fi;
+                action := BCEFeatureAction(choice[1]);
                 orbit := Orbit(H, points[block], action);
                 if Length(orbit) = 1 then Add(skipped, choice); continue; fi;
             else
@@ -114,11 +180,18 @@ BCESymbolicChain := function(images, blockImages, points, phases, manual)
                     choice := BCEChooseFeature(H, points, kind, Length(steps));
                     if choice = fail then break; fi;
                     block := choice[2]+1;
-                    if choice[1] = 0 then action := OnSets; else action := OnTuples; fi;
+                    if choice[1] = 3 then
+                        slots := BCEOrientationSpecs[block-physicalBlockCount][1];
+                        if not ForAll(GeneratorsOfGroup(H), g -> OnSets(slots, Image(map,g)) = slots) then
+                            Error("orientation slots are not invariant under the entire preceding subgroup");
+                        fi;
+                    fi;
+                    if choice[1] in [7,8] then BCECheckAlignment(H,block,physicalBlockCount); fi;
+                    action := BCEFeatureAction(choice[1]);
                 else
                     if kind = 0 then action := OnSets; else action := OnTuples; fi;
                     candidates := [];
-                    for i in [1..Length(points)] do
+                    for i in [1..physicalBlockCount] do
                         orbit := Orbit(H, points[i], action);
                         if Length(orbit) > 1 then Add(candidates,[Length(orbit),i]); fi;
                     od;
@@ -189,7 +262,7 @@ def _original_loop_expression(expression):
 
 
 def _feature(blocks, kind, block):
-    return BlockFeature(_KINDS[kind], blocks[block].cells)
+    return BlockFeature(_BLOCK_KINDS[kind], blocks[block].cells)
 
 
 def _fixed_features(inventory, group):
@@ -197,7 +270,7 @@ def _fixed_features(inventory, group):
                     for generator in group.strong_generators)
     identity = inventory.action(_IDENTITY)
     return tuple(BlockFeature(kind, slot.cells)
-                 for kind in _KINDS for block, slot in enumerate(inventory.blocks)
+                 for kind in _BLOCK_KINDS for block, slot in enumerate(inventory.blocks)
                  if all(_observation(action, block, kind) ==
                         _observation(identity, block, kind) for action in actions))
 
@@ -208,13 +281,12 @@ def _orbit(inventory, group, block, kind):
     actions = tuple(inventory.action(generator.permutation)
                     for generator in group.strong_generators)
     found, queue = {solved}, deque([solved])
-    modulus = inventory.blocks[block].orientation_order
+    if kind == "orient_slots":
+        _check_slot_invariance(actions, block)
     while queue:
         value = queue.popleft()
         for action in actions:
-            destination = action.destinations[value[0]]
-            image = ((destination,) if kind == "place_block" else
-                     (destination, (value[1] + action.phases[value[0]]) % modulus))
+            image = _feature_successor(value, action, inventory, block, kind)
             if image not in found:
                 found.add(image)
                 queue.append(image)
@@ -237,7 +309,7 @@ class SymbolicRepresentative:
 class SymbolicStage:
     number: int
     feature: BlockFeature
-    block_index: int
+    block_index: int | tuple[int, ...] | tuple[tuple[int, ...], ...]
     block_name: str
     group_before: PermutationGroupCertificate = field(repr=False)
     group_after: PermutationGroupCertificate = field(repr=False)
@@ -264,7 +336,7 @@ class SymbolicStage:
 
     def to_dict(self, *, include_elements=False):
         return {"number": self.number, "feature": self.feature.to_dict(),
-                "block_index": self.block_index, "block_name": self.block_name,
+                "block_index": _block_handle_record(self.block_index), "block_name": self.block_name,
                 "order_before": str(self.order_before), "order_after": str(self.order_after),
                 "index": self.index, "observations": [list(o) for o in self.observations],
                 "solved_observation": list(self.solved_observation),
@@ -409,7 +481,14 @@ class SymbolicStagePlan:
         identity = inventory.action(_IDENTITY)
         for number, stage in enumerate(self.stages, 1):
             checkpoint("symbolic_chain_validation", stage=number, stages=len(self.stages))
-            _check(type(stage.number) is int and type(stage.block_index) is int and
+            valid_handle = (isinstance(stage.block_index, tuple) and
+                            all(isinstance(row, tuple) and all(type(index) is int for index in row)
+                                for row in stage.block_index)
+                            if stage.feature.kind in _ACTION_SET_KINDS else
+                            isinstance(stage.block_index, tuple) and
+                            all(type(index) is int for index in stage.block_index)
+                            if stage.feature.kind not in _BLOCK_KINDS else type(stage.block_index) is int)
+            _check(type(stage.number) is int and valid_handle and
                    all(type(value) is int for observation in
                        (stage.solved_observation, *stage.observations)
                        for value in observation) and
@@ -420,10 +499,10 @@ class SymbolicStagePlan:
                    "symbolic stage order or preceding subgroup is inconsistent")
             _check(stage.group_after.root_generators == roots,
                    "symbolic stage certificate changes the original-loop alphabet")
-            _check(0 <= stage.block_index < len(inventory.blocks) and
-                   stage.feature.cells == inventory.blocks[stage.block_index].cells and
-                   stage.block_name == inventory.blocks[stage.block_index].name,
+            expected_block, expected_name = _feature_metadata(inventory, stage.feature)
+            _check(stage.block_index == expected_block and stage.block_name == expected_name,
                    "symbolic stage feature refers to another physical block")
+            _check_alignment_membership(stage.feature, current.contains)
             solved = _observation(identity, stage.block_index, stage.feature.kind)
             orbit = _orbit(inventory, current, stage.block_index, stage.feature.kind)
             _check(stage.solved_observation == solved and stage.observations == orbit and
@@ -451,8 +530,17 @@ class SymbolicStagePlan:
             fixed, current = after_fixed, stage.group_after
         _check(current.order == 1 and prod(s.index for s in self.stages) == self.group_order,
                "symbolic stage chain does not terminate at faithful identity")
+        terminal_actions = tuple(inventory.action(generator.permutation)
+                                 for generator in current.strong_generators)
+        def skipped_is_fixed(feature):
+            block = _resolve_feature(inventory, feature)
+            _check_alignment_membership(feature, self.group.contains)
+            if feature.kind == "orient_slots":
+                _check_slot_invariance(terminal_actions, block)
+            solved = _observation(identity, block, feature.kind)
+            return all(_observation(action, block, feature.kind) == solved for action in terminal_actions)
         _check((self.strategy == "manual" or not self.skipped_features) and
-               all(feature in fixed for feature in self.skipped_features),
+               all(skipped_is_fixed(feature) for feature in self.skipped_features),
                "symbolic skipped features are inconsistent")
         object.__setattr__(self, "_validation_context", (inventory, generators))
         return self
@@ -493,34 +581,122 @@ def _algebra_basis(analysis, generator_basis="reduced"):
     return generators, basis, tuple(by_id[g.id][0] for g in basis)
 
 
+def _orientation_configuration(inventory, generators, features):
+    """Validated port-action data for exact anonymous phase stabilizers.
+
+    A port (slot,q) transforms to (destination,q+phase). Stabilizing the
+    set of zero ports permits arbitrary occupant permutations in the region.
+    The GAP program independently requires that region invariant under H.
+    """
+    features = tuple(dict.fromkeys(feature for feature in (features or ())
+                                   if feature.kind == "orient_slots"))
+    if not features:
+        return "", features
+    offsets, degree = [], 0
+    for slot in inventory.blocks:
+        offsets.append(degree)
+        degree += slot.orientation_order
+    images = []
+    for generator in generators:
+        action = inventory.action(generator.permutation)
+        image = []
+        for source, slot in enumerate(inventory.blocks):
+            destination = action.destinations[source]
+            _check(slot.orientation_order == inventory.blocks[destination].orientation_order,
+                   "orientation-port action changes its phase modulus")
+            image.extend(offsets[destination] + (phase + action.phases[source]) % slot.orientation_order + 1
+                         for phase in range(slot.orientation_order))
+        _check(len(image) == degree and set(image) == set(range(1, degree+1)),
+               "orientation-port action is not a permutation")
+        images.append(image)
+    specs = []
+    for feature in features:
+        slots = _resolve_feature(inventory, feature)
+        specs.append([[slot+1 for slot in slots], [offsets[slot]+1 for slot in slots]])
+    return ("BCEOrientationImages := " + json.dumps(images) + ";;\n" +
+            "BCEOrientationSpecs := " + json.dumps(specs) + ";;\n"), features
+
+
+def _collection_configuration(inventory, features):
+    """Encode collection endpoints as faithful GAP actions, not new cubie types."""
+    features = tuple(dict.fromkeys(feature for feature in (features or ())
+                                   if feature.kind in _COLLECTION_KINDS))
+    points, adjustments = [], []
+    for feature in features:
+        indices = _resolve_feature(inventory, feature)
+        if feature.kind == _ALIGNMENT_KIND:
+            point = [[index+1 for index in row] for row in indices]
+        elif feature.kind == _RESIDUAL_KIND:
+            sources = [p for index in sorted(indices[0][::2])
+                       for cell in inventory.blocks[index].cells for p in _CELL_POINTS[cell]]
+            point = sorted({tuple(permutation[p]+1 for p in sources)
+                            for permutation in feature.alignment_permutations})
+        elif feature.kind == "occupy_slots":
+            point = [index+1 for index in indices]
+        else:
+            point = [sorted(p+1 for cell in inventory.blocks[index].cells
+                            for p in _CELL_POINTS[cell]) for index in indices]
+            if feature.kind == "solve_blocks":
+                point = [p for slot in point for p in slot]
+        points.append(point)
+        adjustments.append([[point+1 for point in permutation]
+                            for permutation in feature.alignment_permutations])
+    return ("BCECompositePoints := " + json.dumps(points) + ";;\n" +
+            "BCEAlignmentAdjustments := " + json.dumps(adjustments) + ";;\n"), features
+
+
+def _manual_feature_coordinate(inventory, feature, orientation_features, collection_features):
+    if feature.kind == "orient_slots":
+        return [3, len(inventory.blocks)+orientation_features.index(feature)]
+    if feature.kind in _COLLECTION_KINDS:
+        return [4+_COLLECTION_KINDS.index(feature.kind),
+                len(inventory.blocks)+len(orientation_features)+collection_features.index(feature)]
+    return [_BLOCK_KINDS.index(feature.kind), _resolve_feature(inventory, feature)]
+
+
 def plan_symbolic_stages(analysis, *, strategy="placement_then_orientation", features=None,
-                         gap_executable="gap", timeout=None, generator_basis="reduced"):
+                         gap_executable="gap", timeout=None, generator_basis="reduced",
+                         ambient_plan=None):
     """Compute exact feature stages using a reduced witnessed algebra basis.
 
     The complete native loop library remains the ambient certificate alphabet
     and every omitted loop is independently checked for membership. ``full``
     is available for comparing alphabets; it does not change physical discovery.
+    ``ambient_plan`` may reuse an already verified ambient certificate from
+    this same analysis and algebra basis. New subgroup certificates, complete
+    feature orbits and physical transversal witnesses remain fully checked.
     """
     executable, timeout = _validated_options(gap_executable, timeout)
     if strategy not in (*_STRATEGIES, "manual"):
         raise ValueError("unknown human stage strategy")
     inventory = analysis.block_inventory
     blocks = inventory.blocks
-    by_cells = {b.cells: i for i, b in enumerate(blocks)}
     if strategy == "manual":
         if features is None:
             raise ValueError("manual strategy requires features")
         features = tuple(features)
         if any(not isinstance(f, BlockFeature) for f in features):
             raise TypeError("manual features must be BlockFeature instances")
-        if any(f.cells not in by_cells for f in features):
-            raise ValueError("each feature must name exactly one block in the actual reference inventory")
-        phases = [[[ _KINDS.index(f.kind), by_cells[f.cells]] for f in features]]
+        for feature in features:
+            _resolve_feature(inventory, feature)
     else:
         if features is not None:
             raise ValueError("features are only accepted with strategy='manual'")
-        phases = [_KINDS.index(kind) for kind in _STRATEGIES[strategy]]
+        phases = [_BLOCK_KINDS.index(kind) for kind in _STRATEGIES[strategy]]
     _, generators, _ = _algebra_basis(analysis, generator_basis)
+    if ambient_plan is not None:
+        if not isinstance(ambient_plan, SymbolicStagePlan):
+            raise TypeError("ambient_plan must be a SymbolicStagePlan")
+        if (ambient_plan.analysis is not analysis or ambient_plan.inventory is not inventory or
+                ambient_plan._generators is not analysis.loops.generators or
+                ambient_plan.algebra_generators != generators):
+            raise ValueError("ambient_plan must use the same analysis, inventory and generator basis")
+        ambient_plan.validate(expected_order=analysis.group_order)
+    orientation_setup, orientation_features = _orientation_configuration(inventory, generators, features)
+    collection_setup, collection_features = _collection_configuration(inventory, features)
+    if strategy == "manual":
+        phases = [[_manual_feature_coordinate(inventory, feature, orientation_features, collection_features)
+                   for feature in features]]
     report_progress("symbolic_stage_planning", strategy=strategy,
                     native_generators=len(analysis.loops.generators),
                     algebra_generators=len(generators), group_order=analysis.group_order)
@@ -529,13 +705,17 @@ def plan_symbolic_stages(analysis, *, strategy="placement_then_orientation", fea
     projections = [[d+1 for d in g.block_action.destinations] for g in generators]
     arguments = [_gap_images(roots), json.dumps(projections), json.dumps(points),
                  json.dumps(phases), "true" if strategy == "manual" else "false"]
-    output = _run_gap(_PROGRAM + "\nBCESymbolicChain(" + ",".join(arguments) + ");;\nQUIT;\n",
+    output = _run_gap(_PROGRAM + orientation_setup + collection_setup + "\nBCESymbolicChain(" + ",".join(arguments) + ");;\nQUIT;\n",
                       executable, timeout, "symbolic stage planning")
     return _parse_symbolic_plan_output(output, analysis, strategy,
-                                       algebra_generators=generators)
+                                       algebra_generators=generators,
+                                       orientation_features=orientation_features,
+                                       collection_features=collection_features,
+                                       ambient_plan=ambient_plan)
 
 
-def _parse_symbolic_plan_output(output, analysis, strategy, *, algebra_generators=None):
+def _parse_symbolic_plan_output(output, analysis, strategy, *, algebra_generators=None,
+                                orientation_features=(), collection_features=(), ambient_plan=None):
     inventory = analysis.block_inventory
     blocks = inventory.blocks
     generators = tuple(analysis.loops.generators)
@@ -558,17 +738,42 @@ def _parse_symbolic_plan_output(output, analysis, strategy, *, algebra_generator
         raise ValueError(f"manual features leave a subgroup of order {terminal}; add solve_block features")
     groups = []
     for i, raw in enumerate(raw_groups):
-        groups.append(_parse_certificate(
-            raw, roots, root_indices=root_indices, complete=i == 0,
-            ambient_certificate=groups[0] if groups else None))
+        if i == 0 and ambient_plan is not None:
+            _check(len(raw) == 4 and raw[0] == ambient_plan.group_order,
+                   "GAP returned an ambient order inconsistent with the reused certificate")
+            groups.append(ambient_plan.group)
+        else:
+            groups.append(_parse_certificate(
+                raw, roots, root_indices=root_indices, complete=i == 0,
+                ambient_certificate=groups[0] if groups else None))
     groups = tuple(groups)
     _check(len(groups) == len(raw_stages)+1, "GAP returned inconsistent symbolic subgroup records")
     fixed = initial = _fixed_features(inventory, groups[0])
     stages = []
     identity = inventory.action(_IDENTITY)
+    def feature_for(kind, index):
+        _check(type(kind) is int and type(index) is int,
+               "GAP returned invalid feature coordinates")
+        if kind == 3:
+            _check(len(blocks) <= index < len(blocks)+len(orientation_features),
+                   "GAP returned an unknown orientation feature")
+            feature = orientation_features[index-len(blocks)]
+        elif kind in (4, 5, 6, 7, 8):
+            offset = index-len(blocks)-len(orientation_features)
+            _check(0 <= offset < len(collection_features),
+                   "GAP returned an unknown collection feature")
+            feature = collection_features[offset]
+            _check(feature.kind == _COLLECTION_KINDS[kind-4],
+                   "GAP returned inconsistent collection feature coordinates")
+        else:
+            _check(kind in (0, 1) and 0 <= index < len(blocks),
+                   "GAP returned an unknown block feature")
+            feature = _feature(blocks, kind, index)
+        block, name = _feature_metadata(inventory, feature)
+        return feature, block, name
     for number, raw in enumerate(raw_stages, 1):
-        kind, block, before_order, after_order, raw_reps = raw
-        feature = _feature(blocks, kind, block)
+        kind, index, before_order, after_order, raw_reps = raw
+        feature, block, name = feature_for(kind, index)
         _check((groups[number-1].order, groups[number].order) == (before_order, after_order),
                "GAP returned inconsistent symbolic stage orders")
         reps = tuple(sorted((SymbolicRepresentative(
@@ -576,17 +781,24 @@ def _parse_symbolic_plan_output(output, analysis, strategy, *, algebra_generator
             _expression(w, algebra_generators)) for p, w in raw_reps), key=lambda r: r.observation))
         after_fixed = _fixed_features(inventory, groups[number])
         implied = tuple(f for f in after_fixed if f not in fixed and f != feature)
-        stages.append(SymbolicStage(number, feature, block, blocks[block].name,
+        stages.append(SymbolicStage(number, feature, block, name,
                                     groups[number-1], groups[number],
                                     tuple(r.observation for r in reps),
                                     _observation(identity, block, feature.kind), implied, reps))
         fixed = after_fixed
+    if ambient_plan is not None:
+        _check(quotient == ambient_plan.quotient_order and kernel == ambient_plan.kernel_order and
+               len(raw_placement) == 4 and raw_placement[0] == ambient_plan.placement_group.order,
+               "GAP returned a placement order inconsistent with the reused certificate")
+        placement = ambient_plan.placement_group
+    else:
+        placement = _parse_certificate(raw_placement,
+                                       tuple(g.block_action.destinations for g in algebra_generators),
+                                       degree=len(blocks))
     plan = SymbolicStagePlan(analysis, strategy, groups[0], tuple(stages), initial,
-                             tuple(_feature(blocks,k,b) for k,b in raw_skipped),
+                             tuple(feature_for(k,b)[0] for k,b in raw_skipped),
                              quotient, kernel, version,
-                             _parse_certificate(raw_placement,
-                                                tuple(g.block_action.destinations for g in algebra_generators),
-                                                degree=len(blocks)),
+                             placement,
                              inventory, generators, _algebra_generators=algebra_generators)
     return plan.validate(expected_order=analysis.group_order)
 
@@ -604,9 +816,11 @@ def symbolic_plan_from_dict(record, inventory, generators, expected_order=None):
         groups = tuple(groups)
         rows = record["stages"]
         _check(len(groups) == len(rows)+1, "symbolic chain has inconsistent subgroup records")
-        feature = lambda row: BlockFeature(row["kind"], tuple(row["reference_cells"]))
+        from .human_method_io import _block_handle, _feature as feature
         stages = tuple(SymbolicStage(
-            row["number"], feature(row["feature"]), row["block_index"], row["block_name"],
+            row["number"], feature(row["feature"]),
+            _block_handle(row["block_index"], row["feature"]["kind"]),
+            row["block_name"],
             groups[i], groups[i+1], tuple(tuple(o) for o in row["observations"]),
             tuple(row["solved_observation"]), tuple(feature(f) for f in row["implied_features"]),
             tuple(SymbolicRepresentative(tuple(r["observation"]), tuple(r["permutation"]),

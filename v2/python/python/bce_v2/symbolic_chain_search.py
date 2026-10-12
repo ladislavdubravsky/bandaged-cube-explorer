@@ -1,7 +1,7 @@
 """Dictionary-aware feature chains with witnessed, bounded Schreier refinement.
 
-The searched vertices are physical observations, at most 24 for one rigid
-block. Exact permutation-group stabilizers supply independent completeness
+The searched vertices are physical block observations or bounded anonymous
+phase patterns. Exact permutation-group stabilizers supply completeness
 certificates and unrestricted fallback words throughout the optimization.
 """
 
@@ -12,6 +12,7 @@ from heapq import heappop, heappush
 import json
 from inspect import signature
 
+from .algorithm_targets import (_discover_algorithm_targets, _prepare_algorithm_catalog)
 from .block_actions import _CELL_POINTS
 from .computation import checkpoint, report_progress, retain_method
 from .gap_backend import GapError, _gap_images, _run_gap, _validated_options
@@ -20,7 +21,8 @@ from .human_methods import (_compile_plan, _expression_bound, _inverse, _observe
                             _validate_method)
 from .loop_algorithms import AlgorithmLibrary, LoopExpression
 from .symbolic_chains import (_PROGRAM as _CHAIN_PROGRAM, _algebra_basis,
-                              _parse_symbolic_plan_output)
+                              _collection_configuration, _manual_feature_coordinate,
+                              _orientation_configuration, _parse_symbolic_plan_output)
 from .symbolic_human_algorithms import _additive_metrics, _successor
 
 
@@ -30,6 +32,33 @@ _SEARCH_DEFAULTS = dict(mode="structured", max_seed_loops=32, max_candidates=160
                         max_word_length=16, rounds=4, max_states=2000,
                         max_stage_generators=128, max_alternatives=3,
                         max_htm_length=240, max_expanded_moves=960)
+_TARGET_DEFAULTS = dict(max_observations=128, max_candidates=32,
+                        max_prefixes=12, max_methods=2)
+
+
+def _target_settings(options):
+    if options is not None and not isinstance(options, dict):
+        raise TypeError("target_options must be a dictionary or None")
+    if set(options or {}) - set(_TARGET_DEFAULTS):
+        raise ValueError("unknown target option")
+    settings = {**_TARGET_DEFAULTS, **(options or {})}
+    for name, value in settings.items():
+        _bounded_integer(value, "target " + name)
+    return settings
+
+
+def _discovery_settings(options):
+    if options is not None and not isinstance(options, dict):
+        raise TypeError("discovery_options must be a dictionary or None")
+    if set(options or {}) - set(_SEARCH_DEFAULTS):
+        raise ValueError("unknown discovery option")
+    settings = {**_SEARCH_DEFAULTS, **(options or {})}
+    if settings["mode"] not in ("original", "shallow", "structured"):
+        raise ValueError("unknown discovery mode")
+    for name, value in settings.items():
+        if name != "mode":
+            _bounded_integer(value, name, 1 if name == "max_alternatives" else 0)
+    return settings
 
 
 _ADAPTIVE_PROGRAM = r'''
@@ -47,6 +76,7 @@ BCEConfigureDictionary := function(images, costs, limits)
     BCEAdaptive.added := 0;
     BCEAdaptive.truncated := 0;
     BCEAdaptive.remaining := limits[2];
+    BCEAdaptive.forced := [];
     add := function(p,cost,word)
         local found, archived;
         if p = () then return; fi;
@@ -117,11 +147,21 @@ BCEChooseFeature := function(H,points,kind,stageNumber)
     pool := Filtered(BCEAdaptive.pool,e -> e.p in H);
     Sort(pool,function(a,b) return a.cost < b.cost; end);
     BCEAdaptive.eligible := pool;
+    if stageNumber < Length(BCEAdaptive.forced) then
+        entry := BCEAdaptive.forced[stageNumber+1];
+        block := entry[2]+1;
+        action := BCEFeatureAction(entry[1]);
+        orbit := Orbit(H,points[block],action);
+        if Length(orbit) <= 1 then Error("forced feature is redundant"); fi;
+        paths := BCEOrbitWords(orbit,points[block],action,pool);
+        BCEAdaptive.chosen := rec(kind:=entry[1],block:=block,orbit:=orbit,paths:=paths);
+        return entry;
+    fi;
     if kind = 2 then kinds := [0,1]; else kinds := [kind]; fi;
     candidates := [];
     for entry in kinds do
         if entry = 0 then action := OnSets; else action := OnTuples; fi;
-        for block in [1..Length(points)] do
+        for block in [1..BCEAdaptive.physicalBlockCount] do
             orbit := Orbit(H,points[block],action);
             if Length(orbit) > 1 then
                 BCEAdaptive.evaluations := BCEAdaptive.evaluations+1;
@@ -154,7 +194,7 @@ BCEChooseFeature := function(H,points,kind,stageNumber)
             next := Stabilizer(H,points[info.block],action);
             survivors := Filtered(pool,e -> action(points[info.block],e.p) = points[info.block]);
             futureGap := 0; futureCost := 0; levels := 0;
-            for block in [1..Length(points)] do
+            for block in [1..BCEAdaptive.physicalBlockCount] do
                 futureOrbit := Orbit(next,points[block],OnTuples);
                 if Length(futureOrbit) > 1 then
                     levels := levels+1;
@@ -245,11 +285,18 @@ def _bounded_integer(value, name, minimum=0):
 def _adaptive_plan(analysis, algorithms, *, kind, preference, max_expansions,
                    beam_width, max_pool=4096, max_schreier=1024,
                    max_htm_length=120, max_expanded_moves=960,
-                   gap_executable="gap", timeout=None):
+                   gap_executable="gap", timeout=None, forced_features=()):
     executable, timeout = _validated_options(gap_executable, timeout)
     checkpoint("adaptive_chain", kind=kind)
     original_generators, generators, _ = _algebra_basis(analysis)
     blocks = analysis.block_inventory.blocks
+    forced_features = tuple(forced_features)
+    orientation_setup, orientation_features = _orientation_configuration(
+        analysis.block_inventory, generators, forced_features)
+    collection_setup, collection_features = _collection_configuration(analysis.block_inventory, forced_features)
+    forced = [_manual_feature_coordinate(analysis.block_inventory, feature,
+                                         orientation_features, collection_features)
+              for feature in forced_features]
     points = [sorted(p+1 for cell in b.cells for p in _CELL_POINTS[cell]) for b in blocks]
     projections = [[d+1 for d in g.block_action.destinations] for g in generators]
     limits = [max_pool, max_schreier, max_htm_length, max_expansions,
@@ -259,12 +306,16 @@ def _adaptive_plan(analysis, algorithms, *, kind, preference, max_expansions,
     configure = "BCEConfigureDictionary(" + ",".join((
         _gap_images(tuple(a.permutation for a in algorithms)),
         json.dumps([a.htm_length for a in algorithms]), json.dumps(limits))) + ");;\n"
-    output = _run_gap(_CHAIN_PROGRAM + _ADAPTIVE_PROGRAM + configure +
+    configure += (f"BCEAdaptive.physicalBlockCount := {len(blocks)};;\n" +
+                  "BCEAdaptive.forced := " + json.dumps(forced) + ";;\n")
+    output = _run_gap(_CHAIN_PROGRAM + _ADAPTIVE_PROGRAM + orientation_setup + collection_setup + configure +
                       "BCESymbolicChain(" + ",".join(arguments) + ");;\n" +
                       "BCEExportDictionaryChain();;\nQUIT;\n", executable, timeout,
                       "dictionary-aware symbolic chain search")
     plan = _parse_symbolic_plan_output(output, analysis, "manual",
-                                       algebra_generators=generators)
+                                       algebra_generators=generators,
+                                       orientation_features=orientation_features,
+                                       collection_features=collection_features)
     lines = output.splitlines()
     if lines.count(_BEGIN) != 1 or lines.count(_END) != 1:
         raise GapError("missing dictionary-chain search result markers")
@@ -302,7 +353,10 @@ def _adaptive_plan(analysis, algorithms, *, kind, preference, max_expansions,
                 "schreier_max_htm_length":max_htm_length,
                 "schreier_max_expanded_moves":max_expanded_moves,
                 "dictionary_span_scope":"GAP working pool before exported-word expansion filtering"}
+    metadata["forced_features"] = [feature.to_dict() for feature in forced_features]
     for i,stage in enumerate(metadata["stages"]):
+        handle = plan.stages[i].block_index
+        stage["block_index"] = list(handle) if isinstance(handle, tuple) else handle
         stage["dictionary_spans_before"] = stage["subset_order"] == stage["exact_group_order"]
         after = metadata["stages"][i+1]["subset_order"] if i+1 < len(metadata["stages"]) else 1
         stage["retained_next_span_order"] = after
@@ -334,7 +388,8 @@ def _select_edges(induced, solved, observations, maximum):
     return [(induced[key][0],induced[key][1]) for key in selected]
 
 
-def _compile_dictionary_policy(plan, algorithms, settings, *, baseline=None):
+def _compile_dictionary_policy(plan, algorithms, settings, *, baseline=None, target_policies=(),
+                               recipe_algorithms=(), direct_corrections=False):
     """Shortest additive macro paths on small observations, with full fallback."""
     if baseline is None:
         baseline = _compile_plan(plan)
@@ -345,6 +400,11 @@ def _compile_dictionary_policy(plan, algorithms, settings, *, baseline=None):
     new_stages, changed, expansions = [], 0, 0
     next_id = len(used_algorithms)+1
     catalog = []
+    # Refinement can replace an effect with a cheaper witness having a new ID.
+    # The already verified target recipes still refer to the original palette.
+    by_id = {algorithm.id: algorithm for algorithm in recipe_algorithms}
+    by_id.update((algorithm.id, algorithm) for algorithm in algorithms)
+    target_policies = {target.feature: target for target in target_policies}
     for algorithm in algorithms:
         checkpoint("dictionary_policy_catalog")
         if (algorithm.htm_length <= settings["max_htm_length"] and
@@ -367,12 +427,20 @@ def _compile_dictionary_policy(plan, algorithms, settings, *, baseline=None):
         # Retain a cheapest representative for each induced feature action.
         induced = {}
         for algorithm,action,cost_key in eligible:
-            mapping = tuple(_successor(o,action,baseline.inventory) for o in stage.observations)
+            mapping = tuple(_successor(o,action,baseline.inventory, kind=stage.feature.kind,
+                                       block_index=stage.block_index) for o in stage.observations)
             previous = induced.get(mapping)
             if previous is None or cost_key < previous[2]:
                 induced[mapping] = (algorithm,action,cost_key)
         edges = _select_edges(induced,stage.solved_observation,stage.observations,
                               settings["max_stage_generators"])
+        reverse_edges = {}
+        if direct_corrections:
+            for observation in stage.observations:
+                for algorithm, action in edges:
+                    image = _successor(observation, action, baseline.inventory,
+                                       kind=stage.feature.kind, block_index=stage.block_index)
+                    reverse_edges.setdefault(image, []).append((observation, algorithm))
         solved = stage.solved_observation
         labels = {(solved,0):(0,0,LoopExpression.sequence())}
         heap = [(0,0,0,solved)]
@@ -380,7 +448,11 @@ def _compile_dictionary_policy(plan, algorithms, settings, *, baseline=None):
         # Direct dictionary cases are available even with a zero graph-search
         # budget. Longer compositions remain controlled by the search limits.
         for algorithm,action in edges:
-            image = _successor(solved,action,baseline.inventory)
+            image = (_successor(solved, baseline.inventory.action(_inverse(algorithm.permutation)),
+                                baseline.inventory, kind=stage.feature.kind, block_index=stage.block_index)
+                     if direct_corrections else
+                     _successor(solved,action,baseline.inventory, kind=stage.feature.kind,
+                                block_index=stage.block_index))
             value = (algorithm.htm_length,algorithm.qtm_length,algorithm.expression)
             if image not in best or value[:2] < best[image][:2]:
                 best[image] = value
@@ -394,8 +466,11 @@ def _compile_dictionary_policy(plan, algorithms, settings, *, baseline=None):
             expansions += 1
             if depth >= settings["max_word_length"]:
                 continue
-            for algorithm,action in edges:
-                image = _successor(observation,action,baseline.inventory)
+            successors = (reverse_edges.get(observation, ()) if direct_corrections else
+                          ((_successor(observation, action, baseline.inventory,
+                                       kind=stage.feature.kind, block_index=stage.block_index), algorithm)
+                           for algorithm, action in edges))
+            for image, algorithm in successors:
                 costs = htm+algorithm.htm_length,qtm+algorithm.qtm_length
                 label_key = image,depth+1
                 if any(point == image and earlier_depth <= depth+1 and label[:2] <= costs
@@ -404,23 +479,39 @@ def _compile_dictionary_policy(plan, algorithms, settings, *, baseline=None):
                 previous = labels.get(label_key)
                 if previous is not None and previous[:2] <= costs:
                     continue
-                expression = LoopExpression.sequence(stored[2],algorithm.expression)
+                expression = (LoopExpression.sequence(algorithm.expression, stored[2])
+                              if direct_corrections else
+                              LoopExpression.sequence(stored[2],algorithm.expression))
                 labels[label_key] = (*costs,expression)
                 if image not in best or costs < best[image][:2]:
                     best[image] = (*costs,expression)
                 heappush(heap,(*costs,depth+1,image))
         cases = []
+        target = target_policies.get(stage.feature)
+        if target is not None and target.observations != stage.observations:
+            raise GapError("target policy does not match the certified full observation orbit")
+        corrections = (dict(zip(target.observations, target.recipes)) if target is not None else {})
         for case in stage.cases:
-            if case.algorithm_id is None or case.observation not in best:
+            if case.algorithm_id is None:
                 cases.append(case); continue
-            expression = LoopExpression.power(best[case.observation][2],-1)
-            if _expression_bound(expression,records) > settings["max_expanded_moves"]:
-                cases.append(case); continue
-            algorithm = builder.build_algorithm(expression,max_expanded_moves=settings["max_expanded_moves"])
-            if algorithm.htm_length > settings["max_htm_length"]:
-                cases.append(case); continue
+            expressions = []
+            if case.observation in corrections and corrections[case.observation] is not None:
+                expressions.append(LoopExpression.sequence(*(
+                    by_id[identifier].expression for identifier in corrections[case.observation])))
+            if case.observation in best:
+                expressions.append(best[case.observation][2] if direct_corrections else
+                                   LoopExpression.power(best[case.observation][2],-1))
             fallback = used_algorithms[case.algorithm_id]
-            if (algorithm.htm_length,algorithm.qtm_length) >= (fallback.htm_length,fallback.qtm_length):
+            algorithm = fallback
+            for expression in expressions:
+                if _expression_bound(expression,records) > settings["max_expanded_moves"]:
+                    continue
+                proposed = builder.build_algorithm(
+                    expression,max_expanded_moves=settings["max_expanded_moves"])
+                if (proposed.htm_length <= settings["max_htm_length"] and
+                        (proposed.htm_length,proposed.qtm_length) < (algorithm.htm_length,algorithm.qtm_length)):
+                    algorithm = proposed
+            if algorithm is fallback:
                 cases.append(case); continue
             algorithm = replace(algorithm,id=f"A{next_id}"); next_id += 1
             used_algorithms[algorithm.id] = algorithm
@@ -437,8 +528,8 @@ def _compile_dictionary_policy(plan, algorithms, settings, *, baseline=None):
 
 def select_symbolic_human_chain(initial, *, strategy="placement_then_orientation", manual_features=None,
                                 preference="execution", beam_width=4, max_expansions=64, max_methods=16,
-                                discovery_options=None, dictionary=None, dictionary_options=None,
-                                max_group_elements=None, gap_executable="gap", timeout=None, root=None):
+                                discovery_options=None, dictionary=None, dictionary_options=None, target_options=None,
+                                palette=None, max_group_elements=None, gap_executable="gap", timeout=None, root=None):
     """Compare complete symbolic controls and bounded dictionary-aware chains."""
     from .human_chain_search import HumanChainCandidate, HumanChainSearch
     from .symbolic_dictionary import (
@@ -454,6 +545,11 @@ def select_symbolic_human_chain(initial, *, strategy="placement_then_orientation
     for name,value,minimum in (("beam_width",beam_width,1),("max_expansions",max_expansions,0),
                                ("max_methods",max_methods,0)):
         _bounded_integer(value,name,minimum)
+    targets = _target_settings(target_options)
+    if palette is not None:
+        from .algorithm_palette import AlgorithmPalette
+        if not isinstance(palette, AlgorithmPalette):
+            raise TypeError("palette must be an AlgorithmPalette")
     if dictionary is not None and not isinstance(dictionary,SymbolicAlgorithmDictionary):
         raise TypeError("dictionary must be a SymbolicAlgorithmDictionary")
     if dictionary_options is not None and not isinstance(dictionary_options,dict):
@@ -469,17 +565,8 @@ def select_symbolic_human_chain(initial, *, strategy="placement_then_orientation
                 _validate_setting(name,value)
         _validated_options(dictionary_options.get("gap_executable",gap_executable),
                            dictionary_options.get("timeout",timeout))
-    if discovery_options is not None and not isinstance(discovery_options,dict):
-        raise TypeError("discovery_options must be a dictionary or None")
     supplied = dict(discovery_options or {})
-    if set(supplied)-set(_SEARCH_DEFAULTS):
-        raise ValueError("unknown discovery option")
-    settings = {**_SEARCH_DEFAULTS,**supplied}
-    if settings["mode"] not in ("original","shallow","structured"):
-        raise ValueError("unknown discovery mode")
-    for name,value in settings.items():
-        if name != "mode":
-            _bounded_integer(value,name,1 if name == "max_alternatives" else 0)
+    settings = _discovery_settings(discovery_options)
     if manual_features is not None:
         manual_features = tuple(manual_features)
         if any(not isinstance(f,BlockFeature) for f in manual_features):
@@ -525,23 +612,50 @@ def select_symbolic_human_chain(initial, *, strategy="placement_then_orientation
             declared["orientation_target_order"] != plans[0].kernel_order):
         raise ValueError("dictionary exact-order metadata disagrees with the certified reference group")
     roots = {g.id:g for g in analysis.loops.generators}
-    algorithms = tuple(a for a in dictionary.algorithms[:settings["max_candidates"]]
+    supplied_recipes = ()
+    if palette is not None:
+        palette.validate(inventory=analysis.block_inventory, generators=analysis.loops.generators,
+                         group=plans[0].group)
+        supplied_recipes = palette.recipes
+    # The mining admission cap controls discovered entries. Explicit supplied
+    # recipes are available before policy and target selection independently.
+    algorithms = tuple(a for a in (*supplied_recipes, *dictionary.algorithms[:settings["max_candidates"]])
                        if a.htm_length <= settings["max_htm_length"] and
                        _expression_bound(a.expression,roots) <= settings["max_expanded_moves"])
+    if len({a.id for a in algorithms}) != len(algorithms):
+        raise ValueError("palette and dictionary algorithm IDs collide")
+    attribute_enabled = (targets["max_observations"] >= 2 and targets["max_candidates"] > 0
+                         and targets["max_prefixes"] > 0 and max_expansions >= 2)
+    attribute_limit = (min(targets["max_methods"], max(0, max_methods-1))
+                       if attribute_enabled else 0)
+    adaptive_limit = min(max_methods-attribute_limit, 2)
+    attribute_expansions = (min(targets["max_prefixes"], max_expansions//2)
+                            if attribute_limit else 0)
     candidates, metadata = [], {"backend":"symbolic", "coverage":"certified",
                                 "rank_scope":"exact uniform-group additive HTM before boundary cancellation",
                                 "exhaustive_chain_search":False,"human_reviewed":False,
                                 "settings":dict(strategy=strategy,preference=preference,beam_width=beam_width,
                                                 max_expansions=max_expansions,max_methods=max_methods,
-                                                discovery_options=settings),
+                                                discovery_options=settings, target_options=targets),
                                 "discovery":dictionary.metadata,"adaptive_chains":[],
+                                "attribute_targets":[],
                                 "effective_search_limits":{
-                                    "adaptive_kind_count":min(max_methods,2),
+                                    "adaptive_kind_count":adaptive_limit,
+                                    "attribute_method_count":attribute_limit,
+                                    "attribute_prefix_count":attribute_expansions,
+                                    "attribute_graph_scope":"full subgroup patterns bounded by target_options; recipes are not limited by dictionary graph depth",
                                     "lookahead_candidate_count":min(beam_width,4),
                                     "dictionary_admission_limit":settings["max_candidates"],
                                     "dictionary_effects_admitted":len(algorithms),
                                     "node_budget_scope":"optimized feature-prefix decisions; complete continuation is retained",
                                     "work_budget_scope":"dictionary mining, bounded setup closure and adaptive Schreier proposals are reported separately"}}
+    if palette is not None:
+        admitted_ids = {algorithm.id for algorithm in algorithms}
+        metadata["palette"] = {**palette.metadata,
+            "admitted_recipe_count": sum(a.id in admitted_ids for a in supplied_recipes),
+            "admitted_before_policy_selection": True,
+            "strict_vocabulary": False,
+            "fallback_scope": "complete original-loop controls and adaptive refinements remain available"}
 
     def add(method,source):
         metrics = _additive_metrics(method)
@@ -553,23 +667,28 @@ def select_symbolic_human_chain(initial, *, strategy="placement_then_orientation
                                               json.dumps(metrics,sort_keys=True)))
         retain_method(method, source=source, metrics=metrics)
 
-    baselines = {}
+    baselines, target_sources = {}, []
     for plan in plans:
         checkpoint("symbolic_chain_policy", strategy=plan.strategy)
         raw, improved, stats = _compile_dictionary_policy(
-            plan,algorithms,settings, baseline=first_baseline if plan is first else None)
+            plan,algorithms,settings, baseline=first_baseline if plan is first else None,
+            direct_corrections=palette is not None)
         baselines[plan.strategy] = raw
         add(raw,"fallback:"+plan.strategy)
         add(improved,"dictionary:"+plan.strategy)
+        target_sources.append((plan, algorithms, _additive_metrics(improved)["mean_htm"],
+                               "control:" + plan.strategy))
     if manual_features is not None:
         plan = plan_human_stages(analysis,strategy="manual",features=manual_features,
                                  backend="symbolic",gap_executable=gap_executable,timeout=timeout)
-        raw,improved,stats = _compile_dictionary_policy(plan,algorithms,settings)
+        raw,improved,stats = _compile_dictionary_policy(plan,algorithms,settings,
+                                                       direct_corrections=palette is not None)
         add(raw,"fallback:manual"); add(improved,"dictionary:manual")
+        target_sources.append((plan, algorithms, _additive_metrics(improved)["mean_htm"], "manual"))
+    remaining = max_expansions-attribute_expansions
     if algorithms and max_expansions and max_methods:
-        remaining = max_expansions
         remaining_proposals = max(0,settings["max_candidates"]-len(algorithms))
-        for kind in (1,2)[:min(max_methods,2)]:
+        for kind in (1,2)[:adaptive_limit]:
             checkpoint("adaptive_chain", kind=kind)
             if remaining <= 0:
                 break
@@ -581,12 +700,69 @@ def select_symbolic_human_chain(initial, *, strategy="placement_then_orientation
                 max_htm_length=settings["max_htm_length"],
                 max_expanded_moves=settings["max_expanded_moves"],
                 gap_executable=gap_executable,timeout=timeout)
-            raw,improved,stats = _compile_dictionary_policy(plan,pool,settings)
+            raw,improved,stats = _compile_dictionary_policy(plan,pool,settings,
+                                                           direct_corrections=palette is not None)
             add(raw,f"fallback:adaptive:{kind}")
             add(improved,f"dictionary:adaptive:{kind}")
             metadata["adaptive_chains"].append({**adaptive_stats,**stats})
+            target_sources.append((plan, pool, _additive_metrics(improved)["mean_htm"],
+                                   f"adaptive:{kind}"))
             remaining -= min(remaining,len(plan.stages))
             remaining_proposals -= sum(row["schreier_proposals"] for row in adaptive_stats["stages"])
+    # Propose anonymous targets at certified prefixes, then compare complete
+    # continuations. The palette supplies repairs, never the full case domain.
+    attribute_checks, attribute_decisions, proposals = 0, 0, {}
+    if algorithms and attribute_limit and attribute_expansions:
+        for source_plan, pool, _, source in sorted(target_sources, key=lambda item: (item[2], item[3])):
+            catalog = _prepare_algorithm_catalog(source_plan.inventory, source_plan.group, pool)
+            # Middle prefixes usually retain useful workspaces while their
+            # orientation orbits fit the configured recognition bound.
+            prefixes = sorted(range(len(source_plan.stages)),
+                              key=lambda index: (abs(index-len(source_plan.stages)//2), index))
+            for prefix in prefixes:
+                if attribute_checks >= attribute_expansions:
+                    break
+                checkpoint("attribute_target_prefix", prefix=prefix, source=source)
+                attribute_checks += 1
+                current = (source_plan.group if prefix == 0
+                           else source_plan.stages[prefix-1].group_after)
+                discovered = _discover_algorithm_targets(
+                    source_plan.inventory, current, catalog,
+                    max_observations=targets["max_observations"], max_candidates=targets["max_candidates"])
+                for target in discovered:
+                    if not target.complete or target.worst_htm > settings["max_htm_length"]:
+                        continue
+                    features = (*(stage.feature for stage in source_plan.stages[:prefix]), target.feature,
+                                *(stage.feature for stage in source_plan.stages[prefix:]))
+                    key = tuple((feature.kind, feature.cells) for feature in features)
+                    proposals.setdefault(key, (target, features, pool, prefix, source))
+            if attribute_checks >= attribute_expansions:
+                break
+        ranked = sorted(proposals.values(), key=lambda row: (row[0].rank_key, row[3], row[4]))
+        for target, features, pool, prefix, source in ranked[:attribute_limit]:
+            checkpoint("attribute_target_continuation", prefix=prefix, source=source)
+            forced = features[:prefix+1]
+            plan, refined, refinement = _adaptive_plan(
+                analysis, pool, kind=2, preference=preference,
+                max_expansions=len(forced)+remaining, beam_width=beam_width,
+                max_pool=max(2,min(4096,2*settings["max_candidates"])),
+                max_schreier=remaining_proposals,
+                max_htm_length=settings["max_htm_length"], max_expanded_moves=settings["max_expanded_moves"],
+                gap_executable=gap_executable, timeout=timeout, forced_features=forced)
+            decisions = min(remaining, max(0,len(plan.stages)-len(forced)))
+            remaining -= decisions
+            attribute_decisions += decisions
+            remaining_proposals -= sum(row["schreier_proposals"] for row in refinement["stages"])
+            raw, improved, stats = _compile_dictionary_policy(plan, refined, settings,
+                                                               target_policies=(target,),
+                                                               recipe_algorithms=pool,
+                                                               direct_corrections=palette is not None)
+            ordinal = len(metadata["attribute_targets"])+1
+            add(raw, f"fallback:attributes:{ordinal}")
+            add(improved, f"dictionary:attributes:{ordinal}")
+            metadata["attribute_targets"].append({"source":source,"prefix_stage_count":prefix,
+                "target":target.to_dict(),"complete_continuation_mean_htm":_additive_metrics(improved)["mean_htm"],
+                "refinement":refinement, "continuation_decisions":decisions, **stats})
     execution = ("mean_htm","worst_htm","max_case_count","case_count_sum","definition_htm","stage_count")
     recognition = ("max_case_count","case_count_sum","mean_htm","worst_htm","definition_htm","stage_count")
     dimensions = execution
@@ -596,10 +772,19 @@ def select_symbolic_human_chain(initial, *, strategy="placement_then_orientation
     by_id = {c.id:c for c in candidates}
     selected = min((by_id[key] for key in frontier),key=lambda c:(
         *(c.metrics[k] for k in (execution if preference == "execution" else recognition)),c.id))
-    metadata.update(selected_source=selected.source,additional_methods_evaluated=len(metadata["adaptive_chains"]),
-                    nodes_expanded=max_expansions-remaining if algorithms and max_expansions and max_methods else 0,
-                    adaptive_schreier_proposals=sum(row["schreier_proposals"] for m in metadata["adaptive_chains"]
-                                                    for row in m["stages"]),
-                    stage_edges_evaluated=sum(m["stage_edges_evaluated"] for m in metadata["adaptive_chains"]))
+    metadata.update(selected_source=selected.source,
+                    additional_methods_evaluated=len(metadata["adaptive_chains"])+len(metadata["attribute_targets"]),
+                    nodes_expanded=(max_expansions-attribute_expansions-remaining+attribute_checks
+                                    if algorithms and max_expansions and max_methods else 0),
+                    attribute_prefixes_evaluated=attribute_checks,
+                    attribute_continuation_decisions=attribute_decisions,
+                    attribute_proposals_count=len(proposals),
+                    adaptive_schreier_proposals=(sum(row["schreier_proposals"] for m in metadata["adaptive_chains"]
+                                                     for row in m["stages"])+
+                                                sum(row["schreier_proposals"] for m in metadata["attribute_targets"]
+                                                    for row in m["refinement"]["stages"])),
+                    stage_edges_evaluated=(sum(m["stage_edges_evaluated"] for m in metadata["adaptive_chains"])+
+                                           sum(m["refinement"]["stage_edges_evaluated"]
+                                               for m in metadata["attribute_targets"])))
     return HumanChainSearch(baselines[strategy],selected.method,tuple(candidates),frontier,
                             selected.id,json.dumps(metadata,sort_keys=True))
