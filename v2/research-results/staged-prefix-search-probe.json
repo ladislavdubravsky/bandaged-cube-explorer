@@ -1,0 +1,1000 @@
+{
+  "all_replays_verified": true,
+  "baseline_sample_mean_htm": 209.71875,
+  "complete_policy_evaluations": 608,
+  "control_learned_body_count_gt4": 7,
+  "control_macro_count": 22,
+  "format": "bce-v2-staged-runtime-prefix-diagnostic",
+  "improved_samples": 31,
+  "learned_algorithms_changed": false,
+  "method_sha256": "d7b4e5b7ddfd89d5a9ac8cae1863a09d75a16a3de39becf0aaee94cc1e565abb",
+  "method_source": "/tmp/geometric-chain-greedy_control.json",
+  "prefixes": [
+    "",
+    "U",
+    "U'",
+    "U2",
+    "R",
+    "R'",
+    "R2",
+    "F",
+    "F'",
+    "F2",
+    "D",
+    "D'",
+    "D2",
+    "L",
+    "L'",
+    "L2",
+    "B",
+    "B'",
+    "B2"
+  ],
+  "samples": [
+    {
+      "baseline_htm": 196,
+      "candidate_lengths": [
+        196,
+        224,
+        127,
+        254,
+        196,
+        297,
+        198,
+        250,
+        250,
+        148,
+        153,
+        244,
+        307,
+        244,
+        171,
+        181,
+        261,
+        236,
+        210
+      ],
+      "chosen": {
+        "htm": 127,
+        "prefix": "U'",
+        "turn_sequence": "U' R U' L' B2 R2 B2 D L' D' B' U B F' L2 F B' U' B F' L2 F R L D' L' D R' D' L D L' F L2 R2 U' R2 L F' L B2 R B' R' L' F L F' R B R' B' L B' L' U' B U B' L B L' U' B' U' R' U' R U R U R U' R' U L U L' U' D U L U' L' D' U R U R U R U' R' U' R' U2 D' L D B L' B' L D' L' D B L B' L' R' L U' L' U R2 D R' D' U' L U L' D R D' R'"
+      },
+      "scramble": "F2 U L L F U' D' R2 L2 B D D D' B R F D' L R B2 U' U' L D D' D2 B' R' D2 F'"
+    },
+    {
+      "baseline_htm": 250,
+      "candidate_lengths": [
+        250,
+        250,
+        217,
+        250,
+        250,
+        250,
+        250,
+        250,
+        212,
+        250,
+        196,
+        201,
+        207,
+        251,
+        251,
+        250,
+        251,
+        204,
+        194
+      ],
+      "chosen": {
+        "htm": 194,
+        "prefix": "B2",
+        "turn_sequence": "B2 R D L' F D F' U B' U' D2 L' D' F' D F L' D' B' L' B L U' R' U R2 U' R' U R' F L2 R2 U R2 U2 R2 U2 L2 F' B' U B R2 U2 R2 B' U' B L' F L F' U F U' L' F' L F U F' U' D F B2 R' B2 F' D' F B2 R B2 F' B' R B R' D R D' B' R' B R D R' D' U' F' D F D' U2 B U' B' D F' D' F B U B' U' L2 R U' R U R U R U' R' U' R2 L2 U R U R U R' U' R' U' R' L B L' B' D' L D L' B L B' D' L' D F2 U2 R' L F R' L D R' L B2 L' R D L' R F L' R F2 B L B' L' U' B U B' L B L' U' B' U R' L U' L' U R2 D R' D' U' L U L' D R D' R'"
+      },
+      "scramble": "B' D D2 L2 U2 R B' U' D' B R U B' B' F' R R2 F2 F B R F' L' F2 D2 D' F' L2 F2 F2"
+    },
+    {
+      "baseline_htm": 202,
+      "candidate_lengths": [
+        202,
+        184,
+        153,
+        263,
+        233,
+        158,
+        233,
+        228,
+        181,
+        199,
+        134,
+        251,
+        210,
+        161,
+        174,
+        294,
+        202,
+        202,
+        202
+      ],
+      "chosen": {
+        "htm": 134,
+        "prefix": "D",
+        "turn_sequence": "D B2 F' L B2 R2 B U' B D L' D' B' U B L R2 U' R2 L2 F U2 R' U2 F' L2 B' R B R' L' R B' R' B D L D' L' R' L D L' D' R L' F L F' U F U' L' F' L F U F' U' R U R U R U' R' U' R' U' R D R' F' D' F D R D' R' F' D F D' U' F' D F D' U2 B U' B' D F' D' F B U B' U' L B L' B' D' L D L' B L B' D' L' D F2 U2 R' L F R' L D R' L B2 L' R D L' R F L' R F2"
+      },
+      "scramble": "D' L F2 D2 L2 B' B2 F D B' R' L R' F2 U F U2 D' U' D L2 D' D' L2 D U' U2 D B R2"
+    },
+    {
+      "baseline_htm": 139,
+      "candidate_lengths": [
+        139,
+        246,
+        191,
+        230,
+        215,
+        177,
+        224,
+        212,
+        166,
+        167,
+        191,
+        264,
+        203,
+        149,
+        172,
+        250,
+        139,
+        139,
+        139
+      ],
+      "chosen": {
+        "htm": 139,
+        "prefix": "",
+        "turn_sequence": "B2 L' F' U' R2 U D L F R2 U R2 F2 D F L' D' B' L' B L F' L2 F D2 L' D2 F' L2 F2 L2 U2 R' U2 R2 U' R2 L2 F' L' F L F' R F L' F' L R' D R D' R' F' D F D' R D R' F' D' F R' B R L' D L R' B R L' D L U R' U' R U R U R U' R' U2 L' D' L R' B' R L' D' L R' B' R B L B' L' U' B U B' L B L' U' B' U2 R U R U R U' R' U' R' U2 L' R F' R' F L2 B L' B' F' R F R' B L B' L'"
+      },
+      "scramble": "F' R D' D2 L' F' F' U2 L B2 F' L' U B2 D' F' B R' D F' L2 D U' U2 R' F2 L R L' R'"
+    },
+    {
+      "baseline_htm": 221,
+      "candidate_lengths": [
+        221,
+        289,
+        221,
+        221,
+        170,
+        209,
+        222,
+        190,
+        266,
+        176,
+        175,
+        203,
+        181,
+        280,
+        226,
+        232,
+        197,
+        154,
+        132
+      ],
+      "chosen": {
+        "htm": 132,
+        "prefix": "B2",
+        "turn_sequence": "B2 R' D L F' L' U R B' R' D2 L D2 U R2 U' R2 U' R B R' U' R2 U R B' R U R2 U R U' R' U' R2 F U' F' R' U R U' F U F' R' U' R U R U R U R' U' R' U' R2 B R L' D L R' B R L' D L U2 R' U' R U R U R U' R' U L' B' D B D' L2 U L' U' D B' D' B U L U' L' U L U' L' D L U L' U' D' L B L' B' D' L D L' B L B' D' L' D U R U R U R U' R' U' R' U2"
+      },
+      "scramble": "R2 L B2 D' R' L B2 R2 L' R' B U' U2 D U2 L2 R2 R2 R F2 R' L2 R' U' B' B2 B2 B2 B R"
+    },
+    {
+      "baseline_htm": 243,
+      "candidate_lengths": [
+        243,
+        243,
+        243,
+        243,
+        147,
+        243,
+        240,
+        243,
+        243,
+        273,
+        179,
+        172,
+        171,
+        226,
+        143,
+        194,
+        219,
+        168,
+        217
+      ],
+      "chosen": {
+        "htm": 143,
+        "prefix": "L'",
+        "turn_sequence": "L' U' L' F L' F2 B' U2 B F B2 R' B2 L2 U2 R' U2 R2 U' R2 L2 F' R' D L' D' L R L' D L D' R U R U R U' R' U' R' U' R' B R L' D L R' B R L' D L U2 R' U' R U R U R U' R' U L' B' D B D' L2 U L' U' D B' D' B U L U' L' U L U' L' D L U L' U' D' R D R' D' B' R B R' D R D' B' R' B F2 U2 R' L F R' L D R' L B2 L' R D L' R F L' R F2 R' L U' L' U R2 D R' D' U' L U L' D R D' R'"
+      },
+      "scramble": "B F F' R2 B' U D D2 B L' F D2 B2 U2 U2 B U2 L' D2 U' F D' R' B' U2 F L D2 D U'"
+    },
+    {
+      "baseline_htm": 178,
+      "candidate_lengths": [
+        178,
+        178,
+        234,
+        178,
+        178,
+        178,
+        178,
+        153,
+        199,
+        178,
+        229,
+        206,
+        231,
+        180,
+        180,
+        180,
+        131,
+        134,
+        203
+      ],
+      "chosen": {
+        "htm": 131,
+        "prefix": "B",
+        "turn_sequence": "B R D' F' B' L' B L F' L F B' U B L R2 U R2 L' D F D' F' D F' D' L' F U2 R U2 F' L B L' F L F' B' F L' F' L D R D' R' F' D F D' R D R' F' D' F2 L2 R2 U' R2 U2 R2 U2 R2 U' R2 L2 F' U2 R U R U R' U' R' U' R' U' R' B R L' D L R' B R L' D B' D B D' L2 U L' U' D B' D' B U L U' L' U L U' L' D L U L' U' D' B' R B D R' D' R B' R' B D R D' R'"
+      },
+      "scramble": "F D' D U D U B' U2 U' L' U' F F' B L2 D' D2 U U U R2 D F2 L2 D2 L' U B U' L"
+    },
+    {
+      "baseline_htm": 200,
+      "candidate_lengths": [
+        200,
+        200,
+        264,
+        200,
+        181,
+        215,
+        297,
+        201,
+        234,
+        220,
+        264,
+        193,
+        184,
+        262,
+        213,
+        200,
+        200,
+        200,
+        200
+      ],
+      "chosen": {
+        "htm": 181,
+        "prefix": "R",
+        "turn_sequence": "R B' L2 F' L F' L' U B U' B' L' B L B' U2 B F B2 R' B2 F2 L2 F D2 L' D2 F' L2 F2 L2 R2 U R2 U2 R U2 L2 F' B2 R B' R' F L' F' L R B R' B2 L' F L F' U F U' F' R' U R U' F U F' R' U' R2 F' R' L F R' L D R' L B2 L' R D L' R F L' R U2 F R' D L U L' U' D' U L U' L' B L B' L' U' B U B' L B L' U' B' U2 R U R U R U' R' U' R' U2 L' F R' L F R' L D R' L B2 L' R D L' R F L' R U2 F' R F' R' F L2 B L' B' F' R F R' B L B' L U R' L F R' L D R' L B2 L' R D L' R F L' R U L2"
+      },
+      "scramble": "B D' D F2 F2 U2 D2 B U' D U F D F' L' B R2 B' R2 B D D' D D2 R L R2 B' D2 U"
+    },
+    {
+      "baseline_htm": 248,
+      "candidate_lengths": [
+        248,
+        248,
+        248,
+        248,
+        242,
+        248,
+        219,
+        248,
+        170,
+        223,
+        222,
+        248,
+        219,
+        211,
+        177,
+        143,
+        193,
+        177,
+        180
+      ],
+      "chosen": {
+        "htm": 143,
+        "prefix": "L2",
+        "turn_sequence": "L2 U' D' F R' D' R D B2 U B2 L D' L' D L2 D' L U2 B U2 L' D L F L2 U2 R U2 L2 F' L' F L F' B F L' F' L B' F L2 U2 R' U2 R2 U2 R2 U2 R' U2 L2 F' D F B2 R' B2 F' D' F B2 R B2 F' L' D' L R' B' R L' D' L R' B' R D L U L' U' D' U L U' L' F2 U2 R' L F R' L D R' L B2 L' R D L' R F L' R F2 B L B' L' U' B U B' L B L' U' B' U L2 U R' L F R' L D R' L B2 L' R D L' R F L' R U L2"
+      },
+      "scramble": "B B' L' F2 F' R' L U2 R2 L2 U' U' B2 B' D B2 D2 B' R' F L R' U B L L B2 U' D' D2"
+    },
+    {
+      "baseline_htm": 208,
+      "candidate_lengths": [
+        208,
+        218,
+        215,
+        155,
+        199,
+        232,
+        223,
+        131,
+        174,
+        174,
+        258,
+        233,
+        199,
+        208,
+        208,
+        208,
+        251,
+        228,
+        263
+      ],
+      "chosen": {
+        "htm": 131,
+        "prefix": "F",
+        "turn_sequence": "F U' R F' U' R2 U2 R' U' R U' D F2 D F2 D' U2 B2 U2 D F D' F' D F' D' L B' R B R' L' R B' R' B2 L' F L F' B' F L' F' L D R D' R' F' D F D' R D R' F' D' F U R' U' R U R U R U' R' U2 R' B R L' D L R' B R L' D L U2 R' U' R U R U R U' R' U' R U R U R' U' R' U' R' U' D' L D B L' B' L D' L' D B L B' L' B L B' L' U' B U B' L B L' U' B' U"
+      },
+      "scramble": "B' F F2 B' R' R U B R2 L B L B' B L D' L2 L R R' U' D2 B L2 F' D2 U2 L' B' U'"
+    },
+    {
+      "baseline_htm": 195,
+      "candidate_lengths": [
+        195,
+        195,
+        195,
+        195,
+        281,
+        197,
+        208,
+        175,
+        164,
+        212,
+        195,
+        196,
+        196,
+        227,
+        160,
+        211,
+        230,
+        217,
+        236
+      ],
+      "chosen": {
+        "htm": 160,
+        "prefix": "L'",
+        "turn_sequence": "L' U2 R F L F D' F' U R B' R U R2 F' L' F B' U2 B U R' U2 R U2 F D' F' D U D' F D L2 U2 R' U2 L2 F' L' F L F' B F L' F' L B' L' R U' R U R U R U' R' U' R2 L R' B R L' D L R' B R L' D L U2 R' U' R U R U R U' R' U B R B' R' L' R B R' B' L R D R' D' B' R B R' D R D' B' R' B F2 U2 R' L F R' L D R' L B2 L' R D L' R F L' R F2 B L B' L' U' B U B' L B L' U' B' U L' R F' R' F L2 B L' B' F' R F R' B L B' L'"
+      },
+      "scramble": "B2 F D U2 R2 L' R' L' U' B2 D2 F B F' D' B U2 L D' D2 L2 R' F' B' R U2 D B L R2"
+    },
+    {
+      "baseline_htm": 240,
+      "candidate_lengths": [
+        240,
+        228,
+        196,
+        268,
+        183,
+        270,
+        203,
+        240,
+        214,
+        185,
+        157,
+        253,
+        160,
+        173,
+        246,
+        176,
+        240,
+        240,
+        240
+      ],
+      "chosen": {
+        "htm": 157,
+        "prefix": "D",
+        "turn_sequence": "D L U L R2 B' R2 U B' U' D L' F D' F' D F' D' F L2 R2 U' R2 L2 F' D U R' U' R D' R' U R F U' F' R' U R U' F U F' R' U' R U' R U R' U' R' U' R' U R U2 B R B' R' L' R B R' B' L B L B' L' U' B U B' L B L' U' B' U2 R U R U R U' R' U' R' U2 D' L D B L' B' L D' L' D B L B' L U R' L F R' L D R' L B2 L' R D L' R F L' R U L2 B L B' L' U' B U B' L B L' U' B' U R' L U' L' U R2 D R' D' U' L U L' D R D' R'"
+      },
+      "scramble": "R' U2 F' D' U' U2 L' U2 R F2 R' L2 R2 F' D D' R2 R' U D2 F' U D2 B2 R2 B2 B' B2 B' B'"
+    },
+    {
+      "baseline_htm": 267,
+      "candidate_lengths": [
+        267,
+        276,
+        237,
+        261,
+        267,
+        173,
+        240,
+        243,
+        243,
+        202,
+        242,
+        241,
+        191,
+        158,
+        237,
+        243,
+        192,
+        267,
+        195
+      ],
+      "chosen": {
+        "htm": 158,
+        "prefix": "L",
+        "turn_sequence": "L R U' D2 F U B U' F' L' F B' U B D2 L2 D2 U R2 U' R2 U' F' L2 F D2 L' D2 F' L2 F2 L2 U2 R U2 L2 F' R' D L' D' L R L' D L D' L D' L D B L' B' L D' L' D B L B' L2 B' U B R2 U R2 F2 R2 U R2 F2 B' U' B L' D' L R' B' R L' D' L R' B' R U R U R U R U' R' U' R' U2 B' R B D R' D' R B' R' B D R D' R' L B L' B' D' L D L' B L B' D' L' D B L B' L' U' B U B' L B L' U' B' U L' R F' R' F L2 B L' B' F' R F R' B L B' L'"
+      },
+      "scramble": "L2 D' F2 B B2 F' D' U2 B2 U2 F' R R2 B L' B' B' L2 F' D2 F' L F L2 R' L U' R' U' R'"
+    },
+    {
+      "baseline_htm": 164,
+      "candidate_lengths": [
+        164,
+        164,
+        164,
+        164,
+        139,
+        218,
+        185,
+        149,
+        175,
+        288,
+        191,
+        164,
+        208,
+        252,
+        208,
+        127,
+        202,
+        200,
+        280
+      ],
+      "chosen": {
+        "htm": 127,
+        "prefix": "L2",
+        "turn_sequence": "L2 B2 D2 F' D' F D' R2 U R2 L' F U2 R' U2 F' L F L2 R2 U R2 U2 R U2 L2 F' B R F R' F' B' F R F' R' D R D' R' F' D F D' R D R' F' D' F U R U R U R' U' R' U' R' U2 R' U' R U R U R U' R' F' D F D' U2 B U' B' D F' D' F B U B' U' B R B' R' L' R B R' B' L D' L D B L' B' L D' L' D B L B' L2 R F' R' F L2 B L' B' F' R F R' B L B' L'"
+      },
+      "scramble": "D2 L2 B2 R2 U D2 F F F2 L2 D2 F' L' L2 L U' R2 D F2 F2 L2 R2 U' F2 F2 U R2 D' B2 D'"
+    },
+    {
+      "baseline_htm": 178,
+      "candidate_lengths": [
+        178,
+        240,
+        194,
+        243,
+        219,
+        195,
+        251,
+        184,
+        268,
+        178,
+        177,
+        186,
+        250,
+        149,
+        203,
+        202,
+        228,
+        208,
+        217
+      ],
+      "chosen": {
+        "htm": 149,
+        "prefix": "L",
+        "turn_sequence": "L B2 D' F' D L D' L F D F' D F L' D' B' L' B F R2 U' R2 F' L F L2 R2 U R2 U2 R U2 L2 F' R' L' R U' R U R U R U' R' U' R2 L R F B2 R' B2 F' D F B2 R B2 F' D' L' D' L R' B' R L' D' L R' B' R U L U' L' D L U L' U' D' R D R' D' B' R B R' D R D' B' R' B L2 U R' L F R' L D R' L B2 L' R D L' R F L' R U L2 B L B' L' U' B U B' L B L' U' B' U R' L U' L' U R2 D R' D' U' L U L' D R D' R'"
+      },
+      "scramble": "U' U' D D2 L2 U' B2 L2 R B' L D2 B2 F2 D2 B' B L2 R R2 U' F' L2 F2 U' B F B' F2 B'"
+    },
+    {
+      "baseline_htm": 164,
+      "candidate_lengths": [
+        164,
+        202,
+        166,
+        151,
+        198,
+        216,
+        227,
+        200,
+        174,
+        174,
+        195,
+        107,
+        206,
+        164,
+        164,
+        164,
+        253,
+        241,
+        233
+      ],
+      "chosen": {
+        "htm": 107,
+        "prefix": "D'",
+        "turn_sequence": "D' B2 F' L U' R' U D F' D' F D' F' L' F U R' U2 R U' B' U2 B L' F R2 U' R2 F' L U R2 U R2 U' R2 U2 R2 B L' F L F' B' F L' F' U R U R' U' R' U' R' U R L R U R U R U' R' U' R' U' R D R' F' D' F D R D' R' F' D F D' B R B' R' L' R B R' B' R F' R' F L2 B L' B' F' R F R' B L B' L'"
+      },
+      "scramble": "R D F' R D F F' R' U B U D' D U' F L2 F F' F' F2 L F2 B D2 F B' F' F L' L"
+    },
+    {
+      "baseline_htm": 188,
+      "candidate_lengths": [
+        188,
+        165,
+        195,
+        232,
+        216,
+        231,
+        228,
+        215,
+        207,
+        200,
+        246,
+        224,
+        214,
+        188,
+        188,
+        188,
+        190,
+        245,
+        201
+      ],
+      "chosen": {
+        "htm": 165,
+        "prefix": "U",
+        "turn_sequence": "U L U L2 F2 L' F2 B2 U B U B F' L' F B' U' B R2 U R2 F L2 R2 U R2 U2 R U2 L2 F' B L' F L F' B' F L' F' L F U2 R' L F R' L D R' L B2 L' R D L' R F L' R F' R D R' F' D' F D R D' R' F' D F D' L' B' D B D' L2 U L' U' D B' D' B U L U' L' U L U' L' D L U L' U' D' R D R' D' B' R B R' D R D' B' R' B L B L' B' D' L D L' B L B' D' L' D B L B' L' U' B U B' L B L' U' B' U L2 U R' L F R' L D R' L B2 L' R D L' R F L' R U L2"
+      },
+      "scramble": "U U' D' B D' D U F2 R2 R' D2 F' L2 L D' B R L' R2 D2 R2 D' D F U2 U L' D2 B B"
+    },
+    {
+      "baseline_htm": 208,
+      "candidate_lengths": [
+        208,
+        240,
+        230,
+        161,
+        190,
+        205,
+        186,
+        208,
+        209,
+        209,
+        201,
+        162,
+        244,
+        241,
+        185,
+        196,
+        208,
+        208,
+        208
+      ],
+      "chosen": {
+        "htm": 161,
+        "prefix": "U2",
+        "turn_sequence": "U2 B F L F D F' B' L' B L U R' U R U' B' U2 B U R2 U R2 U' R2 U2 R2 F B2 R' B2 F' D F B2 R B2 F' D' B' R B R' D R D' B' R' B R D R' D' L U L' U' D U L U' L' D' U2 R U R U R' U' R' U' R' U' D F B2 R' B2 F' D' F B2 R B2 F' U' R U R' U' R' U' R' U R U2 F B2 R' B2 F' D F B2 R B2 F' D' L2 U R' L F R' L D R' L B2 L' R D L' R F L' R U L2 U' B U L B' L' B U' B' U L B L' B' R' L U' L' U R2 D R' D' U' L U L' D R D' R'"
+      },
+      "scramble": "U2 R U' B2 U F L2 L' D D F2 D' U D' U B2 D R' B' U' F' F D L2 L2 R2 B2 B R' R2"
+    },
+    {
+      "baseline_htm": 208,
+      "candidate_lengths": [
+        208,
+        208,
+        208,
+        260,
+        253,
+        170,
+        203,
+        198,
+        261,
+        198,
+        231,
+        174,
+        218,
+        242,
+        242,
+        273,
+        247,
+        262,
+        222
+      ],
+      "chosen": {
+        "htm": 170,
+        "prefix": "R'",
+        "turn_sequence": "R' U' R L2 F' R U R2 B' R2 B R' U B U' R B' R U' R2 B' U B L' F U2 R U2 F' L R' D L' D' L R L' D L D' L D' L D B L' B' L D' L' D B L B' L2 F B2 R' B2 F' D F B2 R B2 F' D' R D R' F' D' F D R D' R' F' D F D' U' F' D F D' U2 B U' B' D F' D' F B U B' U' L2 R U' R U R U R U' R' U' R2 L2 U R U R U R' U' R' U' R' D' L D B L' B' L D' L' D B L B' L' U' B U L B' L' B U' B' U L B L' B' L2 U R' L F R' L D R' L B2 L' R D L' R F L' R U L2"
+      },
+      "scramble": "F' D R' F D' B' L' B' U2 L B2 D B2 L U2 D' U' R' B R' U2 F B L2 F' D2 B' L2 U D"
+    },
+    {
+      "baseline_htm": 180,
+      "candidate_lengths": [
+        180,
+        263,
+        164,
+        307,
+        153,
+        130,
+        204,
+        270,
+        182,
+        194,
+        212,
+        283,
+        217,
+        185,
+        227,
+        207,
+        180,
+        180,
+        180
+      ],
+      "chosen": {
+        "htm": 130,
+        "prefix": "R'",
+        "turn_sequence": "R' B U F' D' F2 D2 F' D L F L' D F B2 R' B2 D' F' D F' D' L' F U2 R' U2 F' L F L2 U2 R' U2 R2 U' R2 L2 F' B2 R B' R' F L' F' L R B R' B2 L' F L F' D R D' R' F' D F D' R D R' F' D' F U R U R U R' U' R' U' R' U' F' D F D' U2 B U' B' D F' D' F B U B' U' B R B' R' L' R B R' B' L U R U R U R U' R' U' R' U B U L B' L' B U' B' U L B L' B'"
+      },
+      "scramble": "B B2 R B B B D D2 L D2 F B R2 U2 R2 L F2 L2 D2 B2 U' L' R B2 F B' F2 D B2 F'"
+    },
+    {
+      "baseline_htm": 243,
+      "candidate_lengths": [
+        243,
+        243,
+        243,
+        243,
+        265,
+        286,
+        220,
+        213,
+        146,
+        253,
+        236,
+        256,
+        227,
+        243,
+        243,
+        243,
+        243,
+        243,
+        243
+      ],
+      "chosen": {
+        "htm": 146,
+        "prefix": "F'",
+        "turn_sequence": "F' U F2 L D F' D' L' D L B' U' B F' L2 F U' R' U R2 U' R' U R' F L2 R2 U R2 U2 R' U2 R2 U2 R2 U2 R' U2 L2 F' U R' U' R U R U R U' R2 U' R U R U R U' R' U L U L' U' D U L U' L' D' U B R' L F R' L D R' L B2 L' R D L' R F L' R U2 B' U' F2 U2 R' L F R' L D R' L B2 L' R D L' R F L' R F2 U' B U L B' L' B U' B' U L B L' B' L2 U R' L F R' L D R' L B2 L' R D L' R F L' R U L2"
+      },
+      "scramble": "D R B' R2 R U2 R' B D' R' L2 D' L2 L L F' B B' B2 U' F R' U2 U D L' L R2 R' B2"
+    },
+    {
+      "baseline_htm": 225,
+      "candidate_lengths": [
+        225,
+        225,
+        225,
+        225,
+        225,
+        225,
+        225,
+        191,
+        252,
+        191,
+        211,
+        211,
+        235,
+        197,
+        225,
+        225,
+        225,
+        225,
+        225
+      ],
+      "chosen": {
+        "htm": 191,
+        "prefix": "F",
+        "turn_sequence": "F2 D' B2 R2 B2 U B U' F' L' F B' U B R2 U' R2 B' U B L' F U2 R' U2 F' L U R2 U R2 U' R2 U2 R2 B L' F L F' B' F L' F' L F U2 R' L F R' L D R' L B2 L' R D L' R F L' R F' R' B R L' D L R' B R L' D L U R' U' R U R U R U' R' U2 B L B' L' U' B U B' L B L' U' B' U' R' U' R U R U R U' R' U B R B' R' L' R B R' B' L U2 R U R U R' U' R' U' R' U' F2 U2 R' L F R' L D R' L B2 L' R D L' R F L' R F2 R' L U' L' U R2 D R' D' U' L U L' D R D' R' L2 U R' L F R' L D R' L B2 L' R D L' R F L' R U L2"
+      },
+      "scramble": "U2 F F F R D' U' F F2 U' D' F B' U F' D2 U2 B U L' R2 B F' F' D' R D2 R' R B'"
+    },
+    {
+      "baseline_htm": 182,
+      "candidate_lengths": [
+        182,
+        182,
+        226,
+        182,
+        182,
+        182,
+        182,
+        204,
+        213,
+        182,
+        239,
+        283,
+        181,
+        183,
+        183,
+        182,
+        228,
+        197,
+        220
+      ],
+      "chosen": {
+        "htm": 181,
+        "prefix": "D2",
+        "turn_sequence": "D2 R L2 D' F D U B U' B' U B F' L F R2 U R2 F' L2 F L' F U2 R U2 F' L D F D' F D F' D' F L2 U2 R' U2 R2 U' R2 L2 F' D U R' U' R D' R' U R L' R U' R U R U R U' R' U' R2 L U' L2 R U' R U R U R U' R' U' R2 L2 U' R U R' U' R' U' R' U R U' L U' L' D L U L' U' D' U R U R U R U' R' U' R' U2 D' L D B L' B' L D' L' D B L B' L U R' L F R' L D R' L B2 L' R D L' R F L' R U L2 B L B' L' U' B U B' L B L' U' B' U L2 U R' L F R' L D R' L B2 L' R D L' R F L' R U L2"
+      },
+      "scramble": "L' U2 U2 L U' B F' D B' L2 F R2 U' R' U2 L2 D2 B2 L2 F B' D2 R F' L' U' R' R U' F"
+    },
+    {
+      "baseline_htm": 230,
+      "candidate_lengths": [
+        230,
+        230,
+        230,
+        230,
+        209,
+        152,
+        225,
+        250,
+        263,
+        217,
+        272,
+        168,
+        203,
+        223,
+        190,
+        199,
+        204,
+        157,
+        173
+      ],
+      "chosen": {
+        "htm": 152,
+        "prefix": "R'",
+        "turn_sequence": "R' U2 F D F' D' F D' F' L F R2 U R2 F' L2 F L' F U2 R U2 F' L F L2 R2 U' R2 L2 F' D L D' L' R' L D L' D' R F L2 U2 R' U2 R2 U2 R2 U2 R' U2 L2 F' R' B R L' D L R' B R L' D L U L U' L' D L U L' U' D' U R U R U R U' R' U' R' U B U L B' L' B U' B' U L B L' B' D' L D B L' B' L D' L' D B L B' L' R' L U' L' U R2 D R' D' U' L U L' D R D' R' L2 U R' L F R' L D R' L B2 L' R D L' R F L' R U L2"
+      },
+      "scramble": "L2 B2 R' L2 D U' R2 F' B U L' B2 F' L' L' R2 L' F' D2 B R' D2 F F' U L2 F2 F D2 R'"
+    },
+    {
+      "baseline_htm": 207,
+      "candidate_lengths": [
+        207,
+        248,
+        207,
+        207,
+        128,
+        234,
+        214,
+        186,
+        213,
+        216,
+        147,
+        213,
+        248,
+        156,
+        193,
+        208,
+        147,
+        194,
+        217
+      ],
+      "chosen": {
+        "htm": 128,
+        "prefix": "R",
+        "turn_sequence": "R B U D B U R' U' D F' D' F D' F' L2 F B' U' B R2 U R2 D L D' L' R' L D L' D' R F' D F D' R D R' F' D' F D R D' U R U R U' R' U' R' U' R F' R' L F R' L D R' L B2 L' R D L' R F L' R U2 F R' L U L' U' D U L U' L' D' L B L' B' D' L D L' B L B' D' L' D U R U R U R U' R' U' R' U2 L' R F' R' F L2 B L' B' F' R F R' B L B' L'"
+      },
+      "scramble": "D2 U' R' D' D2 D B' D D L' U' L B U F2 R' D B U2 D U2 F2 R' B2 B' L' B2 F2 F D'"
+    },
+    {
+      "baseline_htm": 243,
+      "candidate_lengths": [
+        243,
+        243,
+        261,
+        243,
+        221,
+        255,
+        167,
+        235,
+        212,
+        213,
+        229,
+        257,
+        240,
+        219,
+        296,
+        243,
+        243,
+        243,
+        243
+      ],
+      "chosen": {
+        "htm": 167,
+        "prefix": "R2",
+        "turn_sequence": "R2 B' L' F' L F' L' B2 U' B2 F' L' F B' U B F' D B2 R' B2 D' F U L' D L D' U' D L' D' L F L2 R2 U R2 L2 F' B L' F L F' B' F L' R2 U R U R' U' R' U' R' U R' F' L U' B U L B' L' B U' B' U L B L' B' U R U R U R' U' R' U' R' B L B' L' U' B U B' L B L' U' B' U' R' U' R U R U R U' R' U2 L U' L' D L U L' U' D' R D R' D' B' R B R' D R D' B' R' B D F B2 R' B2 F' D' F B2 R B2 F' U' R U R' U' R' U' R' U R U2 F B2 R' B2 F' D F B2 R B2 F' D'"
+      },
+      "scramble": "B' L' B2 F2 R2 B2 U2 L2 B D' U F2 R2 L R' F R' U F2 B' F2 D' R D D2 D2 B' U U2 D'"
+    },
+    {
+      "baseline_htm": 182,
+      "candidate_lengths": [
+        182,
+        233,
+        197,
+        176,
+        182,
+        191,
+        200,
+        249,
+        249,
+        248,
+        215,
+        243,
+        229,
+        251,
+        245,
+        169,
+        223,
+        184,
+        231
+      ],
+      "chosen": {
+        "htm": 169,
+        "prefix": "L2",
+        "turn_sequence": "L2 R U' F L U' R2 U F' L F U B U' D F' D F L' D' B' L' B L U L' D L D' U' D L' D' L R' B' D B D' U D B' D' B U' R L' R U' R U R U R U' R' U' R2 L F B2 R' B2 F' D F B2 R B2 F' D' U L U' L' D L U L' U' D' L2 R U' R U R U R U' R' U' R2 L2 U R U R U R' U' R' U' R' L B L' B' D' L D L' B L B' D' L' D F2 U2 R' L F R' L D R' L B2 L' R D L' R F L' R F2 U' B U L B' L' B U' B' U L B L' B' R' L U' L' U R2 D R' D' U' L U L' D R D' R'"
+      },
+      "scramble": "B2 B' R R' U2 L' D' F F F U' F' B' D F2 B' F' U F' R2 L U2 U' L' D U' F2 R' R2 F2"
+    },
+    {
+      "baseline_htm": 198,
+      "candidate_lengths": [
+        198,
+        198,
+        198,
+        240,
+        254,
+        223,
+        223,
+        218,
+        133,
+        207,
+        187,
+        250,
+        235,
+        197,
+        237,
+        209,
+        228,
+        166,
+        155
+      ],
+      "chosen": {
+        "htm": 133,
+        "prefix": "F'",
+        "turn_sequence": "F' U' B' D L' B R2 B' U B' U' D F R2 U R2 F' D L' D2 F' L F U R2 U R2 U' R2 U2 R2 D L D' L' R' L D L' D' R L' F R2 U R U R' U' R' U' R' U R' F' L U R' U' R U R U R U' R' U2 L' D' L R' B' R L' D' L R' B' R U L U' L' D L U L' U' D' R D R' D' B' R B R' D R D' B' R' B2 L B' L' U' B U B' L B L' U' B' U L' R F' R' F L2 B L' B' F' R F R' B L B' L'"
+      },
+      "scramble": "R' F' U' L2 U2 D2 R L U B' D2 U B' U F2 R2 R2 R B2 U U2 L2 D' U B F U2 R D2 U'"
+    },
+    {
+      "baseline_htm": 274,
+      "candidate_lengths": [
+        274,
+        168,
+        274,
+        274,
+        257,
+        161,
+        240,
+        166,
+        245,
+        307,
+        222,
+        224,
+        170,
+        199,
+        198,
+        172,
+        202,
+        224,
+        177
+      ],
+      "chosen": {
+        "htm": 161,
+        "prefix": "R'",
+        "turn_sequence": "R' F' U' F D' U2 R' U' R B' R U R2 F' L' F U R2 U R U' R' U' R2 U' L' F L F' R F L' F' L R' F U F' U' L' F L F' U F U' L' F' L R' L F R' L D R' L B2 L' R D L' R F L' R U R U R' U' R' U' R' U R2 U R U R' U' R' U' R' U' L B L' B' D' L D L' B L B' D' L' D F2 U2 R' L F R' L D R' L B2 L' R D L' R F L' R F2 L' F R' L F R' L D R' L B2 L' R D L' R F L' R U2 F' L' U R' L F R' L D R' L B2 L' R D L' R F L' R U L2"
+      },
+      "scramble": "F2 R' F2 L D D D2 B F U2 R' L2 U2 B B' F B B2 R U2 R2 L R D' B2 D2 R2 L L2 F'"
+    },
+    {
+      "baseline_htm": 216,
+      "candidate_lengths": [
+        216,
+        216,
+        216,
+        222,
+        180,
+        167,
+        167,
+        201,
+        165,
+        264,
+        226,
+        264,
+        256,
+        242,
+        207,
+        174,
+        159,
+        261,
+        244
+      ],
+      "chosen": {
+        "htm": 159,
+        "prefix": "B",
+        "turn_sequence": "B U2 R L' F D F' D' R2 U R2 D' L' D2 L R2 U' R2 L' R B R' U' R2 U R B' R2 B' R' B L B' R B R' L' D L D' L' R' L D L' D' R U F U' L' F' L F U F' U' L' F L F' U R U R U R' U' R' U' R' U2 R U R U R' U' R' U' R' U' R' B R L' D L R' B R L' D L2 U L' U' D U L U' L' D' L B L' B' D' L D L' B L B' D' L' D U R U R U R U' R' U' R' U2 D' L D B L' B' L D' L' D B L B' L' R' L U' L' U R2 D R' D' U' L U L' D R D' R'"
+      },
+      "scramble": "B R B U F R' D F F L L' R F' D U2 R L2 U2 U F' D' D2 D2 R L D' F' B2 R2 L'"
+    },
+    {
+      "baseline_htm": 196,
+      "candidate_lengths": [
+        196,
+        206,
+        275,
+        170,
+        188,
+        112,
+        152,
+        253,
+        196,
+        220,
+        188,
+        192,
+        173,
+        286,
+        194,
+        218,
+        272,
+        232,
+        213
+      ],
+      "chosen": {
+        "htm": 112,
+        "prefix": "R'",
+        "turn_sequence": "R' B D R2 B' R2 F' D L D' L' D B2 R' B2 D' F B' U B R2 U' R2 B' U' B2 L' F L F' B' F L' F' L F L2 U2 R' U2 R2 U2 R2 U2 R' U2 L2 F' U' B U L B' L' B U' B' U L B L' B' U R U R U R' U' R' U' D R' D' B' R B R' D R D' B' R' B L B L' B' D' L D L' B L B' D' L' D B L B' L' U' B U B' L B L' U' B' U"
+      },
+      "scramble": "F' D2 F2 F' R2 D' R2 B' R F2 R U2 B2 F2 F2 R U' L L' D D U2 D D2 R' L D2 D U2 R2"
+    },
+    {
+      "baseline_htm": 238,
+      "candidate_lengths": [
+        238,
+        151,
+        188,
+        244,
+        182,
+        194,
+        224,
+        227,
+        273,
+        273,
+        217,
+        239,
+        287,
+        238,
+        238,
+        238,
+        169,
+        167,
+        248
+      ],
+      "chosen": {
+        "htm": 151,
+        "prefix": "U",
+        "turn_sequence": "U L2 U L F' L' B2 U' B2 D2 L' D2 F' D B2 R' B2 D' F R B' R' B L B' R B R' L' D U R' U' R D' R' U R F U' L' F' L F U F' U' L' F L F' U R U' R U R U R U' R' U' R2 U' R D R' F' D' F D R D' R' F' D F D' U' F' D F D' U2 B U' B' D F' D' F B U B' U' B R B' R' L' R B R' B' L U2 R U R U R' U' R' U' R' U' B L B' L' U' B U B' L B L' U' B' U L2 U R' L F R' L D R' L B2 L' R D L' R F L' R U L2"
+      },
+      "scramble": "R2 D2 F2 U R2 B2 R' R D2 L' D2 R2 U2 D2 R' R2 B R L2 B D' U B2 F R2 D B' B D' L"
+    }
+  ],
+  "scope": "32 fixed seeded 30-turn imports; no exact uniform-group average claim",
+  "selected_sample_mean_htm": 149.65625,
+  "selected_sample_worst_htm": 194,
+  "version": 1,
+  "wall_seconds": 2.5613254790005158
+}

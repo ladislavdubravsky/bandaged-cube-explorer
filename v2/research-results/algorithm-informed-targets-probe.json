@@ -1,0 +1,2237 @@
+{
+  "candidate_targets": [
+    {
+      "attribute": "phase",
+      "cases": [
+        {
+          "covered": true,
+          "htm": 0,
+          "observation": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "recipe": []
+        },
+        {
+          "covered": true,
+          "htm": 26,
+          "observation": [
+            0,
+            0,
+            1,
+            2
+          ],
+          "recipe": [
+            "A",
+            "A",
+            "U",
+            "A",
+            "U",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 7,
+          "observation": [
+            0,
+            0,
+            2,
+            1
+          ],
+          "recipe": [
+            "U'",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 20,
+          "observation": [
+            0,
+            1,
+            0,
+            2
+          ],
+          "recipe": [
+            "A",
+            "U'",
+            "A",
+            "U'",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 14,
+          "observation": [
+            0,
+            1,
+            1,
+            1
+          ],
+          "recipe": [
+            "U'",
+            "A",
+            "U",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 26,
+          "observation": [
+            0,
+            1,
+            2,
+            0
+          ],
+          "recipe": [
+            "U2",
+            "A",
+            "U",
+            "A",
+            "A",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 21,
+          "observation": [
+            0,
+            2,
+            0,
+            1
+          ],
+          "recipe": [
+            "U2",
+            "A",
+            "U'",
+            "A",
+            "U'",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 6,
+          "observation": [
+            0,
+            2,
+            1,
+            0
+          ],
+          "recipe": [
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 13,
+          "observation": [
+            0,
+            2,
+            2,
+            2
+          ],
+          "recipe": [
+            "A",
+            "U'",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 7,
+          "observation": [
+            1,
+            0,
+            0,
+            2
+          ],
+          "recipe": [
+            "U2",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 14,
+          "observation": [
+            1,
+            0,
+            1,
+            1
+          ],
+          "recipe": [
+            "U2",
+            "A",
+            "U",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 20,
+          "observation": [
+            1,
+            0,
+            2,
+            0
+          ],
+          "recipe": [
+            "A",
+            "U",
+            "A",
+            "U",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 14,
+          "observation": [
+            1,
+            1,
+            0,
+            1
+          ],
+          "recipe": [
+            "U",
+            "A",
+            "U",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 13,
+          "observation": [
+            1,
+            1,
+            1,
+            0
+          ],
+          "recipe": [
+            "A",
+            "U",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 13,
+          "observation": [
+            1,
+            1,
+            2,
+            2
+          ],
+          "recipe": [
+            "U2",
+            "A",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 26,
+          "observation": [
+            1,
+            2,
+            0,
+            0
+          ],
+          "recipe": [
+            "A",
+            "A",
+            "U'",
+            "A",
+            "U'",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 19,
+          "observation": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "recipe": [
+            "U",
+            "A",
+            "A",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 13,
+          "observation": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "recipe": [
+            "U'",
+            "A",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 25,
+          "observation": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "recipe": [
+            "A",
+            "U",
+            "A",
+            "A",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 21,
+          "observation": [
+            2,
+            0,
+            1,
+            0
+          ],
+          "recipe": [
+            "U'",
+            "A",
+            "U'",
+            "A",
+            "U'",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 14,
+          "observation": [
+            2,
+            0,
+            2,
+            2
+          ],
+          "recipe": [
+            "U'",
+            "A",
+            "U'",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 7,
+          "observation": [
+            2,
+            1,
+            0,
+            0
+          ],
+          "recipe": [
+            "U",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 13,
+          "observation": [
+            2,
+            1,
+            1,
+            2
+          ],
+          "recipe": [
+            "U",
+            "A",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 18,
+          "observation": [
+            2,
+            1,
+            2,
+            1
+          ],
+          "recipe": [
+            "A",
+            "A",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 14,
+          "observation": [
+            2,
+            2,
+            0,
+            2
+          ],
+          "recipe": [
+            "U2",
+            "A",
+            "U'",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 12,
+          "observation": [
+            2,
+            2,
+            1,
+            1
+          ],
+          "recipe": [
+            "A",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 14,
+          "observation": [
+            2,
+            2,
+            2,
+            0
+          ],
+          "recipe": [
+            "U",
+            "A",
+            "U'",
+            "A"
+          ]
+        }
+      ],
+      "complete_stage": true,
+      "conditional_covered_mean_htm": 15.185185185185185,
+      "covered_observation_count": 27,
+      "full_current_group_observation_count": 27,
+      "kind": "corners",
+      "mean_stage_htm": 15.185185185185185,
+      "policy_replays": 27,
+      "slots": [
+        "UFR",
+        "UFL",
+        "UBL",
+        "UBR"
+      ],
+      "transition_replays": 108,
+      "worst_stage_htm": 26
+    },
+    {
+      "attribute": "placement",
+      "cases": [
+        {
+          "covered": true,
+          "htm": 0,
+          "observation": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "recipe": []
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            0,
+            1,
+            3,
+            2
+          ],
+          "recipe": null
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "recipe": null
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "recipe": null
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            0,
+            3,
+            1,
+            2
+          ],
+          "recipe": null
+        },
+        {
+          "covered": true,
+          "htm": 7,
+          "observation": [
+            0,
+            3,
+            2,
+            1
+          ],
+          "recipe": [
+            "A",
+            "U'"
+          ]
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            1,
+            0,
+            2,
+            3
+          ],
+          "recipe": null
+        },
+        {
+          "covered": true,
+          "htm": 6,
+          "observation": [
+            1,
+            0,
+            3,
+            2
+          ],
+          "recipe": [
+            "A"
+          ]
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            1,
+            2,
+            0,
+            3
+          ],
+          "recipe": null
+        },
+        {
+          "covered": true,
+          "htm": 1,
+          "observation": [
+            1,
+            2,
+            3,
+            0
+          ],
+          "recipe": [
+            "U"
+          ]
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            1,
+            3,
+            0,
+            2
+          ],
+          "recipe": null
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            1,
+            3,
+            2,
+            0
+          ],
+          "recipe": null
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            2,
+            0,
+            1,
+            3
+          ],
+          "recipe": null
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            2,
+            0,
+            3,
+            1
+          ],
+          "recipe": null
+        },
+        {
+          "covered": true,
+          "htm": 7,
+          "observation": [
+            2,
+            1,
+            0,
+            3
+          ],
+          "recipe": [
+            "A",
+            "U"
+          ]
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            2,
+            1,
+            3,
+            0
+          ],
+          "recipe": null
+        },
+        {
+          "covered": true,
+          "htm": 1,
+          "observation": [
+            2,
+            3,
+            0,
+            1
+          ],
+          "recipe": [
+            "U2"
+          ]
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            2,
+            3,
+            1,
+            0
+          ],
+          "recipe": null
+        },
+        {
+          "covered": true,
+          "htm": 1,
+          "observation": [
+            3,
+            0,
+            1,
+            2
+          ],
+          "recipe": [
+            "U'"
+          ]
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            3,
+            0,
+            2,
+            1
+          ],
+          "recipe": null
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            3,
+            1,
+            0,
+            2
+          ],
+          "recipe": null
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            3,
+            1,
+            2,
+            0
+          ],
+          "recipe": null
+        },
+        {
+          "covered": false,
+          "htm": null,
+          "observation": [
+            3,
+            2,
+            0,
+            1
+          ],
+          "recipe": null
+        },
+        {
+          "covered": true,
+          "htm": 7,
+          "observation": [
+            3,
+            2,
+            1,
+            0
+          ],
+          "recipe": [
+            "A",
+            "U2"
+          ]
+        }
+      ],
+      "complete_stage": false,
+      "conditional_covered_mean_htm": 3.75,
+      "covered_observation_count": 8,
+      "full_current_group_observation_count": 24,
+      "kind": "corners",
+      "mean_stage_htm": null,
+      "policy_replays": 8,
+      "slots": [
+        "UFR",
+        "UFL",
+        "UBL",
+        "UBR"
+      ],
+      "transition_replays": 96,
+      "worst_stage_htm": null
+    },
+    {
+      "attribute": "phase",
+      "cases": [
+        {
+          "covered": true,
+          "htm": 0,
+          "observation": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "recipe": []
+        },
+        {
+          "covered": true,
+          "htm": 13,
+          "observation": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "recipe": [
+            "A",
+            "U",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 6,
+          "observation": [
+            0,
+            1,
+            0,
+            1
+          ],
+          "recipe": [
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 13,
+          "observation": [
+            0,
+            1,
+            1,
+            0
+          ],
+          "recipe": [
+            "U'",
+            "A",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 13,
+          "observation": [
+            1,
+            0,
+            0,
+            1
+          ],
+          "recipe": [
+            "U",
+            "A",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 7,
+          "observation": [
+            1,
+            0,
+            1,
+            0
+          ],
+          "recipe": [
+            "U",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 12,
+          "observation": [
+            1,
+            1,
+            0,
+            0
+          ],
+          "recipe": [
+            "A",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 19,
+          "observation": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "recipe": [
+            "A",
+            "A",
+            "U",
+            "A"
+          ]
+        }
+      ],
+      "complete_stage": true,
+      "conditional_covered_mean_htm": 10.375,
+      "covered_observation_count": 8,
+      "full_current_group_observation_count": 8,
+      "kind": "edges",
+      "mean_stage_htm": 10.375,
+      "policy_replays": 8,
+      "slots": [
+        "UR",
+        "UF",
+        "UL",
+        "UB"
+      ],
+      "transition_replays": 32,
+      "worst_stage_htm": 19
+    },
+    {
+      "attribute": "placement",
+      "cases": [
+        {
+          "covered": true,
+          "htm": 0,
+          "observation": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "recipe": []
+        },
+        {
+          "covered": true,
+          "htm": 7,
+          "observation": [
+            0,
+            1,
+            3,
+            2
+          ],
+          "recipe": [
+            "A",
+            "U"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 7,
+          "observation": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "recipe": [
+            "U",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 8,
+          "observation": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "recipe": [
+            "U'",
+            "A",
+            "U'"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 8,
+          "observation": [
+            0,
+            3,
+            1,
+            2
+          ],
+          "recipe": [
+            "U2",
+            "A",
+            "U2"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 14,
+          "observation": [
+            0,
+            3,
+            2,
+            1
+          ],
+          "recipe": [
+            "A",
+            "U'",
+            "A",
+            "U2"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 8,
+          "observation": [
+            1,
+            0,
+            2,
+            3
+          ],
+          "recipe": [
+            "U2",
+            "A",
+            "U'"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 14,
+          "observation": [
+            1,
+            0,
+            3,
+            2
+          ],
+          "recipe": [
+            "A",
+            "U'",
+            "A",
+            "U'"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 7,
+          "observation": [
+            1,
+            2,
+            0,
+            3
+          ],
+          "recipe": [
+            "A",
+            "U2"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 1,
+          "observation": [
+            1,
+            2,
+            3,
+            0
+          ],
+          "recipe": [
+            "U"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 7,
+          "observation": [
+            1,
+            3,
+            0,
+            2
+          ],
+          "recipe": [
+            "U'",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 8,
+          "observation": [
+            1,
+            3,
+            2,
+            0
+          ],
+          "recipe": [
+            "U",
+            "A",
+            "U"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 8,
+          "observation": [
+            2,
+            0,
+            1,
+            3
+          ],
+          "recipe": [
+            "U'",
+            "A",
+            "U"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 8,
+          "observation": [
+            2,
+            0,
+            3,
+            1
+          ],
+          "recipe": [
+            "U",
+            "A",
+            "U2"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 13,
+          "observation": [
+            2,
+            1,
+            0,
+            3
+          ],
+          "recipe": [
+            "A",
+            "U'",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 7,
+          "observation": [
+            2,
+            1,
+            3,
+            0
+          ],
+          "recipe": [
+            "U2",
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 1,
+          "observation": [
+            2,
+            3,
+            0,
+            1
+          ],
+          "recipe": [
+            "U2"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 7,
+          "observation": [
+            2,
+            3,
+            1,
+            0
+          ],
+          "recipe": [
+            "A",
+            "U'"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 1,
+          "observation": [
+            3,
+            0,
+            1,
+            2
+          ],
+          "recipe": [
+            "U'"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 6,
+          "observation": [
+            3,
+            0,
+            2,
+            1
+          ],
+          "recipe": [
+            "A"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 8,
+          "observation": [
+            3,
+            1,
+            0,
+            2
+          ],
+          "recipe": [
+            "U",
+            "A",
+            "U'"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 8,
+          "observation": [
+            3,
+            1,
+            2,
+            0
+          ],
+          "recipe": [
+            "U'",
+            "A",
+            "U2"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 8,
+          "observation": [
+            3,
+            2,
+            0,
+            1
+          ],
+          "recipe": [
+            "U2",
+            "A",
+            "U"
+          ]
+        },
+        {
+          "covered": true,
+          "htm": 14,
+          "observation": [
+            3,
+            2,
+            1,
+            0
+          ],
+          "recipe": [
+            "A",
+            "U'",
+            "A",
+            "U"
+          ]
+        }
+      ],
+      "complete_stage": true,
+      "conditional_covered_mean_htm": 7.416666666666667,
+      "covered_observation_count": 24,
+      "full_current_group_observation_count": 24,
+      "kind": "edges",
+      "mean_stage_htm": 7.416666666666667,
+      "policy_replays": 24,
+      "slots": [
+        "UR",
+        "UF",
+        "UL",
+        "UB"
+      ],
+      "transition_replays": 96,
+      "worst_stage_htm": 14
+    }
+  ],
+  "current_group": "ordinary cube with first two layers fixed",
+  "current_group_order": 62208,
+  "format": "bce-v2-algorithm-informed-targets-probe",
+  "full_method_coverage_claim": false,
+  "illustrative_algorithm_profiles": {
+    "A": {
+      "corners": {
+        "destination_sources": {
+          "DBL": "DBL",
+          "DBR": "DBR",
+          "DFL": "DFL",
+          "DFR": "DFR",
+          "UBL": "UBR",
+          "UBR": "UBL",
+          "UFL": "UFR",
+          "UFR": "UFL"
+        },
+        "fully_fixed_slots": [
+          "DFR",
+          "DFL",
+          "DBL",
+          "DBR"
+        ],
+        "phase_increments": {
+          "DBL": 0,
+          "DBR": 0,
+          "DFL": 0,
+          "DFR": 0,
+          "UBL": 0,
+          "UBR": 2,
+          "UFL": 0,
+          "UFR": 1
+        },
+        "phase_modulus": 3,
+        "placement_goal_preserved_globally": false,
+        "zero_phase_goal_preserved_globally": false
+      },
+      "edges": {
+        "destination_sources": {
+          "BL": "BL",
+          "BR": "BR",
+          "DB": "DB",
+          "DF": "DF",
+          "DL": "DL",
+          "DR": "DR",
+          "FL": "FL",
+          "FR": "FR",
+          "UB": "UR",
+          "UF": "UB",
+          "UL": "UL",
+          "UR": "UF"
+        },
+        "fully_fixed_slots": [
+          "UL",
+          "DR",
+          "DF",
+          "DL",
+          "DB",
+          "FR",
+          "FL",
+          "BL",
+          "BR"
+        ],
+        "phase_increments": {
+          "BL": 0,
+          "BR": 0,
+          "DB": 0,
+          "DF": 0,
+          "DL": 0,
+          "DR": 0,
+          "FL": 0,
+          "FR": 0,
+          "UB": 0,
+          "UF": 1,
+          "UL": 0,
+          "UR": 1
+        },
+        "phase_modulus": 2,
+        "placement_goal_preserved_globally": false,
+        "zero_phase_goal_preserved_globally": false
+      }
+    },
+    "U": {
+      "corners": {
+        "destination_sources": {
+          "DBL": "DBL",
+          "DBR": "DBR",
+          "DFL": "DFL",
+          "DFR": "DFR",
+          "UBL": "UFL",
+          "UBR": "UBL",
+          "UFL": "UFR",
+          "UFR": "UBR"
+        },
+        "fully_fixed_slots": [
+          "DFR",
+          "DFL",
+          "DBL",
+          "DBR"
+        ],
+        "phase_increments": {
+          "DBL": 0,
+          "DBR": 0,
+          "DFL": 0,
+          "DFR": 0,
+          "UBL": 0,
+          "UBR": 0,
+          "UFL": 0,
+          "UFR": 0
+        },
+        "phase_modulus": 3,
+        "placement_goal_preserved_globally": false,
+        "zero_phase_goal_preserved_globally": true
+      },
+      "edges": {
+        "destination_sources": {
+          "BL": "BL",
+          "BR": "BR",
+          "DB": "DB",
+          "DF": "DF",
+          "DL": "DL",
+          "DR": "DR",
+          "FL": "FL",
+          "FR": "FR",
+          "UB": "UL",
+          "UF": "UR",
+          "UL": "UF",
+          "UR": "UB"
+        },
+        "fully_fixed_slots": [
+          "DR",
+          "DF",
+          "DL",
+          "DB",
+          "FR",
+          "FL",
+          "BL",
+          "BR"
+        ],
+        "phase_increments": {
+          "BL": 0,
+          "BR": 0,
+          "DB": 0,
+          "DF": 0,
+          "DL": 0,
+          "DR": 0,
+          "FL": 0,
+          "FR": 0,
+          "UB": 0,
+          "UF": 0,
+          "UL": 0,
+          "UR": 0
+        },
+        "phase_modulus": 2,
+        "placement_goal_preserved_globally": false,
+        "zero_phase_goal_preserved_globally": true
+      }
+    },
+    "U'": {
+      "corners": {
+        "destination_sources": {
+          "DBL": "DBL",
+          "DBR": "DBR",
+          "DFL": "DFL",
+          "DFR": "DFR",
+          "UBL": "UBR",
+          "UBR": "UFR",
+          "UFL": "UBL",
+          "UFR": "UFL"
+        },
+        "fully_fixed_slots": [
+          "DFR",
+          "DFL",
+          "DBL",
+          "DBR"
+        ],
+        "phase_increments": {
+          "DBL": 0,
+          "DBR": 0,
+          "DFL": 0,
+          "DFR": 0,
+          "UBL": 0,
+          "UBR": 0,
+          "UFL": 0,
+          "UFR": 0
+        },
+        "phase_modulus": 3,
+        "placement_goal_preserved_globally": false,
+        "zero_phase_goal_preserved_globally": true
+      },
+      "edges": {
+        "destination_sources": {
+          "BL": "BL",
+          "BR": "BR",
+          "DB": "DB",
+          "DF": "DF",
+          "DL": "DL",
+          "DR": "DR",
+          "FL": "FL",
+          "FR": "FR",
+          "UB": "UR",
+          "UF": "UL",
+          "UL": "UB",
+          "UR": "UF"
+        },
+        "fully_fixed_slots": [
+          "DR",
+          "DF",
+          "DL",
+          "DB",
+          "FR",
+          "FL",
+          "BL",
+          "BR"
+        ],
+        "phase_increments": {
+          "BL": 0,
+          "BR": 0,
+          "DB": 0,
+          "DF": 0,
+          "DL": 0,
+          "DR": 0,
+          "FL": 0,
+          "FR": 0,
+          "UB": 0,
+          "UF": 0,
+          "UL": 0,
+          "UR": 0
+        },
+        "phase_modulus": 2,
+        "placement_goal_preserved_globally": false,
+        "zero_phase_goal_preserved_globally": true
+      }
+    },
+    "U2": {
+      "corners": {
+        "destination_sources": {
+          "DBL": "DBL",
+          "DBR": "DBR",
+          "DFL": "DFL",
+          "DFR": "DFR",
+          "UBL": "UFR",
+          "UBR": "UFL",
+          "UFL": "UBR",
+          "UFR": "UBL"
+        },
+        "fully_fixed_slots": [
+          "DFR",
+          "DFL",
+          "DBL",
+          "DBR"
+        ],
+        "phase_increments": {
+          "DBL": 0,
+          "DBR": 0,
+          "DFL": 0,
+          "DFR": 0,
+          "UBL": 0,
+          "UBR": 0,
+          "UFL": 0,
+          "UFR": 0
+        },
+        "phase_modulus": 3,
+        "placement_goal_preserved_globally": false,
+        "zero_phase_goal_preserved_globally": true
+      },
+      "edges": {
+        "destination_sources": {
+          "BL": "BL",
+          "BR": "BR",
+          "DB": "DB",
+          "DF": "DF",
+          "DL": "DL",
+          "DR": "DR",
+          "FL": "FL",
+          "FR": "FR",
+          "UB": "UF",
+          "UF": "UB",
+          "UL": "UR",
+          "UR": "UL"
+        },
+        "fully_fixed_slots": [
+          "DR",
+          "DF",
+          "DL",
+          "DB",
+          "FR",
+          "FL",
+          "BL",
+          "BR"
+        ],
+        "phase_increments": {
+          "BL": 0,
+          "BR": 0,
+          "DB": 0,
+          "DF": 0,
+          "DL": 0,
+          "DR": 0,
+          "FL": 0,
+          "FR": 0,
+          "UB": 0,
+          "UF": 0,
+          "UL": 0,
+          "UR": 0
+        },
+        "phase_modulus": 2,
+        "placement_goal_preserved_globally": false,
+        "zero_phase_goal_preserved_globally": true
+      }
+    }
+  },
+  "illustrative_palette": {
+    "A": "F R U R' U' F'",
+    "U": "U",
+    "U'": "U'",
+    "U2": "U2"
+  },
+  "inferred_common_fully_fixed_slots": {
+    "corners": [
+      "DFR",
+      "DFL",
+      "DBL",
+      "DBR"
+    ],
+    "edges": [
+      "DR",
+      "DF",
+      "DL",
+      "DB",
+      "FR",
+      "FL",
+      "BL",
+      "BR"
+    ]
+  },
+  "inferred_slot_orbits": {
+    "corners": [
+      [
+        "UFR",
+        "UFL",
+        "UBL",
+        "UBR"
+      ],
+      [
+        "DFR"
+      ],
+      [
+        "DFL"
+      ],
+      [
+        "DBL"
+      ],
+      [
+        "DBR"
+      ]
+    ],
+    "edges": [
+      [
+        "UR",
+        "UF",
+        "UL",
+        "UB"
+      ],
+      [
+        "DR"
+      ],
+      [
+        "DF"
+      ],
+      [
+        "DL"
+      ],
+      [
+        "DB"
+      ],
+      [
+        "FR"
+      ],
+      [
+        "FL"
+      ],
+      [
+        "BL"
+      ],
+      [
+        "BR"
+      ]
+    ]
+  },
+  "native_policy_replays": 67,
+  "native_transition_replays": 332,
+  "optimality_scope": "additive shortest paths in the declared four-macro graph",
+  "palette_is_saved_guide_vocabulary": false,
+  "production_integration": false,
+  "saved_guide_notebook_sha256_at_audit": "212035575c173b4f11b6bdf731cf1d358f8832b059a3feda5e58286e91684cf6",
+  "saved_guide_profile_source": "v2/research-results/unbandaged3x3-current-guide-audit.json",
+  "saved_guide_profile_source_sha256": "f7f562503786016df46636f37b5c4067bb1de29e89b413a93138359f9d40897d",
+  "saved_guide_profiles": [
+    {
+      "action": {
+        "corners": {
+          "destination_sources": {
+            "DBL": "DBL",
+            "DBR": "DBR",
+            "DFL": "DFR",
+            "DFR": "DFL",
+            "UBL": "UBL",
+            "UBR": "UFR",
+            "UFL": "UFL",
+            "UFR": "UBR"
+          },
+          "fully_fixed_slots": [
+            "UFL",
+            "UBL",
+            "DBL",
+            "DBR"
+          ],
+          "phase_increments": {
+            "DBL": 0,
+            "DBR": 0,
+            "DFL": 0,
+            "DFR": 2,
+            "UBL": 0,
+            "UBR": 1,
+            "UFL": 0,
+            "UFR": 0
+          },
+          "phase_modulus": 3,
+          "placement_goal_preserved_globally": false,
+          "zero_phase_goal_preserved_globally": false
+        },
+        "edges": {
+          "destination_sources": {
+            "BL": "BL",
+            "BR": "BR",
+            "DB": "DB",
+            "DF": "DR",
+            "DL": "DL",
+            "DR": "FR",
+            "FL": "FL",
+            "FR": "DF",
+            "UB": "UB",
+            "UF": "UF",
+            "UL": "UL",
+            "UR": "UR"
+          },
+          "fully_fixed_slots": [
+            "UR",
+            "UF",
+            "UL",
+            "UB",
+            "DL",
+            "DB",
+            "FL",
+            "BL",
+            "BR"
+          ],
+          "phase_increments": {
+            "BL": 0,
+            "BR": 0,
+            "DB": 0,
+            "DF": 0,
+            "DL": 0,
+            "DR": 1,
+            "FL": 0,
+            "FR": 1,
+            "UB": 0,
+            "UF": 0,
+            "UL": 0,
+            "UR": 0
+          },
+          "phase_modulus": 2,
+          "placement_goal_preserved_globally": false,
+          "zero_phase_goal_preserved_globally": false
+        }
+      },
+      "htm": 6,
+      "id": "M16",
+      "turn_sequence": "B' D' F D F' B"
+    },
+    {
+      "action": {
+        "corners": {
+          "destination_sources": {
+            "DBL": "DBL",
+            "DBR": "DFL",
+            "DFL": "UBL",
+            "DFR": "DBR",
+            "UBL": "DFR",
+            "UBR": "UBR",
+            "UFL": "UFL",
+            "UFR": "UFR"
+          },
+          "fully_fixed_slots": [
+            "UFR",
+            "UFL",
+            "UBR",
+            "DBL"
+          ],
+          "phase_increments": {
+            "DBL": 0,
+            "DBR": 0,
+            "DFL": 2,
+            "DFR": 1,
+            "UBL": 0,
+            "UBR": 0,
+            "UFL": 0,
+            "UFR": 0
+          },
+          "phase_modulus": 3,
+          "placement_goal_preserved_globally": false,
+          "zero_phase_goal_preserved_globally": false
+        },
+        "edges": {
+          "destination_sources": {
+            "BL": "DB",
+            "BR": "BR",
+            "DB": "DF",
+            "DF": "DL",
+            "DL": "BL",
+            "DR": "DR",
+            "FL": "FL",
+            "FR": "FR",
+            "UB": "UB",
+            "UF": "UF",
+            "UL": "UL",
+            "UR": "UR"
+          },
+          "fully_fixed_slots": [
+            "UR",
+            "UF",
+            "UL",
+            "UB",
+            "DR",
+            "FR",
+            "FL",
+            "BR"
+          ],
+          "phase_increments": {
+            "BL": 1,
+            "BR": 0,
+            "DB": 0,
+            "DF": 0,
+            "DL": 1,
+            "DR": 0,
+            "FL": 0,
+            "FR": 0,
+            "UB": 0,
+            "UF": 0,
+            "UL": 0,
+            "UR": 0
+          },
+          "phase_modulus": 2,
+          "placement_goal_preserved_globally": false,
+          "zero_phase_goal_preserved_globally": false
+        }
+      },
+      "htm": 7,
+      "id": "M17",
+      "turn_sequence": "B D B' D B D' B'"
+    },
+    {
+      "action": {
+        "corners": {
+          "destination_sources": {
+            "DBL": "DBL",
+            "DBR": "DBR",
+            "DFL": "DFL",
+            "DFR": "DFR",
+            "UBL": "UBL",
+            "UBR": "UBR",
+            "UFL": "UFL",
+            "UFR": "UFR"
+          },
+          "fully_fixed_slots": [
+            "UFR",
+            "UFL",
+            "UBL",
+            "UBR",
+            "DFR",
+            "DFL",
+            "DBL",
+            "DBR"
+          ],
+          "phase_increments": {
+            "DBL": 0,
+            "DBR": 0,
+            "DFL": 0,
+            "DFR": 0,
+            "UBL": 0,
+            "UBR": 0,
+            "UFL": 0,
+            "UFR": 0
+          },
+          "phase_modulus": 3,
+          "placement_goal_preserved_globally": true,
+          "zero_phase_goal_preserved_globally": true
+        },
+        "edges": {
+          "destination_sources": {
+            "BL": "BL",
+            "BR": "DB",
+            "DB": "DL",
+            "DF": "DF",
+            "DL": "BR",
+            "DR": "DR",
+            "FL": "FL",
+            "FR": "FR",
+            "UB": "UB",
+            "UF": "UF",
+            "UL": "UL",
+            "UR": "UR"
+          },
+          "fully_fixed_slots": [
+            "UR",
+            "UF",
+            "UL",
+            "UB",
+            "DR",
+            "DF",
+            "FR",
+            "FL",
+            "BL"
+          ],
+          "phase_increments": {
+            "BL": 0,
+            "BR": 1,
+            "DB": 0,
+            "DF": 0,
+            "DL": 1,
+            "DR": 0,
+            "FL": 0,
+            "FR": 0,
+            "UB": 0,
+            "UF": 0,
+            "UL": 0,
+            "UR": 0
+          },
+          "phase_modulus": 2,
+          "placement_goal_preserved_globally": false,
+          "zero_phase_goal_preserved_globally": false
+        }
+      },
+      "htm": 10,
+      "id": "M18",
+      "turn_sequence": "B D B D B D' B' D' B' D'"
+    },
+    {
+      "action": {
+        "corners": {
+          "destination_sources": {
+            "DBL": "DBL",
+            "DBR": "DBR",
+            "DFL": "DFL",
+            "DFR": "DFR",
+            "UBL": "UBL",
+            "UBR": "UBR",
+            "UFL": "UFL",
+            "UFR": "UFR"
+          },
+          "fully_fixed_slots": [
+            "UFR",
+            "UFL",
+            "UBL",
+            "UBR",
+            "DFR",
+            "DFL",
+            "DBL",
+            "DBR"
+          ],
+          "phase_increments": {
+            "DBL": 0,
+            "DBR": 0,
+            "DFL": 0,
+            "DFR": 0,
+            "UBL": 0,
+            "UBR": 0,
+            "UFL": 0,
+            "UFR": 0
+          },
+          "phase_modulus": 3,
+          "placement_goal_preserved_globally": true,
+          "zero_phase_goal_preserved_globally": true
+        },
+        "edges": {
+          "destination_sources": {
+            "BL": "DB",
+            "BR": "BR",
+            "DB": "DL",
+            "DF": "DF",
+            "DL": "BL",
+            "DR": "DR",
+            "FL": "FL",
+            "FR": "FR",
+            "UB": "UB",
+            "UF": "UF",
+            "UL": "UL",
+            "UR": "UR"
+          },
+          "fully_fixed_slots": [
+            "UR",
+            "UF",
+            "UL",
+            "UB",
+            "DR",
+            "DF",
+            "FR",
+            "FL",
+            "BR"
+          ],
+          "phase_increments": {
+            "BL": 1,
+            "BR": 0,
+            "DB": 0,
+            "DF": 0,
+            "DL": 1,
+            "DR": 0,
+            "FL": 0,
+            "FR": 0,
+            "UB": 0,
+            "UF": 0,
+            "UL": 0,
+            "UR": 0
+          },
+          "phase_modulus": 2,
+          "placement_goal_preserved_globally": false,
+          "zero_phase_goal_preserved_globally": false
+        }
+      },
+      "htm": 11,
+      "id": "M19",
+      "turn_sequence": "B D B D B D B' D' B' D' B2"
+    },
+    {
+      "action": {
+        "corners": {
+          "destination_sources": {
+            "DBL": "DBL",
+            "DBR": "DBR",
+            "DFL": "DFL",
+            "DFR": "DFR",
+            "UBL": "UBL",
+            "UBR": "UBR",
+            "UFL": "UFL",
+            "UFR": "UFR"
+          },
+          "fully_fixed_slots": [
+            "UFR",
+            "UFL",
+            "UBL",
+            "UBR",
+            "DFR",
+            "DFL",
+            "DBL",
+            "DBR"
+          ],
+          "phase_increments": {
+            "DBL": 0,
+            "DBR": 0,
+            "DFL": 0,
+            "DFR": 0,
+            "UBL": 0,
+            "UBR": 0,
+            "UFL": 0,
+            "UFR": 0
+          },
+          "phase_modulus": 3,
+          "placement_goal_preserved_globally": true,
+          "zero_phase_goal_preserved_globally": true
+        },
+        "edges": {
+          "destination_sources": {
+            "BL": "BL",
+            "BR": "BR",
+            "DB": "DL",
+            "DF": "DB",
+            "DL": "DF",
+            "DR": "DR",
+            "FL": "FL",
+            "FR": "FR",
+            "UB": "UB",
+            "UF": "UF",
+            "UL": "UL",
+            "UR": "UR"
+          },
+          "fully_fixed_slots": [
+            "UR",
+            "UF",
+            "UL",
+            "UB",
+            "DR",
+            "FR",
+            "FL",
+            "BL",
+            "BR"
+          ],
+          "phase_increments": {
+            "BL": 0,
+            "BR": 0,
+            "DB": 0,
+            "DF": 0,
+            "DL": 0,
+            "DR": 0,
+            "FL": 0,
+            "FR": 0,
+            "UB": 0,
+            "UF": 0,
+            "UL": 0,
+            "UR": 0
+          },
+          "phase_modulus": 2,
+          "placement_goal_preserved_globally": false,
+          "zero_phase_goal_preserved_globally": true
+        }
+      },
+      "htm": 11,
+      "id": "M20",
+      "turn_sequence": "B D' B D B D B D' B' D' B2"
+    },
+    {
+      "action": {
+        "corners": {
+          "destination_sources": {
+            "DBL": "DFL",
+            "DBR": "DBR",
+            "DFL": "DBL",
+            "DFR": "DFR",
+            "UBL": "UBL",
+            "UBR": "UBR",
+            "UFL": "UFR",
+            "UFR": "UFL"
+          },
+          "fully_fixed_slots": [
+            "UBL",
+            "UBR",
+            "DFR",
+            "DBR"
+          ],
+          "phase_increments": {
+            "DBL": 2,
+            "DBR": 0,
+            "DFL": 0,
+            "DFR": 0,
+            "UBL": 0,
+            "UBR": 0,
+            "UFL": 0,
+            "UFR": 1
+          },
+          "phase_modulus": 3,
+          "placement_goal_preserved_globally": false,
+          "zero_phase_goal_preserved_globally": false
+        },
+        "edges": {
+          "destination_sources": {
+            "BL": "BL",
+            "BR": "BR",
+            "DB": "DB",
+            "DF": "DF",
+            "DL": "DL",
+            "DR": "DR",
+            "FL": "UL",
+            "FR": "FR",
+            "UB": "UB",
+            "UF": "FL",
+            "UL": "UF",
+            "UR": "UR"
+          },
+          "fully_fixed_slots": [
+            "UR",
+            "UB",
+            "DR",
+            "DF",
+            "DL",
+            "DB",
+            "FR",
+            "BL",
+            "BR"
+          ],
+          "phase_increments": {
+            "BL": 0,
+            "BR": 0,
+            "DB": 0,
+            "DF": 0,
+            "DL": 0,
+            "DR": 0,
+            "FL": 1,
+            "FR": 0,
+            "UB": 0,
+            "UF": 1,
+            "UL": 0,
+            "UR": 0
+          },
+          "phase_modulus": 2,
+          "placement_goal_preserved_globally": false,
+          "zero_phase_goal_preserved_globally": false
+        }
+      },
+      "htm": 12,
+      "id": "M21",
+      "turn_sequence": "B D B' D' F U' F' U D B D' B'"
+    },
+    {
+      "action": {
+        "corners": {
+          "destination_sources": {
+            "DBL": "DBL",
+            "DBR": "DBR",
+            "DFL": "DFL",
+            "DFR": "DFR",
+            "UBL": "UBL",
+            "UBR": "UBR",
+            "UFL": "UFL",
+            "UFR": "UFR"
+          },
+          "fully_fixed_slots": [
+            "UFR",
+            "UFL",
+            "UBL",
+            "UBR",
+            "DFR",
+            "DFL",
+            "DBL",
+            "DBR"
+          ],
+          "phase_increments": {
+            "DBL": 0,
+            "DBR": 0,
+            "DFL": 0,
+            "DFR": 0,
+            "UBL": 0,
+            "UBR": 0,
+            "UFL": 0,
+            "UFR": 0
+          },
+          "phase_modulus": 3,
+          "placement_goal_preserved_globally": true,
+          "zero_phase_goal_preserved_globally": true
+        },
+        "edges": {
+          "destination_sources": {
+            "BL": "BL",
+            "BR": "BR",
+            "DB": "DB",
+            "DF": "DF",
+            "DL": "DL",
+            "DR": "DR",
+            "FL": "FL",
+            "FR": "FR",
+            "UB": "UB",
+            "UF": "UF",
+            "UL": "UL",
+            "UR": "UR"
+          },
+          "fully_fixed_slots": [
+            "UF",
+            "UL",
+            "UB",
+            "DF",
+            "DL",
+            "DB",
+            "FR",
+            "FL",
+            "BL",
+            "BR"
+          ],
+          "phase_increments": {
+            "BL": 0,
+            "BR": 0,
+            "DB": 0,
+            "DF": 0,
+            "DL": 0,
+            "DR": 1,
+            "FL": 0,
+            "FR": 0,
+            "UB": 0,
+            "UF": 0,
+            "UL": 0,
+            "UR": 1
+          },
+          "phase_modulus": 2,
+          "placement_goal_preserved_globally": true,
+          "zero_phase_goal_preserved_globally": false
+        }
+      },
+      "htm": 18,
+      "id": "M22",
+      "turn_sequence": "B' F D B' F L B' F U2 F' B L F' B D F' B R2"
+    }
+  ],
+  "scope": "attribute proposals and isolated-stage coverage, not a full method",
+  "version": 1
+}

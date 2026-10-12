@@ -1,0 +1,561 @@
+{
+  "format": "bce-v2-orientation-target-example-comparison",
+  "python": "3.12.3",
+  "repeats": 3,
+  "results": [
+    {
+      "group_order": 324,
+      "preparation_seconds": 3.3652398499998526,
+      "puzzle": "Alcatraz",
+      "reference_shape": [
+        1,
+        1,
+        2,
+        1,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        7,
+        8,
+        7,
+        7,
+        9,
+        10,
+        11,
+        12,
+        7,
+        7,
+        8,
+        7,
+        7,
+        9,
+        10,
+        11,
+        12
+      ],
+      "runs": [
+        {
+          "arm": "control",
+          "mean_htm": 43.370370370370374,
+          "repeat": 0,
+          "selected_orientation_stages": 0,
+          "selected_source": "greedy",
+          "selection_seconds": 0.722884241000429,
+          "subgroup_prefixes_examined": 0,
+          "target_analysis_seconds": 2.3541000700788572e-05,
+          "targets_found": 0,
+          "worst_htm": 70
+        },
+        {
+          "arm": "orientation_targets",
+          "mean_htm": 43.24074074074074,
+          "repeat": 0,
+          "selected_orientation_stages": 1,
+          "selected_source": "greedy",
+          "selection_seconds": 0.7973645549991488,
+          "subgroup_prefixes_examined": 4,
+          "target_analysis_seconds": 0.03173301399874617,
+          "targets_found": 3,
+          "worst_htm": 70
+        },
+        {
+          "arm": "orientation_targets",
+          "mean_htm": 43.24074074074074,
+          "repeat": 1,
+          "selected_orientation_stages": 1,
+          "selected_source": "greedy",
+          "selection_seconds": 0.7172936019996996,
+          "subgroup_prefixes_examined": 4,
+          "target_analysis_seconds": 0.018066013002680847,
+          "targets_found": 3,
+          "worst_htm": 70
+        },
+        {
+          "arm": "control",
+          "mean_htm": 43.370370370370374,
+          "repeat": 1,
+          "selected_orientation_stages": 0,
+          "selected_source": "greedy",
+          "selection_seconds": 0.6510475690010935,
+          "subgroup_prefixes_examined": 0,
+          "target_analysis_seconds": 2.2842998077976517e-05,
+          "targets_found": 0,
+          "worst_htm": 70
+        },
+        {
+          "arm": "control",
+          "mean_htm": 43.370370370370374,
+          "repeat": 2,
+          "selected_orientation_stages": 0,
+          "selected_source": "greedy",
+          "selection_seconds": 0.646357371000704,
+          "subgroup_prefixes_examined": 0,
+          "target_analysis_seconds": 2.07070006581489e-05,
+          "targets_found": 0,
+          "worst_htm": 70
+        },
+        {
+          "arm": "orientation_targets",
+          "mean_htm": 43.24074074074074,
+          "repeat": 2,
+          "selected_orientation_stages": 1,
+          "selected_source": "greedy",
+          "selection_seconds": 0.8295088569993823,
+          "subgroup_prefixes_examined": 4,
+          "target_analysis_seconds": 0.019171191001078114,
+          "targets_found": 3,
+          "worst_htm": 70
+        }
+      ],
+      "search_options": {
+        "beam_width": 2,
+        "discovery_options": {
+          "max_candidates": 128,
+          "max_states": 1000,
+          "max_word_length": 3
+        },
+        "max_expansions": 8,
+        "max_methods": 2
+      },
+      "summary": {
+        "control": {
+          "all_physical_replays_passed": true,
+          "mean_htm": 43.370370370370374,
+          "median_selection_seconds": 0.6510475690010935,
+          "median_target_analysis_seconds": 2.2842998077976517e-05,
+          "selected_orientation_stages": 0,
+          "states_replayed": 324,
+          "worst_htm": 70
+        },
+        "orientation_targets": {
+          "all_physical_replays_passed": true,
+          "mean_htm": 43.24074074074074,
+          "median_selection_seconds": 0.7973645549991488,
+          "median_target_analysis_seconds": 0.019171191001078114,
+          "selected_orientation_stages": 1,
+          "states_replayed": 324,
+          "worst_htm": 70
+        }
+      }
+    },
+    {
+      "group_order": 60,
+      "preparation_seconds": 2.0640027669996925,
+      "puzzle": "Bicube Fuse",
+      "reference_shape": [
+        1,
+        1,
+        2,
+        3,
+        3,
+        2,
+        4,
+        4,
+        5,
+        6,
+        6,
+        7,
+        6,
+        6,
+        7,
+        8,
+        9,
+        10,
+        6,
+        6,
+        11,
+        6,
+        6,
+        11,
+        8,
+        9,
+        10
+      ],
+      "runs": [
+        {
+          "arm": "control",
+          "mean_htm": 26.25,
+          "repeat": 0,
+          "selected_orientation_stages": 0,
+          "selected_source": "greedy",
+          "selection_seconds": 0.16952942700118,
+          "subgroup_prefixes_examined": 0,
+          "target_analysis_seconds": 1.612100277270656e-05,
+          "targets_found": 0,
+          "worst_htm": 49
+        },
+        {
+          "arm": "orientation_targets",
+          "mean_htm": 26.25,
+          "repeat": 0,
+          "selected_orientation_stages": 0,
+          "selected_source": "greedy",
+          "selection_seconds": 0.169303194999884,
+          "subgroup_prefixes_examined": 3,
+          "target_analysis_seconds": 0.0018430409982101992,
+          "targets_found": 0,
+          "worst_htm": 49
+        },
+        {
+          "arm": "orientation_targets",
+          "mean_htm": 26.25,
+          "repeat": 1,
+          "selected_orientation_stages": 0,
+          "selected_source": "greedy",
+          "selection_seconds": 0.17191708499922242,
+          "subgroup_prefixes_examined": 3,
+          "target_analysis_seconds": 0.0010033790003944887,
+          "targets_found": 0,
+          "worst_htm": 49
+        },
+        {
+          "arm": "control",
+          "mean_htm": 26.25,
+          "repeat": 1,
+          "selected_orientation_stages": 0,
+          "selected_source": "greedy",
+          "selection_seconds": 0.17122679199928825,
+          "subgroup_prefixes_examined": 0,
+          "target_analysis_seconds": 1.0345998816774227e-05,
+          "targets_found": 0,
+          "worst_htm": 49
+        },
+        {
+          "arm": "control",
+          "mean_htm": 26.25,
+          "repeat": 2,
+          "selected_orientation_stages": 0,
+          "selected_source": "greedy",
+          "selection_seconds": 0.17794609100019443,
+          "subgroup_prefixes_examined": 0,
+          "target_analysis_seconds": 1.0635996659402736e-05,
+          "targets_found": 0,
+          "worst_htm": 49
+        },
+        {
+          "arm": "orientation_targets",
+          "mean_htm": 26.25,
+          "repeat": 2,
+          "selected_orientation_stages": 0,
+          "selected_source": "greedy",
+          "selection_seconds": 0.1892704510009935,
+          "subgroup_prefixes_examined": 3,
+          "target_analysis_seconds": 0.0010201420009252615,
+          "targets_found": 0,
+          "worst_htm": 49
+        }
+      ],
+      "search_options": {
+        "beam_width": 2,
+        "discovery_options": {
+          "max_candidates": 128,
+          "max_states": 1000,
+          "max_word_length": 3
+        },
+        "max_expansions": 8,
+        "max_methods": 2
+      },
+      "summary": {
+        "control": {
+          "all_physical_replays_passed": true,
+          "mean_htm": 26.25,
+          "median_selection_seconds": 0.17122679199928825,
+          "median_target_analysis_seconds": 1.0635996659402736e-05,
+          "selected_orientation_stages": 0,
+          "states_replayed": 60,
+          "worst_htm": 49
+        },
+        "orientation_targets": {
+          "all_physical_replays_passed": true,
+          "mean_htm": 26.25,
+          "median_selection_seconds": 0.17191708499922242,
+          "median_target_analysis_seconds": 0.0010201420009252615,
+          "selected_orientation_stages": 0,
+          "states_replayed": 60,
+          "worst_htm": 49
+        }
+      }
+    },
+    {
+      "group_order": 36,
+      "preparation_seconds": 2.0571527880001668,
+      "puzzle": "Shark Fin Soup",
+      "reference_shape": [
+        1,
+        1,
+        2,
+        1,
+        1,
+        2,
+        3,
+        3,
+        4,
+        5,
+        5,
+        6,
+        5,
+        5,
+        6,
+        7,
+        7,
+        8,
+        9,
+        9,
+        10,
+        9,
+        9,
+        10,
+        11,
+        11,
+        12
+      ],
+      "runs": [
+        {
+          "arm": "control",
+          "mean_htm": 21.77777777777778,
+          "repeat": 0,
+          "selected_orientation_stages": 0,
+          "selected_source": "baseline:fully_solve_each_block",
+          "selection_seconds": 0.13289912700020068,
+          "subgroup_prefixes_examined": 0,
+          "target_analysis_seconds": 1.297099697694648e-05,
+          "targets_found": 0,
+          "worst_htm": 34
+        },
+        {
+          "arm": "orientation_targets",
+          "mean_htm": 21.77777777777778,
+          "repeat": 0,
+          "selected_orientation_stages": 0,
+          "selected_source": "baseline:fully_solve_each_block",
+          "selection_seconds": 0.14185535999968124,
+          "subgroup_prefixes_examined": 3,
+          "target_analysis_seconds": 0.00533561100019142,
+          "targets_found": 3,
+          "worst_htm": 34
+        },
+        {
+          "arm": "orientation_targets",
+          "mean_htm": 21.77777777777778,
+          "repeat": 1,
+          "selected_orientation_stages": 0,
+          "selected_source": "baseline:fully_solve_each_block",
+          "selection_seconds": 0.14710008300062327,
+          "subgroup_prefixes_examined": 3,
+          "target_analysis_seconds": 0.005624511999485549,
+          "targets_found": 3,
+          "worst_htm": 34
+        },
+        {
+          "arm": "control",
+          "mean_htm": 21.77777777777778,
+          "repeat": 1,
+          "selected_orientation_stages": 0,
+          "selected_source": "baseline:fully_solve_each_block",
+          "selection_seconds": 0.13333007699839072,
+          "subgroup_prefixes_examined": 0,
+          "target_analysis_seconds": 9.302000762545504e-06,
+          "targets_found": 0,
+          "worst_htm": 34
+        },
+        {
+          "arm": "control",
+          "mean_htm": 21.77777777777778,
+          "repeat": 2,
+          "selected_orientation_stages": 0,
+          "selected_source": "baseline:fully_solve_each_block",
+          "selection_seconds": 0.14215803799925197,
+          "subgroup_prefixes_examined": 0,
+          "target_analysis_seconds": 1.5011997675173916e-05,
+          "targets_found": 0,
+          "worst_htm": 34
+        },
+        {
+          "arm": "orientation_targets",
+          "mean_htm": 21.77777777777778,
+          "repeat": 2,
+          "selected_orientation_stages": 0,
+          "selected_source": "baseline:fully_solve_each_block",
+          "selection_seconds": 0.14152447100059362,
+          "subgroup_prefixes_examined": 3,
+          "target_analysis_seconds": 0.0054209779991651885,
+          "targets_found": 3,
+          "worst_htm": 34
+        }
+      ],
+      "search_options": {
+        "beam_width": 2,
+        "discovery_options": {
+          "max_candidates": 128,
+          "max_states": 1000,
+          "max_word_length": 3
+        },
+        "max_expansions": 8,
+        "max_methods": 2
+      },
+      "summary": {
+        "control": {
+          "all_physical_replays_passed": true,
+          "mean_htm": 21.77777777777778,
+          "median_selection_seconds": 0.13333007699839072,
+          "median_target_analysis_seconds": 1.297099697694648e-05,
+          "selected_orientation_stages": 0,
+          "states_replayed": 36,
+          "worst_htm": 34
+        },
+        "orientation_targets": {
+          "all_physical_replays_passed": true,
+          "mean_htm": 21.77777777777778,
+          "median_selection_seconds": 0.14185535999968124,
+          "median_target_analysis_seconds": 0.0054209779991651885,
+          "selected_orientation_stages": 0,
+          "states_replayed": 36,
+          "worst_htm": 34
+        }
+      }
+    },
+    {
+      "group_order": 432,
+      "preparation_seconds": 2.0226954059999116,
+      "puzzle": "BandagedPocketCube",
+      "reference_shape": [
+        1,
+        1,
+        2,
+        1,
+        1,
+        2,
+        3,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        7,
+        10,
+        10,
+        11,
+        12,
+        13,
+        7,
+        14,
+        15,
+        7,
+        10,
+        10,
+        11
+      ],
+      "runs": [
+        {
+          "arm": "control",
+          "mean_htm": 89.47685185185185,
+          "repeat": 0,
+          "selected_orientation_stages": 0,
+          "selected_source": "greedy",
+          "selection_seconds": 1.3896444710007927,
+          "subgroup_prefixes_examined": 0,
+          "target_analysis_seconds": 6.380500053637661e-05,
+          "targets_found": 0,
+          "worst_htm": 169
+        },
+        {
+          "arm": "orientation_targets",
+          "mean_htm": 79.92361111111111,
+          "repeat": 0,
+          "selected_orientation_stages": 1,
+          "selected_source": "greedy",
+          "selection_seconds": 1.2794792170006986,
+          "subgroup_prefixes_examined": 5,
+          "target_analysis_seconds": 0.01702238800135092,
+          "targets_found": 6,
+          "worst_htm": 134
+        },
+        {
+          "arm": "orientation_targets",
+          "mean_htm": 79.92361111111111,
+          "repeat": 1,
+          "selected_orientation_stages": 1,
+          "selected_source": "greedy",
+          "selection_seconds": 1.4079837540011795,
+          "subgroup_prefixes_examined": 5,
+          "target_analysis_seconds": 0.017608120999284438,
+          "targets_found": 6,
+          "worst_htm": 134
+        },
+        {
+          "arm": "control",
+          "mean_htm": 89.47685185185185,
+          "repeat": 1,
+          "selected_orientation_stages": 0,
+          "selected_source": "greedy",
+          "selection_seconds": 1.3775805730001593,
+          "subgroup_prefixes_examined": 0,
+          "target_analysis_seconds": 6.257399763853755e-05,
+          "targets_found": 0,
+          "worst_htm": 169
+        },
+        {
+          "arm": "control",
+          "mean_htm": 89.47685185185185,
+          "repeat": 2,
+          "selected_orientation_stages": 0,
+          "selected_source": "greedy",
+          "selection_seconds": 1.149555075000535,
+          "subgroup_prefixes_examined": 0,
+          "target_analysis_seconds": 3.4738997783279046e-05,
+          "targets_found": 0,
+          "worst_htm": 169
+        },
+        {
+          "arm": "orientation_targets",
+          "mean_htm": 79.92361111111111,
+          "repeat": 2,
+          "selected_orientation_stages": 1,
+          "selected_source": "greedy",
+          "selection_seconds": 1.329003441000168,
+          "subgroup_prefixes_examined": 5,
+          "target_analysis_seconds": 0.01730944299742987,
+          "targets_found": 6,
+          "worst_htm": 134
+        }
+      ],
+      "search_options": {
+        "beam_width": 2,
+        "discovery_options": {
+          "max_candidates": 128,
+          "max_states": 1000,
+          "max_word_length": 3
+        },
+        "max_expansions": 8,
+        "max_methods": 2
+      },
+      "summary": {
+        "control": {
+          "all_physical_replays_passed": true,
+          "mean_htm": 89.47685185185185,
+          "median_selection_seconds": 1.3775805730001593,
+          "median_target_analysis_seconds": 6.257399763853755e-05,
+          "selected_orientation_stages": 0,
+          "states_replayed": 432,
+          "worst_htm": 169
+        },
+        "orientation_targets": {
+          "all_physical_replays_passed": true,
+          "mean_htm": 79.92361111111111,
+          "median_selection_seconds": 1.329003441000168,
+          "median_target_analysis_seconds": 0.01730944299742987,
+          "selected_orientation_stages": 1,
+          "states_replayed": 432,
+          "worst_htm": 134
+        }
+      }
+    }
+  ],
+  "timing_scope": "Paired small-group quality and preparation-time comparison for phase targets.\n\nGroup preparation is shared and measured separately. Search timing includes\ndictionary discovery and complete-method scoring/validation, and excludes\nportable loading, replay and repertoire compilation. Balanced run order\nreduces cache/order bias; all experiments run sequentially.\n",
+  "version": 1
+}

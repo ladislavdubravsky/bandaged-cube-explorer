@@ -1,0 +1,48 @@
+{
+  "cells": [
+    {
+      "execution_count": 1,
+      "index": 1,
+      "output_count": 0,
+      "output_mime_types": [],
+      "seconds": 0.29874809100147104
+    },
+    {
+      "execution_count": 2,
+      "index": 3,
+      "output_count": 1,
+      "output_mime_types": [
+        "text/markdown",
+        "text/plain"
+      ],
+      "seconds": 49.96077918900119
+    }
+  ],
+  "code_cell_count": 2,
+  "completed": true,
+  "correction_count": 323,
+  "execution_vocabulary_count": 5,
+  "format": "bce-v2-unbandaged-notebook-acceptance",
+  "fresh_kernel": true,
+  "interpreter": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/.venv/bin/python",
+  "mandatory_user_inputs": [
+    "bandage"
+  ],
+  "notebook": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/examples/AutomaticBandageMethod.ipynb",
+  "notebook_sha256": "e9d698d6b4a5130115099863c5f5f08664151ad00f15194848165a288697fbb5",
+  "original_notebook_sha256": "510f5d46407dfab1a980acc775bd4ac12664522db9deb0ae8d40f037784d8264",
+  "original_notebook_unchanged": true,
+  "presentation": "bandage_input_then_staged_solution_guide",
+  "seconds": 51.33503402099814,
+  "source_checks": {
+    "absolute_temporary_artifact_dependency": false,
+    "called_functions": [
+      "Markdown",
+      "discover_method",
+      "display",
+      "write_guide"
+    ],
+    "legacy_template_planner_called": false
+  },
+  "version": 1
+}

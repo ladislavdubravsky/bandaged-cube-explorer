@@ -1,0 +1,1337 @@
+{
+  "all_case_domains_complete": true,
+  "all_complete_states_solved": true,
+  "all_cumulative_endpoint_goals_preserved": true,
+  "catalog_macro_count": 19,
+  "comparison_to_production_method": null,
+  "complete_physical_state_replays": 62208,
+  "format": "bce-v2-standard-last-layer-oracle",
+  "goal_discovery_performed": false,
+  "inverse_body_variants_used": false,
+  "mean_last_layer_additive_htm": 61.3287037037037,
+  "move_count_scope": "all face-turn tokens, including setups; no boundary cancellation",
+  "one_algorithm_per_look_claim": false,
+  "optimality_scope": "each declared protected-macro graph, with additive HTM weights",
+  "physical_body_source": "https://www.cubeskills.com/uploads/pdf/tutorials/4-look-last-layer.pdf",
+  "production_integration": false,
+  "protected_macros": {
+    "EO": {
+      "body": "EO",
+      "htm": 6,
+      "setup": "",
+      "word": "F R U R' U' F'"
+    },
+    "Sune": {
+      "body": "Sune",
+      "htm": 7,
+      "setup": "",
+      "word": "R U R' U R U2 R'"
+    },
+    "Tperm": {
+      "body": "Tperm",
+      "htm": 14,
+      "setup": "",
+      "word": "R U R' U' R' F R2 U' R' U' R U R' F'"
+    },
+    "U": {
+      "body": null,
+      "htm": 1,
+      "setup": "",
+      "word": "U"
+    },
+    "U [EO] U'": {
+      "body": "EO",
+      "htm": 8,
+      "setup": "U",
+      "word": "U F R U R' U' F' U'"
+    },
+    "U [Sune] U'": {
+      "body": "Sune",
+      "htm": 9,
+      "setup": "U",
+      "word": "U R U R' U R U2 R' U'"
+    },
+    "U [Tperm] U'": {
+      "body": "Tperm",
+      "htm": 16,
+      "setup": "U",
+      "word": "U R U R' U' R' F R2 U' R' U' R U R' F' U'"
+    },
+    "U [Ua] U'": {
+      "body": "Ua",
+      "htm": 13,
+      "setup": "U",
+      "word": "U R U' R U R U R U' R' U' R2 U'"
+    },
+    "U'": {
+      "body": null,
+      "htm": 1,
+      "setup": "",
+      "word": "U'"
+    },
+    "U' [EO] U": {
+      "body": "EO",
+      "htm": 8,
+      "setup": "U'",
+      "word": "U' F R U R' U' F' U"
+    },
+    "U' [Sune] U": {
+      "body": "Sune",
+      "htm": 9,
+      "setup": "U'",
+      "word": "U' R U R' U R U2 R' U"
+    },
+    "U' [Tperm] U": {
+      "body": "Tperm",
+      "htm": 16,
+      "setup": "U'",
+      "word": "U' R U R' U' R' F R2 U' R' U' R U R' F' U"
+    },
+    "U' [Ua] U": {
+      "body": "Ua",
+      "htm": 13,
+      "setup": "U'",
+      "word": "U' R U' R U R U R U' R' U' R2 U"
+    },
+    "U2": {
+      "body": null,
+      "htm": 1,
+      "setup": "",
+      "word": "U2"
+    },
+    "U2 [EO] U2": {
+      "body": "EO",
+      "htm": 8,
+      "setup": "U2",
+      "word": "U2 F R U R' U' F' U2"
+    },
+    "U2 [Sune] U2": {
+      "body": "Sune",
+      "htm": 9,
+      "setup": "U2",
+      "word": "U2 R U R' U R U2 R' U2"
+    },
+    "U2 [Tperm] U2": {
+      "body": "Tperm",
+      "htm": 16,
+      "setup": "U2",
+      "word": "U2 R U R' U' R' F R2 U' R' U' R U R' F' U2"
+    },
+    "U2 [Ua] U2": {
+      "body": "Ua",
+      "htm": 13,
+      "setup": "U2",
+      "word": "U2 R U' R U R U R U' R' U' R2 U2"
+    },
+    "Ua": {
+      "body": "Ua",
+      "htm": 11,
+      "setup": "",
+      "word": "R U' R U R U R U' R' U' R2"
+    }
+  },
+  "scope": "seeded ordinary 3x3 last layer after the first two layers are solved",
+  "seeded_goals": [
+    "edge_orientation",
+    "corner_orientation",
+    "corner_placement",
+    "edge_placement"
+  ],
+  "seeded_regions": {
+    "corners": [
+      "URF",
+      "UFL",
+      "ULB",
+      "UBR"
+    ],
+    "edges": [
+      "UR",
+      "UF",
+      "UL",
+      "UB"
+    ]
+  },
+  "setup_undo_variants_built_before_protection_filter": true,
+  "short_adjustments": [
+    "U",
+    "U2",
+    "U'"
+  ],
+  "stage_reports": [
+    {
+      "available_protected_macros": [
+        "U",
+        "U2",
+        "U'",
+        "EO",
+        "U [EO] U'",
+        "U2 [EO] U2",
+        "U' [EO] U",
+        "Sune",
+        "U [Sune] U'",
+        "U2 [Sune] U2",
+        "U' [Sune] U",
+        "Tperm",
+        "U [Tperm] U'",
+        "U2 [Tperm] U2",
+        "U' [Tperm] U",
+        "Ua",
+        "U [Ua] U'",
+        "U2 [Ua] U2",
+        "U' [Ua] U"
+      ],
+      "cases": [
+        {
+          "additive_htm": 0,
+          "observation": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "recipe": [],
+          "turn_sequence": ""
+        },
+        {
+          "additive_htm": 13,
+          "observation": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "recipe": [
+            "EO",
+            "U",
+            "EO"
+          ],
+          "turn_sequence": "F R U R' U' F' U F R U R' U' F'"
+        },
+        {
+          "additive_htm": 6,
+          "observation": [
+            0,
+            1,
+            0,
+            1
+          ],
+          "recipe": [
+            "EO"
+          ],
+          "turn_sequence": "F R U R' U' F'"
+        },
+        {
+          "additive_htm": 13,
+          "observation": [
+            0,
+            1,
+            1,
+            0
+          ],
+          "recipe": [
+            "U'",
+            "EO",
+            "EO"
+          ],
+          "turn_sequence": "U' F R U R' U' F' F R U R' U' F'"
+        },
+        {
+          "additive_htm": 13,
+          "observation": [
+            1,
+            0,
+            0,
+            1
+          ],
+          "recipe": [
+            "U",
+            "EO",
+            "EO"
+          ],
+          "turn_sequence": "U F R U R' U' F' F R U R' U' F'"
+        },
+        {
+          "additive_htm": 7,
+          "observation": [
+            1,
+            0,
+            1,
+            0
+          ],
+          "recipe": [
+            "U",
+            "EO"
+          ],
+          "turn_sequence": "U F R U R' U' F'"
+        },
+        {
+          "additive_htm": 12,
+          "observation": [
+            1,
+            1,
+            0,
+            0
+          ],
+          "recipe": [
+            "EO",
+            "EO"
+          ],
+          "turn_sequence": "F R U R' U' F' F R U R' U' F'"
+        },
+        {
+          "additive_htm": 19,
+          "observation": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "recipe": [
+            "EO",
+            "EO",
+            "U",
+            "EO"
+          ],
+          "turn_sequence": "F R U R' U' F' F R U R' U' F' U F R U R' U' F'"
+        }
+      ],
+      "complete": true,
+      "complete_hidden_state_endpoint_replays": 62208,
+      "goal": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "mean_additive_htm": 10.375,
+      "name": "edge_orientation",
+      "native_replay_mean_additive_htm": 10.375,
+      "observation_count": 8,
+      "observed_native_array": "flips",
+      "protected_macro_count": 19,
+      "states_per_observation_during_full_replay": 7776,
+      "transition_replays": 152,
+      "worst_additive_htm": 19
+    },
+    {
+      "available_protected_macros": [
+        "U",
+        "U2",
+        "U'",
+        "Sune",
+        "U [Sune] U'",
+        "U2 [Sune] U2",
+        "U' [Sune] U",
+        "Tperm",
+        "U [Tperm] U'",
+        "U2 [Tperm] U2",
+        "U' [Tperm] U",
+        "Ua",
+        "U [Ua] U'",
+        "U2 [Ua] U2",
+        "U' [Ua] U"
+      ],
+      "cases": [
+        {
+          "additive_htm": 0,
+          "observation": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "recipe": [],
+          "turn_sequence": ""
+        },
+        {
+          "additive_htm": 24,
+          "observation": [
+            0,
+            0,
+            1,
+            2
+          ],
+          "recipe": [
+            "U' [Sune] U",
+            "Sune",
+            "U2",
+            "Sune"
+          ],
+          "turn_sequence": "U' R U R' U R U2 R' U R U R' U R U2 R' U2 R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 24,
+          "observation": [
+            0,
+            0,
+            2,
+            1
+          ],
+          "recipe": [
+            "U' [Sune] U",
+            "Sune",
+            "U'",
+            "Sune"
+          ],
+          "turn_sequence": "U' R U R' U R U2 R' U R U R' U R U2 R' U' R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 22,
+          "observation": [
+            0,
+            1,
+            0,
+            2
+          ],
+          "recipe": [
+            "Sune",
+            "Sune",
+            "U2",
+            "Sune"
+          ],
+          "turn_sequence": "R U R' U R U2 R' R U R' U R U2 R' U2 R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            0,
+            1,
+            1,
+            1
+          ],
+          "recipe": [
+            "U",
+            "Sune",
+            "U2",
+            "Sune"
+          ],
+          "turn_sequence": "U R U R' U R U2 R' U2 R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 23,
+          "observation": [
+            0,
+            1,
+            2,
+            0
+          ],
+          "recipe": [
+            "Sune",
+            "U",
+            "Sune",
+            "U2",
+            "Sune"
+          ],
+          "turn_sequence": "R U R' U R U2 R' U R U R' U R U2 R' U2 R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 21,
+          "observation": [
+            0,
+            2,
+            0,
+            1
+          ],
+          "recipe": [
+            "Sune",
+            "Sune",
+            "Sune"
+          ],
+          "turn_sequence": "R U R' U R U2 R' R U R' U R U2 R' R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 23,
+          "observation": [
+            0,
+            2,
+            1,
+            0
+          ],
+          "recipe": [
+            "Sune",
+            "U [Sune] U'",
+            "Sune"
+          ],
+          "turn_sequence": "R U R' U R U2 R' U R U R' U R U2 R' U' R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 8,
+          "observation": [
+            0,
+            2,
+            2,
+            2
+          ],
+          "recipe": [
+            "U",
+            "Sune"
+          ],
+          "turn_sequence": "U R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 24,
+          "observation": [
+            1,
+            0,
+            0,
+            2
+          ],
+          "recipe": [
+            "U [Sune] U'",
+            "Sune",
+            "U2",
+            "Sune"
+          ],
+          "turn_sequence": "U R U R' U R U2 R' U' R U R' U R U2 R' U2 R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 15,
+          "observation": [
+            1,
+            0,
+            1,
+            1
+          ],
+          "recipe": [
+            "Sune",
+            "U2",
+            "Sune"
+          ],
+          "turn_sequence": "R U R' U R U2 R' U2 R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 22,
+          "observation": [
+            1,
+            0,
+            2,
+            0
+          ],
+          "recipe": [
+            "U'",
+            "Sune",
+            "Sune",
+            "Sune"
+          ],
+          "turn_sequence": "U' R U R' U R U2 R' R U R' U R U2 R' R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            1,
+            1,
+            0,
+            1
+          ],
+          "recipe": [
+            "U'",
+            "Sune",
+            "U2",
+            "Sune"
+          ],
+          "turn_sequence": "U' R U R' U R U2 R' U2 R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            1,
+            1,
+            1,
+            0
+          ],
+          "recipe": [
+            "U2 [Sune] U2",
+            "Sune"
+          ],
+          "turn_sequence": "U2 R U R' U R U2 R' U2 R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            1,
+            1,
+            2,
+            2
+          ],
+          "recipe": [
+            "U' [Sune] U",
+            "Sune"
+          ],
+          "turn_sequence": "U' R U R' U R U2 R' U R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 23,
+          "observation": [
+            1,
+            2,
+            0,
+            0
+          ],
+          "recipe": [
+            "Sune",
+            "U' [Sune] U",
+            "Sune"
+          ],
+          "turn_sequence": "R U R' U R U2 R' U' R U R' U R U2 R' U R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 14,
+          "observation": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "recipe": [
+            "Sune",
+            "Sune"
+          ],
+          "turn_sequence": "R U R' U R U2 R' R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 15,
+          "observation": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "recipe": [
+            "Sune",
+            "U",
+            "Sune"
+          ],
+          "turn_sequence": "R U R' U R U2 R' U R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 24,
+          "observation": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "recipe": [
+            "U [Sune] U'",
+            "Sune",
+            "U",
+            "Sune"
+          ],
+          "turn_sequence": "U R U R' U R U2 R' U' R U R' U R U2 R' U R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 22,
+          "observation": [
+            2,
+            0,
+            1,
+            0
+          ],
+          "recipe": [
+            "U",
+            "Sune",
+            "Sune",
+            "Sune"
+          ],
+          "turn_sequence": "U R U R' U R U2 R' R U R' U R U2 R' R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 7,
+          "observation": [
+            2,
+            0,
+            2,
+            2
+          ],
+          "recipe": [
+            "Sune"
+          ],
+          "turn_sequence": "R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 23,
+          "observation": [
+            2,
+            1,
+            0,
+            0
+          ],
+          "recipe": [
+            "Sune",
+            "U'",
+            "Sune",
+            "U2",
+            "Sune"
+          ],
+          "turn_sequence": "R U R' U R U2 R' U' R U R' U R U2 R' U2 R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            2,
+            1,
+            1,
+            2
+          ],
+          "recipe": [
+            "U [Sune] U'",
+            "Sune"
+          ],
+          "turn_sequence": "U R U R' U R U2 R' U' R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 15,
+          "observation": [
+            2,
+            1,
+            2,
+            1
+          ],
+          "recipe": [
+            "U",
+            "Sune",
+            "Sune"
+          ],
+          "turn_sequence": "U R U R' U R U2 R' R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 8,
+          "observation": [
+            2,
+            2,
+            0,
+            2
+          ],
+          "recipe": [
+            "U'",
+            "Sune"
+          ],
+          "turn_sequence": "U' R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 15,
+          "observation": [
+            2,
+            2,
+            1,
+            1
+          ],
+          "recipe": [
+            "Sune",
+            "U'",
+            "Sune"
+          ],
+          "turn_sequence": "R U R' U R U2 R' U' R U R' U R U2 R'"
+        },
+        {
+          "additive_htm": 8,
+          "observation": [
+            2,
+            2,
+            2,
+            0
+          ],
+          "recipe": [
+            "U2",
+            "Sune"
+          ],
+          "turn_sequence": "U2 R U R' U R U2 R'"
+        }
+      ],
+      "complete": true,
+      "complete_hidden_state_endpoint_replays": 62208,
+      "goal": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "mean_additive_htm": 17.037037037037038,
+      "name": "corner_orientation",
+      "native_replay_mean_additive_htm": 17.037037037037038,
+      "observation_count": 27,
+      "observed_native_array": "twists",
+      "protected_macro_count": 15,
+      "states_per_observation_during_full_replay": 2304,
+      "transition_replays": 405,
+      "worst_additive_htm": 24
+    },
+    {
+      "available_protected_macros": [
+        "U",
+        "U2",
+        "U'",
+        "Tperm",
+        "U [Tperm] U'",
+        "U2 [Tperm] U2",
+        "U' [Tperm] U",
+        "Ua",
+        "U [Ua] U'",
+        "U2 [Ua] U2",
+        "U' [Ua] U"
+      ],
+      "cases": [
+        {
+          "additive_htm": 0,
+          "observation": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "recipe": [],
+          "turn_sequence": ""
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            0,
+            1,
+            3,
+            2
+          ],
+          "recipe": [
+            "U [Tperm] U'"
+          ],
+          "turn_sequence": "U R U R' U' R' F R2 U' R' U' R U R' F' U'"
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "recipe": [
+            "U2 [Tperm] U2"
+          ],
+          "turn_sequence": "U2 R U R' U' R' F R2 U' R' U' R U R' F' U2"
+        },
+        {
+          "additive_htm": 15,
+          "observation": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "recipe": [
+            "Tperm",
+            "U"
+          ],
+          "turn_sequence": "R U R' U' R' F R2 U' R' U' R U R' F' U"
+        },
+        {
+          "additive_htm": 15,
+          "observation": [
+            0,
+            3,
+            1,
+            2
+          ],
+          "recipe": [
+            "U'",
+            "Tperm"
+          ],
+          "turn_sequence": "U' R U R' U' R' F R2 U' R' U' R U R' F'"
+        },
+        {
+          "additive_htm": 30,
+          "observation": [
+            0,
+            3,
+            2,
+            1
+          ],
+          "recipe": [
+            "Tperm",
+            "U2",
+            "Tperm",
+            "U'"
+          ],
+          "turn_sequence": "R U R' U' R' F R2 U' R' U' R U R' F' U2 R U R' U' R' F R2 U' R' U' R U R' F' U'"
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            1,
+            0,
+            2,
+            3
+          ],
+          "recipe": [
+            "U' [Tperm] U"
+          ],
+          "turn_sequence": "U' R U R' U' R' F R2 U' R' U' R U R' F' U"
+        },
+        {
+          "additive_htm": 29,
+          "observation": [
+            1,
+            0,
+            3,
+            2
+          ],
+          "recipe": [
+            "Tperm",
+            "U2",
+            "Tperm"
+          ],
+          "turn_sequence": "R U R' U' R' F R2 U' R' U' R U R' F' U2 R U R' U' R' F R2 U' R' U' R U R' F'"
+        },
+        {
+          "additive_htm": 15,
+          "observation": [
+            1,
+            2,
+            0,
+            3
+          ],
+          "recipe": [
+            "U",
+            "Tperm"
+          ],
+          "turn_sequence": "U R U R' U' R' F R2 U' R' U' R U R' F'"
+        },
+        {
+          "additive_htm": 1,
+          "observation": [
+            1,
+            2,
+            3,
+            0
+          ],
+          "recipe": [
+            "U"
+          ],
+          "turn_sequence": "U"
+        },
+        {
+          "additive_htm": 15,
+          "observation": [
+            1,
+            3,
+            0,
+            2
+          ],
+          "recipe": [
+            "Tperm",
+            "U2"
+          ],
+          "turn_sequence": "R U R' U' R' F R2 U' R' U' R U R' F' U2"
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            1,
+            3,
+            2,
+            0
+          ],
+          "recipe": [
+            "U2",
+            "Tperm",
+            "U'"
+          ],
+          "turn_sequence": "U2 R U R' U' R' F R2 U' R' U' R U R' F' U'"
+        },
+        {
+          "additive_htm": 15,
+          "observation": [
+            2,
+            0,
+            1,
+            3
+          ],
+          "recipe": [
+            "Tperm",
+            "U'"
+          ],
+          "turn_sequence": "R U R' U' R' F R2 U' R' U' R U R' F' U'"
+        },
+        {
+          "additive_htm": 15,
+          "observation": [
+            2,
+            0,
+            3,
+            1
+          ],
+          "recipe": [
+            "U2",
+            "Tperm"
+          ],
+          "turn_sequence": "U2 R U R' U' R' F R2 U' R' U' R U R' F'"
+        },
+        {
+          "additive_htm": 30,
+          "observation": [
+            2,
+            1,
+            0,
+            3
+          ],
+          "recipe": [
+            "Tperm",
+            "U2",
+            "Tperm",
+            "U"
+          ],
+          "turn_sequence": "R U R' U' R' F R2 U' R' U' R U R' F' U2 R U R' U' R' F R2 U' R' U' R U R' F' U"
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            2,
+            1,
+            3,
+            0
+          ],
+          "recipe": [
+            "U'",
+            "Tperm",
+            "U2"
+          ],
+          "turn_sequence": "U' R U R' U' R' F R2 U' R' U' R U R' F' U2"
+        },
+        {
+          "additive_htm": 1,
+          "observation": [
+            2,
+            3,
+            0,
+            1
+          ],
+          "recipe": [
+            "U2"
+          ],
+          "turn_sequence": "U2"
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            2,
+            3,
+            1,
+            0
+          ],
+          "recipe": [
+            "U",
+            "Tperm",
+            "U"
+          ],
+          "turn_sequence": "U R U R' U' R' F R2 U' R' U' R U R' F' U"
+        },
+        {
+          "additive_htm": 1,
+          "observation": [
+            3,
+            0,
+            1,
+            2
+          ],
+          "recipe": [
+            "U'"
+          ],
+          "turn_sequence": "U'"
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            3,
+            0,
+            2,
+            1
+          ],
+          "recipe": [
+            "U",
+            "Tperm",
+            "U2"
+          ],
+          "turn_sequence": "U R U R' U' R' F R2 U' R' U' R U R' F' U2"
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            3,
+            1,
+            0,
+            2
+          ],
+          "recipe": [
+            "U2",
+            "Tperm",
+            "U"
+          ],
+          "turn_sequence": "U2 R U R' U' R' F R2 U' R' U' R U R' F' U"
+        },
+        {
+          "additive_htm": 14,
+          "observation": [
+            3,
+            1,
+            2,
+            0
+          ],
+          "recipe": [
+            "Tperm"
+          ],
+          "turn_sequence": "R U R' U' R' F R2 U' R' U' R U R' F'"
+        },
+        {
+          "additive_htm": 16,
+          "observation": [
+            3,
+            2,
+            0,
+            1
+          ],
+          "recipe": [
+            "U'",
+            "Tperm",
+            "U'"
+          ],
+          "turn_sequence": "U' R U R' U' R' F R2 U' R' U' R U R' F' U'"
+        },
+        {
+          "additive_htm": 30,
+          "observation": [
+            3,
+            2,
+            1,
+            0
+          ],
+          "recipe": [
+            "U2 [Tperm] U2",
+            "Tperm"
+          ],
+          "turn_sequence": "U2 R U R' U' R' F R2 U' R' U' R U R' F' U2 R U R' U' R' F R2 U' R' U' R U R' F'"
+        }
+      ],
+      "complete": true,
+      "complete_hidden_state_endpoint_replays": 62208,
+      "goal": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mean_additive_htm": 15.416666666666666,
+      "name": "corner_placement",
+      "native_replay_mean_additive_htm": 15.416666666666666,
+      "observation_count": 24,
+      "observed_native_array": "corners",
+      "protected_macro_count": 11,
+      "states_per_observation_during_full_replay": 2592,
+      "transition_replays": 264,
+      "worst_additive_htm": 30
+    },
+    {
+      "available_protected_macros": [
+        "Ua",
+        "U [Ua] U'",
+        "U2 [Ua] U2",
+        "U' [Ua] U"
+      ],
+      "cases": [
+        {
+          "additive_htm": 0,
+          "observation": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "recipe": [],
+          "turn_sequence": ""
+        },
+        {
+          "additive_htm": 26,
+          "observation": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "recipe": [
+            "U' [Ua] U",
+            "U' [Ua] U"
+          ],
+          "turn_sequence": "U' R U' R U R U R U' R' U' R2 U U' R U' R U R U R U' R' U' R2 U"
+        },
+        {
+          "additive_htm": 13,
+          "observation": [
+            0,
+            3,
+            1,
+            2
+          ],
+          "recipe": [
+            "U' [Ua] U"
+          ],
+          "turn_sequence": "U' R U' R U R U R U' R' U' R2 U"
+        },
+        {
+          "additive_htm": 24,
+          "observation": [
+            1,
+            0,
+            3,
+            2
+          ],
+          "recipe": [
+            "Ua",
+            "U' [Ua] U"
+          ],
+          "turn_sequence": "R U' R U R U R U' R' U' R2 U' R U' R U R U R U' R' U' R2 U"
+        },
+        {
+          "additive_htm": 22,
+          "observation": [
+            1,
+            2,
+            0,
+            3
+          ],
+          "recipe": [
+            "Ua",
+            "Ua"
+          ],
+          "turn_sequence": "R U' R U R U R U' R' U' R2 R U' R U R U R U' R' U' R2"
+        },
+        {
+          "additive_htm": 26,
+          "observation": [
+            1,
+            3,
+            2,
+            0
+          ],
+          "recipe": [
+            "U [Ua] U'",
+            "U [Ua] U'"
+          ],
+          "turn_sequence": "U R U' R U R U R U' R' U' R2 U' U R U' R U R U R U' R' U' R2 U'"
+        },
+        {
+          "additive_htm": 11,
+          "observation": [
+            2,
+            0,
+            1,
+            3
+          ],
+          "recipe": [
+            "Ua"
+          ],
+          "turn_sequence": "R U' R U R U R U' R' U' R2"
+        },
+        {
+          "additive_htm": 26,
+          "observation": [
+            2,
+            1,
+            3,
+            0
+          ],
+          "recipe": [
+            "U2 [Ua] U2",
+            "U2 [Ua] U2"
+          ],
+          "turn_sequence": "U2 R U' R U R U R U' R' U' R2 U2 U2 R U' R U R U R U' R' U' R2 U2"
+        },
+        {
+          "additive_htm": 24,
+          "observation": [
+            2,
+            3,
+            0,
+            1
+          ],
+          "recipe": [
+            "U' [Ua] U",
+            "Ua"
+          ],
+          "turn_sequence": "U' R U' R U R U R U' R' U' R2 U R U' R U R U R U' R' U' R2"
+        },
+        {
+          "additive_htm": 13,
+          "observation": [
+            3,
+            0,
+            2,
+            1
+          ],
+          "recipe": [
+            "U [Ua] U'"
+          ],
+          "turn_sequence": "U R U' R U R U R U' R' U' R2 U'"
+        },
+        {
+          "additive_htm": 13,
+          "observation": [
+            3,
+            1,
+            0,
+            2
+          ],
+          "recipe": [
+            "U2 [Ua] U2"
+          ],
+          "turn_sequence": "U2 R U' R U R U R U' R' U' R2 U2"
+        },
+        {
+          "additive_htm": 24,
+          "observation": [
+            3,
+            2,
+            1,
+            0
+          ],
+          "recipe": [
+            "U [Ua] U'",
+            "Ua"
+          ],
+          "turn_sequence": "U R U' R U R U R U' R' U' R2 U' R U' R U R U R U' R' U' R2"
+        }
+      ],
+      "complete": true,
+      "complete_hidden_state_endpoint_replays": 62208,
+      "goal": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mean_additive_htm": 18.5,
+      "name": "edge_placement",
+      "native_replay_mean_additive_htm": 18.5,
+      "observation_count": 12,
+      "observed_native_array": "edges",
+      "protected_macro_count": 4,
+      "states_per_observation_during_full_replay": 5184,
+      "transition_replays": 48,
+      "worst_additive_htm": 26
+    }
+  ],
+  "supplied_long_bodies": {
+    "EO": "F R U R' U' F'",
+    "Sune": "R U R' U R U2 R'",
+    "Tperm": "R U R' U' R' F R2 U' R' U' R U R' F'",
+    "Ua": "R U' R U R U R U' R' U' R2"
+  },
+  "supplied_long_body_count": 4,
+  "used_long_bodies": [
+    "EO",
+    "Sune",
+    "Tperm",
+    "Ua"
+  ],
+  "used_long_body_count": 4,
+  "version": 1,
+  "wall_seconds": 4.76688715599812,
+  "whole_scramble_method_claim": false,
+  "worst_last_layer_additive_htm": 99
+}

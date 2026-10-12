@@ -1,0 +1,195 @@
+{
+  "algorithm_inverse_used": false,
+  "all_prior_goals_preserved": true,
+  "all_target_goals_achieved": true,
+  "cases": [
+    {
+      "flipped_slots": [],
+      "htm": 0,
+      "mask": "0000",
+      "recipe": [],
+      "rotation_family": "0000",
+      "transitions": {
+        "A": "1100",
+        "U": "0000",
+        "U'": "0000",
+        "U2": "0000"
+      },
+      "turn_sequence": ""
+    },
+    {
+      "flipped_slots": [
+        "UL",
+        "UB"
+      ],
+      "htm": 13,
+      "mask": "0011",
+      "recipe": [
+        "A",
+        "U",
+        "A"
+      ],
+      "rotation_family": "0011",
+      "transitions": {
+        "A": "1010",
+        "U": "1001",
+        "U'": "0110",
+        "U2": "1100"
+      },
+      "turn_sequence": "F R U R' U' F' U F R U R' U' F'"
+    },
+    {
+      "flipped_slots": [
+        "UF",
+        "UB"
+      ],
+      "htm": 6,
+      "mask": "0101",
+      "recipe": [
+        "A"
+      ],
+      "rotation_family": "0101",
+      "transitions": {
+        "A": "0000",
+        "U": "1010",
+        "U'": "1010",
+        "U2": "0101"
+      },
+      "turn_sequence": "F R U R' U' F'"
+    },
+    {
+      "flipped_slots": [
+        "UF",
+        "UL"
+      ],
+      "htm": 13,
+      "mask": "0110",
+      "recipe": [
+        "U'",
+        "A",
+        "A"
+      ],
+      "rotation_family": "0011",
+      "transitions": {
+        "A": "0110",
+        "U": "0011",
+        "U'": "1100",
+        "U2": "1001"
+      },
+      "turn_sequence": "U' F R U R' U' F' F R U R' U' F'"
+    },
+    {
+      "flipped_slots": [
+        "UR",
+        "UB"
+      ],
+      "htm": 13,
+      "mask": "1001",
+      "recipe": [
+        "U",
+        "A",
+        "A"
+      ],
+      "rotation_family": "0011",
+      "transitions": {
+        "A": "1001",
+        "U": "1100",
+        "U'": "0011",
+        "U2": "0110"
+      },
+      "turn_sequence": "U F R U R' U' F' F R U R' U' F'"
+    },
+    {
+      "flipped_slots": [
+        "UR",
+        "UL"
+      ],
+      "htm": 7,
+      "mask": "1010",
+      "recipe": [
+        "U",
+        "A"
+      ],
+      "rotation_family": "0101",
+      "transitions": {
+        "A": "1111",
+        "U": "0101",
+        "U'": "0101",
+        "U2": "1010"
+      },
+      "turn_sequence": "U F R U R' U' F'"
+    },
+    {
+      "flipped_slots": [
+        "UR",
+        "UF"
+      ],
+      "htm": 12,
+      "mask": "1100",
+      "recipe": [
+        "A",
+        "A"
+      ],
+      "rotation_family": "0011",
+      "transitions": {
+        "A": "0101",
+        "U": "0110",
+        "U'": "1001",
+        "U2": "0011"
+      },
+      "turn_sequence": "F R U R' U' F' F R U R' U' F'"
+    },
+    {
+      "flipped_slots": [
+        "UR",
+        "UF",
+        "UL",
+        "UB"
+      ],
+      "htm": 19,
+      "mask": "1111",
+      "recipe": [
+        "A",
+        "A",
+        "U",
+        "A"
+      ],
+      "rotation_family": "1111",
+      "transitions": {
+        "A": "0011",
+        "U": "1111",
+        "U'": "1111",
+        "U2": "1111"
+      },
+      "turn_sequence": "F R U R' U' F' F R U R' U' F' U F R U R' U' F'"
+    }
+  ],
+  "complete_hidden_state_replays": 62208,
+  "format": "bce-v2-slot-orientation-stage-probe",
+  "goal": "all U-edge slot phases zero; top identities and corners ignored",
+  "learned_body": "F R U R' U' F'",
+  "learned_long_body_count": 1,
+  "macro_moves": {
+    "A": "F R U R' U' F'",
+    "U": "U",
+    "U'": "U'",
+    "U2": "U2"
+  },
+  "mean_stage_htm": 10.375,
+  "observation_count": 8,
+  "optimality_scope": "shortest additive paths in the declared four-macro graph",
+  "production_integration": false,
+  "rotation_family_count": 4,
+  "scope": "one ordinary-cube stage after solving the first two layers",
+  "slots": [
+    "UR",
+    "UF",
+    "UL",
+    "UB"
+  ],
+  "transition_replays": 768,
+  "version": 1,
+  "wall_seconds": 2.9476613019996876,
+  "whole_cube_solved_claim": false,
+  "worst_stage_htm": 19
+}

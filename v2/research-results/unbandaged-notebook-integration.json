@@ -1,0 +1,362 @@
+{
+  "cells": [
+    {
+      "execution_count": 1,
+      "index": 1,
+      "output_count": 1,
+      "output_mime_types": [
+        "text/markdown",
+        "text/plain"
+      ],
+      "seconds": 1.9277290149984765
+    },
+    {
+      "execution_count": 2,
+      "index": 3,
+      "output_count": 9,
+      "output_mime_types": [
+        "text/markdown",
+        "text/plain"
+      ],
+      "seconds": 329.0913124530016
+    },
+    {
+      "execution_count": 3,
+      "index": 5,
+      "output_count": 1,
+      "output_mime_types": [
+        "text/markdown",
+        "text/plain"
+      ],
+      "seconds": 0.052513272003125167
+    },
+    {
+      "execution_count": 4,
+      "index": 7,
+      "output_count": 6,
+      "output_mime_types": [
+        "text/markdown",
+        "text/plain"
+      ],
+      "seconds": 23.466030005001812
+    },
+    {
+      "execution_count": 5,
+      "index": 9,
+      "output_count": 3,
+      "output_mime_types": [
+        "image/png",
+        "text/markdown",
+        "text/plain"
+      ],
+      "seconds": 0.42627598800027044
+    },
+    {
+      "execution_count": 6,
+      "index": 11,
+      "output_count": 1,
+      "output_mime_types": [
+        "text/markdown",
+        "text/plain"
+      ],
+      "seconds": 0.016397692997998092
+    },
+    {
+      "execution_count": 7,
+      "index": 13,
+      "output_count": 1,
+      "output_mime_types": [
+        "image/png",
+        "text/plain"
+      ],
+      "seconds": 0.24800556899936055
+    }
+  ],
+  "completed": true,
+  "final_presentation_run": {
+    "cache_metadata": {
+      "cache_hit": true,
+      "cache_key": "5b28251893fc5e50557f64bb21ba06624e838890aa1bf7aa7b5f101bb0c2b270",
+      "cache_status": "validated_cache_hit",
+      "discovery_seconds": 0.0,
+      "load_seconds": 5.011180243000126,
+      "manifest_path": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/.cache/human-methods/coarse-5b28251893fc5e50557f64bb21ba06624e838890aa1bf7aa7b5f101bb0c2b270.manifest.json",
+      "method_path": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/.cache/human-methods/coarse-5b28251893fc5e50557f64bb21ba06624e838890aa1bf7aa7b5f101bb0c2b270.method.json"
+    },
+    "completed": true,
+    "executed_code_cells": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13
+    ],
+    "executed_notebook_sha256": "5a7b0425aed1e470ac63fd97f4744a5dfaa997234e5de086dda15aa9d9cbd243",
+    "fresh_kernel": true,
+    "latest_notebook_sources_verified": true,
+    "live_sample_summary_matches_native_replay": true,
+    "mean_entry_physical_htm_over_solved": 28.375,
+    "mean_entry_stage_htm_over_solved": 29.0,
+    "mean_physical_htm_over_solved": 75.75,
+    "mean_suffix_physical_htm_over_solved": 47.5,
+    "native_endpoint_checks": 418,
+    "sample_count": 8,
+    "seconds": 31.97068896500059,
+    "solved_count": 8
+  },
+  "focused_notebook_tests": {
+    "all_passed": true,
+    "command": "v2/.venv/bin/python -m unittest discover -s v2/python/tests -p 'test_notebook_*.py' -v",
+    "diagram_test_passed_after_final_spacing_change": true,
+    "interpreter": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/.venv/bin/python",
+    "test_count": 18
+  },
+  "format": "bce-v2-unbandaged-notebook-acceptance",
+  "fresh_kernel": true,
+  "interpreter": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/.venv/bin/python",
+  "live_sample_summary_matches_native_replay": true,
+  "minimal_notebook_run": {
+    "cells": [
+      {
+        "execution_count": 1,
+        "index": 1,
+        "output_count": 0,
+        "output_mime_types": [],
+        "seconds": 0.15313494200017885
+      },
+      {
+        "execution_count": 2,
+        "index": 3,
+        "output_count": 1,
+        "output_mime_types": [
+          "text/markdown",
+          "text/plain"
+        ],
+        "seconds": 5.178778913003043
+      }
+    ],
+    "code_cell_count": 2,
+    "completed": true,
+    "execution_vocabulary_body_count": 4,
+    "format": "bce-v2-unbandaged-notebook-acceptance",
+    "fresh_kernel": true,
+    "interpreter": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/.venv/bin/python",
+    "mandatory_user_inputs": [
+      "bandage"
+    ],
+    "notebook": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/examples/Unbandaged3x3.ipynb",
+    "notebook_sha256": "de6c1da63bb85c2b64506c1f10fdb7ab7c5378bc154945324f6c3d18d0971979",
+    "presentation": "bandage_input_then_staged_solution_guide",
+    "seconds": 6.037391770998511,
+    "source_checks": {
+      "absolute_temporary_artifact_dependency": false,
+      "called_functions": [
+        "Markdown",
+        "discover_method",
+        "display",
+        "write_guide"
+      ],
+      "legacy_template_planner_called": false
+    },
+    "suffix_domain_order": 62208,
+    "version": 1
+  },
+  "native_audit": {
+    "cache_metadata": {
+      "cache_hit": false,
+      "cache_key": "5b28251893fc5e50557f64bb21ba06624e838890aa1bf7aa7b5f101bb0c2b270",
+      "cache_status": "cache_miss",
+      "discovery_seconds": 328.0035814549992,
+      "load_seconds": 0.0,
+      "manifest_path": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/.cache/human-methods/coarse-5b28251893fc5e50557f64bb21ba06624e838890aa1bf7aa7b5f101bb0c2b270.manifest.json",
+      "method_path": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/.cache/human-methods/coarse-5b28251893fc5e50557f64bb21ba06624e838890aa1bf7aa7b5f101bb0c2b270.method.json"
+    },
+    "complete_entry_coverage_claim": false,
+    "fixtures": [
+      {
+        "entry_physical_htm": 28,
+        "entry_stage_count": 5,
+        "entry_stage_htm": 28,
+        "physical_htm": 66,
+        "status": "solved",
+        "suffix_physical_htm": 38
+      },
+      {
+        "entry_physical_htm": 29,
+        "entry_stage_count": 5,
+        "entry_stage_htm": 30,
+        "physical_htm": 76,
+        "status": "solved",
+        "suffix_physical_htm": 47
+      },
+      {
+        "entry_physical_htm": 30,
+        "entry_stage_count": 5,
+        "entry_stage_htm": 31,
+        "physical_htm": 73,
+        "status": "solved",
+        "suffix_physical_htm": 43
+      },
+      {
+        "entry_physical_htm": 28,
+        "entry_stage_count": 5,
+        "entry_stage_htm": 29,
+        "physical_htm": 52,
+        "status": "solved",
+        "suffix_physical_htm": 24
+      },
+      {
+        "entry_physical_htm": 26,
+        "entry_stage_count": 5,
+        "entry_stage_htm": 26,
+        "physical_htm": 95,
+        "status": "solved",
+        "suffix_physical_htm": 69
+      },
+      {
+        "entry_physical_htm": 29,
+        "entry_stage_count": 5,
+        "entry_stage_htm": 30,
+        "physical_htm": 75,
+        "status": "solved",
+        "suffix_physical_htm": 47
+      },
+      {
+        "entry_physical_htm": 27,
+        "entry_stage_count": 5,
+        "entry_stage_htm": 27,
+        "physical_htm": 62,
+        "status": "solved",
+        "suffix_physical_htm": 35
+      },
+      {
+        "entry_physical_htm": 30,
+        "entry_stage_count": 6,
+        "entry_stage_htm": 31,
+        "physical_htm": 107,
+        "status": "solved",
+        "suffix_physical_htm": 77
+      }
+    ],
+    "kernel_interpreter_verified": true,
+    "mean_entry_physical_htm_over_solved": 28.375,
+    "mean_entry_stage_htm_over_solved": 29.0,
+    "mean_physical_htm_over_solved": 75.75,
+    "mean_suffix_physical_htm_over_solved": 47.5,
+    "native_endpoint_checks": 418,
+    "package_file": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/python/python/bce_v2/__init__.py",
+    "sample_count": 8,
+    "solved_count": 8,
+    "suffix_additive_costs": {
+      "exact": true,
+      "htm": {
+        "mean": 63.717592592592595,
+        "mean_denominator": 216,
+        "mean_numerator": 13763,
+        "worst": 115
+      },
+      "qtm": {
+        "mean": 69.22685185185185,
+        "mean_denominator": 216,
+        "mean_numerator": 14953,
+        "worst": 126
+      },
+      "scope": "uniform_declared_domain_before_boundary_cancellation"
+    },
+    "suffix_case_counts": [
+      8,
+      6,
+      27,
+      4,
+      4,
+      3
+    ],
+    "suffix_domain_order": "62208",
+    "whole_solution_metric_scope": "sampled_native_solutions"
+  },
+  "notebook": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/examples/Unbandaged3x3.ipynb",
+  "promoted_notebook": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/examples/Unbandaged3x3.ipynb",
+  "promoted_notebook_sha256": "de6c1da63bb85c2b64506c1f10fdb7ab7c5378bc154945324f6c3d18d0971979",
+  "seconds": 355.99898963599844,
+  "source_checks": {
+    "absolute_temporary_artifact_dependency": false,
+    "called_functions": [
+      "Computation",
+      "Markdown",
+      "Random",
+      "RuntimeError",
+      "State",
+      "ValueError",
+      "activate",
+      "analyze_isotropy",
+      "append",
+      "apply",
+      "cached_coarse_method",
+      "choice",
+      "close",
+      "coarse_method_overview",
+      "coarse_validation_summary",
+      "compile_workspace_method",
+      "cwd",
+      "dict",
+      "display",
+      "draw_bandage_graph",
+      "enumerate",
+      "exists",
+      "explore",
+      "from_facelets",
+      "is_dir",
+      "join",
+      "len",
+      "loads",
+      "method_application_diagram",
+      "method_application_trace",
+      "next",
+      "palette_from_turn_words",
+      "print",
+      "range",
+      "read_text",
+      "refresh_renderers",
+      "str",
+      "type",
+      "workspace_method_overview",
+      "workspace_sample_summary",
+      "write_guide"
+    ],
+    "legacy_template_planner_called": false
+  },
+  "version": 1,
+  "warm_restart_verification": {
+    "already_solved_zero_correction_diagram_passed": true,
+    "cache_metadata": {
+      "cache_hit": true,
+      "cache_key": "5b28251893fc5e50557f64bb21ba06624e838890aa1bf7aa7b5f101bb0c2b270",
+      "cache_status": "validated_cache_hit",
+      "discovery_seconds": 0.0,
+      "load_seconds": 4.718063743999664,
+      "manifest_path": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/.cache/human-methods/coarse-5b28251893fc5e50557f64bb21ba06624e838890aa1bf7aa7b5f101bb0c2b270.manifest.json",
+      "method_path": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/.cache/human-methods/coarse-5b28251893fc5e50557f64bb21ba06624e838890aa1bf7aa7b5f101bb0c2b270.method.json"
+    },
+    "case_counts": [
+      8,
+      6,
+      27,
+      4,
+      4,
+      3
+    ],
+    "completed": true,
+    "domain_order": "62208",
+    "fresh_kernel": true,
+    "notebook_cells_executed": [
+      "configuration",
+      "discovery",
+      "workspace_compile",
+      "worked_example"
+    ],
+    "repeated_entry_sampling": false,
+    "seconds": 8.294534110998939
+  }
+}

@@ -1,0 +1,5181 @@
+{
+  "combined_taught_definition_ids": [
+    "EO",
+    "Sune",
+    "Tperm",
+    "Ua"
+  ],
+  "complete_entry_coverage_claim": false,
+  "coverage_scope": "bounded_native_scramble_sample",
+  "declared_entry_adjustment_count": 18,
+  "distinct_adaptive_entry_chains": 5,
+  "entry_endpoint_checks": 315,
+  "entry_uses_small_pattern_databases": true,
+  "exhaustive_tiny_bandage": {
+    "all_solved": true,
+    "coverage_scope": "all_four_reference_group_states",
+    "declared_directed_adjustments": [
+      "U"
+    ],
+    "fixtures": [
+      {
+        "entry_step_count": 0,
+        "fixture_scramble": "",
+        "metadata": {
+          "adaptive_choices": [],
+          "coverage_scope": "bounded_constructive_entry_then_certified_domain_suffix",
+          "entry_candidates_tried": 0,
+          "entry_coverage_certified": false,
+          "entry_nodes_expanded": 0,
+          "entry_stop_reasons": [],
+          "taught_definition_ids": []
+        },
+        "physical_htm": 0,
+        "status": "solved",
+        "suffix_status": "solved",
+        "turn_sequence": ""
+      },
+      {
+        "entry_step_count": 1,
+        "fixture_scramble": "U",
+        "metadata": {
+          "adaptive_choices": [
+            {
+              "kind": "solve_blocks",
+              "reference_cells": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+              ]
+            }
+          ],
+          "coverage_scope": "bounded_constructive_entry_then_certified_domain_suffix",
+          "entry_candidates_tried": 1,
+          "entry_coverage_certified": false,
+          "entry_nodes_expanded": 3,
+          "entry_stop_reasons": [],
+          "taught_definition_ids": []
+        },
+        "physical_htm": 1,
+        "status": "solved",
+        "suffix_status": "solved",
+        "turn_sequence": "U'"
+      },
+      {
+        "entry_step_count": 1,
+        "fixture_scramble": "U2",
+        "metadata": {
+          "adaptive_choices": [
+            {
+              "kind": "solve_blocks",
+              "reference_cells": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+              ]
+            }
+          ],
+          "coverage_scope": "bounded_constructive_entry_then_certified_domain_suffix",
+          "entry_candidates_tried": 1,
+          "entry_coverage_certified": false,
+          "entry_nodes_expanded": 2,
+          "entry_stop_reasons": [],
+          "taught_definition_ids": []
+        },
+        "physical_htm": 1,
+        "status": "solved",
+        "suffix_status": "solved",
+        "turn_sequence": "U2"
+      },
+      {
+        "entry_step_count": 1,
+        "fixture_scramble": "U'",
+        "metadata": {
+          "adaptive_choices": [
+            {
+              "kind": "solve_blocks",
+              "reference_cells": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+              ]
+            }
+          ],
+          "coverage_scope": "bounded_constructive_entry_then_certified_domain_suffix",
+          "entry_candidates_tried": 1,
+          "entry_coverage_certified": false,
+          "entry_nodes_expanded": 1,
+          "entry_stop_reasons": [],
+          "taught_definition_ids": []
+        },
+        "physical_htm": 1,
+        "status": "solved",
+        "suffix_status": "solved",
+        "turn_sequence": "U"
+      }
+    ],
+    "max_taught_bodies": 0,
+    "native_state_count": 4,
+    "seeded_workspace_contract": true
+  },
+  "format": "bce-v2-workspace-entry-probe",
+  "gap_subprocess_blocked_during_execution": true,
+  "geometry_anchor_evidence": {
+    "coverage_claim": false,
+    "evidence": [
+      {
+        "block_indices": [
+          18,
+          20,
+          22,
+          24
+        ],
+        "coverage_claim": false,
+        "feature": {
+          "kind": "solve_blocks",
+          "reference_cells": [
+            19,
+            21,
+            23,
+            25
+          ]
+        },
+        "free_face": "U",
+        "mean_squared_axis_distance": {
+          "denominator": 1,
+          "numerator": 1
+        },
+        "opposite_component_indices": [
+          17,
+          18,
+          19,
+          20,
+          22,
+          23,
+          24,
+          25
+        ],
+        "opposite_face": "D"
+      }
+    ],
+    "features": [
+      {
+        "kind": "solve_blocks",
+        "reference_cells": [
+          19,
+          21,
+          23,
+          25
+        ]
+      }
+    ],
+    "format": "bce-v2-workspace-anchor-proposals",
+    "metadata": {
+      "candidates_bounded": false,
+      "coverage_claim": false,
+      "domain_block_indices": [
+        9,
+        11,
+        14,
+        16,
+        17,
+        18,
+        19,
+        20,
+        22,
+        23,
+        24,
+        25
+      ],
+      "free_faces": [
+        "U"
+      ],
+      "heuristic": "minimum_mean_squared_distance_to_opposite_face_axis",
+      "max_candidates": 6,
+      "max_components": 6,
+      "oversized_ties": []
+    },
+    "version": 1
+  },
+  "geometry_proposed_anchor_features": [
+    {
+      "kind": "solve_blocks",
+      "reference_cells": [
+        19,
+        21,
+        23,
+        25
+      ]
+    }
+  ],
+  "global_taught_definition_budget": 7,
+  "guide_path": "/tmp/bce-v2-workspace-method-guide.md",
+  "history_free_execution": true,
+  "human_recognition_table_claim": false,
+  "inferred_domain_features": [
+    {
+      "kind": "solve_blocks",
+      "reference_cells": [
+        9,
+        11,
+        15,
+        17,
+        18,
+        19,
+        20,
+        21,
+        23,
+        24,
+        25,
+        26
+      ]
+    }
+  ],
+  "ordinary_fixtures": [
+    {
+      "entry_corrections": [
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:3:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:3:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 6,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 15,
+            "iterations": 2,
+            "pattern_count": 14,
+            "pattern_limits": 0,
+            "physical_htm": 6,
+            "recognition_components": 4,
+            "searched_htm_bound": 6
+          },
+          "observation": [
+            9,
+            0,
+            7,
+            0,
+            16,
+            0,
+            18,
+            0
+          ],
+          "protected_cells": [],
+          "protected_features": [],
+          "recognition_component_count": 4,
+          "seconds": 1.1863952260027872,
+          "status": "ready",
+          "turn_sequence": "U D' L' D' R' L'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 8,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 152,
+            "iterations": 3,
+            "pattern_count": 22,
+            "pattern_limits": 0,
+            "physical_htm": 8,
+            "recognition_components": 6,
+            "searched_htm_bound": 8
+          },
+          "observation": [
+            16,
+            1,
+            19,
+            0,
+            18,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 6,
+          "seconds": 3.921655223999551,
+          "status": "ready",
+          "turn_sequence": "R' U' R F' L U F L'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 7,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 185,
+            "iterations": 3,
+            "pattern_count": 24,
+            "pattern_limits": 0,
+            "physical_htm": 7,
+            "recognition_components": 8,
+            "searched_htm_bound": 7
+          },
+          "observation": [
+            9,
+            0,
+            3,
+            1,
+            17,
+            0,
+            18,
+            0,
+            25,
+            2,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            9,
+            18,
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 8,
+          "seconds": 2.1110438569994585,
+          "status": "ready",
+          "turn_sequence": "F' U' B U' F U' B'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 4,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 5,
+            "iterations": 2,
+            "pattern_count": 26,
+            "pattern_limits": 0,
+            "physical_htm": 4,
+            "recognition_components": 10,
+            "searched_htm_bound": 4
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            7,
+            1,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0,
+            8,
+            1
+          ],
+          "protected_cells": [
+            9,
+            11,
+            18,
+            19,
+            20,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 10,
+          "seconds": 1.2838893010011816,
+          "status": "ready",
+          "turn_sequence": "U' F' U F"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 3,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 3,
+            "iterations": 1,
+            "pattern_count": 28,
+            "pattern_limits": 0,
+            "physical_htm": 3,
+            "recognition_components": 12,
+            "searched_htm_bound": 3
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            1,
+            0,
+            16,
+            0,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            6,
+            2,
+            24,
+            0,
+            25,
+            0
+          ],
+          "protected_cells": [
+            9,
+            11,
+            17,
+            18,
+            19,
+            20,
+            21,
+            23,
+            25,
+            26
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                17
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                26
+              ]
+            }
+          ],
+          "recognition_component_count": 12,
+          "seconds": 1.6225144640011422,
+          "status": "ready",
+          "turn_sequence": "L' U' L"
+        }
+      ],
+      "entry_stage_htm": 28,
+      "entry_step_count": 5,
+      "fixture_scramble": "D2 L2 F U2 L U' D B' R2 U F R D' L' F R2 L' F' R2 F2",
+      "history_present": false,
+      "kind": "random_full_scramble",
+      "metadata": {
+        "adaptive_choices": [
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          }
+        ],
+        "coverage_scope": "bounded_constructive_entry_then_certified_domain_suffix",
+        "entry_candidates_tried": 5,
+        "entry_coverage_certified": false,
+        "entry_nodes_expanded": 360,
+        "entry_stop_reasons": [],
+        "taught_definition_ids": [
+          "EO",
+          "Sune",
+          "Tperm",
+          "Ua"
+        ]
+      },
+      "number": 1,
+      "physical_htm": 66,
+      "seconds": 10.136745048999728,
+      "status": "solved",
+      "suffix_stage_htm": 38,
+      "suffix_status": "solved",
+      "turn_sequence": "U D' L' D' R' L' R' U' R F' L U F L' F' U' B U' F U' B' U' F' U F L' U' L F R U R' U' F' U' R U R' U' R' F R2 U' R' U' R U R' F' U' R U R' U R U2 R' U R U R' U R U2 R' U"
+    },
+    {
+      "entry_corrections": [
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:3:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 4,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 4,
+            "iterations": 1,
+            "pattern_count": 14,
+            "pattern_limits": 0,
+            "physical_htm": 4,
+            "recognition_components": 4,
+            "searched_htm_bound": 4
+          },
+          "observation": [
+            16,
+            1,
+            24,
+            0,
+            5,
+            0,
+            14,
+            1
+          ],
+          "protected_cells": [],
+          "protected_features": [],
+          "recognition_component_count": 4,
+          "seconds": 0.0008120489983411971,
+          "status": "ready",
+          "turn_sequence": "D' R2 F' B'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:1:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 4,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 7,
+            "iterations": 2,
+            "pattern_count": 22,
+            "pattern_limits": 0,
+            "physical_htm": 4,
+            "recognition_components": 6,
+            "searched_htm_bound": 4
+          },
+          "observation": [
+            14,
+            0,
+            18,
+            0,
+            23,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 6,
+          "seconds": 2.5714212610000686,
+          "status": "ready",
+          "turn_sequence": "R2 F2 R2 F2"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 7,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 50,
+            "iterations": 3,
+            "pattern_count": 24,
+            "pattern_limits": 0,
+            "physical_htm": 7,
+            "recognition_components": 8,
+            "searched_htm_bound": 7
+          },
+          "observation": [
+            14,
+            1,
+            11,
+            0,
+            2,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            11,
+            19,
+            20,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 8,
+          "seconds": 0.8317534779998823,
+          "status": "ready",
+          "turn_sequence": "F U' L F U2 L' F'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 8,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 331,
+            "iterations": 3,
+            "pattern_count": 26,
+            "pattern_limits": 0,
+            "physical_htm": 8,
+            "recognition_components": 10,
+            "searched_htm_bound": 8
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            14,
+            1,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            23,
+            1,
+            24,
+            0
+          ],
+          "protected_cells": [
+            9,
+            11,
+            18,
+            19,
+            20,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 10,
+          "seconds": 0.0443061870028032,
+          "status": "ready",
+          "turn_sequence": "L' U' F2 L F L' F L"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:1:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 7,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 610,
+            "iterations": 3,
+            "pattern_count": 28,
+            "pattern_limits": 0,
+            "physical_htm": 7,
+            "recognition_components": 12,
+            "searched_htm_bound": 7
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            14,
+            0,
+            5,
+            0,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            23,
+            0,
+            24,
+            0,
+            8,
+            0
+          ],
+          "protected_cells": [
+            9,
+            11,
+            15,
+            18,
+            19,
+            20,
+            21,
+            23,
+            24,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                15
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                24
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 12,
+          "seconds": 0.07767763099764124,
+          "status": "ready",
+          "turn_sequence": "R U2 R' U' R U R'"
+        }
+      ],
+      "entry_stage_htm": 30,
+      "entry_step_count": 5,
+      "fixture_scramble": "L R' L D2 F2 D2 L R U' F B' R2 F2 D2 F' D L' F2 B' F",
+      "history_present": false,
+      "kind": "random_full_scramble",
+      "metadata": {
+        "adaptive_choices": [
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          }
+        ],
+        "coverage_scope": "bounded_constructive_entry_then_certified_domain_suffix",
+        "entry_candidates_tried": 5,
+        "entry_coverage_certified": false,
+        "entry_nodes_expanded": 1002,
+        "entry_stop_reasons": [],
+        "taught_definition_ids": [
+          "EO",
+          "Sune",
+          "Tperm",
+          "Ua"
+        ]
+      },
+      "number": 2,
+      "physical_htm": 76,
+      "seconds": 3.5365906920014822,
+      "status": "solved",
+      "suffix_stage_htm": 47,
+      "suffix_status": "solved",
+      "turn_sequence": "D' R2 F' B' R2 F2 R2 F' U' L F U2 L' F' L' U' F2 L F L' F L R U2 R' U' R U R' U2 F R U R' U' R U R' U' F' R U R' U R U2 R' U R U R' U R U2 R' U2 R U R' U R U2 R' U' R U' R U R U R U' R' U' R2 U"
+    },
+    {
+      "entry_corrections": [
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 4,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 4,
+            "iterations": 1,
+            "pattern_count": 14,
+            "pattern_limits": 0,
+            "physical_htm": 4,
+            "recognition_components": 4,
+            "searched_htm_bound": 4
+          },
+          "observation": [
+            7,
+            0,
+            20,
+            0,
+            9,
+            0,
+            22,
+            1
+          ],
+          "protected_cells": [],
+          "protected_features": [],
+          "recognition_component_count": 4,
+          "seconds": 0.0008175079965440091,
+          "status": "ready",
+          "turn_sequence": "U2 B2 R F"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:3:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:3:2\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 7,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 357,
+            "iterations": 4,
+            "pattern_count": 22,
+            "pattern_limits": 0,
+            "physical_htm": 7,
+            "recognition_components": 6,
+            "searched_htm_bound": 7
+          },
+          "observation": [
+            3,
+            0,
+            19,
+            2,
+            18,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 6,
+          "seconds": 2.3908843669996713,
+          "status": "ready",
+          "turn_sequence": "L' D2 F2 R F2 R2 D2"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 7,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 253,
+            "iterations": 4,
+            "pattern_count": 24,
+            "pattern_limits": 0,
+            "physical_htm": 7,
+            "recognition_components": 8,
+            "searched_htm_bound": 7
+          },
+          "observation": [
+            9,
+            0,
+            1,
+            1,
+            17,
+            0,
+            18,
+            0,
+            6,
+            1,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            9,
+            18,
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 8,
+          "seconds": 1.0149977010005387,
+          "status": "ready",
+          "turn_sequence": "U' L' U' L B U B'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 7,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 487,
+            "iterations": 4,
+            "pattern_count": 26,
+            "pattern_limits": 0,
+            "physical_htm": 7,
+            "recognition_components": 10,
+            "searched_htm_bound": 7
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            14,
+            0,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            6,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            9,
+            11,
+            18,
+            19,
+            20,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 10,
+          "seconds": 0.05540505500175641,
+          "status": "ready",
+          "turn_sequence": "U F2 L' U2 L U2 F2"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 6,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 64,
+            "iterations": 2,
+            "pattern_count": 28,
+            "pattern_limits": 0,
+            "physical_htm": 6,
+            "recognition_components": 12,
+            "searched_htm_bound": 6
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            14,
+            0,
+            16,
+            1,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            23,
+            0,
+            24,
+            0,
+            2,
+            0
+          ],
+          "protected_cells": [
+            9,
+            11,
+            15,
+            18,
+            19,
+            20,
+            21,
+            23,
+            24,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                15
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                24
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 12,
+          "seconds": 0.01169746500090696,
+          "status": "ready",
+          "turn_sequence": "F' U2 F R U R'"
+        }
+      ],
+      "entry_stage_htm": 31,
+      "entry_step_count": 5,
+      "fixture_scramble": "U' D2 U B2 L' B2 R' L B2 L2 B L' U2 L F D2 F L' R2 D2",
+      "history_present": false,
+      "kind": "random_full_scramble",
+      "metadata": {
+        "adaptive_choices": [
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          }
+        ],
+        "coverage_scope": "bounded_constructive_entry_then_certified_domain_suffix",
+        "entry_candidates_tried": 5,
+        "entry_coverage_certified": false,
+        "entry_nodes_expanded": 1165,
+        "entry_stop_reasons": [],
+        "taught_definition_ids": [
+          "EO",
+          "Sune",
+          "Tperm",
+          "Ua"
+        ]
+      },
+      "number": 3,
+      "physical_htm": 73,
+      "seconds": 3.4832110879979155,
+      "status": "solved",
+      "suffix_stage_htm": 49,
+      "suffix_status": "solved",
+      "turn_sequence": "U2 B2 R F L' D2 F2 R F2 R2 D2 U' L' U' L B U B' U F2 L' U2 L U2 F U2 F R U R' F R U R' U' R U R' U' F' U R U R' U R U' R' U R U R U R U R U' R' U' R2 U2 R U' R U R U R U' R' U' R2 U'"
+    },
+    {
+      "entry_corrections": [
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:5:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:3:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 5,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 9,
+            "iterations": 2,
+            "pattern_count": 14,
+            "pattern_limits": 0,
+            "physical_htm": 5,
+            "recognition_components": 4,
+            "searched_htm_bound": 5
+          },
+          "observation": [
+            18,
+            0,
+            1,
+            1,
+            20,
+            0,
+            7,
+            0
+          ],
+          "protected_cells": [],
+          "protected_features": [],
+          "recognition_component_count": 4,
+          "seconds": 0.0011990460006927606,
+          "status": "ready",
+          "turn_sequence": "B D2 F2 L' B'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 6,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 22,
+            "iterations": 3,
+            "pattern_count": 22,
+            "pattern_limits": 0,
+            "physical_htm": 6,
+            "recognition_components": 6,
+            "searched_htm_bound": 6
+          },
+          "observation": [
+            7,
+            1,
+            23,
+            2,
+            18,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 6,
+          "seconds": 0.004831901002035011,
+          "status": "ready",
+          "turn_sequence": "U F B' U F' B"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 8,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 405,
+            "iterations": 3,
+            "pattern_count": 24,
+            "pattern_limits": 0,
+            "physical_htm": 8,
+            "recognition_components": 8,
+            "searched_htm_bound": 8
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            1,
+            17,
+            0,
+            18,
+            0,
+            2,
+            1,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            9,
+            18,
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 8,
+          "seconds": 0.04182851099903928,
+          "status": "ready",
+          "turn_sequence": "U' R' U R2 F R' F' R'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 3,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 5,
+            "iterations": 1,
+            "pattern_count": 26,
+            "pattern_limits": 0,
+            "physical_htm": 3,
+            "recognition_components": 10,
+            "searched_htm_bound": 3
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            5,
+            0,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            2,
+            1,
+            24,
+            0
+          ],
+          "protected_cells": [
+            9,
+            11,
+            18,
+            19,
+            20,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 10,
+          "seconds": 0.0031733630021335557,
+          "status": "ready",
+          "turn_sequence": "L' U2 L"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 7,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 738,
+            "iterations": 4,
+            "pattern_count": 28,
+            "pattern_limits": 0,
+            "physical_htm": 7,
+            "recognition_components": 12,
+            "searched_htm_bound": 7
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            14,
+            0,
+            7,
+            1,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            23,
+            0,
+            24,
+            0,
+            2,
+            1
+          ],
+          "protected_cells": [
+            9,
+            11,
+            15,
+            18,
+            19,
+            20,
+            21,
+            23,
+            24,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                15
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                24
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 12,
+          "seconds": 0.09465180000188411,
+          "status": "ready",
+          "turn_sequence": "L F' R' F R F L'"
+        }
+      ],
+      "entry_stage_htm": 29,
+      "entry_step_count": 5,
+      "fixture_scramble": "L B' U2 L2 B2 L2 R B' D' F' D B' R2 D' F R' U2 D F2 D",
+      "history_present": false,
+      "kind": "random_full_scramble",
+      "metadata": {
+        "adaptive_choices": [
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          }
+        ],
+        "coverage_scope": "bounded_constructive_entry_then_certified_domain_suffix",
+        "entry_candidates_tried": 5,
+        "entry_coverage_certified": false,
+        "entry_nodes_expanded": 1179,
+        "entry_stop_reasons": [],
+        "taught_definition_ids": [
+          "EO",
+          "Sune",
+          "Tperm",
+          "Ua"
+        ]
+      },
+      "number": 4,
+      "physical_htm": 52,
+      "seconds": 0.1566831260024628,
+      "status": "solved",
+      "suffix_stage_htm": 25,
+      "suffix_status": "solved",
+      "turn_sequence": "B D2 F2 L' B' U F B' U F' B U' R' U R2 F R' F' R' L' U2 L2 F' R' F R F L' U2 F R U R' U' R U R' U' F' U R U' R U R U R U' R' U' R2 U"
+    },
+    {
+      "entry_corrections": [
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 6,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 12,
+            "iterations": 2,
+            "pattern_count": 14,
+            "pattern_limits": 0,
+            "physical_htm": 6,
+            "recognition_components": 4,
+            "searched_htm_bound": 6
+          },
+          "observation": [
+            11,
+            1,
+            7,
+            0,
+            24,
+            1,
+            20,
+            1
+          ],
+          "protected_cells": [],
+          "protected_features": [],
+          "recognition_component_count": 4,
+          "seconds": 0.0013969520005048253,
+          "status": "ready",
+          "turn_sequence": "U L' F' L' B' R'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 5,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 7,
+            "iterations": 2,
+            "pattern_count": 22,
+            "pattern_limits": 0,
+            "physical_htm": 5,
+            "recognition_components": 6,
+            "searched_htm_bound": 5
+          },
+          "observation": [
+            14,
+            1,
+            0,
+            1,
+            18,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 6,
+          "seconds": 0.0018251059991598595,
+          "status": "ready",
+          "turn_sequence": "F L U L' F'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:3:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:3:1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 5,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 16,
+            "iterations": 2,
+            "pattern_count": 24,
+            "pattern_limits": 0,
+            "physical_htm": 5,
+            "recognition_components": 8,
+            "searched_htm_bound": 5
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            17,
+            0,
+            18,
+            0,
+            0,
+            1,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            9,
+            18,
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 8,
+          "seconds": 0.0031789780005055945,
+          "status": "ready",
+          "turn_sequence": "D' F' U2 F D"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 6,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 46,
+            "iterations": 2,
+            "pattern_count": 26,
+            "pattern_limits": 0,
+            "physical_htm": 6,
+            "recognition_components": 10,
+            "searched_htm_bound": 6
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            7,
+            1,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            8,
+            1,
+            24,
+            0
+          ],
+          "protected_cells": [
+            9,
+            11,
+            18,
+            19,
+            20,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 10,
+          "seconds": 0.009011495996674057,
+          "status": "ready",
+          "turn_sequence": "U F' U2 F2 U F'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 4,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 5,
+            "iterations": 2,
+            "pattern_count": 28,
+            "pattern_limits": 0,
+            "physical_htm": 4,
+            "recognition_components": 12,
+            "searched_htm_bound": 4
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            14,
+            0,
+            5,
+            0,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            23,
+            0,
+            24,
+            0,
+            8,
+            2
+          ],
+          "protected_cells": [
+            9,
+            11,
+            15,
+            18,
+            19,
+            20,
+            21,
+            23,
+            24,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                15
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                24
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 12,
+          "seconds": 0.0035784579995379318,
+          "status": "ready",
+          "turn_sequence": "U R U' R'"
+        }
+      ],
+      "entry_stage_htm": 26,
+      "entry_step_count": 5,
+      "fixture_scramble": "L2 B' D2 R' L' F L' R' D' B D' L2 B' D2 F2 R L2 R' B' L'",
+      "history_present": false,
+      "kind": "random_full_scramble",
+      "metadata": {
+        "adaptive_choices": [
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          }
+        ],
+        "coverage_scope": "bounded_constructive_entry_then_certified_domain_suffix",
+        "entry_candidates_tried": 5,
+        "entry_coverage_certified": false,
+        "entry_nodes_expanded": 86,
+        "entry_stop_reasons": [],
+        "taught_definition_ids": [
+          "EO",
+          "Sune",
+          "Tperm",
+          "Ua"
+        ]
+      },
+      "number": 5,
+      "physical_htm": 95,
+      "seconds": 0.027542775998881552,
+      "status": "solved",
+      "suffix_stage_htm": 72,
+      "suffix_status": "solved",
+      "turn_sequence": "U L' F' L' B' R' F L U L' F' D' F' U2 F D U F' U2 F2 U F' U R U' R' F R U R' U' F' U2 F R U R' U' R U R' U' F' R U R' U' R' F R2 U' R' U' R U R' F' U2 R U R' U' R' F R2 U' R' U' R U R' F' R U R' U R U2 R' U' R U R' U R U R U R U R U' R' U' R2"
+    },
+    {
+      "entry_corrections": [
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:3:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 6,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 8,
+            "iterations": 2,
+            "pattern_count": 14,
+            "pattern_limits": 0,
+            "physical_htm": 6,
+            "recognition_components": 4,
+            "searched_htm_bound": 6
+          },
+          "observation": [
+            11,
+            1,
+            20,
+            1,
+            22,
+            1,
+            14,
+            0
+          ],
+          "protected_cells": [],
+          "protected_features": [],
+          "recognition_component_count": 4,
+          "seconds": 0.0021959189980407245,
+          "status": "ready",
+          "turn_sequence": "F' D' B' L' F' R'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 6,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 22,
+            "iterations": 3,
+            "pattern_count": 22,
+            "pattern_limits": 0,
+            "physical_htm": 6,
+            "recognition_components": 6,
+            "searched_htm_bound": 6
+          },
+          "observation": [
+            1,
+            1,
+            23,
+            2,
+            18,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 6,
+          "seconds": 0.0032071669993456453,
+          "status": "ready",
+          "turn_sequence": "U' F B' U F' B"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 3,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 3,
+            "iterations": 1,
+            "pattern_count": 24,
+            "pattern_limits": 0,
+            "physical_htm": 3,
+            "recognition_components": 8,
+            "searched_htm_bound": 3
+          },
+          "observation": [
+            9,
+            0,
+            1,
+            0,
+            17,
+            0,
+            18,
+            0,
+            0,
+            1,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            9,
+            18,
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 8,
+          "seconds": 0.0020226090018695686,
+          "status": "ready",
+          "turn_sequence": "R' U R"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:1:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 7,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 466,
+            "iterations": 4,
+            "pattern_count": 26,
+            "pattern_limits": 0,
+            "physical_htm": 7,
+            "recognition_components": 10,
+            "searched_htm_bound": 7
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            1,
+            1,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            6,
+            2,
+            24,
+            0
+          ],
+          "protected_cells": [
+            9,
+            11,
+            18,
+            19,
+            20,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 10,
+          "seconds": 0.05749007900158176,
+          "status": "ready",
+          "turn_sequence": "R B2 L2 B' L2 B' R'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 8,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 637,
+            "iterations": 3,
+            "pattern_count": 28,
+            "pattern_limits": 0,
+            "physical_htm": 8,
+            "recognition_components": 12,
+            "searched_htm_bound": 8
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            14,
+            0,
+            5,
+            1,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            23,
+            0,
+            24,
+            0,
+            2,
+            0
+          ],
+          "protected_cells": [
+            9,
+            11,
+            15,
+            18,
+            19,
+            20,
+            21,
+            23,
+            24,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                15
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                24
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 12,
+          "seconds": 0.08084494899958372,
+          "status": "ready",
+          "turn_sequence": "U' F2 L2 B L B' L F2"
+        }
+      ],
+      "entry_stage_htm": 30,
+      "entry_step_count": 5,
+      "fixture_scramble": "R' B' D R B' R' D' B F D B' U' B' U' B' F U D R2 L",
+      "history_present": false,
+      "kind": "random_full_scramble",
+      "metadata": {
+        "adaptive_choices": [
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          }
+        ],
+        "coverage_scope": "bounded_constructive_entry_then_certified_domain_suffix",
+        "entry_candidates_tried": 5,
+        "entry_coverage_certified": false,
+        "entry_nodes_expanded": 1136,
+        "entry_stop_reasons": [],
+        "taught_definition_ids": [
+          "EO",
+          "Sune",
+          "Tperm",
+          "Ua"
+        ]
+      },
+      "number": 6,
+      "physical_htm": 75,
+      "seconds": 0.1563358560015331,
+      "status": "solved",
+      "suffix_stage_htm": 48,
+      "suffix_status": "solved",
+      "turn_sequence": "F' D' B' L' F' R' U' F B' U F' B R' U R2 B2 L2 B' L2 B' R' U' F2 L2 B L B' L F' R U R' U' R U R' U' F' U R U R' U R U2 R' U' R U R' U R U2 R' U R U R' U R U2 R' U R U' R U R U R U' R' U' R2 U"
+    },
+    {
+      "entry_corrections": [
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:1:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:3:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 5,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 5,
+            "iterations": 1,
+            "pattern_count": 14,
+            "pattern_limits": 0,
+            "physical_htm": 5,
+            "recognition_components": 4,
+            "searched_htm_bound": 5
+          },
+          "observation": [
+            20,
+            1,
+            5,
+            0,
+            9,
+            0,
+            11,
+            1
+          ],
+          "protected_cells": [],
+          "protected_features": [],
+          "recognition_component_count": 4,
+          "seconds": 0.00098195200189366,
+          "status": "ready",
+          "turn_sequence": "R2 L' F' D2 F2"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 7,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 40,
+            "iterations": 3,
+            "pattern_count": 22,
+            "pattern_limits": 0,
+            "physical_htm": 7,
+            "recognition_components": 6,
+            "searched_htm_bound": 7
+          },
+          "observation": [
+            9,
+            1,
+            0,
+            1,
+            18,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 6,
+          "seconds": 0.005251730999589199,
+          "status": "ready",
+          "turn_sequence": "U' L U B L B' L'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:1:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:3:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:3:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:2\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 5,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 12,
+            "iterations": 2,
+            "pattern_count": 24,
+            "pattern_limits": 0,
+            "physical_htm": 5,
+            "recognition_components": 8,
+            "searched_htm_bound": 5
+          },
+          "observation": [
+            9,
+            0,
+            14,
+            0,
+            17,
+            0,
+            18,
+            0,
+            2,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            9,
+            18,
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 8,
+          "seconds": 0.004199623999738833,
+          "status": "ready",
+          "turn_sequence": "R2 D' F2 D R2"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 3,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 3,
+            "iterations": 1,
+            "pattern_count": 26,
+            "pattern_limits": 0,
+            "physical_htm": 3,
+            "recognition_components": 10,
+            "searched_htm_bound": 3
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            5,
+            1,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0,
+            2,
+            1
+          ],
+          "protected_cells": [
+            9,
+            11,
+            18,
+            19,
+            20,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 10,
+          "seconds": 0.002424520000204211,
+          "status": "ready",
+          "turn_sequence": "F' U F"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:2\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 7,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 171,
+            "iterations": 4,
+            "pattern_count": 28,
+            "pattern_limits": 0,
+            "physical_htm": 7,
+            "recognition_components": 12,
+            "searched_htm_bound": 7
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            1,
+            0,
+            16,
+            0,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            6,
+            0,
+            24,
+            0,
+            25,
+            0
+          ],
+          "protected_cells": [
+            9,
+            11,
+            17,
+            18,
+            19,
+            20,
+            21,
+            23,
+            25,
+            26
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                17
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                26
+              ]
+            }
+          ],
+          "recognition_component_count": 12,
+          "seconds": 0.02250180100236321,
+          "status": "ready",
+          "turn_sequence": "U' L' U' B L' B' L2"
+        }
+      ],
+      "entry_stage_htm": 27,
+      "entry_step_count": 5,
+      "fixture_scramble": "U' D2 L' D2 B' D B' L2 B D2 B2 D' B2 D' R2 L R' L2 R B'",
+      "history_present": false,
+      "kind": "random_full_scramble",
+      "metadata": {
+        "adaptive_choices": [
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          }
+        ],
+        "coverage_scope": "bounded_constructive_entry_then_certified_domain_suffix",
+        "entry_candidates_tried": 5,
+        "entry_coverage_certified": false,
+        "entry_nodes_expanded": 231,
+        "entry_stop_reasons": [],
+        "taught_definition_ids": [
+          "EO",
+          "Sune",
+          "Tperm",
+          "Ua"
+        ]
+      },
+      "number": 7,
+      "physical_htm": 62,
+      "seconds": 0.045383375996607356,
+      "status": "solved",
+      "suffix_stage_htm": 35,
+      "suffix_status": "solved",
+      "turn_sequence": "R2 L' F' D2 F2 U' L U B L B' L' R2 D' F2 D R2 F' U F U' L' U' B L' B' L2 U' F R U R' U' R U R' U' F' U' R U R' U' R' F R2 U' R' U' R U R' F' U2 R U R' U R U2 R' U"
+    },
+    {
+      "entry_corrections": [
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:3:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:3:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 7,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 16,
+            "iterations": 2,
+            "pattern_count": 14,
+            "pattern_limits": 0,
+            "physical_htm": 7,
+            "recognition_components": 4,
+            "searched_htm_bound": 7
+          },
+          "observation": [
+            1,
+            1,
+            20,
+            1,
+            11,
+            1,
+            7,
+            1
+          ],
+          "protected_cells": [],
+          "protected_features": [],
+          "recognition_component_count": 4,
+          "seconds": 0.0020336420020612422,
+          "status": "ready",
+          "turn_sequence": "F' L B D2 L' B2 D'"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:5:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 4,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 5,
+            "iterations": 2,
+            "pattern_count": 22,
+            "pattern_limits": 0,
+            "physical_htm": 4,
+            "recognition_components": 6,
+            "searched_htm_bound": 4
+          },
+          "observation": [
+            1,
+            1,
+            18,
+            0,
+            2,
+            2,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 6,
+          "seconds": 2.4418268280023767,
+          "status": "ready",
+          "turn_sequence": "U B U' B'"
+        },
+        {
+          "action_ids": [],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              23,
+              26
+            ]
+          },
+          "metrics": {
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 0,
+            "iterations": 0,
+            "pattern_count": 0,
+            "pattern_limits": 0,
+            "searched_htm_bound": 0
+          },
+          "observation": [
+            11,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0,
+            25,
+            0
+          ],
+          "protected_cells": [
+            11,
+            19,
+            20,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 7,
+          "seconds": 0.00039136000123107806,
+          "status": "already_satisfied",
+          "turn_sequence": ""
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:4:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 7,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 674,
+            "iterations": 4,
+            "pattern_count": 25,
+            "pattern_limits": 0,
+            "physical_htm": 7,
+            "recognition_components": 9,
+            "searched_htm_bound": 7
+          },
+          "observation": [
+            7,
+            1,
+            11,
+            0,
+            23,
+            1,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0,
+            25,
+            0
+          ],
+          "protected_cells": [
+            11,
+            19,
+            20,
+            21,
+            23,
+            25,
+            26
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                26
+              ]
+            }
+          ],
+          "recognition_component_count": 9,
+          "seconds": 0.07677831600085483,
+          "status": "ready",
+          "turn_sequence": "F2 U2 L2 F L2 U2 F2"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:0:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:2\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 6,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 14,
+            "iterations": 2,
+            "pattern_count": 27,
+            "pattern_limits": 0,
+            "physical_htm": 6,
+            "recognition_components": 11,
+            "searched_htm_bound": 6
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            1,
+            1,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            6,
+            1,
+            24,
+            0,
+            25,
+            0
+          ],
+          "protected_cells": [
+            9,
+            11,
+            18,
+            19,
+            20,
+            21,
+            23,
+            25,
+            26
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                26
+              ]
+            }
+          ],
+          "recognition_component_count": 11,
+          "seconds": 0.006175899998197565,
+          "status": "ready",
+          "turn_sequence": "U2 F2 U F' U' F2"
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:2:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:2:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 7,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 1962,
+            "iterations": 4,
+            "pattern_count": 28,
+            "pattern_limits": 0,
+            "physical_htm": 7,
+            "recognition_components": 12,
+            "searched_htm_bound": 7
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            14,
+            0,
+            1,
+            0,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            23,
+            0,
+            24,
+            0,
+            25,
+            0
+          ],
+          "protected_cells": [
+            9,
+            11,
+            15,
+            18,
+            19,
+            20,
+            21,
+            23,
+            24,
+            25,
+            26
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                15
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                24
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                26
+              ]
+            }
+          ],
+          "recognition_component_count": 12,
+          "seconds": 0.24836064700139104,
+          "status": "ready",
+          "turn_sequence": "F' U' F U R U R'"
+        }
+      ],
+      "entry_stage_htm": 31,
+      "entry_step_count": 6,
+      "fixture_scramble": "U2 B2 D2 B2 F2 L D2 B U2 B2 U D' B R2 U' F2 L B' F R'",
+      "history_present": false,
+      "kind": "random_full_scramble",
+      "metadata": {
+        "adaptive_choices": [
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              19,
+              21,
+              23,
+              25
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              23,
+              26
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          }
+        ],
+        "coverage_scope": "bounded_constructive_entry_then_certified_domain_suffix",
+        "entry_candidates_tried": 6,
+        "entry_coverage_certified": false,
+        "entry_nodes_expanded": 2671,
+        "entry_stop_reasons": [],
+        "taught_definition_ids": [
+          "EO",
+          "Sune",
+          "Tperm",
+          "Ua"
+        ]
+      },
+      "number": 8,
+      "physical_htm": 107,
+      "seconds": 2.790960124002595,
+      "status": "solved",
+      "suffix_stage_htm": 77,
+      "suffix_status": "solved",
+      "turn_sequence": "F' L B D2 L' B2 D' U B U' B' F2 U2 L2 F L2 U2 F2 U2 F2 U F' U' F U' F U R U R' U F R U R' U' R U R' U' F' U R U R' U' R' F R2 U' R' U' R U R' F' U R U R' U R U2 R' U2 R U R' U R U2 R' U2 R U' R U R U R U' R' U' R' U' R U R U R U' R' U' R2 U R U' R U R U R U' R' U' R2 U'"
+    },
+    {
+      "entry_corrections": [
+        {
+          "action_ids": [],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          "metrics": {
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 0,
+            "iterations": 0,
+            "pattern_count": 0,
+            "pattern_limits": 0,
+            "searched_htm_bound": 0
+          },
+          "observation": [
+            9,
+            0,
+            17,
+            0,
+            18,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 6,
+          "seconds": 0.00019616300050984137,
+          "status": "already_satisfied",
+          "turn_sequence": ""
+        },
+        {
+          "action_ids": [],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          "metrics": {
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 0,
+            "iterations": 0,
+            "pattern_count": 0,
+            "pattern_limits": 0,
+            "searched_htm_bound": 0
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            9,
+            18,
+            19,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 8,
+          "seconds": 0.000374013001419371,
+          "status": "already_satisfied",
+          "turn_sequence": ""
+        },
+        {
+          "action_ids": [],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          "metrics": {
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 0,
+            "iterations": 0,
+            "pattern_count": 0,
+            "pattern_limits": 0,
+            "searched_htm_bound": 0
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            14,
+            0,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            23,
+            0,
+            24,
+            0
+          ],
+          "protected_cells": [
+            9,
+            11,
+            18,
+            19,
+            20,
+            21,
+            23,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 10,
+          "seconds": 0.0006204040000739042,
+          "status": "already_satisfied",
+          "turn_sequence": ""
+        },
+        {
+          "action_ids": [
+            "palette:[\"adjustment\",\"loop:1:1\",null,1]",
+            "palette:[\"adjustment\",\"loop:0:-1\",null,1]",
+            "palette:[\"adjustment\",\"loop:1:-1\",null,1]"
+          ],
+          "feature": {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          },
+          "metrics": {
+            "additive_recipe_htm": 3,
+            "complete": false,
+            "coverage": "concrete_observed_fiber_only",
+            "expanded_nodes": 3,
+            "iterations": 1,
+            "pattern_count": 28,
+            "pattern_limits": 0,
+            "physical_htm": 3,
+            "recognition_components": 12,
+            "searched_htm_bound": 3
+          },
+          "observation": [
+            9,
+            0,
+            11,
+            0,
+            14,
+            0,
+            7,
+            0,
+            17,
+            0,
+            18,
+            0,
+            19,
+            0,
+            20,
+            0,
+            22,
+            0,
+            23,
+            0,
+            24,
+            0,
+            6,
+            2
+          ],
+          "protected_cells": [
+            9,
+            11,
+            15,
+            18,
+            19,
+            20,
+            21,
+            23,
+            24,
+            25
+          ],
+          "protected_features": [
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                9
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                11
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                15
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                18
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                19
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                20
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                21
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                23
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                24
+              ]
+            },
+            {
+              "kind": "solve_block",
+              "reference_cells": [
+                25
+              ]
+            }
+          ],
+          "recognition_component_count": 12,
+          "seconds": 0.006605850001506042,
+          "status": "ready",
+          "turn_sequence": "R U' R'"
+        }
+      ],
+      "entry_stage_htm": 3,
+      "entry_step_count": 4,
+      "fixture_scramble": "R U R'",
+      "history_present": false,
+      "kind": "late_f2l_disruption",
+      "metadata": {
+        "adaptive_choices": [
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              9,
+              18
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              11,
+              20
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              15,
+              24
+            ]
+          },
+          {
+            "kind": "solve_blocks",
+            "reference_cells": [
+              17,
+              26
+            ]
+          }
+        ],
+        "coverage_scope": "bounded_constructive_entry_then_certified_domain_suffix",
+        "entry_candidates_tried": 4,
+        "entry_coverage_certified": false,
+        "entry_nodes_expanded": 3,
+        "entry_stop_reasons": [],
+        "taught_definition_ids": [
+          "EO",
+          "Sune",
+          "Tperm",
+          "Ua"
+        ]
+      },
+      "number": 9,
+      "physical_htm": 3,
+      "seconds": 0.0201540229973034,
+      "status": "solved",
+      "suffix_stage_htm": 0,
+      "suffix_status": "solved",
+      "turn_sequence": "R U' R'"
+    }
+  ],
+  "ordinary_native_fixture_count": 9,
+  "ordinary_random_sample_summary": {
+    "complete_entry_coverage_claim": false,
+    "distinct_entry_chains": 4,
+    "fixture_count": 8,
+    "max_entry_nodes_expanded": 2671,
+    "mean_entry_stage_htm_over_solved": 29.0,
+    "mean_physical_htm_over_solved": 75.75,
+    "solved_count": 8
+  },
+  "ordinary_status_counts": {
+    "solved": 9
+  },
+  "portable_method_path": "/tmp/bce-v2-workspace-method.json",
+  "settings": {
+    "guide_output": "/tmp/bce-v2-workspace-method-guide.md",
+    "max_candidates": 6,
+    "max_depth": 12,
+    "max_entry_nodes": 100000,
+    "max_nodes": 20000,
+    "method_output": "/tmp/bce-v2-workspace-method.json",
+    "output": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/research-results/workspace-entry.json",
+    "scramble_length": 20,
+    "scrambles": 8,
+    "seed": 20261011,
+    "suffix": "/tmp/bce-v2-discovered-last-layer-method-final-code.json"
+  },
+  "suffix_case_counts": [
+    8,
+    6,
+    27,
+    4,
+    4,
+    3
+  ],
+  "suffix_group_order": "62208",
+  "supplied_entry_milestones": [],
+  "unconstrained_solver_fallback_used": false,
+  "version": 1,
+  "wall_seconds": 33.18800609399841,
+  "workspace_method_settings": {
+    "controller_options": {
+      "max_depth": 12,
+      "max_nodes": 20000,
+      "max_pattern_components": 3,
+      "max_pattern_count": 16,
+      "max_pattern_observations": 20000
+    },
+    "max_candidates": 6,
+    "max_components": 2,
+    "max_entry_nodes": 100000,
+    "max_proposals": 128,
+    "max_short_setup_htm": 4,
+    "max_stages": 24,
+    "max_taught_bodies": 7
+  }
+}

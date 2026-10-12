@@ -41,13 +41,18 @@ algorithm only when the existing reference-bandage symmetry checks allow it.
 
 ## Initial observable features
 
-The stage planner supports two feature kinds for a specific colored block
-`b`, identified by its reference inventory entry and member cells:
+The stage planner supports placement and full solving of a specific colored
+block `b`, plus orientation of the anonymous occupants of a slot region `S`:
 
 | Feature | Observation from a `BlockAction` | Solved value |
 | --- | --- | --- |
 | `place_block` | `destinations[b]`: the occupied reference footprint | `b` |
 | `solve_block` | `(destinations[b], phases[b])`: footprint and observable orientation in the inventory frames | `(b, 0)` |
+| `orient_slots` | One occupant phase per destination slot in `S`, in inventory order; identities and placements are ignored | An all-zero phase tuple |
+| `place_blocks` | One destination per named component, in inventory order | The ordered reference indices |
+| `solve_blocks` | Interleaved destination and phase for each named component | Interleaved reference indices and zero phases |
+| `occupy_slots` | Sorted destinations of the named component identities | Their sorted reference indices |
+| `place_blocks_up_to_alignment` | A transported set of ordered placement rows for the allowed physical adjustment group | The reference placement rows of that same group |
 
 These observations use the exact action and phase conventions documented in
 [block-actions.md](block-actions.md). A phase is a modular coordinate in the
@@ -55,6 +60,37 @@ declared source and destination frames; it is not a general instruction to
 twist a block independently of the rest of the puzzle. Blocks with orientation
 order one need placement alone. Unmarked center spin and independent virtual
 core spin are outside the observable 48-sticker model.
+
+An `orient_slots` feature names a union of complete reference-block cells.
+All selected slots must have compatible footprints and the same nontrivial
+cyclic orientation order. The region must be invariant under the **entire
+preceding subgroup**: unfinished pieces may move within it, but may not enter
+from an unobserved slot. Both backends check this condition. These stages can
+finish several orientations together while leaving their placements free.
+They support the general block phase orders two, three and four.
+
+The collection kinds name unions of complete actual inventory components.
+`solve_blocks` can finish a corner and its matching edge together without
+pretending they are physically fused. Different footprints and orientation
+orders can share one collection. `occupy_slots` promises region membership,
+allowing internal permutations and phases; it differs from fixing each
+component's own destination. These goals work in both explicit and symbolic
+backends, portable methods, textual guides and collection diagrams.
+`place_blocks_up_to_alignment` retains the shared arrangement while permitting
+a declared physical alignment group; it does not independently loosen each
+piece's placement. Its adjustment group must lie in the preceding subgroup.
+
+`synthesize_human_method(..., recognition={stage_number: (goal, extra, ...)})`
+separates the case observer from the endpoint goal. The feature list must
+explicitly include the stage goal; this supplies a certified projection onto
+the committed coordinate. The runtime skips a finished goal even when extra
+observers remain unfinished. The initial compiler retains the original
+goal correction for every refined subcase and verifies the full observation
+orbit or explicit fibers. Version-three portable methods save those observers;
+ordinary methods retain their existing version-one/two formats.
+Guide tables display each observer. Recognition diagrams and the older
+repertoire/algorithm optimizers currently reject multiple independent observers
+explicitly. Recognition-aware policy optimization remains a later increment.
 
 A placement-first chain uses `place_block` features until all footprints are
 fixed, then uses `solve_block` features to remove the remaining orientations.
@@ -97,7 +133,8 @@ face turns. The guide must identify the whole correction clearly so that the
 person does not make another stage decision partway through it. Requiring
 continuous preservation would be a stronger, separate constraint.
 
-The observation orbit has size `[Hi : Hi+1]`. A representative of each orbit
+The goal observation orbit has size `[Hi : Hi+1]`. Independent recognition may
+refine it into more cases without changing the subgroup index. A representative of each orbit
 case gives a correction by inversion, with execution order agreeing with
 `BlockAction.then` and `LoopExpression`. The already-correct observation has an
 identity correction. A case correction must work for every member of `Hi`
@@ -188,9 +225,10 @@ then break ties by stable inventory order. They compare recognizable stage
 structure, without optimizing algorithm length or shared repertoire.
 
 `strategy="manual"` instead consumes an ordered list of
-`c.BlockFeature(kind, cells)` values. `kind` is `place_block` or `solve_block`;
+`c.BlockFeature(kind, cells)` values. For `place_block` and `solve_block`,
 `cells` must be the exact member cells of one reference inventory block.
-Features use physical member-cell identities, not arbitrary bandage labels.
+For `orient_slots`, they are the union of the compatible slot region.
+Features use reference member cells, not arbitrary bandage labels.
 For example, the automatic list can be supplied explicitly:
 
 ```python
@@ -200,6 +238,29 @@ manual = c.plan_human_stages(
     max_group_elements=10_368,
 )
 ```
+
+To orient a restricted region, first finish a prefix that makes the region
+invariant. For example, after solving the first two layers of an unbandaged
+cube, its four top edge slots can be oriented without placing their occupants:
+
+```python
+reference = c.Shape(list(range(27)))
+inventory = c.BlockInventory(reference)
+first_two_layers = (c.DBR, c.DBL, c.DFL, c.DFR,
+                    c.DR, c.DF, c.DL, c.DB, c.FR, c.FL, c.BR, c.BL)
+prefix = [c.BlockFeature("solve_block", (cell,)) for cell in first_two_layers]
+edge_orientation = c.BlockFeature("orient_slots", (c.UR, c.UF, c.UL, c.UB))
+suffix = [c.BlockFeature("solve_block", block.cells) for block in inventory.blocks]
+method = c.synthesize_human_method(
+    reference, backend="symbolic", strategy="manual",
+    features=[*prefix, edge_orientation, *suffix],
+)
+```
+
+The suffix completes the colored solve; orientation alone does not do so.
+This is a complete computational baseline rather than an optimized layer
+method. A region that is not yet invariant is rejected instead of assigning
+case transitions that depend on hidden incoming orientations.
 
 Redundant manual features are skipped and retained in `skipped_features`.
 The requested manual list must finish at the identity subgroup; a list leaving
@@ -215,7 +276,10 @@ kernel basis. Each stage exposes `feature`, `block_name`, `order_before`,
 `order_after`, `index`, `observations`, `solved_observation` and
 `implied_features`. Placement observations are one-element tuples
 `(destination,)`; full-block observations are `(destination, phase)`.
-JSON encodes both as arrays. Cases include the already-solved observation.
+Slot-orientation observations are phase tuples in stable inventory slot order.
+Their `block_index` is a tuple of slot indices; the original block features
+retain an integer. JSON encodes observations and slot-index tuples as arrays.
+Cases include the already-solved observation.
 `implied_features` lists newly guaranteed features beyond the selected feature.
 
 The enumerated `plan.group` supplies `permutations` in deterministic BFS
@@ -337,12 +401,19 @@ case correction without invoking GAP. The fingerprint detects content
 changes; saved certification labels do not replace these checks.
 
 `method.write_guide(path=None)` returns Markdown and optionally writes it. The
-guide explains the reference convention, footprint/sticker recognition cues,
+guide explains the reference convention, footprint/sticker or slot-phase recognition cues,
 stage progress, complete case tables, shared algorithm definitions and physical
 move sequences.
 A cap stop produces an incomplete report rather than a claimed solution.
 This guide is a computational baseline. For visual recognition cases, use the
 repertoire guide described below. Human review is separate from coverage.
+
+`orient_slots` recognition reads the complete phase pattern at the named
+slots, independently of the occupants' identities and placements. These
+features work with method application, algorithm improvement, shared-template
+policies and portable method/repertoire loading. Loading rechecks the invariant
+region, observation orbit and every correction. Existing block-feature
+artifacts retain their format and interpretation.
 
 ## Improve stage algorithms: delivery three
 
@@ -433,6 +504,48 @@ its schema and `quality="computational_baseline"` stay unchanged. Optional
 search limits do not change completed/certified method coverage.
 
 ## Select an algorithm-aware chain: delivery four
+
+Both backends also propose anonymous orientation targets from the
+available algorithm actions. Discovery identifies invariant slot regions under the
+entire current subgroup, joins regions whose phases an algorithm changes
+together, and searches their full reachable phase patterns. A target records
+the available algorithms that preserve its solved condition as well as the
+forward recipes that repair its cases. Missing cases have no finite stage
+mean; observation limits discard oversized targets without truncating them.
+
+```python
+selection = c.select_human_chain(
+    c.Shape(), backend="symbolic", max_expansions=64, max_methods=4,
+    target_options={"max_observations": 128, "max_candidates": 32,
+                    "max_prefixes": 12, "max_methods": 2},
+)
+print(selection.metadata["attribute_targets"])
+```
+
+These are the default target limits. Symbolic discovery scans certified
+prefixes of complete control chains and inserts shortlisted orientation goals.
+It refines the algorithm pool inside each new stabilizer and chooses the
+remaining block goals adaptively, then certifies and scores the entire
+continuation. Existing controls remain eligible. `max_expansions` and
+`max_methods` are shared between adaptive block chains and attribute
+continuations; at least one adaptive method slot is retained. The explicit
+backend considers the same targets alongside block features in its greedy
+and beam searches, using its already enumerated subgroup actions.
+Setting any required target limit to zero, or `max_observations` below two,
+disables target discovery. Target graph work has its own pattern and proposal
+bounds, independently of dictionary
+`max_states` and `max_word_length`; installed physical words still obey the
+configured expansion and HTM limits. Shared optimization time/work budgets
+also interrupt this pass and retain a certified method.
+
+For a prepared subgroup certificate and witnessed algorithm palette, use
+`c.discover_algorithm_targets(inventory, group, algorithms,
+max_observations=128, max_candidates=32)` directly. It works offline and returns
+`AlgorithmTarget` records with `feature`, `observations`, forward `recipes`,
+`costs`, `covered_count`, `mean_htm` and `preserving_algorithm_ids`. This pass
+introduces no algorithm bodies into that palette. Whole-method template
+compression still determines the final learned repertoire; there is currently
+no hard seven-long-body constraint on automatic chain selection.
 
 `c.select_human_chain` compares complete methods rather than choosing a chain
 from subgroup indices alone. Its input is still the reference shape, without
@@ -777,6 +890,15 @@ physical block identity through its current placement, rather than whatever
 looks solved in one example. Current-stage consequences join the appropriate
 solved set in the following stage.
 
+For an `orient_slots` target, blue marks one intrinsic reference facet of each
+occupant; the remaining selected facets have a neutral shade. The guide names
+the reference marker stickers and prints each slot's phase for the case. The
+marker position distinguishes every cyclic phase, including order four, while
+the rest of the occupant's colors and its identity remain hidden. Every
+compatible occupant uses the same canonical-template marker, so equal slot
+phase patterns have equal marker pictures even when the pieces are permuted.
+The convention remains the declared inventory frame.
+
 `face_colors` accepts a mapping from U/R/F/D/L/B to Matplotlib colors; omitted
 faces retain the standard palette. This palette changes pictures only. Reference
 face labels, recognition cases and solving algorithms do not change.
@@ -997,6 +1119,423 @@ UR edge, UBR corner and UFL corner. Its indices are `3, 2, 2, 9, 3`:
 one fewer stage introduces a nine-case observation orbit. This comparison
 motivates measuring recognition complexity alongside stage count; it is not
 evidence that either chain has a better algorithm repertoire.
+
+## Supplied palettes and a strict coarse-stage compiler
+
+`AlgorithmPalette` admits witnessed bodies before symbolic chain selection.
+Each `AlgorithmPaletteBody` has a stable taught ID and explicit inverse
+permission. `AlgorithmPaletteSetup` permits setup/body/undo recipes; standalone
+adjustments are declared separately. Complete recipes are built before their
+endpoint preservation is checked, so a useful conjugate survives even when
+its setup alone disrupts a protected goal. Repetition and permitted inverse
+calls retain the same taught ID. This initial palette API uses witnessed
+fixed-frame turns; no additional rotation permission is inferred.
+
+Pass `palette=` to `select_human_chain` or `template_human_repertoire` with
+the symbolic backend (or an automatic backend that routes there). The prepared
+`dictionary=` route remains available, and `templates=` still factors the
+selected physical policy. Palette bodies also seed that factorization.
+Ordinary symbolic selection retains certified fallback controls and records
+`strict_vocabulary: false`; supplying a palette there is not a hard body budget.
+
+`compile_coarse_method` instead requires complete coverage using only declared
+palette recipes. It accepts an explicit goal ladder and optional start-domain
+features. The start domain is certified independently from the palette's
+generated subgroup. Large pointwise collection assumptions are split into
+small singleton stabilizers for certification, avoiding a huge entry table.
+The portable artifact retains those entry certificates; application refuses
+states outside the declared domain before executing any correction.
+
+Guides name the used execution vocabulary `A`, `B`, `C`, and so on. The
+Algorithms table's Structure column gives each correction as calls to those
+names, read from left to right: `B⁻¹ C⁻¹` calls the two inverses, and `A⁻³`
+repeats the inverse of A three times. Setup recipes use `[B: A]` for B, A,
+then undo B. These display names leave the stored teaching IDs and physical
+move sequences intact.
+
+```python
+from dataclasses import replace
+import bce_v2 as c
+
+analysis = c.analyze_isotropy(c.Shape())
+builder = c.AlgorithmLibrary(analysis.loops, (), (), ())
+def body(identifier, turns):
+    return replace(builder.build_algorithm(analysis.loops.certified_root_turns(turns)),
+                   id=identifier)
+
+adjustments = tuple(body(word, word) for word in ("U", "U2", "U'"))
+palette = c.AlgorithmPalette.from_algorithms(
+    (body("EO", "F R U R' U' F'"),
+     body("Sune", "R U R' U R U2 R'"),
+     body("Tperm", "R U R' U' R' F R2 U' R' U' R U R' F'"),
+     body("Ua", "R U' R U R U R U' R' U' R2")),
+    setups=adjustments, adjustments=adjustments, allow_inverse=False)
+edges, corners = (c.UR, c.UF, c.UL, c.UB), (c.UFR, c.UFL, c.UBL, c.UBR)
+f2l = tuple(cell for block in analysis.block_inventory.blocks
+            if block.orientation_order > 1 and not set(block.cells).intersection((*edges, *corners))
+            for cell in block.cells)
+method = c.compile_coarse_method(
+    analysis, palette=palette, domain_features=(c.BlockFeature("solve_blocks", f2l),),
+    features=(c.BlockFeature("orient_slots", edges), c.BlockFeature("orient_slots", corners),
+              c.BlockFeature("place_blocks", corners), c.BlockFeature("place_blocks", edges)))
+method.save("/tmp/last-layer-method.json")
+loaded = c.load_coarse_method("/tmp/last-layer-method.json")  # independent offline checks
+```
+
+The fixture above supplies its goals and region; production code contains no
+ordinary-cube case logic. The reproducible acceptance run is
+[`probe_compiled_last_layer.py`](../v2/research/probe_compiled_last_layer.py):
+it reloads the artifact without GAP and physically replays all 62,208 allowed
+states. The [retained run](../v2/research-results/compiled-last-layer.json)
+solves every state with four taught bodies and 230,976 cumulative endpoint
+checks. Its mean is 58.13 HTM in stored stage words and 56.87 HTM after
+cancellation between stages; worst physical execution is 95 HTM. The earlier
+isolated oracle charged unsimplified macro words, so its 61.33 HTM is a different
+cost convention. This is a suffix method, with F2L already solved.
+
+## Palette-led workspace and method discovery
+
+`discover_palette_profiles(inventory, palette, ambient_group=...)` examines
+the complete recipes' endpoint actions. Its immutable records describe fixed
+poses, fixed placements, zero phases, invariant slot sets, shared protected
+regions and candidate goals. Ambient certification excludes components already
+fixed throughout the reference group from the common workspace. Profiles
+suggest a starting condition; they do not establish a way to reach it.
+
+`propose_palette_goals(inventory, current_group, palette, discovery=...)`
+uses compatible footprint classes, the entire current subgroup's orientation
+constraints, and contacts between actual component cells. It proposes grouped
+orientation, grouped placement, component pairs and connected assemblies.
+Production code contains no last-layer piece lists or standard-method cases.
+
+`discover_coarse_method` extends several such stages together. Each edge is a
+complete directed palette policy over the current feature orbit. Search labels
+carry the union of taught definitions across the whole selected ladder, so a
+previously learned body can be reused without charging it again. The compiler
+retains the selected recipe tables rather than replacing them with independently
+cheaper stage policies that might introduce additional bodies.
+
+Before retaining a commitment, search checks the group generated by all
+palette recipes preserving it. If that group is smaller than the exact
+residual subgroup, some remaining states cannot be solved with the available
+stage-action alphabet, so the commitment is rejected. This alphabet contains
+complete admitted operations that restore earlier commitments;
+their internal turns and setup operations may temporarily displace protected
+pieces. Before profiling, bounded powers (through four) and useful two-operation
+compositions are derived from the declared recipes. Their complete endpoints
+can restore a goal even when each constituent breaks it. They retain the exact
+legal word, original body dependencies and inverse permissions, and consume
+the existing global teaching budget. Longer unadmitted combinations remain
+outside this closure. Equal orders establish this
+necessary algebraic condition; complete small-case policies and physical
+certificates still decide which ladders are usable within the search bounds.
+
+```python
+# Reuse the witnessed palette from the compiler example; supply no goals or region.
+result = c.discover_coarse_method(
+    analysis, palette=palette, max_taught_bodies=7,
+    beam_width=1, max_expansions=6, max_stages=6, max_candidates=8,
+    preference="recognition", timeout=90)
+if result.method is not None:
+    result.method.save("/tmp/discovered-method.json")
+    result.method.write_guide("/tmp/discovered-method.md")
+    print(result.candidates[0].case_counts)
+print(result.metadata)
+```
+
+The default search bounds include a beam of 12 labels, 64 expansions, eight
+stages and at most 128 observations per proposed stage. Candidate, alignment,
+policy-subset and workspace limits are recorded in metadata. Search is bounded;
+`no_method_found` does not prove impossibility. Every returned method still has
+exact subgroup, complete case-fiber and physical witness certificates.
+`domain_features=` explicitly fixes a starting contract; omitting it requests
+workspace inference. An inferred protected workspace remains a starting
+contract, and application rejects states outside it before taking any steps.
+The recognition preference ranks complete methods by the largest case table
+and total raw observations before execution cost. During small-group discovery
+(ambient order at most 512), a shortest-first independent endpoint basis also
+estimates the cost of the remaining action family before a greedy commitment.
+This avoids cheap local goals that force expensive restoring operations later.
+The estimate ranks proposals; exact certificates establish coverage. Candidates
+retain the alternatives that trade
+recognition counts, stage count, taught definitions and recipe costs. Use
+`result.select_candidate(candidate.id)` to compile one of those alternatives
+from its existing certificates and recipe tables without repeating discovery.
+This returns a new result and rechecks the same global taught-definition limit.
+
+The [palette-only acceptance probe](../v2/research/probe_discovered_last_layer.py)
+uses the narrow settings shown above, supplies no workspace or stage goals,
+and infers exactly the 62,208-state F2L starting domain. It discovers edge
+orientation, corner placement up to U, corner orientation, absolute corner
+alignment, one edge's placement, then the remaining edges: case counts
+`8, 6, 27, 4, 4, 3`. The [retained run](../v2/research-results/discovered-last-layer.json)
+loads its portable artifact without GAP and physically solves all 62,208
+distinct states with four taught bodies and 300,960 cumulative endpoint
+checks. Mean stored-stage cost is 63.72 HTM; mean concatenated execution is
+62.47 HTM, with worst 115. Discovery took 371.67 seconds and exhaustive native
+execution 90.98 seconds. Repeated prefix/scaffold certification remains a
+performance limitation. This recognition-directed result has 52 raw
+observations, compared with 71 in the faster seeded four-stage control;
+it demonstrates goal discovery and coverage rather than competitive length.
+
+`stage_policy_frontier` exposes the per-stage alternatives independently. Its
+Pareto frontier can retain a slower policy that reuses known bodies alongside
+a faster policy teaching another one. `max_taught_bodies` includes setups and
+standalone adjustments longer than `max_short_setup_htm` (default four moves),
+using stable `setup:`/`adjustment:` definition IDs. Short declared adjustments
+remain separate execution operations. Search costs sum recipe HTM before
+cancellation; `method.additive_costs()` measures the compiled stage words and
+can therefore be lower.
+
+## Placement up to a shared alignment
+
+`BlockFeature("place_blocks_up_to_alignment", cells,
+alignment_permutations=...)` accepts a complete finite physical adjustment
+group, including identity. Every adjustment must retain the selected region
+and belong to the preceding subgroup. The observation transports a set of
+ordered placement rows; its stabilizer is exact and its portable certificate
+checks the physical adjustments, including their action on earlier goals.
+The guide lists equivalent placement patterns, and recognition diagrams show
+their realizable placements and orientations.
+
+Discovery derives candidate alignment groups from declared standalone
+adjustments. A corner-placement goal up to U has six observations rather than
+24. The following edge-placement stage must couple the corner and edge
+regions under the same adjustment: independent allowances leave a relative
+half-turn. The coupled ladder has indices `8, 27, 6, 12, 4`; the final four-case
+stage chooses the common absolute alignment.
+
+## Constructive workspace entry and adaptive assemblies
+
+`compile_workspace_method(suffix, ...)` attaches bounded constructive entry
+to a certified continuation. Entry builds the continuation's inferred region
+from a colored state, then hands off only after the exact suffix domain accepts
+that state. Current entry domains must be full-pose component goals
+(`solve_block` or `solve_blocks`). Bandages must have their reference shape
+restored first; transporting other shapes into that frame remains separate.
+
+`propose_workspace_anchors(inventory, domain_cells)` derives an initial anchor
+from geometry. It finds faces untouched by the target region, then groups the
+marked components nearest the opposite face's axis. For the inferred ordinary
+F2L region this proposes the four bottom edges together. It uses actual cells
+and whole physical components, with no corner/edge lists or standard-method
+cases. A fused component is never split to manufacture an anchor.
+
+`propose_relative_assemblies` grows connected collections through real cell
+contacts. `observe_relative_assembly` recognizes their faithful component poses
+under one common allowed rigid cube rotation, including joined pairs away from
+their final slots. Matching placement alone does not count if a component is
+twisted. Such a relative predicate is a union of framed arrangements and need
+not be a subgroup; it remains outside the stabilizer-chain feature language.
+`rank_relative_assemblies` exposes reusable proposals and per-state choices.
+
+The workspace wrapper first builds a proposed anchor, then prefers joined
+collections and jointly completes nearby unsolved components. Its collection
+order depends on the scramble. Only explicitly completed goals become
+commitments; pieces solved incidentally can still move. This avoids adding
+unnecessary protections while building the workspace.
+
+`ConstructiveEntryController.plan_step(state, feature,
+protected_features=...)` reads the full poses of the target and protected
+components, and searches only declared witnessed palette recipes. Small
+complete single-component, pair and triple pattern tables provide admissible
+lower bounds. Oversized tables are discarded completely; their partial results
+are never used as a coverage claim. The controller combines distances by their
+maximum and applies bounded IDA* to the larger joint observation. It does not
+enumerate the entire F2L observation orbit. Accepted sequences may temporarily
+displace commitments; independent physical replay checks their restoration and
+the new goal at the endpoint. The same accepted word works throughout its
+observed fiber because the retained component poses have a closed action.
+
+```python
+# suffix is result.method from palette-led discovery, or a saved CoarseMethod.
+method = c.compile_workspace_method(suffix, max_taught_bodies=7)
+application = method.apply(colored_state)
+print(application.status, application.turn_sequence)
+print(application.metadata)
+method.save("/tmp/workspace-method.json")
+method.write_guide("/tmp/workspace-method.md")
+```
+
+The default entry alphabet declares original loops, their inverses and squares
+as standalone adjustments, retaining the cheapest declaration of equal effects.
+On the ordinary cube these are the 18 elementary HTM face turns. An explicit
+`entry_palette=` restricts entry to its permitted recipes, including directed
+body permissions. Available entry definitions and used suffix definitions share
+one `max_taught_bodies` budget, including long adjustments and setups. Computed
+entry words are sequences of those operations, rather than additional named
+bodies; they are currently generated by search, rather than recognized from a
+finite human case table. Adding entry operations leaves the suffix's original
+palette and preservation-based inference intact.
+
+Defaults bound corrections at 12 additive recipe HTM and 20,000 expanded nodes,
+with 100,000 expanded nodes across a complete entry. Up to six collections are
+considered per commitment and 24 commitments are allowed. Pattern preparation
+has separate bounds: 20,000 observations per pattern, 16 additional joint
+patterns per correction, and a bounded cache. Every single-component pattern
+is attempted too. These bounds constrain computational work separately from
+the vocabulary. `controller_options=` and the wrapper limits allow adjustment.
+Failures such as `node_limit`, `depth_limit` and `outside_action_orbit` are
+recorded; the wrapper returns `entry_limit` with its verified partial progress.
+It does not call an unrestricted colored solver or computational transversal
+fallback. Saved workspace methods reload and execute without GAP, rechecking
+their palette witnesses, global teaching budget and coverage scope.
+
+The [workspace-entry probe](../v2/research/probe_workspace_entry.py) imports
+history-free states and runs this generic production wrapper on the saved,
+unseeded suffix. Its [retained sample](../v2/research-results/workspace-entry.json)
+solves eight deterministic 20-turn scrambles and a separate late-pair fixture.
+The eight scramble entries average 29 stored-stage HTM before cancellation
+between corrections, with complete physical solutions averaging 75.75 HTM.
+Their entry choices form four distinct chains. An independent fused
+four-state bandage is covered exhaustively with only clockwise U declared;
+repetition supplies its inverse effect without granting an undeclared inverse
+call. Sampled ordinary success is not complete entry certification.
+
+`WorkspaceMethod.human_method_complete` remains false. Its scope is
+`bounded_constructive_entry_then_certified_domain_suffix`: the existing suffix
+retains exact complete coverage over its start domain, while each successful
+entry correction has a concrete observed-fiber and physical witness. Remaining
+work includes complete human entry rules, choosing workspaces by entry plus
+continuation cost, and guarded choices among several relative block frames.
+
+## Automatic methods from a bandage alone
+
+`discover_method(bandage)` packages automatic palette selection, bounded
+planning and physical shape restoration behind one call. No algorithm words,
+workspace goals, recognition features or search settings are required.
+
+```python
+result = c.discover_method(bandage)
+if result.method is not None:
+    application = result.apply(colored_state)
+    print(application.status, application.turn_sequence)
+    print(result.write_guide())
+```
+
+The separate [Alcatraz action-family notebook](../v2/examples/action-family-methods/Alcatraz.ipynb)
+uses this interface on Alcatraz, with two code cells: bandage input and staged
+guide generation. The ordinary-cube notebook uses the same minimal workflow.
+
+Automatic selection checks a bounded built-in vocabulary against the actual
+bandage. Blocked words and words that fail to close at the reference shape are
+rejected. Shared physical preservation chooses a coherent family, without
+ordinary piece lists or an unbandaged-shape branch. When familiar families are
+unavailable, witnessed native root loops provide algorithm bodies. Long loops
+and their explicitly permitted inverses share one teaching definition. Every
+selected action retains its original-loop certificate.
+
+Derived powers and restoring compositions are profiled before stage selection.
+`BlockFeature("solve_blocks_up_to_actions", cells, alignment_permutations=family)`
+expresses full-pose completion up to a small residual physical action subgroup.
+The supplied family must be a complete group of endpoint permutations, preserve
+the named region and belong to the entire preceding subgroup. Its transported
+pose-set observer includes orientation, so it can express equal relative phase
+without requiring zero phase. Duplicate projected families share one proposal.
+
+The guide derives certified conditional instructions from complete observation
+fibers. Visible placement and phase readings choose a complete operation;
+repetition and re-observation strictly decrease a finite progress rank. The
+renderer keeps original body names A, B, C… and displays exact Block action
+definitions and Structure in letters, inverses and powers. Phase marker tables
+give physical facet positions for the readings. These rules retain the saved
+policy's original-body calls; instruction boundaries can lose turn cancellation,
+so commanded and fully simplified physical costs are reported separately.
+
+On Alcatraz, automatic discovery now finds the unseeded ladder
+**324 → 54 → 6 → 3 → 1**, with **6, 9, 2, 3** observations. It places the three
+fused pairs (their footprint fixes their full pose), prepares the singleton
+corners at home with equal phase, orients the singleton edges using A⁻¹, then
+finishes the common corner phase with A² or A⁻². This keeps five learned bodies.
+The alternative order uses A⁻¹ while the corners still have a common residual
+phase, then a power of A that preserves the finished edges. No Alcatraz piece
+identities, goals, ordering or cases are supplied to production discovery.
+
+The [compact-method validation script](../v2/research/validate_compact_automatic_methods.py)
+exhaustively checks all 324 reference-shape states, all stage observation fibers,
+every prior commitment at each complete instruction and stage boundary, and
+offline portable certificates. It also checks other bandages and the ordinary
+cube. Measurements are retained in
+[compact-automatic-methods.json](../v2/research-results/compact-automatic-methods.json).
+The notebooks keep only bandage input and guide generation; experiments live
+in research scripts.
+
+The largest Alcatraz stage has nine observations. Its preparation instructions
+use a 3×3 grid of one corner's current footprint and one relative-phase reading;
+the full method has ten distinct instruction forms across four stages.
+Exhaustive complete-word cost averages 43.24 HTM with worst 79. Stored-stage
+cost before cancellation between stages averages 47.56 HTM with worst 80;
+executing displayed commands separately averages 48.83 HTM with worst 84 before
+cancellation between commands. The
+[portable certificate](../v2/research-results/compact-alcatraz.method.json) and
+[reference guide](../v2/research-results/compact-alcatraz-guide.md) are retained.
+The derivation bounds and greedy action-family score limit discovery quality;
+they do not establish global optimality. Shape restoration still uses the
+computational shape graph and has no compact human recognition certificate.
+
+The larger-group route searches for a protected workspace and continuation,
+then adds constructive entry with a separate generating alphabet. That entry
+alphabet must fit alongside the suffix within the same seven-definition
+default budget. Elementary root operations of up to four moves are short
+adjustments. Entry depth adapts to actual algorithm lengths; node bounds remain
+finite. The ordinary cube automatically selects the existing four bodies and
+U adjustments and can reuse the ordinary notebook's continuation cache.
+
+For exact reference groups of at most 512 elements, a failed or vacuous staged
+search can instead compile one joint full-pose correction stage over the whole
+group. Its cases use the same witnessed palette machinery and teaching budget.
+This establishes complete computational coverage, at the cost of a potentially
+large recognition table. It does not claim to discover a compact CFOP-like
+method for those bandages.
+
+The returned `AutomaticMethod.apply(state)` observes the current shape and
+restores the exact reference shape through its retained complete shape graph
+before running the inner policy. It does not read or invert scramble history.
+`shape_turn_sequence` and `method_application` expose the actual two execution
+parts. The concatenated word is checked by independent native replay.
+
+`result.metadata` identifies the route and actual algorithm selection;
+`method.coverage_complete` distinguishes full computational coverage from
+bounded workspace entry. For changing-shape bandages, `human_method_complete`
+remains false because the shape-graph instructions have not been compressed
+into human recognition rules. Mathematical coverage does not measure the
+usability of a large joint-state case table.
+
+Defaults stop shape exploration at 10,000 vertices and reject oversized
+original-loop workloads before running GAP. Incomplete preparation returns
+`analysis_limit` or `preparation_limit`; bounded search failure returns
+`no_method_found`. These are computational limits, not proofs that a bandage
+has no method. The few optional public controls are `max_shapes`,
+`max_taught_bodies`, `timeout`, `progress`, `cache_dir` and `force`. `timeout`
+bounds each GAP operation rather than the entire discovery. The default cache
+uses `v2/.cache/human-methods` in this checkout, or `.bce-cache/human-methods`
+under the working directory elsewhere; `cache_dir=None` disables caching.
+
+The earlier [automatic acceptance probe](../v2/research/probe_automatic_bandage_method.py)
+checks native, history-free states on frozen and fused-U fixtures, Alcatraz and
+Bicube Fuse. Its archived [report](../v2/research-results/automatic-bandage-method.json)
+records all 415 tested inputs solved, with 806 goal endpoint checks. On Alcatraz
+and Bicube Fuse, it exhaustively tests one changing-shape fiber of respectively
+324 and 60 colored states, plus varied legal-walk samples. The complete shape
+and root-policy certificates support full computational coverage; those native
+replays do not enumerate every shape/colored-state combination.
+
+## Viewing palette-led discovery in the ordinary-cube notebook
+
+The [Unbandaged3x3 notebook](../v2/examples/action-family-methods/Unbandaged3x3.ipynb) runs this
+pipeline through the automatic API. It has two code cells: edit the bandage,
+then generate the staged guide. Palette selection, workspace discovery,
+constructive-entry limits and caching are handled by the method call.
+
+```python
+method = c.discover_method(bandage)
+display(Markdown(method.write_guide()))
+```
+
+The guide describes workspace entry, available operations and the complete
+continuation cases. First discovery can take several minutes; later calls
+reuse the revalidated local cache. Native scramble experiments and detailed
+performance measurements remain in the research probes and acceptance reports.
 
 ## Later deliveries
 

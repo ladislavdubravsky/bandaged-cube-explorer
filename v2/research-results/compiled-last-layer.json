@@ -1,0 +1,67 @@
+{
+  "all_complete_states_solved": true,
+  "all_cumulative_endpoint_goals_preserved": true,
+  "ambient_group_order": "43252003274489856000",
+  "case_counts": [
+    8,
+    27,
+    24,
+    12
+  ],
+  "certified_additive_costs": {
+    "exact": true,
+    "htm": {
+      "mean": 58.13425925925926,
+      "mean_denominator": 216,
+      "mean_numerator": 12557,
+      "worst": 95
+    },
+    "qtm": {
+      "mean": 63.726851851851855,
+      "mean_denominator": 216,
+      "mean_numerator": 13765,
+      "worst": 106
+    },
+    "scope": "uniform_declared_domain_before_boundary_cancellation"
+  },
+  "complete_physical_state_replays": 62208,
+  "coverage_scope": "all_reference_group_states_satisfying_domain_features",
+  "cumulative_stabilizer_endpoint_checks": 230976,
+  "format": "bce-v2-compiled-last-layer-acceptance",
+  "goal_discovery_performed": false,
+  "loaded_method_replayed_without_gap": true,
+  "mean_last_layer_additive_htm": 58.13425925925926,
+  "mean_last_layer_physical_htm": 56.86651234567901,
+  "method_artifact": "/tmp/bce-v2-compiled-last-layer-method.json",
+  "physical_body_source": "https://www.cubeskills.com/uploads/pdf/tutorials/4-look-last-layer.pdf",
+  "production_integration": true,
+  "sampled_concatenated_native_replays": 61,
+  "stage_mean_additive_htm": [
+    9.125,
+    15.925925925925926,
+    15.416666666666666,
+    17.666666666666668
+  ],
+  "start_domain_order": 62208,
+  "strict_palette_coverage": true,
+  "supplied_long_bodies": {
+    "EO": "F R U R' U' F'",
+    "Sune": "R U R' U R U2 R'",
+    "Tperm": "R U R' U' R' F R2 U' R' U' R U R' F'",
+    "Ua": "R U' R U R U R U' R' U' R2"
+  },
+  "supplied_long_body_count": 4,
+  "timing_scope": "compilation, artifact serialization, offline loading and complete physical replay",
+  "unconstrained_fallback_used": false,
+  "used_long_body_ids": [
+    "EO",
+    "Sune",
+    "Tperm",
+    "Ua"
+  ],
+  "version": 1,
+  "wall_seconds": 188.24063208400185,
+  "whole_scramble_method_claim": false,
+  "worst_last_layer_additive_htm": 95,
+  "worst_last_layer_physical_htm": 95
+}

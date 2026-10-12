@@ -1,0 +1,46 @@
+{
+  "algorithm_count": 323,
+  "all_checked_cases_solved": true,
+  "all_notebook_code_and_other_cell_outputs_unchanged": true,
+  "all_original_algorithm_words_and_actions_unchanged": true,
+  "examples": {
+    "P1": "B⁻¹ C⁻¹",
+    "P2": "C⁻¹ B⁻¹",
+    "P9": "A⁻³"
+  },
+  "execution_ids_unchanged": true,
+  "format": "bce-v2-automatic-bandage-vocabulary-guide",
+  "full_discovery_rerun": false,
+  "guide_generated_from_standard_compiled_policy": true,
+  "native_history_free_case_endpoint_checks": 323,
+  "native_structure_permutation_checks": 323,
+  "notation": "A B; A⁻¹ inverse; A² repetition; calls read left to right",
+  "notebook": "/home/ladislav/prj/nonvl/bandaged-cube-explorer/v2/examples/AutomaticBandageMethod.ipynb",
+  "only_vocabulary_table_replaced": true,
+  "original_notebook_sha256": "510f5d46407dfab1a980acc775bd4ac12664522db9deb0ae8d40f037784d8264",
+  "original_notebook_unchanged": true,
+  "stable_body_ids": [
+    "loop:142",
+    "loop:175",
+    "loop:285",
+    "loop:662",
+    "loop:732"
+  ],
+  "structure_expansions_exactly_match_physical_words": true,
+  "version": 1,
+  "vocabulary_block_actions": {
+    "A": "(UBR-)(UR+)(UFL-)(UF+)(UFR-)",
+    "B": "(UBR- UFL-)(UR+ UF+)(UFR-)([BR-DBR] [FL-DFL])",
+    "C": "(UBR+ UFL+)(UR+ UF+)(UFR+)([FL-DFL] [FR-DFR])",
+    "D": "(UBR- UFL+ UFR)",
+    "E": "(UBR- UFL UFR+)"
+  },
+  "vocabulary_block_actions_match_declared_algorithms": true,
+  "vocabulary_names": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E"
+  ]
+}
