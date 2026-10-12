@@ -117,7 +117,7 @@ class WorkspaceMethodTests(unittest.TestCase):
         before = self.method.to_dict()
         with patch("subprocess.run", side_effect=AssertionError("guide rendering is offline")):
             guide = self.method.write_guide()
-        self.assertEqual(guide.count("## Declared execution vocabulary"), 1)
+        self.assertEqual(guide.count("## Execution vocabulary"), 1)
         self.assertIn("| Structure | Turn sequence | Block action |", guide)
         self.assertIn(f"| `A` | `{self.action.turn_sequence}` | `{self.action.block_action.notation}` |", guide)
         self.assertNotIn("palette:", guide)
@@ -135,7 +135,7 @@ class WorkspaceMethodTests(unittest.TestCase):
         with patch("subprocess.run", side_effect=AssertionError("derived guide rendering is offline")):
             loaded = c.WorkspaceMethod.from_dict(before)
             guide = loaded.write_guide()
-        self.assertEqual(guide.count("## Declared execution vocabulary"), 1)
+        self.assertEqual(guide.count("## Execution vocabulary"), 1)
         self.assertIn("| Body | `A` |", guide)
         self.assertIn("| Adjustment | `B` |", guide)
         entry_section, continuation = guide.split("## Certified continuation", 1)
@@ -153,7 +153,7 @@ class WorkspaceMethodTests(unittest.TestCase):
         before = method.to_dict()
         with patch("subprocess.run", side_effect=AssertionError("shared guide rendering is offline")):
             guide = method.write_guide()
-        self.assertEqual(guide.count("## Declared execution vocabulary"), 1)
+        self.assertEqual(guide.count("## Execution vocabulary"), 1)
         entry_section, continuation = guide.split("## Certified continuation", 1)
         self.assertIn("| Body | `A` |", entry_section)
         self.assertIn("| Adjustment | `B` |", entry_section)

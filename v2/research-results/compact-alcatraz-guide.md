@@ -1,12 +1,10 @@
-# Reference-shape solving method
+# Solving from reference shape
 
 This method covers all **324 reachable colored states** in the declared reference shape.
 
 Each stage has a complete observation-fiber certificate. The conditional rules factor the exact saved corrections and strictly decrease a finite progress rank. Every complete operation restores earlier commitments at its endpoint.
 
-## Declared execution vocabulary
-
-Read Structure from left to right. `A⁻¹` uses an explicitly permitted inverse; `A²` repeats A twice. Derived powers and compositions reuse these definitions.
+## Execution vocabulary
 
 | Kind | Name | Turn sequence | Block action |
 | --- | --- | --- | --- |

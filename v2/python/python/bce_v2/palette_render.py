@@ -606,9 +606,7 @@ def _ready_cue(stage, inventory):
 
 def execution_vocabulary_lines(declarations):
     """One shared letter vocabulary, with an exact action for every definition."""
-    lines = ["## Declared execution vocabulary", "",
-             "Read Structure from left to right. `A⁻¹` uses an explicitly permitted inverse; "
-             "`A²` repeats A twice. Derived powers and compositions reuse these definitions.", "",
+    lines = ["## Execution vocabulary", "",
              "| Kind | Name | Turn sequence | Block action |",
              "| --- | --- | --- | --- |"]
     displayed = {}
@@ -644,7 +642,7 @@ def palette_method_guide(method, *, declarations=None, aliases=None, include_voc
     scope = (f"This method covers all **{method.group_order:,} reachable colored states** in the "
              "declared reference shape" +
              (f" satisfying: {requirements}." if requirements else "."))
-    lines = ["# Reference-shape solving method", "", scope, "",
+    lines = ["# Solving from reference shape", "", scope, "",
              "Each stage has a complete observation-fiber certificate. The conditional rules "
              "factor the exact saved corrections and strictly decrease a finite progress rank. "
              "Every complete operation restores earlier commitments at its endpoint.", ""]

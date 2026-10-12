@@ -135,7 +135,7 @@ def method_guide(method, *, domain_features=None, algorithm_structures=None):
     Anonymous slot cases use complete destination-indexed orientation patterns.
     The guide claims computational coverage, without claiming human review.
     """
-    lines = ["# Reference-shape solving method", ""]
+    lines = ["# Solving from reference shape", ""]
     if method.status != "completed":
         lines.extend(["Generation stopped before a complete method was available.", "",
                       f"Reason: `{method.reason}`. The reported reference-group order is "

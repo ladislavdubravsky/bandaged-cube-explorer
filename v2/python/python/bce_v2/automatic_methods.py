@@ -165,14 +165,14 @@ class AutomaticMethod:
         return result
 
     def write_guide(self, path=None):
-        lines = ["# Automatically selected bandage method", "",
+        lines = ["# Solution", "",
             f"Route: `{self.metadata['route']}`. Coverage: `{self.coverage_scope}`.", "",
-            f"The retained shape graph contains {len(self.graph):,} shapes. "
-            "Observe the current bandage shape and follow its checked shortest path "
-            "to the reference shape. This stage uses the shape graph, independently "
-            "of the scramble history. It is currently a computational instruction "
-            "policy; its human recognition rules have not been compressed.", "",
-            "Then follow the reference-shape policy below.", "", self.inner_method.write_guide()]
+            f"The bandage shape graph contains {len(self.graph):,} shapes.", "",
+            "The solution below assumes you're in the solved (reference) bandage shape already. "
+            "To get there, you need to find a path yourself or ask the tooling to give you "
+            "the shortest one for a particular scramble, or read it out of the bandage "
+            "shapes graph if small enough (see `shapes-graph-navigation`). "
+            "An extractable general strategy is a future goal.", "", self.inner_method.write_guide()]
         result = "\n".join(lines)
         if path is not None:
             Path(path).write_text(result, encoding="utf-8")

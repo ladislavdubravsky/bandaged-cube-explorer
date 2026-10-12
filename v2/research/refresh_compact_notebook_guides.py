@@ -36,6 +36,17 @@ def refresh(report_path):
         inner = cls.from_dict(record)
         if record["fingerprint"] != certificate["fingerprint"]:
             raise ValueError("guide artifact differs from the validated certificate")
+        reference_guide = inner.write_guide()
+        row["guide"] = {
+            "character_count": len(reference_guide),
+            "line_count": len(reference_guide.splitlines()),
+            "markdown_table_row_count": sum(line.startswith("| ") for line in reference_guide.splitlines()),
+            "has_block_action_column": "Block action" in reference_guide,
+            "has_structure_column": "Structure" in reference_guide,
+        }
+        if name == "Alcatraz":
+            (V2 / "research-results" / "compact-alcatraz-guide.md").write_text(
+                reference_guide, encoding="utf-8")
         metadata = row["discovery_metadata"]
         graph = c.explore(inner.reference_shape, max_vertices=metadata["shape_count"]+1)
         if not graph.complete or len(graph) != metadata["shape_count"]:

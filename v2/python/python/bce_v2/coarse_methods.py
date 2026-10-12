@@ -377,7 +377,7 @@ class CoarseMethod:
     def _write_case_guide(self, path=None):
         """Retain the exact flat policy as a computational audit view."""
         from .human_render import method_guide
-        from .palette_render import execution_vocabulary, recipe_structure
+        from .palette_render import execution_vocabulary, execution_vocabulary_lines, recipe_structure
 
         presentation = replace(self.ambient_method, group_order=self.group_order,
                                stages=self.stages, algorithms=self.algorithms,
@@ -393,19 +393,7 @@ class CoarseMethod:
         guide = method_guide(presentation, domain_features=self.domain_features,
                              algorithm_structures=structures)
         if declarations:
-            definitions = ["## Declared execution vocabulary", "",
-                           "The Structure column uses the names below in execution order, from left to right. "
-                           "`A⁻¹` is the inverse of A; `A²` repeats A twice. "
-                           "A permitted inverse reuses the same body.", "",
-                           "| Kind | Name | Turn sequence | Block action |",
-                           "| --- | --- | --- | --- |"]
-            if any(kind == "Setup" for kind, _, _ in declarations):
-                definitions[2] += " `[B: A]` executes setup B, body A, then undoes B."
-            for kind, name, declaration in declarations:
-                algorithm = declaration.algorithm
-                definitions.append(f"| {kind} | `{name}` | `{algorithm.turn_sequence}` | "
-                                   f"`{algorithm.block_action.notation}` |")
-            definitions.append("")
+            definitions = execution_vocabulary_lines(declarations)
             guide = guide.replace("## Algorithms\n", "\n".join(definitions) + "\n## Algorithms\n", 1)
         if path is not None:
             Path(path).write_text(guide, encoding="utf-8")

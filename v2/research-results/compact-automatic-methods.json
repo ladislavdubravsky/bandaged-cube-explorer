@@ -11288,10 +11288,10 @@
       "discovery_status": "completed",
       "fixture": "Alcatraz",
       "guide": {
-        "character_count": 5311,
+        "character_count": 5141,
         "has_block_action_column": true,
         "has_structure_column": true,
-        "line_count": 108,
+        "line_count": 106,
         "markdown_table_row_count": 32
       },
       "input_count": 324,
@@ -85038,10 +85038,10 @@
       "discovery_status": "completed",
       "fixture": "unbandaged",
       "guide": {
-        "character_count": 12094,
+        "character_count": 11924,
         "has_block_action_column": true,
         "has_structure_column": true,
-        "line_count": 219,
+        "line_count": 217,
         "markdown_table_row_count": 101
       },
       "input_count": 41,
@@ -85392,30 +85392,30 @@
     {
       "all_cell_sources_unchanged": true,
       "code_cells_unchanged": true,
-      "guide_characters": 5802,
-      "notebook": "examples/AutomaticBandageMethod.ipynb",
-      "previous_guide_characters": 207381,
+      "guide_characters": 5630,
+      "notebook": "examples/action-family-methods/Alcatraz.ipynb",
+      "previous_guide_characters": 5802,
       "validated_portable_certificate": true
     },
     {
       "all_cell_sources_unchanged": true,
       "code_cells_unchanged": true,
-      "guide_characters": 12607,
-      "notebook": "examples/Unbandaged3x3.ipynb",
-      "previous_guide_characters": 17666,
+      "guide_characters": 12435,
+      "notebook": "examples/action-family-methods/Unbandaged3x3.ipynb",
+      "previous_guide_characters": 12607,
       "validated_portable_certificate": true
     }
   ],
   "notebooks": [
     {
       "minimal": true,
-      "notebook": "examples/AutomaticBandageMethod.ipynb",
-      "sha256": "1a819692ae4d4bd875c1cec33e53f5a0e1c6f4da527375ec25a8648f4f4ca02d"
+      "notebook": "examples/action-family-methods/Alcatraz.ipynb",
+      "sha256": "bcfda28ad82d92f07bc797841d49b4d7409ee5c96a6253cf220f154ccd40007c"
     },
     {
       "minimal": true,
-      "notebook": "examples/Unbandaged3x3.ipynb",
-      "sha256": "bf06232e2848e9e90d2b4be07e94870b6df1df1d94c677074df390727971af65"
+      "notebook": "examples/action-family-methods/Unbandaged3x3.ipynb",
+      "sha256": "16f884a016db79674298b36e3bd6ee666b400116de07d3181d9153cebe04af20"
     }
   ],
   "ordinary_suffix_cache_directory": "/tmp/bce-compact-ordinary-validation-cache",
