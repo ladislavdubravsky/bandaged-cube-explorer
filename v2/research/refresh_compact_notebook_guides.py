@@ -24,7 +24,7 @@ def refresh(report_path):
     report = json.loads(report_path.read_text(encoding="utf-8"))
     if not report.get("all_checks_passed"):
         raise ValueError("refresh requires completed native acceptance checks")
-    check_minimal_notebooks()
+    notebook_checks = {row["notebook"]: row for row in check_minimal_notebooks()}
     fixtures = {row["fixture"]: row for row in report["fixtures"]}
     updates = []
     for name, notebook_name in (("Alcatraz", "Alcatraz"),
@@ -42,7 +42,7 @@ def refresh(report_path):
             "line_count": len(reference_guide.splitlines()),
             "markdown_table_row_count": sum(line.startswith("| ") for line in reference_guide.splitlines()),
             "has_block_action_column": "Block action" in reference_guide,
-            "has_structure_column": "Structure" in reference_guide,
+            "has_algorithm_column": "Algorithm" in reference_guide,
         }
         if name == "Alcatraz":
             (V2 / "research-results" / "compact-alcatraz-guide.md").write_text(
@@ -52,19 +52,23 @@ def refresh(report_path):
         if not graph.complete or len(graph) != metadata["shape_count"]:
             raise ValueError("retained guide shape scope differs from native shape closure")
         method = AutomaticMethod(inner, graph, json.dumps(metadata, sort_keys=True))
-        guide = method.write_guide()
         path = V2 / "examples" / "action-family-methods" / (notebook_name + ".ipynb")
+        preferences = notebook_checks[str(path.relative_to(V2))]
+        guide = method.write_guide(recognition_diagrams=preferences["recognition_diagrams"],
+                                    face_colors=preferences["face_colors"])
         notebook = json.loads(path.read_text(encoding="utf-8"))
         sources = tuple((cell["cell_type"], cell["source"]) for cell in notebook["cells"])
         guide_cells = [cell for cell in notebook["cells"] if cell["cell_type"] == "code"
-                       and "method.write_guide()" in "".join(cell["source"])]
+                       and "method.write_guide(" in "".join(cell["source"])]
         if len(guide_cells) != 1:
             raise ValueError("minimal notebook requires exactly one guide cell")
         outputs = guide_cells[0]["outputs"]
         if len(outputs) != 1 or outputs[0]["output_type"] != "display_data":
             raise ValueError("minimal guide cell requires exactly one Markdown display")
-        before = len(outputs[0]["data"]["text/markdown"])
-        outputs[0]["data"]["text/markdown"] = guide
+        original = outputs[0]["data"]["text/markdown"]
+        before = len("".join(original))
+        outputs[0]["data"]["text/markdown"] = (
+            guide.splitlines(keepends=True) if isinstance(original, list) else guide)
         assert sources == tuple((cell["cell_type"], cell["source"]) for cell in notebook["cells"])
         path.write_text(json.dumps(notebook, indent=1, ensure_ascii=False)+"\n", encoding="utf-8")
         updates.append({"notebook": str(path.relative_to(V2)), "code_cells_unchanged": True,

@@ -75,13 +75,38 @@ def check_minimal_notebooks():
         assert ast.unparse(assignments[1].value) == "c.discover_method(bandage)"
         expressions = [node for node in statements if isinstance(node, ast.Expr)]
         assert len(expressions) == 1
-        assert ast.unparse(expressions[0].value) == "display(Markdown(method.write_guide()))"
+        display = expressions[0].value
+        assert isinstance(display, ast.Call) and ast.unparse(display.func) == "display"
+        assert len(display.args) == 1 and not display.keywords
+        markdown = display.args[0]
+        assert isinstance(markdown, ast.Call) and ast.unparse(markdown.func) == "Markdown"
+        assert len(markdown.args) == 1 and not markdown.keywords
+        guide = markdown.args[0]
+        assert isinstance(guide, ast.Call) and ast.unparse(guide.func) == "method.write_guide"
+        assert not guide.args and len(guide.keywords) <= 2
+        diagrams, colors, color_nodes = False, None, set()
+        keywords = {flag.arg: flag.value for flag in guide.keywords}
+        assert len(keywords) == len(guide.keywords)
+        assert set(keywords) <= {"recognition_diagrams", "face_colors"}
+        if "recognition_diagrams" in keywords:
+            flag = keywords["recognition_diagrams"]
+            assert isinstance(flag, ast.Constant) and type(flag.value) is bool
+            diagrams = flag.value
+        if "face_colors" in keywords:
+            flag = keywords["face_colors"]
+            assert isinstance(flag, ast.Dict)
+            colors = ast.literal_eval(flag)
+            assert isinstance(colors, dict) and set(colors) <= set("URFDLB")
+            color_nodes.add(id(flag))
         assert all(isinstance(node, (ast.Import, ast.ImportFrom, ast.Assign, ast.Expr))
                    for node in statements), f"{path.name} contains experimental code"
-        assert not any(isinstance(node, (ast.Dict, ast.For, ast.While, ast.ListComp))
-                       for node in ast.walk(ast.parse(source)))
+        assert not any(isinstance(node, (ast.For, ast.While, ast.ListComp))
+                       or isinstance(node, ast.Dict) and id(node) not in color_nodes
+                       for statement in statements for node in ast.walk(statement))
         result.append({"notebook": str(path.relative_to(V2)), "minimal": True,
                        "final_scramble_cell": True,
+                       "recognition_diagrams": diagrams,
+                       "face_colors": colors,
                        "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
     return result
 
@@ -338,7 +363,7 @@ def audit_fixture(name, specification, *, root_limit=512):
     row["guide"] = {"character_count": len(guide), "line_count": len(guide.splitlines()),
         "markdown_table_row_count": sum(line.startswith("| ") for line in guide.splitlines()),
         "has_block_action_column": "Block action" in guide,
-        "has_structure_column": "Structure" in guide}
+        "has_algorithm_column": "Algorithm" in guide}
     taught = (inner.taught_definition_ids if hasattr(inner, "taught_definition_ids")
               else inner.taught_body_ids)
     assert len(taught) <= result.metadata["max_taught_bodies"]

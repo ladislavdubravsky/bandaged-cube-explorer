@@ -1,0 +1,1012 @@
+{
+  "all_checks_passed": true,
+  "alternative_arrangements": "Small declared families are combined and filtered by the whole observation. For overlapping noncommuting families or coupled extra observers, pictures are witnessed alternatives; written equivalent-pattern conditions specify all accepted arrangements. The archived fixtures use complete ordered recognition cases with certified partial display masks.",
+  "case_diagrams": 89,
+  "coverage": "Every exact certified observation selects the original instruction using the first matching diagrammed recognition case, including ready cases. A partial recognition diagram can cover several observations when its visible test selects their shared instruction.",
+  "discovery_used": false,
+  "face_colors": null,
+  "fixtures": [
+    {
+      "artifact": "research-results/compact-alcatraz.method.json",
+      "artifact_sha256": "839aa1fec8720e75b5efde2013dc16c17cec6a7abeaf6563163da93388c47adf",
+      "case_diagrams": 18,
+      "exhaustive_native_replay": {
+        "all_states_solved": true,
+        "every_stage_boundary_preserved": true,
+        "native_complete_operations": 1242,
+        "physical_costs_before_between_operation_cancellation": {
+          "htm": {
+            "mean": 48.833333333333336,
+            "worst": 84
+          },
+          "qtm": {
+            "mean": 58.333333333333336,
+            "worst": 102
+          }
+        },
+        "reference_states_replayed": 324,
+        "stage_boundary_inputs": [
+          324,
+          324,
+          324,
+          324
+        ]
+      },
+      "guide_preview": "alcatraz.md",
+      "instructions_byte_identical_without_galleries": true,
+      "learned_bodies": 5,
+      "no_footer_notes_in_rendered_figures": true,
+      "observations_checked": 20,
+      "ordered_first_match_checked": true,
+      "physical_costs_unchanged": true,
+      "physical_variants": 36,
+      "portable_certificate_unchanged": true,
+      "procedure_costs_before_between_operation_cancellation": {
+        "htm": {
+          "mean": 48.83333333333333,
+          "worst": 84
+        },
+        "qtm": {
+          "mean": 58.33333333333333,
+          "worst": 102
+        }
+      },
+      "puzzle": "alcatraz",
+      "recognition_case_count": 18,
+      "rendered_variants": 36,
+      "saved_policy_costs": {
+        "exact": true,
+        "htm": {
+          "mean": 47.55555555555556,
+          "mean_denominator": 9,
+          "mean_numerator": 428,
+          "worst": 80
+        },
+        "qtm": {
+          "mean": 56.666666666666664,
+          "mean_denominator": 3,
+          "mean_numerator": 170,
+          "worst": 96
+        },
+        "scope": "uniform_declared_domain_before_boundary_cancellation"
+      },
+      "scope": "Complete reference-shape method; no shape-restoration human strategy is claimed.",
+      "stages": [
+        {
+          "effective_recognition_domains_cover_all_observations": true,
+          "exact_physical_variants": 6,
+          "goal_kind": "place_blocks",
+          "instruction_forms": 3,
+          "maximum_repetitions": 3,
+          "native_instructions_checked": true,
+          "observations": 6,
+          "ordered_first_match_checked": true,
+          "physical_variants": 4,
+          "preview": "alcatraz-stage-1.png",
+          "ready_patterns": 1,
+          "recognition_and_prior_guarantees_checked": true,
+          "recognition_case_count": 4,
+          "recognition_cases": [
+            {
+              "case": 1,
+              "cue": "Ready: `BR-DBR` \u2192 `BR-DBR`; `FL-DFL` \u2192 `FL-DFL`; `FR-DFR` \u2192 `FR-DFR`",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": true
+            },
+            {
+              "case": 2,
+              "cue": "`FR-DFR` occupies `FL-DFL`",
+              "matching_observations": 2,
+              "observations": 2,
+              "ready": false
+            },
+            {
+              "case": 3,
+              "cue": "`FL-DFL` occupies `FR-DFR`",
+              "matching_observations": 2,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 4,
+              "cue": "Any remaining case",
+              "matching_observations": 6,
+              "observations": 2,
+              "ready": false
+            }
+          ],
+          "rendered_variants": 4,
+          "stage": 1
+        },
+        {
+          "effective_recognition_domains_cover_all_observations": true,
+          "exact_physical_variants": 9,
+          "goal_kind": "solve_blocks_up_to_actions",
+          "instruction_forms": 4,
+          "maximum_repetitions": 2,
+          "native_instructions_checked": true,
+          "observations": 9,
+          "ordered_first_match_checked": true,
+          "physical_variants": 27,
+          "preview": "alcatraz-stage-2.png",
+          "ready_patterns": 1,
+          "recognition_and_prior_guarantees_checked": true,
+          "recognition_case_count": 9,
+          "recognition_cases": [
+            {
+              "case": 1,
+              "cue": "Ready: current location of `UBR` = `UBR`; orientation of `UBR` minus orientation of `UFL` (mod 3) = 0",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": true
+            },
+            {
+              "case": 2,
+              "cue": "current location of `UBR` = `UBR`; orientation of `UBR` minus orientation of `UFL` (mod 3) = 1",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 3,
+              "cue": "current location of `UBR` = `UBR`; orientation of `UBR` minus orientation of `UFL` (mod 3) = 2",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 4,
+              "cue": "current location of `UBR` = `UFL`; orientation of `UBR` minus orientation of `UFL` (mod 3) = 0",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 5,
+              "cue": "current location of `UBR` = `UFL`; orientation of `UBR` minus orientation of `UFL` (mod 3) = 1",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 6,
+              "cue": "current location of `UBR` = `UFL`; orientation of `UBR` minus orientation of `UFL` (mod 3) = 2",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 7,
+              "cue": "current location of `UBR` = `UFR`; orientation of `UBR` minus orientation of `UFL` (mod 3) = 0",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 8,
+              "cue": "current location of `UBR` = `UFR`; orientation of `UBR` minus orientation of `UFL` (mod 3) = 1",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 9,
+              "cue": "current location of `UBR` = `UFR`; orientation of `UBR` minus orientation of `UFL` (mod 3) = 2",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            }
+          ],
+          "rendered_variants": 27,
+          "stage": 2
+        },
+        {
+          "effective_recognition_domains_cover_all_observations": true,
+          "exact_physical_variants": 2,
+          "goal_kind": "orient_slots",
+          "instruction_forms": 1,
+          "maximum_repetitions": 1,
+          "native_instructions_checked": true,
+          "observations": 2,
+          "ordered_first_match_checked": true,
+          "physical_variants": 2,
+          "preview": "alcatraz-stage-3.png",
+          "ready_patterns": 1,
+          "recognition_and_prior_guarantees_checked": true,
+          "recognition_case_count": 2,
+          "recognition_cases": [
+            {
+              "case": 1,
+              "cue": "Ready: `UR`: 0",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": true
+            },
+            {
+              "case": 2,
+              "cue": "Any remaining case",
+              "matching_observations": 2,
+              "observations": 1,
+              "ready": false
+            }
+          ],
+          "rendered_variants": 2,
+          "stage": 3
+        },
+        {
+          "effective_recognition_domains_cover_all_observations": true,
+          "exact_physical_variants": 3,
+          "goal_kind": "orient_slots",
+          "instruction_forms": 2,
+          "maximum_repetitions": 1,
+          "native_instructions_checked": true,
+          "observations": 3,
+          "ordered_first_match_checked": true,
+          "physical_variants": 3,
+          "preview": "alcatraz-stage-4.png",
+          "ready_patterns": 1,
+          "recognition_and_prior_guarantees_checked": true,
+          "recognition_case_count": 3,
+          "recognition_cases": [
+            {
+              "case": 1,
+              "cue": "Ready: `UBR`: 0",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": true
+            },
+            {
+              "case": 2,
+              "cue": "orientation at `UBR` = 1 (mod 3)",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 3,
+              "cue": "Any remaining case",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            }
+          ],
+          "rendered_variants": 3,
+          "stage": 4
+        }
+      ]
+    },
+    {
+      "artifact": "research-results/compact-unbandaged.method.json",
+      "artifact_sha256": "000e308d01ce6da03ead69d71b1ff9bffa0d97f1bbee841b98d22d74f96eabaf",
+      "case_diagrams": 36,
+      "global_taught_definitions": 4,
+      "guide_preview": "unbandaged.md",
+      "instructions_byte_identical_without_galleries": true,
+      "learned_bodies": 4,
+      "no_footer_notes_in_rendered_figures": true,
+      "observations_checked": 42,
+      "ordered_first_match_checked": true,
+      "physical_costs_unchanged": true,
+      "physical_variants": 54,
+      "portable_certificate_unchanged": true,
+      "procedure_costs_before_between_operation_cancellation": {
+        "htm": {
+          "mean": 65.44444444444444,
+          "worst": 108
+        },
+        "qtm": {
+          "mean": 72.75,
+          "worst": 124
+        }
+      },
+      "puzzle": "unbandaged",
+      "recognition_case_count": 36,
+      "rendered_variants": 54,
+      "saved_policy_costs": {
+        "exact": true,
+        "htm": {
+          "mean": 64.02777777777777,
+          "mean_denominator": 36,
+          "mean_numerator": 2305,
+          "worst": 106
+        },
+        "qtm": {
+          "mean": 70.72222222222223,
+          "mean_denominator": 18,
+          "mean_numerator": 1273,
+          "worst": 118
+        },
+        "scope": "uniform_declared_domain_before_boundary_cancellation"
+      },
+      "scope": "Certified suffix diagrams; constructive workspace entry remains bounded computation.",
+      "stages": [
+        {
+          "effective_recognition_domains_cover_all_observations": true,
+          "exact_physical_variants": 4,
+          "goal_kind": "place_blocks",
+          "instruction_forms": 3,
+          "maximum_repetitions": 1,
+          "native_instructions_checked": true,
+          "observations": 4,
+          "ordered_first_match_checked": true,
+          "physical_variants": 4,
+          "preview": "unbandaged-stage-1.png",
+          "ready_patterns": 1,
+          "recognition_and_prior_guarantees_checked": true,
+          "recognition_case_count": 4,
+          "recognition_cases": [
+            {
+              "case": 1,
+              "cue": "Ready: `UBL` \u2192 `UBL`; `BL` \u2192 `BL`",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": true
+            },
+            {
+              "case": 2,
+              "cue": "`UBL` occupies `UBR`",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 3,
+              "cue": "`UBL` occupies `UFL`",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 4,
+              "cue": "Any remaining case",
+              "matching_observations": 4,
+              "observations": 1,
+              "ready": false
+            }
+          ],
+          "rendered_variants": 4,
+          "stage": 1
+        },
+        {
+          "effective_recognition_domains_cover_all_observations": true,
+          "exact_physical_variants": 6,
+          "goal_kind": "place_blocks",
+          "instruction_forms": 5,
+          "maximum_repetitions": 1,
+          "native_instructions_checked": true,
+          "observations": 6,
+          "ordered_first_match_checked": true,
+          "physical_variants": 6,
+          "preview": "unbandaged-stage-2.png",
+          "ready_patterns": 1,
+          "recognition_and_prior_guarantees_checked": true,
+          "recognition_case_count": 6,
+          "recognition_cases": [
+            {
+              "case": 1,
+              "cue": "Ready: `UBL` \u2192 `UBL`; `UBR` \u2192 `UBR`; `UFL` \u2192 `UFL`; `UFR` \u2192 `UFR`",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": true
+            },
+            {
+              "case": 2,
+              "cue": "`UBR` is at home",
+              "matching_observations": 2,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 3,
+              "cue": "`UBR` occupies `UFL`; and `UFR` is at home",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 4,
+              "cue": "`UBR` occupies `UFL`",
+              "matching_observations": 2,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 5,
+              "cue": "`UFL` is at home",
+              "matching_observations": 2,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 6,
+              "cue": "Any remaining case",
+              "matching_observations": 6,
+              "observations": 1,
+              "ready": false
+            }
+          ],
+          "rendered_variants": 6,
+          "stage": 2
+        },
+        {
+          "effective_recognition_domains_cover_all_observations": true,
+          "exact_physical_variants": 8,
+          "goal_kind": "orient_slots",
+          "instruction_forms": 5,
+          "maximum_repetitions": 3,
+          "native_instructions_checked": true,
+          "observations": 8,
+          "ordered_first_match_checked": true,
+          "physical_variants": 7,
+          "preview": "unbandaged-stage-3.png",
+          "ready_patterns": 1,
+          "recognition_and_prior_guarantees_checked": true,
+          "recognition_case_count": 7,
+          "recognition_cases": [
+            {
+              "case": 1,
+              "cue": "Ready: `UB`: 0; `UL`: 0; `UR`: 0; `UF`: 0",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": true
+            },
+            {
+              "case": 2,
+              "cue": "orientation at `UB` = 0 (mod 2); and orientation at `UL` = 0 (mod 2)",
+              "matching_observations": 2,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 3,
+              "cue": "orientation at `UB` = 0 (mod 2); and orientation at `UR` = 0 (mod 2)",
+              "matching_observations": 2,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 4,
+              "cue": "orientation at `UB` = 0 (mod 2)",
+              "matching_observations": 4,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 5,
+              "cue": "orientation at `UF` = 0 (mod 2); and orientation at `UL` = 0 (mod 2)",
+              "matching_observations": 2,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 6,
+              "cue": "orientation at `UF` = 0 (mod 2)",
+              "matching_observations": 4,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 7,
+              "cue": "Any remaining case",
+              "matching_observations": 8,
+              "observations": 2,
+              "ready": false
+            }
+          ],
+          "rendered_variants": 7,
+          "stage": 3
+        },
+        {
+          "effective_recognition_domains_cover_all_observations": true,
+          "exact_physical_variants": 9,
+          "goal_kind": "solve_blocks_up_to_actions",
+          "instruction_forms": 4,
+          "maximum_repetitions": 2,
+          "native_instructions_checked": true,
+          "observations": 9,
+          "ordered_first_match_checked": true,
+          "physical_variants": 27,
+          "preview": "unbandaged-stage-4.png",
+          "ready_patterns": 1,
+          "recognition_and_prior_guarantees_checked": true,
+          "recognition_case_count": 9,
+          "recognition_cases": [
+            {
+              "case": 1,
+              "cue": "Ready: orientation of `UBR` minus orientation of `UFL` (mod 3) = 0; orientation of `UBR` minus orientation of `UFR` (mod 3) = 0",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": true
+            },
+            {
+              "case": 2,
+              "cue": "orientation of `UBR` minus orientation of `UFL` (mod 3) = 0; orientation of `UBR` minus orientation of `UFR` (mod 3) = 1",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 3,
+              "cue": "orientation of `UBR` minus orientation of `UFL` (mod 3) = 0; orientation of `UBR` minus orientation of `UFR` (mod 3) = 2",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 4,
+              "cue": "orientation of `UBR` minus orientation of `UFL` (mod 3) = 1; orientation of `UBR` minus orientation of `UFR` (mod 3) = 0",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 5,
+              "cue": "orientation of `UBR` minus orientation of `UFL` (mod 3) = 1; orientation of `UBR` minus orientation of `UFR` (mod 3) = 1",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 6,
+              "cue": "orientation of `UBR` minus orientation of `UFL` (mod 3) = 1; orientation of `UBR` minus orientation of `UFR` (mod 3) = 2",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 7,
+              "cue": "orientation of `UBR` minus orientation of `UFL` (mod 3) = 2; orientation of `UBR` minus orientation of `UFR` (mod 3) = 0",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 8,
+              "cue": "orientation of `UBR` minus orientation of `UFL` (mod 3) = 2; orientation of `UBR` minus orientation of `UFR` (mod 3) = 1",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 9,
+              "cue": "orientation of `UBR` minus orientation of `UFL` (mod 3) = 2; orientation of `UBR` minus orientation of `UFR` (mod 3) = 2",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            }
+          ],
+          "rendered_variants": 27,
+          "stage": 4
+        },
+        {
+          "effective_recognition_domains_cover_all_observations": true,
+          "exact_physical_variants": 3,
+          "goal_kind": "orient_slots",
+          "instruction_forms": 2,
+          "maximum_repetitions": 1,
+          "native_instructions_checked": true,
+          "observations": 3,
+          "ordered_first_match_checked": true,
+          "physical_variants": 3,
+          "preview": "unbandaged-stage-5.png",
+          "ready_patterns": 1,
+          "recognition_and_prior_guarantees_checked": true,
+          "recognition_case_count": 3,
+          "recognition_cases": [
+            {
+              "case": 1,
+              "cue": "Ready: `UBL`: 0; `UBR`: 0; `UFL`: 0; `UFR`: 0",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": true
+            },
+            {
+              "case": 2,
+              "cue": "orientation at `UBR` = 1 (mod 3)",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 3,
+              "cue": "Any remaining case",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            }
+          ],
+          "rendered_variants": 3,
+          "stage": 5
+        },
+        {
+          "effective_recognition_domains_cover_all_observations": true,
+          "exact_physical_variants": 12,
+          "goal_kind": "place_blocks",
+          "instruction_forms": 4,
+          "maximum_repetitions": 2,
+          "native_instructions_checked": true,
+          "observations": 12,
+          "ordered_first_match_checked": true,
+          "physical_variants": 7,
+          "preview": "unbandaged-stage-6.png",
+          "ready_patterns": 1,
+          "recognition_and_prior_guarantees_checked": true,
+          "recognition_case_count": 7,
+          "recognition_cases": [
+            {
+              "case": 1,
+              "cue": "Ready: `UB` \u2192 `UB`; `UL` \u2192 `UL`; `UR` \u2192 `UR`; `UF` \u2192 `UF`",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": true
+            },
+            {
+              "case": 2,
+              "cue": "`UB` is at home",
+              "matching_observations": 3,
+              "observations": 2,
+              "ready": false
+            },
+            {
+              "case": 3,
+              "cue": "`UL` is at home",
+              "matching_observations": 3,
+              "observations": 2,
+              "ready": false
+            },
+            {
+              "case": 4,
+              "cue": "`UR` occupies `UF`",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 5,
+              "cue": "`UF` is at home",
+              "matching_observations": 3,
+              "observations": 2,
+              "ready": false
+            },
+            {
+              "case": 6,
+              "cue": "`UB` occupies `UR`",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 7,
+              "cue": "Any remaining case",
+              "matching_observations": 12,
+              "observations": 3,
+              "ready": false
+            }
+          ],
+          "rendered_variants": 7,
+          "stage": 6
+        }
+      ]
+    },
+    {
+      "artifact": "research-results/compact-shark-fin-soup.method.json",
+      "artifact_sha256": "566672a2ff8b1a1e81b19ff8277863cb1a0a922cdac8b47bff59d792e55851d9",
+      "case_diagrams": 35,
+      "guide_preview": "shark-fin-soup.md",
+      "instructions_byte_identical_without_galleries": true,
+      "learned_bodies": 2,
+      "no_footer_notes_in_rendered_figures": true,
+      "observations_checked": 36,
+      "ordered_first_match_checked": true,
+      "physical_costs_unchanged": true,
+      "physical_variants": 35,
+      "portable_certificate_unchanged": true,
+      "procedure_costs_before_between_operation_cancellation": {
+        "htm": {
+          "mean": 35.111111111111114,
+          "worst": 52
+        },
+        "qtm": {
+          "mean": 40.55555555555556,
+          "worst": 60
+        }
+      },
+      "puzzle": "shark-fin-soup",
+      "recognition_case_count": 35,
+      "rendered_variants": 35,
+      "saved_policy_costs": {
+        "exact": true,
+        "htm": {
+          "mean": 33.333333333333336,
+          "mean_denominator": 3,
+          "mean_numerator": 100,
+          "worst": 50
+        },
+        "qtm": {
+          "mean": 38.77777777777778,
+          "mean_denominator": 9,
+          "mean_numerator": 349,
+          "worst": 58
+        },
+        "scope": "uniform_declared_domain_before_boundary_cancellation"
+      },
+      "scope": "Complete reference-shape method; no shape-restoration human strategy is claimed.",
+      "stages": [
+        {
+          "effective_recognition_domains_cover_all_observations": true,
+          "exact_physical_variants": 36,
+          "goal_kind": "solve_blocks",
+          "instruction_forms": 4,
+          "maximum_repetitions": 4,
+          "native_instructions_checked": true,
+          "observations": 36,
+          "ordered_first_match_checked": true,
+          "physical_variants": 35,
+          "preview": "shark-fin-soup-stage-1.png",
+          "ready_patterns": 1,
+          "recognition_and_prior_guarantees_checked": true,
+          "recognition_case_count": 35,
+          "recognition_cases": [
+            {
+              "case": 1,
+              "cue": "Ready: `UBL-UB-UL-U` \u2192 `UBL-UB-UL-U`, orientation 0; `UBR-UR` \u2192 `UBR-UR`, orientation 0; `UFL-UF` \u2192 `UFL-UF`, orientation 0; `UFR` \u2192 `UFR`, orientation 0; `BL-B-L-C` \u2192 `BL-B-L-C`, orientation 0; `BR-R` \u2192 `BR-R`, orientation 0; `FL-F` \u2192 `FL-F`, orientation 0; `FR` \u2192 `FR`, orientation 0; `DBL-DB-DL-D` \u2192 `DBL-DB-DL-D`, orientation 0; `DBR-DR` \u2192 `DBR-DR`, orientation 0; `DFL-DF` \u2192 `DFL-DF`, orientation 0; `DFR` \u2192 `DFR`, orientation 0",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": true
+            },
+            {
+              "case": 2,
+              "cue": "orientation of `UFR` = 1 (mod 3); and `UBR-UR` is at home; and `UFL-UF` is at home",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 3,
+              "cue": "orientation of `UFR` = 1 (mod 3); and `UBR-UR` is at home; and `UFL-UF` occupies `DBR-DR`",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 4,
+              "cue": "orientation of `UFR` = 1 (mod 3); and `UBR-UR` is at home",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 5,
+              "cue": "orientation of `UFR` = 1 (mod 3); and `UBR-UR` occupies `UFL-UF`; and `DBR-DR` is at home",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 6,
+              "cue": "orientation of `UFR` = 1 (mod 3); and `UBR-UR` occupies `UFL-UF`; and `DFL-DF` is at home",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 7,
+              "cue": "orientation of `UFR` = 1 (mod 3); and `UBR-UR` occupies `UFL-UF`",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 8,
+              "cue": "orientation of `UFR` = 1 (mod 3); and `UBR-UR` occupies `DBR-DR`; and `UFL-UF` is at home",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 9,
+              "cue": "orientation of `UFR` = 1 (mod 3); and `UBR-UR` occupies `DBR-DR`; and `DFL-DF` is at home",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 10,
+              "cue": "orientation of `UFR` = 1 (mod 3); and `UBR-UR` occupies `DBR-DR`",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 11,
+              "cue": "orientation of `UFR` = 1 (mod 3); and `UFL-UF` is at home",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 12,
+              "cue": "orientation of `UFR` = 1 (mod 3); and `DBR-DR` is at home",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 13,
+              "cue": "orientation of `UFR` = 1 (mod 3)",
+              "matching_observations": 12,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 14,
+              "cue": "orientation of `UFR` = 0 (mod 3); and `UBR-UR` occupies `UFL-UF`; and `DBR-DR` is at home",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 15,
+              "cue": "orientation of `UFR` = 0 (mod 3); and `UBR-UR` occupies `UFL-UF`; and `DFL-DF` is at home",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 16,
+              "cue": "orientation of `UFR` = 0 (mod 3); and `UBR-UR` occupies `UFL-UF`",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 17,
+              "cue": "orientation of `UFR` = 0 (mod 3); and `UBR-UR` occupies `DBR-DR`; and `UFL-UF` is at home",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 18,
+              "cue": "orientation of `UFR` = 0 (mod 3); and `UBR-UR` occupies `DBR-DR`; and `DFL-DF` is at home",
+              "matching_observations": 1,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 19,
+              "cue": "orientation of `UFR` = 0 (mod 3); and `UBR-UR` occupies `DBR-DR`",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 20,
+              "cue": "orientation of `UFR` = 0 (mod 3); and `UBR-UR` is at home",
+              "matching_observations": 3,
+              "observations": 2,
+              "ready": false
+            },
+            {
+              "case": 21,
+              "cue": "orientation of `UFR` = 0 (mod 3); and `UFL-UF` is at home",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 22,
+              "cue": "orientation of `UFR` = 0 (mod 3); and `DBR-DR` is at home",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 23,
+              "cue": "orientation of `UFR` = 0 (mod 3)",
+              "matching_observations": 12,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 24,
+              "cue": "`UBR-UR` is at home; and `UFL-UF` is at home",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 25,
+              "cue": "`UBR-UR` is at home; and `UFL-UF` occupies `DBR-DR`",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 26,
+              "cue": "`UBR-UR` is at home",
+              "matching_observations": 9,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 27,
+              "cue": "`UBR-UR` occupies `UFL-UF`; and `DBR-DR` is at home",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 28,
+              "cue": "`UBR-UR` occupies `UFL-UF`; and `DFL-DF` is at home",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 29,
+              "cue": "`UBR-UR` occupies `UFL-UF`",
+              "matching_observations": 9,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 30,
+              "cue": "`UBR-UR` occupies `DBR-DR`; and `UFL-UF` is at home",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 31,
+              "cue": "`UBR-UR` occupies `DBR-DR`; and `DFL-DF` is at home",
+              "matching_observations": 3,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 32,
+              "cue": "`UBR-UR` occupies `DBR-DR`",
+              "matching_observations": 9,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 33,
+              "cue": "`UFL-UF` is at home",
+              "matching_observations": 9,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 34,
+              "cue": "`DBR-DR` is at home",
+              "matching_observations": 9,
+              "observations": 1,
+              "ready": false
+            },
+            {
+              "case": 35,
+              "cue": "Any remaining case",
+              "matching_observations": 36,
+              "observations": 1,
+              "ready": false
+            }
+          ],
+          "rendered_variants": 35,
+          "stage": 1
+        }
+      ]
+    }
+  ],
+  "gap_used": false,
+  "new_ambient_group_enumeration_used": false,
+  "no_footer_notes_in_rendered_figures": true,
+  "observations_checked": 98,
+  "ordered_first_match_checked": true,
+  "physical_variants": 125,
+  "recognition_case_count": 89,
+  "rendered_variants": 125,
+  "views": "Opposite-corner orthographic 3D views UFR and BLD."
+}
