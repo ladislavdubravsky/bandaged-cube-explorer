@@ -33,19 +33,31 @@ Bandage shape objects together with the generating morphisms form a graph, the b
   <br> Picture 4 - a bandaged cube, that is in its solved bandage shape, but not solved
 </p>
 
-Python code in this repository focuses on the graph-navigating part of the solution process. In human solving, the enjoyability follows from being able to form at most a small set of rules for proceeding forward, using visuospatial recognition and imagination and ad-hoc logic. Harder bandaged puzzles don’t seem straightforwardly amenable to such approach though.
-
 ## Purpose of this project
-To provide an exploration and prototyping platform for understanding bandaged 3x3 cubes. Aid solvers in their endeavors and help me write my [blogs](https://ladislavdubravsky.wordpress.com/).
+To provide an exploration and prototyping platform for understanding bandaged 3x3 cubes - solution methods and automated finding of them, enumeration, exploring the set of all bandages as a whole... Aid solvers in their endeavors and help me write my [blogs](https://ladislavdubravsky.wordpress.com/).
 
 ## Usage
-#### General
-You need to have Python installed together with packages such as numpy, matplotlib or networkx - these come bundled with distributions such as WinPython. After that you need to place the project files somewhere the interpreter can see them, for example to a location on your PYTHONPATH environment variable.
 
-#### Bandage shape model in code
-Until we’re in need of efficiency increase, we represent a bandage shape as a list of length 27 – a cubelist. This is a 0..26-indexed list, and ternary representations of its indices correspond to coordinate triplets for unit cubies in a 3x3x3 cube (even if there is no central cubie in the physical cube). The list elements are numbers coming from range 1..(number of bandage shape blocks). Cubelist indices containing an identic cubelist element represent a single bandaged block. It follows the indices should form a geometric cuboid in their ternary representation. For a unique bandage shape representation, we also demand of cubelist elements to be increasing in the order of their first occurrence in the cubelist reading order (this gets taken care of under the hood).
+Install [Python 3.10+](https://www.python.org/downloads/),
+[Rust 1.85+ and its platform build tools](https://doc.rust-lang.org/book/ch01-01-installation.html),
+and [GAP](https://www.gap-system.org/install/). Put GAP's `gap` launcher on `PATH`.
+We currently build from source: Rust is needed during installation; GAP is used
+by group analysis and solving-method discovery.
 
-For convenience, however, zeros can also be used in a cubelist. Any zero represents an isolated 1x1x1 cubie. Thus you can input e.g. the standard Rubik’s cube as ```[0]*27``` instead of its proper representation as ```list(range(1, 28))``` (to which it’ll get normalized under the hood).
+Download or clone this repository, then run these commands from its root
+(Linux/macOS):
 
-#### Example script usage.py
-Follow the usage.py script to see some examples of existing functionality use.
+```sh
+python3 -m venv v2/.venv
+v2/.venv/bin/python -m pip install './v2/python[notebooks]'
+v2/.venv/bin/python -m jupyterlab v2/examples
+```
+
+On Windows, use `py -3` instead of `python3`, and
+`v2\.venv\Scripts\python.exe` instead of `v2/.venv/bin/python`.
+
+JupyterLab opens in your browser. Open a notebook from the
+[example index](v2/examples/README.md) and run its cells in order.
+In VS Code, open the repository, install its recommended Python/Jupyter
+extensions, and select the **v2/.venv** notebook kernel instead of starting
+JupyterLab. Notebook setup is automatic when you `import bce_v2`.

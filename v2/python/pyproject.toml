@@ -12,8 +12,8 @@ requires-python = ">=3.10"
 [project.optional-dependencies]
 plots = ["matplotlib>=3.7"]
 graph = ["networkx>=3.0", "matplotlib>=3.7", "scipy>=1.10"]
-notebooks = ["ipykernel>=6", "matplotlib>=3.7", "networkx>=3.0", "scipy>=1.10"]
-all = ["matplotlib>=3.7", "networkx>=3.0", "scipy>=1.10", "ipykernel>=6"]
+notebooks = ["jupyterlab>=4", "ipykernel>=6", "matplotlib>=3.7", "networkx>=3.0", "scipy>=1.10"]
+all = ["matplotlib>=3.7", "networkx>=3.0", "scipy>=1.10", "ipykernel>=6", "jupyterlab>=4"]
 
 [project.scripts]
 bce-v2 = "bce_v2.__main__:main"

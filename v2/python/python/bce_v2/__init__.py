@@ -7,7 +7,15 @@ orientations. All moves return new values.
 
 from collections.abc import Sequence
 
-from . import _native
+try:
+    from . import _native
+except ImportError as error:
+    raise ImportError(
+        "bce_v2 could not load its Rust extension in this Python interpreter. "
+        "Install Python 3.10+ and Rust 1.85+ with its platform build tools, then "
+        "run python -m pip install './v2/python[notebooks]' from the repository root "
+        "using the notebook's Python environment. See README.md#usage."
+    ) from error
 
 BlockedMoveError = _native.BlockedMoveError
 
@@ -639,3 +647,9 @@ __all__ = [
     "draw_cubes", "draw_bandage_graph", "bandage_graph_layout",
     "load_puzzle", "save_puzzle", "save_graph",
 ] + list(CELL_NAMES)
+
+
+from .environment import _initialize_notebook
+
+_initialize_notebook()
+del _initialize_notebook

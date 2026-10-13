@@ -26,7 +26,7 @@ V2 = Path(__file__).resolve().parents[1]
 ORIGINAL_NOTEBOOK = V2 / "examples" / "stabilizer-chain-methods" / "Unbandaged3x3.ipynb"
 # Protect the original method cells and metadata while permitting the requested
 # final scramble cell and its changing generated output.
-ORIGINAL_NOTEBOOK_DOCUMENT_SHA256 = "b3c453cedec9581fef8f96dc704f4d1f3c14454d0e001611c9af74c69e6d70ab"
+ORIGINAL_NOTEBOOK_DOCUMENT_SHA256 = "332782bf8c00a44ee0f142edb46a44898772228abda9f7b0476327fe001242a2"
 
 
 def history_free(state):

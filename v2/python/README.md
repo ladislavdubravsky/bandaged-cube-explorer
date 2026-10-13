@@ -89,24 +89,37 @@ kernel after updating the package to load the new definitions.
 
 ## Install
 
-From the repository root, with Python 3.10+ and Rust 1.85+ installed:
+For example notebooks, follow the short
+[installation guide](../../README.md#usage). Python 3.10+
+and Rust 1.85+ with its platform build tools are needed to build from source.
+From the repository root:
 
 ```sh
 python3 -m venv v2/.venv
-v2/.venv/bin/python -m pip install './v2/python[all]'
+v2/.venv/bin/python -m pip install './v2/python[notebooks]'
+v2/.venv/bin/python -m jupyterlab v2/examples
 ```
 
 Use `./v2/python` without extras for a dependency-free Python interface. The
 `plots` extra installs matplotlib; `graph` installs NetworkX, matplotlib, and
-SciPy for graph drawing and layouts; `notebooks` adds these graph dependencies
-and the IPython kernel; `all` includes all extras.
-These adapters import their dependencies only when used. The package distribution
+SciPy for graph drawing and layouts; `notebooks` adds these graph dependencies,
+the IPython kernel and JupyterLab; `all` includes all extras.
+Outside notebooks, adapters import their dependencies only when used. The package distribution
 is named `bandaged-cube-explorer-v2`; its import name is `bce_v2`.
 
 Group analysis uses an optional external [GAP installation](https://www.gap-system.org/).
 Install GAP separately and make its `gap` executable available on `PATH`, or
-pass `gap_executable="/path/to/gap"`. No GAP Python binding is needed. Shape-loop
-extraction works without GAP or any Python extras.
+set `BCE_GAP_EXECUTABLE` to its launcher path before starting Jupyter. Explicit
+`gap_executable="/path/to/gap"` arguments also work. No GAP Python binding is
+needed. Shape-loop extraction works without GAP or any Python extras.
+
+In a notebook, `import bce_v2` checks GAP and plotting dependencies and enables
+inline figures for a fresh kernel. Missing prerequisites produce installation
+instructions. An explicitly selected plotting backend is preserved. No
+`%matplotlib`, GAP variable or renderer-refresh call is needed in example cells.
+Restart the kernel after installing dependencies or updating the package.
+Restart Jupyter or VS Code after changing `PATH` or `BCE_GAP_EXECUTABLE` so its
+kernels inherit those settings.
 
 ## Play in VS Code
 

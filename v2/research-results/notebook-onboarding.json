@@ -1,0 +1,153 @@
+{
+  "all_checks_passed": true,
+  "custom_gap_launcher_notebook_kernel": {
+    "backend": "module://matplotlib_inline.backend_inline",
+    "default_gap_analysis_and_guide_checked": true,
+    "default_kernel_selection_checked": true,
+    "inline_figure_without_magic": true,
+    "legal_scramble": true,
+    "missing_gap_warning_and_analysis_error_checked": false,
+    "no_manual_notebook_setup": true,
+    "package": "/tmp/bce-onboarding-venv/lib/python3.12/site-packages/bce_v2/__init__.py",
+    "python": "/tmp/bce-onboarding-venv/bin/python"
+  },
+  "fresh_notebook_kernel": {
+    "backend": "module://matplotlib_inline.backend_inline",
+    "default_gap_analysis_and_guide_checked": true,
+    "default_kernel_selection_checked": true,
+    "inline_figure_without_magic": true,
+    "legal_scramble": true,
+    "missing_gap_warning_and_analysis_error_checked": false,
+    "no_manual_notebook_setup": true,
+    "package": "/tmp/bce-onboarding-venv/lib/python3.12/site-packages/bce_v2/__init__.py",
+    "python": "/tmp/bce-onboarding-venv/bin/python"
+  },
+  "missing_gap_notebook_kernel": {
+    "backend": "module://matplotlib_inline.backend_inline",
+    "default_gap_analysis_and_guide_checked": false,
+    "default_kernel_selection_checked": true,
+    "inline_figure_without_magic": true,
+    "legal_scramble": true,
+    "missing_gap_warning_and_analysis_error_checked": true,
+    "no_manual_notebook_setup": true,
+    "package": "/tmp/bce-onboarding-venv/lib/python3.12/site-packages/bce_v2/__init__.py",
+    "python": "/tmp/bce-onboarding-venv/bin/python"
+  },
+  "notebook_hash_scope": "Committed notebook contents, excluding unrelated working-tree display edits.",
+  "notebooks": [
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/AlcatrazAnalyses.ipynb",
+      "plain_python_cells": true,
+      "sha256": "c104687ff216dd2fb3230ed2beb097740be2f79c307c74db62b310fc59066dfc"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/MostSignaturesCubeAnalysis.ipynb",
+      "plain_python_cells": true,
+      "sha256": "3f2ce723976a6e50a4b0c139009ab3834e29ffdb7fb73f4f412d2e90445babcf"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/PuzzleSignatures.ipynb",
+      "plain_python_cells": true,
+      "sha256": "bb6c6caaae20fbe1e75a2ac7af72c45b358cbba865e63a5b6c582b1824647f9c"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/action-family-methods/Alcatraz.ipynb",
+      "plain_python_cells": true,
+      "sha256": "31350810c10f735c76f4e6a403bc4fa5cbc5e24c91225c19f14f4b8618bac8ae"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/action-family-methods/Unbandaged3x3.ipynb",
+      "plain_python_cells": true,
+      "sha256": "23d19b3274a9867f4ef4cf520fcfbecb380d85599a63b5fe22229a7bd17422de"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/optimal-colored-search/BicubeFuse.ipynb",
+      "plain_python_cells": true,
+      "sha256": "f3a41ec4aaa96f1d8ffa309e7a3794de297adbd618b7d1915074eba7a87719fa"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/shapes-graph-navigation/Alcatraz.ipynb",
+      "plain_python_cells": true,
+      "sha256": "605333e7473226575ab7938b0573fca127cced16a9829cd5ebb00ed294d1ec18"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/shapes-graph-navigation/SplitRoadBigclockBar.ipynb",
+      "plain_python_cells": true,
+      "sha256": "9c8f3b04068ccf83667b1d8a6939ed64a1b0f3ad471e58f0e0c5febf9dce62a0"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/shapes-graph-navigation/_template.ipynb",
+      "plain_python_cells": true,
+      "sha256": "50bc3bedea9446c147b3094b62e10881e2320fa482d9eccedbc0f2400370904f"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/stabilizer-chain-methods/Alcatraz.ipynb",
+      "plain_python_cells": true,
+      "sha256": "954cea00775f3548c0537fb0d8b9d0cbb9bed4f7cd2daa89608b004ddafc0e96"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/stabilizer-chain-methods/BandagedPocketCube.ipynb",
+      "plain_python_cells": true,
+      "sha256": "97846732eeeef0202a37de6c70d59bd07c3ed95652a441555296c61767ff4a24"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/stabilizer-chain-methods/BeltRoad.ipynb",
+      "plain_python_cells": true,
+      "sha256": "89b3f896e5adc7f72a2e3d65d16d641ce2403d57166b1c559c3b4d28addb74b5"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/stabilizer-chain-methods/Bicube.ipynb",
+      "plain_python_cells": true,
+      "sha256": "0f5c1e906a4373ca7fd8b20e0c78c72b923f0d28d80933fce53417ed44625ec8"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/stabilizer-chain-methods/BicubeFuse.ipynb",
+      "plain_python_cells": true,
+      "sha256": "65b05cf474b3f56c8cb8ccb39d7e3cce800c421453d49edf0da5173e72f40ac0"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/stabilizer-chain-methods/BlockClockPair.ipynb",
+      "plain_python_cells": true,
+      "sha256": "c1d8a6db39c1b2c78a336593cc6c39afb6ed9738d976906284fb3e5d817bd943"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/stabilizer-chain-methods/DiamondCube.ipynb",
+      "plain_python_cells": true,
+      "sha256": "fed612be60cbfa9bb7582790af69346528bfcf14b5dd98c7b0056f59fa916a3a"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/stabilizer-chain-methods/FourPair.ipynb",
+      "plain_python_cells": true,
+      "sha256": "01c6616bf18bc9fc2deb732243555a8eff5ad6aa3b2f932e2a4ffa0181d67ea5"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/stabilizer-chain-methods/MostSignaturesCube.ipynb",
+      "plain_python_cells": true,
+      "sha256": "ff18b69325229bd67ba0313c6b7e85bb60747c1b50c18a9abbb588121bfb6248"
+    },
+    {
+      "no_manual_environment_setup": true,
+      "notebook": "examples/stabilizer-chain-methods/Unbandaged3x3.ipynb",
+      "plain_python_cells": true,
+      "sha256": "2bb0b000e65319c1f0063c049b9c4f1d97f59f7a804b983eba719e5c0452a0a9"
+    }
+  ]
+}

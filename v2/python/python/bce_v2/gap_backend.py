@@ -12,8 +12,11 @@ import math
 from numbers import Integral, Real
 import os
 import re
+import shutil
 import subprocess
 from typing import Sequence
+
+from .environment import _configured_gap_executable, _gap_installation_help
 
 
 class GapError(RuntimeError):
@@ -247,6 +250,7 @@ def _parse_result(output: str, generator_count: int) -> GapAnalysis:
 
 def _validated_options(gap_executable, timeout):
     executable = os.fspath(gap_executable)
+    executable = _configured_gap_executable(executable)
     if not isinstance(executable, str):
         raise TypeError("gap_executable must be a string or text path")
     if not executable or "\x00" in executable:
@@ -270,6 +274,9 @@ def _gap_images(images):
 
 def _run_gap(program, executable, timeout, operation="analysis"):
     from .computation import checkpoint, current_computation, quality_timeout
+    # Resolve PATH launchers, including Windows PATHEXT names, before passing
+    # the actual filename to the subprocess. Explicit paths remain intact.
+    executable = shutil.which(executable) or executable
     timeout = quality_timeout(timeout)
     try:
         completed = subprocess.run(
@@ -292,7 +299,7 @@ def _run_gap(program, executable, timeout, operation="analysis"):
     except OSError as error:
         raise GapUnavailableError(
             f"Could not start GAP executable {executable!r}: {error}. "
-            "Install GAP or pass gap_executable pointing to its launcher."
+            + _gap_installation_help()
         ) from error
     if completed.returncode != 0:
         diagnostic = (completed.stderr.strip() or completed.stdout.strip())[-2000:]

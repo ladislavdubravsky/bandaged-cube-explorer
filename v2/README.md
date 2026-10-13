@@ -4,12 +4,11 @@ This replacement is developed alongside the original Python project. The computa
 
 ## Use from Python
 
-See the [Python guide](python/README.md) for installation, inline bandage definitions, validated colored input, exact QTM/HTM colored search, shape-loop solving and GAP group counts, shape solutions, galleries, optional NetworkX views, and deterministic records. From the repository root:
-
-```sh
-python3 -m venv v2/.venv
-v2/.venv/bin/python -m pip install './v2/python[all]'
-```
+Start with the short [notebook installation guide](../README.md#usage):
+install Python, Rust and GAP, create `v2/.venv`, install the notebook extra,
+and open JupyterLab or VS Code. The [Python guide](python/README.md) describes
+the APIs for new explorations. Importing `bce_v2` prepares notebook plotting
+and checks notebook dependencies and GAP availability automatically.
 
 The [example index](examples/README.md) separates the original
 `stabilizer-chain-methods`, compact `action-family-methods`, and
@@ -34,8 +33,8 @@ vocabulary actually taught. Set `preference` to `"memory"`, `"execution"` or
 and the current target in the full selected face colors. Transparent mode looks
 along the UFR diagonal and makes unfinished non-target stickers faint white.
 The guide teaches complete templates and shared piece recipes before the stages, then
-shows each case recipe in its required grip. The cell refreshes rendering code
-on each evaluation so an open kernel picks up display changes made during review.
+shows each case recipe in its required grip. No renderer-refresh call is needed
+in the notebook. Restart its kernel after updating the installed package.
 
 For direct shape-to-guide preparation, call `c.template_human_repertoire(shape)`.
 Passing an existing method retains its stage features and order unless
