@@ -9,7 +9,7 @@ pub struct Fixture {
 }
 
 /// Parse a frozen snapshot of the legacy CSV, bundled with the engine crate.
-/// The original database remains unchanged and no runtime file access is needed.
+/// No runtime file access or dependency on the archived v1 code is needed.
 pub fn legacy() -> Vec<Fixture> {
     include_str!("../data/fixtures.csv")
         .lines()

@@ -61,3 +61,5 @@ JupyterLab opens in your browser. Open a notebook from the
 In VS Code, open the repository, install its recommended Python/Jupyter
 extensions, and select the **v2/.venv** notebook kernel instead of starting
 JupyterLab. Notebook setup is automatic when you `import bce_v2`.
+
+The original Python implementation and scripts are kept in [v1](v1/README.md).

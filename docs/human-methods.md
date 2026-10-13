@@ -103,7 +103,7 @@ block coordinates are independent.
 These are ordinary stabilizer features. In a future symbolic backend,
 placement corresponds to preserving the block's set of faithful sticker
 positions; solving the block fixes those positions individually. Empty,
-unobservable point sets contribute no stage. The old predicates in `usage.py`
+unobservable point sets contribute no stage. The old predicates in `v1/usage.py`
 instead define nested sets of uncolored shape vertices. Disjunctions such as
 "either bandage relation holds" need not be stabilizers and are outside this
 initial algebraic contract.

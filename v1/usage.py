@@ -3,9 +3,16 @@
 Usage example.
 """
 
+from pathlib import Path
+import sys
+
 import networkx as nx
-import bce.core as c
-from bce.graphics import draw_cubes
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+import v1.core as c
+from v1.graphics import draw_cubes
 
 # 1. define a bandage shape - alcatraz puzzle solved shape
 alca =  [   6,6,0,
@@ -74,7 +81,7 @@ v5 = {v for v in v4    if i2c[v][c.FR] == i2c[v][c.DFR]}
 layers = [v0, v1, v2, v3, v4, v5]
 
 # calculate maximum number of moves (QTM) in each solution step
-d = nx.shortest_path_length(g)
+d = dict(nx.shortest_path_length(g))
 c.layers_distance(g, layers, dist=d)
 c.layers_distance(g, layers, dist=d, tally=True)
 

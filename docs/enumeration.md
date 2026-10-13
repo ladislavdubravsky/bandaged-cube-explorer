@@ -94,7 +94,7 @@ Exact completion counts also provide zero-based unranking and uniform spatial ra
 
 ## Old analytic function and an exact repair
 
-The function is in the public [bandaged-cubes-enumerator repository](https://github.com/ladislavdubravsky/bandaged-cubes-enumerator/blob/master/cubes/enumerator.py), not `bce/core.py`. It evaluates to **6,473,251**; its 6,399,617 comment is stale. The linked [forum post](https://twistypuzzles.com/forum/viewtopic.php?p=384851#p384851) denied access, so its prose derivation was unavailable.
+The function is in the public [bandaged-cubes-enumerator repository](https://github.com/ladislavdubravsky/bandaged-cubes-enumerator/blob/master/cubes/enumerator.py), not `v1/core.py`. It evaluates to **6,473,251**; its 6,399,617 comment is stale. The linked [forum post](https://twistypuzzles.com/forum/viewtopic.php?p=384851#p384851) denied access, so its prose derivation was unavailable.
 
 Early formulas use inclusion-exclusion over cuts, but later ones choose only particular first cuts. For example `p33 = 1 + p32*p3 = 137` permits one chosen face split rather than all 320 slicing or 322 arbitrary spatial face tilings. `p3c=1` is consistent with excluding both two- and three-cell core bars, beyond a rule merely excluding core-containing dominoes. The function has no dynamic closure, component search, rotation quotient, or general dead-end predicate. It is neither an exact all-cuboid total nor a verified puzzle-class total. Restricted seeds may have been intended to cover a subsequent quotient, but that needs an independent completeness proof.
 

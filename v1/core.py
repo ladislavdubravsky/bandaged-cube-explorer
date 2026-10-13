@@ -181,10 +181,10 @@ def layers_distance(g, layers, dist=None, tally=False):
     of distances (if tally=True), between a vertex from layer[i] and a vertex
     from layer[i + 1] in graph g, for all consecutive layer pairs.
     If dictionary of distances dist is not supplied, it is calculated as
-    nx.shortest_path_length(g).
+    dict(nx.shortest_path_length(g)).
     This function is typically called to assess feasibility of cube solving
     via a particular stabilizer chain / feature chain. """
-    d = nx.shortest_path_length(g) if not dist else dist
+    d = dict(nx.shortest_path_length(g)) if dist is None else dist
     fnc = Counter if tally else max
     return [fnc(min(d[i][j] for j in layers[n + 1])
                 for i in layers[n] - layers[n + 1])
@@ -207,7 +207,7 @@ def path_to_next_layer(g, v, layers, dist, labels, c2i):
 def dist_to_next_layer(g, v, layers, dist):
     """ For a graph, its vertex and layering, output vertex distance from its
     current layer to the next layer. dist is a pre-computed graph distances
-    dictionary, e.g. by dist = nx.shortest_path_length(g). """
+    dictionary, e.g. by dist = dict(nx.shortest_path_length(g)). """
     try:
         ind = [v in layer for layer in layers].index(False)
     except ValueError:
@@ -234,10 +234,8 @@ def nbrrep(cube):
 
 
 def similarity(nbrcube1, nbrcube2):
-    """ Hamming distance based similarity of nbrreps of cubelists. """
-    flat1 = [y for x in nbrcube1 for y in x]
-    flat2 = [y for x in nbrcube2 for y in x]
-    return (sum(c1 == c2 for c1, c2 in zip(flat1, flat2)) - 54) / (162 - 54)
+    """ Hamming distance based similarity of the flat vectors from nbrrep. """
+    return (sum(c1 == c2 for c1, c2 in zip(nbrcube1, nbrcube2)) - 54) / (162 - 54)
 
 
 def to_dbrecord(cube):

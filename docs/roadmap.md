@@ -6,16 +6,16 @@ The replacement uses a Rust computational library with a Python research interfa
 
 ## Preserve the existing project
 
-Leave `bce/`, `puzzles/`, the example scripts, images, and the existing README untouched. The new implementation lives in `v2/`, with its own build configuration and documentation.
+The original Python package and example scripts are archived in `v1/`. Its puzzle records are preserved in `v2/engine/data/fixtures.csv`, so the duplicate root `puzzles/` directory has been removed. Keep `pics/` at its existing path because external posts link to these images. The new implementation lives in `v2/`, with its own build configuration and documentation.
 
-The old project remains a working reference until the replacement reproduces its useful behavior, imports its puzzle records, supplies better documentation and visualizations, and solves colored puzzles. Migration should be a later, explicit decision. When an old behavior is incorrect or ambiguous, document the difference rather than reproduce it silently or modify the reference.
+The old project remains a working reference in [v1](../v1/README.md). When an old behavior is incorrect or ambiguous, document the difference rather than reproduce it silently in v2.
 
 The existing design has substantial value:
 
 - The [README](../README.md) already models legal transports as a groupoid over uncolored bandage shapes, and proposes restoring shape before solving the remaining sticker permutation.
-- [The core](../bce/core.py) provides shape normalization, move legality, reachable-shape exploration, and shortest paths.
-- [The examples](../usage.py) develop recognizable feature chains, measure distances between stages, and display difficult cases. These are a useful starting point for human solving methods.
-- [The renderer](../bce/graphics.py) and [puzzle database](../puzzles/database.csv) supply galleries, transparent views, and three named fixtures.
+- [The core](../v1/core.py) provides shape normalization, move legality, reachable-shape exploration, and shortest paths.
+- [The examples](../v1/usage.py) develop recognizable feature chains, measure distances between stages, and display difficult cases. These are a useful starting point for human solving methods.
+- [The renderer](../v1/graphics.py) and [puzzle database](../v2/engine/data/fixtures.csv) supply galleries, transparent views, and three named fixtures.
 
 The replacement tracks complete corner and edge identities and orientations. It does not carry forward the old block-label permutation mode or incorrect move directions: all v2 interfaces use standard Singmaster notation.
 
