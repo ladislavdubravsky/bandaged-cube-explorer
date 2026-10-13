@@ -3,6 +3,11 @@
   "all_requested_methods_available": true,
   "completed": true,
   "exhaustively_replayed_native_reference_states": 425,
+  "final_scramble_cell_check": {
+    "all_previous_cells_and_metadata_unchanged": true,
+    "final_cell_executed_and_scramble_replayed": true,
+    "validation_report": "scramble-generator.json"
+  },
   "fixtures": [
     {
       "applications": [
@@ -85408,14 +85413,16 @@
   ],
   "notebooks": [
     {
+      "final_scramble_cell": true,
       "minimal": true,
       "notebook": "examples/action-family-methods/Alcatraz.ipynb",
-      "sha256": "bcfda28ad82d92f07bc797841d49b4d7409ee5c96a6253cf220f154ccd40007c"
+      "sha256": "31350810c10f735c76f4e6a403bc4fa5cbc5e24c91225c19f14f4b8618bac8ae"
     },
     {
+      "final_scramble_cell": true,
       "minimal": true,
       "notebook": "examples/action-family-methods/Unbandaged3x3.ipynb",
-      "sha256": "16f884a016db79674298b36e3bd6ee666b400116de07d3181d9153cebe04af20"
+      "sha256": "23d19b3274a9867f4ef4cf520fcfbecb380d85599a63b5fe22229a7bd17422de"
     }
   ],
   "ordinary_suffix_cache_directory": "/tmp/bce-compact-ordinary-validation-cache",

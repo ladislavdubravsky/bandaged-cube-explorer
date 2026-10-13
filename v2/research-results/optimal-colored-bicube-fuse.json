@@ -1,6 +1,11 @@
 {
   "all_checks_passed": true,
   "center_spin": false,
+  "final_scramble_cell_check": {
+    "all_previous_cells_and_metadata_unchanged": true,
+    "final_cell_executed_and_scramble_replayed": true,
+    "validation_report": "scramble-generator.json"
+  },
   "fixture": "Bicube Fuse",
   "htm_qtm_distance_bounds_checked": true,
   "metrics": [
@@ -115,7 +120,7 @@
     }
   ],
   "notebook": "examples/optimal-colored-search/BicubeFuse.ipynb",
-  "notebook_sha256": "225aeb5c7363a08028e771051e917db4424ce0353c5f5f31f804e778cedb4956",
+  "notebook_sha256": "f3a41ec4aaa96f1d8ffa309e7a3794de297adbd618b7d1915074eba7a87719fa",
   "rotation_quotient": false,
   "same_states_in_both_metrics": true,
   "scope": "complete fixed-frame colored component"

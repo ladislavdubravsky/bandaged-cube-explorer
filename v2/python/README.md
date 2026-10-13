@@ -206,6 +206,29 @@ immutable reference bandage membership. Read these through `corners`, `twists`,
 Centers are fixed and unmarked. States can start solved and advance through
 checked legal moves, or be imported with the validation described below.
 
+## Generate a legal scramble
+
+```python
+word = c.scramble(alcatraz)  # 100 random legal HTM steps by default
+scrambled = c.State(alcatraz).apply(word)
+print(word)
+
+repeatable = c.scramble(alcatraz, length=100, seed=42)
+continuation = c.scramble(scrambled, length=25, seed=7)
+```
+
+The generator checks the current bandage after every turn and prefers leaving
+recent colored positions and changing faces. It permits necessary repeats in
+narrow passages and combines adjacent same-face turns, so the printed word
+may contain fewer than `length` moves. Positive lengths change the starting
+colored position; an immobile bandage raises `ValueError`. A zero length
+returns an empty word. A supplied `State` receives a continuation from its
+current position. Inputs and the global random generator remain unchanged.
+
+This random walk needs no graph exploration or GAP. It does not sample colored
+states uniformly or guarantee an optimal scrambling distance. Every notebook
+in the examples subfolders ends with a one-line scramble generator.
+
 ## Import and solve colored puzzles
 
 ```python

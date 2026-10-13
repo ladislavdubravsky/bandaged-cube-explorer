@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Refresh only saved guide displays from validated portable methods.
 
-The two notebooks keep their original minimal source. Discovery, experiments
-and native acceptance stay in research scripts; this command only replaces
-stale Markdown outputs after the acceptance report has passed.
+The two notebooks keep their minimal guide source and final scramble cell.
+Discovery, experiments and native acceptance stay in research scripts; this
+command only replaces stale Markdown outputs after the acceptance report has passed.
 """
 
 from __future__ import annotations
@@ -56,8 +56,11 @@ def refresh(report_path):
         path = V2 / "examples" / "action-family-methods" / (notebook_name + ".ipynb")
         notebook = json.loads(path.read_text(encoding="utf-8"))
         sources = tuple((cell["cell_type"], cell["source"]) for cell in notebook["cells"])
-        code = [cell for cell in notebook["cells"] if cell["cell_type"] == "code"]
-        outputs = code[-1]["outputs"]
+        guide_cells = [cell for cell in notebook["cells"] if cell["cell_type"] == "code"
+                       and "method.write_guide()" in "".join(cell["source"])]
+        if len(guide_cells) != 1:
+            raise ValueError("minimal notebook requires exactly one guide cell")
+        outputs = guide_cells[0]["outputs"]
         if len(outputs) != 1 or outputs[0]["output_type"] != "display_data":
             raise ValueError("minimal guide cell requires exactly one Markdown display")
         before = len(outputs[0]["data"]["text/markdown"])

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Native acceptance checks for automatically discovered compact methods.
 
-The notebook examples remain input plus discover_method/write_guide. All
-experiments live here. Small reference groups are enumerated with native
+The notebook examples remain input plus discover_method/write_guide and one
+final scramble-generator cell. All experiments live here. Small reference
+groups are enumerated with native
 isotropy witnesses independently of the selected palette and method. Every
 stage is checked over its entire certified input subgroup, including states
 not encountered after this method's particular earlier corrections.
@@ -27,6 +28,7 @@ import bce_v2 as c
 from bce_v2.human_chains import _observation, _resolve_feature
 from bce_v2.human_methods import _stage_observation
 from bce_v2.palette_render import certified_procedure, expanded_recipe_path
+from validate_scramble_generator import check_scramble_cell
 
 
 V2 = Path(__file__).resolve().parents[1]
@@ -60,8 +62,11 @@ def check_minimal_notebooks():
     result = []
     for path in NOTEBOOKS:
         document = json.loads(path.read_text(encoding="utf-8"))
-        source = "\n".join("".join(cell["source"]) for cell in document["cells"]
-                           if cell["cell_type"] == "code")
+        code = [cell for cell in document["cells"] if cell["cell_type"] == "code"]
+        check_scramble_cell(code[-1], "bandage")
+        assert document["cells"][-2]["cell_type"] == "markdown"
+        assert "".join(document["cells"][-2]["source"]).strip() == "## Generate a scramble"
+        source = "\n".join("".join(cell["source"]) for cell in code[:-1])
         statements = ast.parse(source).body
         assignments = [node for node in statements if isinstance(node, ast.Assign)]
         assert len(assignments) == 2, f"{path.name} needs only bandage and method assignments"
@@ -76,6 +81,7 @@ def check_minimal_notebooks():
         assert not any(isinstance(node, (ast.Dict, ast.For, ast.While, ast.ListComp))
                        for node in ast.walk(ast.parse(source)))
         result.append({"notebook": str(path.relative_to(V2)), "minimal": True,
+                       "final_scramble_cell": True,
                        "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
     return result
 

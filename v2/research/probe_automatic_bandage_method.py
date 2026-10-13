@@ -24,8 +24,9 @@ from bce_v2.human_chains import _observation, _resolve_feature
 
 V2 = Path(__file__).resolve().parents[1]
 ORIGINAL_NOTEBOOK = V2 / "examples" / "stabilizer-chain-methods" / "Unbandaged3x3.ipynb"
-# The original stabilizer notebook is restored byte-for-byte from repository HEAD.
-ORIGINAL_NOTEBOOK_SHA256 = "436f0fd4f3b33002d373f2bcee450c4f470adf87ff162c00dac6d6517e1f03d9"
+# Protect the original method cells and metadata while permitting the requested
+# final scramble cell and its changing generated output.
+ORIGINAL_NOTEBOOK_DOCUMENT_SHA256 = "b3c453cedec9581fef8f96dc704f4d1f3c14454d0e001611c9af74c69e6d70ab"
 
 
 def history_free(state):
@@ -123,10 +124,18 @@ def audit_root_application(method, application, initial):
 
 
 def original_notebook_unchanged():
-    actual = hashlib.sha256(ORIGINAL_NOTEBOOK.read_bytes()).hexdigest()
-    if actual != ORIGINAL_NOTEBOOK_SHA256:
-        raise AssertionError("the original Unbandaged3x3 notebook changed during this task")
-    return actual
+    contents = ORIGINAL_NOTEBOOK.read_bytes()
+    document = json.loads(contents)
+    last = document["cells"][-1]
+    if last["cell_type"] == "code" and "".join(last["source"]).strip() == "print(c.scramble(bandage))":
+        document["cells"].pop()
+        heading = document["cells"][-1]
+        if heading["cell_type"] == "markdown" and "".join(heading["source"]).strip() == "## Generate a scramble":
+            document["cells"].pop()
+    actual = hashlib.sha256(json.dumps(document, sort_keys=True).encode()).hexdigest()
+    if actual != ORIGINAL_NOTEBOOK_DOCUMENT_SHA256:
+        raise AssertionError("the original Unbandaged3x3 method cells changed during this task")
+    return hashlib.sha256(contents).hexdigest()
 
 
 def native_root_states(specification, expected_order):

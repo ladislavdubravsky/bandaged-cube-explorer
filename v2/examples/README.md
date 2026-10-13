@@ -25,7 +25,13 @@ filenames; a puzzle appears only where an example is available.
 | Four Pair | [Guide](stabilizer-chain-methods/FourPair.ipynb) | — | [Shortest return](shapes-graph-navigation/FourPair.ipynb) | — |
 | Most Signatures Cube | [Guide](stabilizer-chain-methods/MostSignaturesCube.ipynb) | — | [Shortest return](shapes-graph-navigation/MostSignaturesCube.ipynb) | — |
 
-The action-family notebooks keep only bandage input and guide generation.
+Every notebook in these subfolders ends with a tiny cell that prints a legal
+random scramble for its puzzle. Rerun that cell for another scramble. The
+public generator also accepts `length` and a reproducible `seed`; see
+[the Python interface](../python/README.md#generate-a-legal-scramble).
+
+The action-family notebooks keep bandage input, guide generation and that
+final scramble cell.
 The shape-navigation notebooks accept observed block labels independently of
 scramble history. Their complete HTM shape searches restore the reference
 bandage shape, after which a reference-shape method can solve the colors.

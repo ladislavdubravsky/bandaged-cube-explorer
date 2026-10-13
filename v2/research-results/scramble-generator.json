@@ -1,0 +1,411 @@
+{
+  "all_checks_passed": true,
+  "distinct_notebook_puzzles": 11,
+  "notebook_count": 16,
+  "notebooks": [
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/action-family-methods/Alcatraz.ipynb",
+      "notebook_sha256": "31350810c10f735c76f4e6a403bc4fa5cbc5e24c91225c19f14f4b8618bac8ae",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/action-family-methods/Unbandaged3x3.ipynb",
+      "notebook_sha256": "23d19b3274a9867f4ef4cf520fcfbecb380d85599a63b5fe22229a7bd17422de",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/optimal-colored-search/BicubeFuse.ipynb",
+      "notebook_sha256": "f3a41ec4aaa96f1d8ffa309e7a3794de297adbd618b7d1915074eba7a87719fa",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/shapes-graph-navigation/Alcatraz.ipynb",
+      "notebook_sha256": "605333e7473226575ab7938b0573fca127cced16a9829cd5ebb00ed294d1ec18",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/shapes-graph-navigation/SplitRoadBigclockBar.ipynb",
+      "notebook_sha256": "9c8f3b04068ccf83667b1d8a6939ed64a1b0f3ad471e58f0e0c5febf9dce62a0",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/shapes-graph-navigation/_template.ipynb",
+      "notebook_sha256": "50bc3bedea9446c147b3094b62e10881e2320fa482d9eccedbc0f2400370904f",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/stabilizer-chain-methods/Alcatraz.ipynb",
+      "notebook_sha256": "c522957ed2c1867e050d495f89a9d54a26fd8d789f71f6d10c2d8ec16cf05984",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/stabilizer-chain-methods/BandagedPocketCube.ipynb",
+      "notebook_sha256": "19a9ff8cb57df0829a8451fb715136737170648dc31003718bc722038d74832e",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/stabilizer-chain-methods/BeltRoad.ipynb",
+      "notebook_sha256": "403ce278f1f5a8cd89062869e1e5a64aad983998016491063010b186147b3f08",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/stabilizer-chain-methods/Bicube.ipynb",
+      "notebook_sha256": "9dadeea4dd8c94edd038d49faf9644c4e8dd220f892515c689056e4626cdd1fd",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/stabilizer-chain-methods/BicubeFuse.ipynb",
+      "notebook_sha256": "67535232e62dbbe93b61eec4dddea0b470a3b1381184e45ea0af6d1fae762e10",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/stabilizer-chain-methods/BlockClockPair.ipynb",
+      "notebook_sha256": "55c60fe63746c213a43cb0a9b7de587e458b1ae5a6b22a7d001a465b94637912",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/stabilizer-chain-methods/DiamondCube.ipynb",
+      "notebook_sha256": "53b2d6423b8a0cc0860ba6fd770e5ebb8075844822bfd1bcf4ae59796408bf16",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/stabilizer-chain-methods/FourPair.ipynb",
+      "notebook_sha256": "d323c119191cca22ddcf637d7b7d41b2a555cd1388c4f08072395be375b0abe9",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/stabilizer-chain-methods/MostSignaturesCube.ipynb",
+      "notebook_sha256": "8056c409675c04f34cb60d94e719d89c254490059cc9d7e0e53b9ab22d24c854",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    },
+    {
+      "all_previous_cells_and_metadata_unchanged": true,
+      "final_cell_executed_and_replayed": true,
+      "notebook": "examples/stabilizer-chain-methods/Unbandaged3x3.ipynb",
+      "notebook_sha256": "c40bbb88a0a0ab821b0b887e32d1201d1a81cfd8a798222211de0a69a6d5de19",
+      "one_line_scramble_cell": true,
+      "saved_scramble_replayed": true,
+      "scramble_heading": true
+    }
+  ],
+  "puzzle_walk_checks": [
+    {
+      "all_endpoints_changed": true,
+      "all_inverse_returns_replayed": true,
+      "all_seeds_repeatable": true,
+      "all_turns_legal": true,
+      "distinct_sampled_colored_endpoints": 32,
+      "notebooks": [
+        "examples/action-family-methods/Alcatraz.ipynb",
+        "examples/shapes-graph-navigation/Alcatraz.ipynb",
+        "examples/stabilizer-chain-methods/Alcatraz.ipynb"
+      ],
+      "printed_htm_length": {
+        "maximum": 61,
+        "mean": 41.8125,
+        "minimum": 14
+      },
+      "samples": 32,
+      "walk_steps": 100
+    },
+    {
+      "all_endpoints_changed": true,
+      "all_inverse_returns_replayed": true,
+      "all_seeds_repeatable": true,
+      "all_turns_legal": true,
+      "distinct_sampled_colored_endpoints": 32,
+      "notebooks": [
+        "examples/action-family-methods/Unbandaged3x3.ipynb",
+        "examples/stabilizer-chain-methods/Unbandaged3x3.ipynb"
+      ],
+      "printed_htm_length": {
+        "maximum": 100,
+        "mean": 100,
+        "minimum": 100
+      },
+      "samples": 32,
+      "walk_steps": 100
+    },
+    {
+      "all_endpoints_changed": true,
+      "all_inverse_returns_replayed": true,
+      "all_seeds_repeatable": true,
+      "all_turns_legal": true,
+      "distinct_sampled_colored_endpoints": 32,
+      "notebooks": [
+        "examples/optimal-colored-search/BicubeFuse.ipynb",
+        "examples/shapes-graph-navigation/_template.ipynb",
+        "examples/stabilizer-chain-methods/BicubeFuse.ipynb"
+      ],
+      "printed_htm_length": {
+        "maximum": 53,
+        "mean": 41.40625,
+        "minimum": 29
+      },
+      "samples": 32,
+      "walk_steps": 100
+    },
+    {
+      "all_endpoints_changed": true,
+      "all_inverse_returns_replayed": true,
+      "all_seeds_repeatable": true,
+      "all_turns_legal": true,
+      "distinct_sampled_colored_endpoints": 31,
+      "notebooks": [
+        "examples/shapes-graph-navigation/SplitRoadBigclockBar.ipynb"
+      ],
+      "printed_htm_length": {
+        "maximum": 95,
+        "mean": 89.84375,
+        "minimum": 84
+      },
+      "samples": 32,
+      "walk_steps": 100
+    },
+    {
+      "all_endpoints_changed": true,
+      "all_inverse_returns_replayed": true,
+      "all_seeds_repeatable": true,
+      "all_turns_legal": true,
+      "distinct_sampled_colored_endpoints": 32,
+      "notebooks": [
+        "examples/stabilizer-chain-methods/BandagedPocketCube.ipynb"
+      ],
+      "printed_htm_length": {
+        "maximum": 62,
+        "mean": 51.75,
+        "minimum": 29
+      },
+      "samples": 32,
+      "walk_steps": 100
+    },
+    {
+      "all_endpoints_changed": true,
+      "all_inverse_returns_replayed": true,
+      "all_seeds_repeatable": true,
+      "all_turns_legal": true,
+      "distinct_sampled_colored_endpoints": 32,
+      "notebooks": [
+        "examples/stabilizer-chain-methods/BeltRoad.ipynb"
+      ],
+      "printed_htm_length": {
+        "maximum": 93,
+        "mean": 83.21875,
+        "minimum": 66
+      },
+      "samples": 32,
+      "walk_steps": 100
+    },
+    {
+      "all_endpoints_changed": true,
+      "all_inverse_returns_replayed": true,
+      "all_seeds_repeatable": true,
+      "all_turns_legal": true,
+      "distinct_sampled_colored_endpoints": 32,
+      "notebooks": [
+        "examples/stabilizer-chain-methods/Bicube.ipynb"
+      ],
+      "printed_htm_length": {
+        "maximum": 57,
+        "mean": 40.84375,
+        "minimum": 24
+      },
+      "samples": 32,
+      "walk_steps": 100
+    },
+    {
+      "all_endpoints_changed": true,
+      "all_inverse_returns_replayed": true,
+      "all_seeds_repeatable": true,
+      "all_turns_legal": true,
+      "distinct_sampled_colored_endpoints": 32,
+      "notebooks": [
+        "examples/stabilizer-chain-methods/BlockClockPair.ipynb"
+      ],
+      "printed_htm_length": {
+        "maximum": 80,
+        "mean": 74.03125,
+        "minimum": 66
+      },
+      "samples": 32,
+      "walk_steps": 100
+    },
+    {
+      "all_endpoints_changed": true,
+      "all_inverse_returns_replayed": true,
+      "all_seeds_repeatable": true,
+      "all_turns_legal": true,
+      "distinct_sampled_colored_endpoints": 32,
+      "notebooks": [
+        "examples/stabilizer-chain-methods/DiamondCube.ipynb"
+      ],
+      "printed_htm_length": {
+        "maximum": 97,
+        "mean": 91.625,
+        "minimum": 84
+      },
+      "samples": 32,
+      "walk_steps": 100
+    },
+    {
+      "all_endpoints_changed": true,
+      "all_inverse_returns_replayed": true,
+      "all_seeds_repeatable": true,
+      "all_turns_legal": true,
+      "distinct_sampled_colored_endpoints": 32,
+      "notebooks": [
+        "examples/stabilizer-chain-methods/FourPair.ipynb"
+      ],
+      "printed_htm_length": {
+        "maximum": 100,
+        "mean": 100,
+        "minimum": 100
+      },
+      "samples": 32,
+      "walk_steps": 100
+    },
+    {
+      "all_endpoints_changed": true,
+      "all_inverse_returns_replayed": true,
+      "all_seeds_repeatable": true,
+      "all_turns_legal": true,
+      "distinct_sampled_colored_endpoints": 32,
+      "notebooks": [
+        "examples/stabilizer-chain-methods/MostSignaturesCube.ipynb"
+      ],
+      "printed_htm_length": {
+        "maximum": 98,
+        "mean": 60.03125,
+        "minimum": 12
+      },
+      "samples": 32,
+      "walk_steps": 100
+    }
+  ],
+  "small_puzzle_distance_probe": {
+    "complete_colored_states": 7260,
+    "fixture": "Bicube Fuse",
+    "samples": [
+      {
+        "exact_htm_distance_from_solved": {
+          "histogram": {
+            "1": 1,
+            "2": 3,
+            "3": 15,
+            "4": 12,
+            "5": 11,
+            "6": 8,
+            "7": 17,
+            "8": 15,
+            "9": 15,
+            "10": 17,
+            "11": 11,
+            "13": 2,
+            "14": 1
+          },
+          "maximum": 14,
+          "mean": 7.09375,
+          "minimum": 1
+        },
+        "samples": 128,
+        "walk_steps": 20
+      },
+      {
+        "exact_htm_distance_from_solved": {
+          "histogram": {
+            "2": 1,
+            "3": 1,
+            "6": 1,
+            "7": 1,
+            "8": 4,
+            "9": 4,
+            "10": 4,
+            "11": 3,
+            "12": 5,
+            "13": 5,
+            "14": 6,
+            "15": 10,
+            "16": 9,
+            "17": 16,
+            "18": 13,
+            "19": 7,
+            "20": 4,
+            "21": 8,
+            "22": 7,
+            "23": 6,
+            "24": 6,
+            "25": 5,
+            "27": 2
+          },
+          "maximum": 27,
+          "mean": 16.90625,
+          "minimum": 2
+        },
+        "samples": 128,
+        "walk_steps": 100
+      }
+    ],
+    "sampling_claim": "bounded random walks; no uniform-state or optimal-distance guarantee",
+    "uniform_component_mean_htm_distance": 18.700275482093662
+  }
+}

@@ -300,6 +300,15 @@ def do(value, moves):
     return value.apply(moves) if isinstance(value, State) else shape(value).apply(moves)
 
 
+def scramble(bandage=None, *, length=100, seed=None):
+    """Generate legal random turns from a bandage or current colored State.
+
+    See :func:`bce_v2.scrambles.scramble` for walk length and sampling semantics.
+    """
+    from .scrambles import scramble as generate
+    return generate(bandage, length=length, seed=seed)
+
+
 def fixture_names():
     return _native.fixture_names()
 
@@ -583,7 +592,7 @@ def draw_bandage_graph(graph_or_bandage, *, layout="symmetry", show_shapes=False
 
 __all__ = [
     "Shape", "State", "ShapeGraph", "BlockedMoveError", "CELL_NAMES",
-    "shape", "normalize", "do", "fixture", "fixture_names", "explore",
+    "shape", "normalize", "do", "scramble", "fixture", "fixture_names", "explore",
     "count_partitions", "cuboid_partitions", "enumerate_puzzles", "close_implicit",
     "BLOCK_TYPES", "Block", "BlockType", "block_signature", "classify_blocks", "format_signature",
     "PuzzleAtlas",
