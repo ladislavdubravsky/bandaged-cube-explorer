@@ -627,11 +627,39 @@ def execution_vocabulary_lines(declarations):
     return lines
 
 
-def palette_method_guide(method, *, declarations=None, aliases=None, include_vocabulary=True):
+def _stage_diagram_lines(method, stage, procedure, aliases, *, face_colors=None):
+    """Illustrate certified first-match cases using the written recognition cues."""
+    from .stage_diagrams import stage_recognition_diagrams
+    from .stage_diagram_render import stage_case_image
+
+    cases = stage_recognition_diagrams(method, stage.number, procedure)
+    algorithms = {algorithm.id: algorithm for algorithm in method.palette.recipes}
+    lines = ["### Diagrammatic guide:", "",
+             "Match cases in order; use the first match, then inspect again.", ""]
+    for number, case in enumerate(cases, 1):
+        instruction = "— (no moves)"
+        if case.recipe:
+            structure = recipe_structure(method.palette, case.recipe, aliases)
+            turns = " ".join(algorithms[identifier].turn_sequence for identifier in case.recipe)
+            instruction = f"`{structure}` (`{turns}`)"
+        lines.extend([f"- case {number}: {case.cue}", "",
+                      "  Algorithm: " + instruction, "",
+                      f"  ![Stage {stage.number} recognition pattern]("
+                      f"{stage_case_image(case.diagram, method.inventory, face_colors=face_colors)})", ""])
+    return lines
+
+
+def palette_method_guide(method, *, declarations=None, aliases=None, include_vocabulary=True,
+                         recognition_diagrams=False, face_colors=None):
     """Render compact procedures with a fixed, witnessed execution vocabulary."""
-    from .human_render import _feature_name, _recognition_cue
+    from .human_render import _feature_name, _recognition_cue, recognition_wording
     from .human_repertoire_render import _stage_title
 
+    if type(recognition_diagrams) is not bool:
+        raise TypeError("recognition_diagrams must be a boolean")
+    if face_colors is not None:
+        from .graphics import _palette
+        _palette(face_colors)
     procedures = certified_procedure(method)
     if declarations is None and aliases is None:
         declarations, aliases = execution_vocabulary(method.palette,
@@ -698,6 +726,9 @@ def palette_method_guide(method, *, declarations=None, aliases=None, include_voc
             lines.extend(["Also correct after this stage: " +
                           "; ".join(_feature_name(feature, method.inventory)
                                     for feature in stage.implied_features) + ".", ""])
+        if recognition_diagrams:
+            lines.extend(_stage_diagram_lines(method, stage, procedure, aliases,
+                                              face_colors=face_colors))
     mean = sum(sum(procedure.htm_costs) / len(procedure.htm_costs) for procedure in procedures)
     worst = sum(max(procedure.htm_costs) for procedure in procedures)
     lines.extend([f"The {len(method.taught_body_ids)} learned bodies are shared across the stages. "
@@ -705,4 +736,4 @@ def palette_method_guide(method, *, declarations=None, aliases=None, include_voc
                   f"{worst:,} HTM, before cancellation between complete operations.", "",
                   "After the final stage, every modeled corner and edge sticker is solved. "
                   "Unmarked center spin and independent virtual-core spin are outside this model.", ""])
-    return "\n".join(lines)
+    return recognition_wording("\n".join(lines))

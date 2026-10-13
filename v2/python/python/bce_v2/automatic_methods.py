@@ -164,7 +164,7 @@ class AutomaticMethod:
             raise AssertionError("automatic complete word disagrees with independent native replay")
         return result
 
-    def write_guide(self, path=None):
+    def write_guide(self, path=None, *, recognition_diagrams=False, face_colors=None):
         lines = ["# Solution", "",
             f"Route: `{self.metadata['route']}`. Coverage: `{self.coverage_scope}`.", "",
             f"The bandage shape graph contains {len(self.graph):,} shapes.", "",
@@ -172,7 +172,9 @@ class AutomaticMethod:
             "To get there, you need to find a path yourself or ask the tooling to give you "
             "the shortest one for a particular scramble, or read it out of the bandage "
             "shapes graph if small enough (see `shapes-graph-navigation`). "
-            "An extractable general strategy is a future goal.", "", self.inner_method.write_guide()]
+            "An extractable general strategy is a future goal.", "",
+            self.inner_method.write_guide(recognition_diagrams=recognition_diagrams,
+                                          face_colors=face_colors)]
         result = "\n".join(lines)
         if path is not None:
             Path(path).write_text(result, encoding="utf-8")
@@ -194,10 +196,11 @@ class MethodDiscoveryResult:
             raise RuntimeError("discovery has no executable method: " + self.status)
         return self.method.apply(state)
 
-    def write_guide(self, path=None):
+    def write_guide(self, path=None, *, recognition_diagrams=False, face_colors=None):
         if self.method is None:
             raise RuntimeError("discovery has no guide: " + self.status)
-        return self.method.write_guide(path)
+        return self.method.write_guide(path, recognition_diagrams=recognition_diagrams,
+                                       face_colors=face_colors)
 
 
 def _cache_directory(value):

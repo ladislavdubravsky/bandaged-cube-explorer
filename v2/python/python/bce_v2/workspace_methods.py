@@ -263,7 +263,8 @@ class WorkspaceMethod:
             committed = next_committed
         raise AssertionError("unreachable entry stage loop")
 
-    def write_guide(self, path=None):
+    def write_guide(self, path=None, *, recognition_diagrams=False, face_colors=None):
+        from .human_render import recognition_wording
         from .palette_render import (execution_vocabulary, execution_vocabulary_lines,
                                      expanded_recipe_path, palette_method_guide,
                                      recipe_structure)
@@ -301,8 +302,9 @@ class WorkspaceMethod:
         lines.extend(["", f"Global taught definitions: **{len(self.taught_definition_ids)} / "
                       f"{self.settings['max_taught_bodies']}**, shared by entry and continuation.", "",
                       "## Certified continuation", "", palette_method_guide(self.suffix,
-                        declarations=declarations, aliases=aliases, include_vocabulary=False)])
-        guide = "\n".join(lines)
+                        declarations=declarations, aliases=aliases, include_vocabulary=False,
+                        recognition_diagrams=recognition_diagrams, face_colors=face_colors)])
+        guide = recognition_wording("\n".join(lines))
         if path is not None:
             Path(path).write_text(guide, encoding="utf-8")
         return guide

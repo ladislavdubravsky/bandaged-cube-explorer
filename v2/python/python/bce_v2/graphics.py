@@ -36,8 +36,8 @@ _VIEWS = {
 
 
 def _palette(colors):
-    palette = {"U": "#f7f7f7", "R": "#d62828", "F": "#2a9d45",
-               "D": "#ffd43b", "L": "#ff8c22", "B": "#2463d4"}
+    palette = {"U": "#ffd43b", "R": "#d62828", "F": "#2463d4",
+               "D": "#f7f7f7", "L": "#ff8c22", "B": "#2a9d45"}
     if colors is not None:
         if not isinstance(colors, Mapping):
             raise TypeError("colors must map face letters to matplotlib colors")
@@ -55,7 +55,7 @@ def draw_net(state, *, colors=None, size=2, linewidth=2):
     stickers; thick internal lines separate bandage blocks in the current state.
     Face borders outline panels, independently of bandages across folded edges.
 
-    Default colors are U white, R red, F green, D yellow, L orange, B blue.
+    Default colors are U yellow, R red, F blue, D white, L orange, B green.
     Pass a colors mapping keyed by face letters to override any of them.
     """
     if not isinstance(state, State):

@@ -47,7 +47,8 @@ class WhiteStickerStripeTests(unittest.TestCase):
     def count(self, axis):
         return sum(len(collection._segments3d) // 10 for collection in self.stripes(axis))
 
-    def expected(self, diagram, white_faces, *, rotation="", transparent=False, panel=0):
+    def expected(self, diagram, white_faces, *, rotation="", transparent=False, panel=0,
+                 views=("UFR", "BLD")):
         from bce_v2.graphics import _FACE_CELLS
         from bce_v2.loop_rotations import rotation_tuple
         # Compute expected transformed sticker positions independently of the
@@ -67,10 +68,10 @@ class WhiteStickerStripeTests(unittest.TestCase):
                 role = diagram.sticker_roles[index]
                 if diagram.state.facelets[index] not in white_faces:
                     continue
-                if role != "current" and sticker != 4:
+                if (role != "current" or diagram.orientation_slots) and sticker != 4:
                     continue
                 if not transparent and normal not in [normals[letter]
-                        for letter in ("UFR" if panel % 2 == 0 else "BLD")]:
+                        for letter in views[panel % len(views)]]:
                     continue
                 original_center = (source_cell % 3 - 1, 1 - source_cell // 3 % 3,
                                    1 - source_cell // 9)
@@ -152,13 +153,15 @@ class WhiteStickerStripeTests(unittest.TestCase):
         import matplotlib.pyplot as plt
         from bce_v2.loop_rotations import _CANONICAL_WORDS
         for word in _CANONICAL_WORDS.values():
-            for transparent in (False, True):
-                figure = self.figure(1 if transparent else 2)
+            for transparent, views in ((False, ("UFR", "BLD")), (True, ("UFR",)),
+                                       (False, ("UFR",))):
+                figure = self.figure(len(views))
                 add_white_sticker_stripes(figure, self.diagram, {"U": "white", "F": "white"},
-                                         rotation=word, transparent=transparent)
+                                         rotation=word, transparent=transparent, views=views)
                 for panel, axis in enumerate(figure.axes):
                     self.assertEqual(self.rendered(axis), self.expected(
-                        self.diagram, {"U", "F"}, rotation=word, transparent=transparent, panel=panel))
+                        self.diagram, {"U", "F"}, rotation=word, transparent=transparent,
+                        panel=panel, views=views))
                 plt.close(figure)
 
     def test_orientation_variants_and_gallery_panels_use_their_own_sticker_roles(self):
@@ -176,6 +179,25 @@ class WhiteStickerStripeTests(unittest.TestCase):
                 self.assertEqual(self.rendered(axis), self.expected(
                     diagram, {"U"}, transparent=transparent, panel=panel))
             plt.close(figure)
+
+    def test_single_corner_variants_use_their_own_roles_and_only_visible_faces(self):
+        from bce_v2.human_diagram_render import recognition_diagram_figure
+        method = c.load_human_repertoire(RESULTS / "alcatraz-recognition-repertoire.json")
+        variants = next(variants for stage in method.method.stages
+                        for variants in recognition_stage_diagrams(method, stage.number).values()
+                        if len(variants) > 1)
+        white_faces = set("URFDLB")
+        for rotation in ("", "x", "y z"):
+            figure = recognition_diagram_figure(
+                variants, diagram_mode=c.DiagramMode.SINGLE_CORNER,
+                face_colors=dict.fromkeys(white_faces, "white"), rotation=rotation)
+            self.assertEqual(len(figure.axes), len(variants))
+            for axis, diagram in zip(figure.axes, variants):
+                rendered = self.rendered(axis)
+                self.assertEqual(rendered, self.expected(
+                    diagram, white_faces, rotation=rotation, views=("UFR",)))
+                self.assertTrue(all((coordinate, direction) in {(0, 1), (1, -1), (2, 1)}
+                                    for coordinate, direction, _ in rendered))
 
     def test_white_markings_stay_visible_above_their_own_block_surfaces(self):
         from bce_v2.human_diagram_render import recognition_diagram_figure

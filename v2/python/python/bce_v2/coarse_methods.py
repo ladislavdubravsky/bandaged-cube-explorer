@@ -366,10 +366,11 @@ class CoarseMethod:
                               "mean_denominator": mean.denominator, "worst": worst}
         return result
 
-    def write_guide(self, path=None):
-        """Render suffix cases with their exact starting-domain contract."""
+    def write_guide(self, path=None, *, recognition_diagrams=False, face_colors=None):
+        """Render suffix cases, optionally illustrating ordered recognition rules."""
         from .palette_render import palette_method_guide
-        guide = palette_method_guide(self)
+        guide = palette_method_guide(self, recognition_diagrams=recognition_diagrams,
+                                     face_colors=face_colors)
         if path is not None:
             Path(path).write_text(guide, encoding="utf-8")
         return guide

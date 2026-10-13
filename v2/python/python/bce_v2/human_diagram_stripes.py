@@ -9,13 +9,14 @@ from .loop_rotations import rotation_tuple
 
 
 def add_white_sticker_stripes(figure, diagrams, face_colors=None, *, rotation="",
-                             transparent=False):
+                             transparent=False, views=None):
     """Hatch only visible colored stickers whose selected face color is white.
 
     Each unit sticker receives ten thin diagonal black stripes from edge to
     edge. Only targets and face centers retain their physical colors;
     grey solved stickers and plain white unfinished stickers remain unmarked.
     This overlays the existing mesh without changing its faces or block seams.
+    views identifies each diagram's camera panels in their displayed order.
     """
     from matplotlib.colors import to_rgb
     from mpl_toolkits.mplot3d.art3d import Line3DCollection
@@ -46,10 +47,10 @@ def add_white_sticker_stripes(figure, diagrams, face_colors=None, *, rotation=""
     destination_normals = {face: _rotate(display_rotation, normal)
                            for face, normal in _NORMALS.items()}
     face_for_normal = {normal: face for face, normal in _NORMALS.items()}
-    views_per_diagram = 1 if transparent else 2
+    views = tuple(views) if views is not None else (("UFR",) if transparent else ("UFR", "BLD"))
     for panel, axis in enumerate(figure.axes):
-        diagram = diagrams[panel // views_per_diagram]
-        visible_faces = None if transparent else ("UFR" if panel % 2 == 0 else "BLD")
+        diagram = diagrams[panel // len(views)]
+        visible_faces = None if transparent else views[panel % len(views)]
         groups = defaultdict(list)
         for face_index, face in enumerate("URFDLB"):
             displayed_face = face_for_normal[destination_normals[face]]

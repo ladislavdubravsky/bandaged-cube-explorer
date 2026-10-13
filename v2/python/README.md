@@ -5,6 +5,25 @@ moves, shape and colored exploration, and exact constrained search in Rust. It a
 27-cell lists and includes Alcatraz, Bicube Fuse, and Shark Fin Soup as named
 fixtures. The computational core has no Python dependency.
 
+Action-family guides accept `method.write_guide(recognition_diagrams=True)` to
+add a **Diagrammatic guide:** at the bottom of each stage. Numbered recognition
+cases are tried in order, starting with Ready. Each gives its Algorithm and turn
+sequence, followed by opaque UFR and BLD 3D views. A simple condition can cover
+several certified observations with one diagram showing just the pieces being read.
+Exact poses and pieces whose location fixes orientation use full colors. Pieces
+with an ignored orientation use small colored squares on grey stickers. Anonymous
+and relative orientations show reference stickers with labeled readings directly
+on the cube. Region outlines and equivalent arrangements handle other observers.
+The default scheme is U yellow, R red, F blue, D white, L orange and B green.
+Pass `face_colors` alongside the flag to override any URFDLB face with a
+Matplotlib color.
+Existing stage instructions stay unchanged. The default omits diagrams; the
+optional `plots` dependencies are needed to generate embedded PNGs. This works on
+discovery results, automatic methods, coarse methods and workspace continuations.
+Workspace entry remains computational; diagrams cover its certified continuation.
+See the
+[method guide](../../docs/human-methods.md#viewing-palette-led-discovery-in-the-ordinary-cube-notebook).
+
 ## Enumeration
 
 Exact partition counts, cuboid generation, motion classes up to 24 proper cube
@@ -287,9 +306,9 @@ and thick black outlines preserve the current bandage geometry. Thin lines
 divide stickers within a fused block.
 
 Colors are optional: omit `colors` for the original uncolored shape drawing.
-The default palette is U white, R red, F green, D yellow, L orange, and B blue;
+The default palette is U yellow, R red, F blue, D white, L orange, and B green;
 pass a mapping instead of `True` to override colors, for example
-`colors={"U": "yellow", "D": "white"}`. `views="BLD"` selects just the back
+`colors={"U": "white", "D": "yellow"}`. `views="BLD"` selects just the back
 corner, and `ncol` controls gallery columns. `draw_net(state)` remains available
 for an unfolded view. Rendering uses the optional `plots` extra.
 
@@ -447,8 +466,8 @@ cells and no cuboid type; independent virtual cores are omitted while actual
 core bonds remain intact.
 
 The one-line notation annotates each **source** transition: `(UFL- UFR UBR+)`
-moves UFL to UFR with phase minus one, UFR to UBR with phase zero, and UBR to
-UFL with phase plus one, measured in each destination's fixed reference frame.
+moves UFL to UFR with orientation minus one, UFR to UBR with orientation zero, and UBR to
+UFL with orientation plus one, measured in each destination's fixed reference frame.
 `(UFR-)` is an in-place twist and `()` is identity. Order two uses `+`, order
 three `+` and `-`, and order four `+`, `++`, and `-`. Corner `+` follows the
 ordinary clockwise convention; edge `+` is a flip. Larger blocks use
@@ -832,7 +851,7 @@ source-loop coverage, physical witnesses and case policy without invoking GAP.
 Loading a completed method explores its reference shape component again;
 the saved fingerprint and certification labels are not accepted as a proof.
 `write_guide(path=None)` returns Markdown and optionally writes it, with
-footprint/sticker recognition cues, complete case tables and expanded algorithms.
+location/sticker recognition cues, complete case tables and expanded algorithms.
 
 There is no default group-element cap. An exceeded explicit cap returns
 `limit_reached`, `coverage="partial"` and `human_method_complete=False`, with
@@ -1279,7 +1298,7 @@ construction and master-removal trials seek a smaller shared vocabulary with
 complete case reachability. Compressed rule families retain explicit
 observation cases and are verified by expansion. Their count measures rule
 families rather than reachable observations, and the guide retains concrete
-footprint and sticker cues. Full policies are certified and exhaustively
+location and sticker cues. Full policies are certified and exhaustively
 evaluated across the reference group after whole-word simplification.
 
 The default `max_cost_ratio=1.0` requires both mean and worst HTM to stay at or
@@ -1312,8 +1331,8 @@ version-one or version-two method format. `write_guide` writes the compressed gu
 [repertoire contract](../../docs/human-methods.md#share-algorithms-and-compress-rules-delivery-five)
 for budget and metric semantics.
 
-Choose `DiagramMode.OPPOSITE_CORNERS` or `DiagramMode.TRANSPARENT` when writing a
-visual guide:
+Choose `DiagramMode.OPPOSITE_CORNERS`, `DiagramMode.SINGLE_CORNER` or
+`DiagramMode.TRANSPARENT` when writing a visual guide:
 
 ```python
 repertoire.write_guide("method.md", diagram_mode=c.DiagramMode.OPPOSITE_CORNERS,
@@ -1325,7 +1344,9 @@ Dark grey identifies guaranteed solved blocks. Face-center stickers and the
 current target use the full selected face colors; all other stickers are white, including blocks
 with guaranteed placement but unfinished orientation. Initial and implied guarantees count. Placement
 cases show all possible target orientations together. Opposite-corner mode
-uses UFR and BLD views. Transparent mode looks along the UFR diagonal with an
+uses opaque orthographic UFR and BLD views. Single-corner mode keeps only the
+first, UFR view; orient the input bandage so UFR is the most useful corner to
+see. Transparent mode looks along the UFR diagonal with an
 orthographic camera. Centers and solved grey stickers remain opaque;
 unfinished non-target stickers stay white and transparent.
 These diagrams need the optional `plots` extra.
@@ -1350,9 +1371,9 @@ guaranteed block roles follow the cube through the displayed rotation.
 `draw_cubes` accepts individual `sticker_colors` in 54-facelet URFDLB order
 (one sequence per State for a gallery) and `exterior_only=True` to omit interior
 surfaces. The **Algorithms** table precedes the stages, with **Turn sequence**,
-**Block action**, and **Structure** columns. Its structured notation shows
+**Block action**, and **Algorithm** columns. Its structured notation shows
 exact powers, conjugates and commutators via `structured_move_notation`, alongside
-expanded turns. Preparation, color legends, repeated footprint instructions,
+expanded turns. Preparation, color legends, repeated location instructions,
 move counts and witness provenance are omitted from the guide; portable
 records retain provenance for replay and validation.
 Conjugation uses `S^A = A⁻¹ S A`; nontrivial exponents are grouped, as in
@@ -1537,8 +1558,8 @@ accepts such a mapping for custom or reused layouts.
 With `show_shapes=True`, vertex pictures use white for arbitrary stickers and
 face colors for the exterior stickers on blocks containing face centers.
 White face colors appear black in these pictures to match their graph edges.
-`diagram_mode` selects opposite-corner or transparent views. Picture size is
-proportional to directed incident degree, counting a loop twice; the `start`
+`diagram_mode` selects opposite-corner, single-corner or transparent views.
+Picture size is proportional to directed incident degree, counting a loop twice; the `start`
 vertex (default ID `0`, also accepts a shape) always has the maximum size.
 Degree-two vertices keep their incident edges but display neither a marker nor
 a shape picture, except for the starting vertex.

@@ -46,16 +46,16 @@ block `b`, plus orientation of the anonymous occupants of a slot region `S`:
 
 | Feature | Observation from a `BlockAction` | Solved value |
 | --- | --- | --- |
-| `place_block` | `destinations[b]`: the occupied reference footprint | `b` |
-| `solve_block` | `(destinations[b], phases[b])`: footprint and observable orientation in the inventory frames | `(b, 0)` |
-| `orient_slots` | One occupant phase per destination slot in `S`, in inventory order; identities and placements are ignored | An all-zero phase tuple |
+| `place_block` | `destinations[b]`: the occupied reference location | `b` |
+| `solve_block` | `(destinations[b], phases[b])`: location and observable orientation in the inventory frames | `(b, 0)` |
+| `orient_slots` | One occupant orientation per destination slot in `S`, in inventory order; identities and placements are ignored | An all-zero orientation tuple |
 | `place_blocks` | One destination per named component, in inventory order | The ordered reference indices |
-| `solve_blocks` | Interleaved destination and phase for each named component | Interleaved reference indices and zero phases |
+| `solve_blocks` | Interleaved destination and orientation for each named component | Interleaved reference indices and zero orientations |
 | `occupy_slots` | Sorted destinations of the named component identities | Their sorted reference indices |
 | `place_blocks_up_to_alignment` | A transported set of ordered placement rows for the allowed physical adjustment group | The reference placement rows of that same group |
 
-These observations use the exact action and phase conventions documented in
-[block-actions.md](block-actions.md). A phase is a modular coordinate in the
+These observations use the exact action and orientation conventions documented in
+[block-actions.md](block-actions.md). An orientation reading is a modular coordinate in the
 declared source and destination frames; it is not a general instruction to
 twist a block independently of the rest of the puzzle. Blocks with orientation
 order one need placement alone. Unmarked center spin and independent virtual
@@ -67,13 +67,13 @@ cyclic orientation order. The region must be invariant under the **entire
 preceding subgroup**: unfinished pieces may move within it, but may not enter
 from an unobserved slot. Both backends check this condition. These stages can
 finish several orientations together while leaving their placements free.
-They support the general block phase orders two, three and four.
+They support the general block orientation orders two, three and four.
 
 The collection kinds name unions of complete actual inventory components.
 `solve_blocks` can finish a corner and its matching edge together without
 pretending they are physically fused. Different footprints and orientation
 orders can share one collection. `occupy_slots` promises region membership,
-allowing internal permutations and phases; it differs from fixing each
+allowing internal permutations and orientations; it differs from fixing each
 component's own destination. These goals work in both explicit and symbolic
 backends, portable methods, textual guides and collection diagrams.
 `place_blocks_up_to_alignment` retains the shared arrangement while permitting
@@ -92,7 +92,7 @@ Guide tables display each observer. Recognition diagrams and the older
 repertoire/algorithm optimizers currently reject multiple independent observers
 explicitly. Recognition-aware policy optimization remains a later increment.
 
-A placement-first chain uses `place_block` features until all footprints are
+A placement-first chain uses `place_block` features until all locations are
 fixed, then uses `solve_block` features to remove the remaining orientations.
 A block-first chain uses `solve_block` throughout. Mixed chains can compare
 both choices. Features that impose no new restriction have index one and are
@@ -276,7 +276,7 @@ kernel basis. Each stage exposes `feature`, `block_name`, `order_before`,
 `order_after`, `index`, `observations`, `solved_observation` and
 `implied_features`. Placement observations are one-element tuples
 `(destination,)`; full-block observations are `(destination, phase)`.
-Slot-orientation observations are phase tuples in stable inventory slot order.
+Slot-orientation observations are orientation tuples in stable inventory slot order.
 Their `block_index` is a tuple of slot indices; the original block features
 retain an integer. JSON encodes observations and slot-index tuples as arrays.
 Cases include the already-solved observation.
@@ -401,14 +401,14 @@ case correction without invoking GAP. The fingerprint detects content
 changes; saved certification labels do not replace these checks.
 
 `method.write_guide(path=None)` returns Markdown and optionally writes it. The
-guide explains the reference convention, footprint/sticker or slot-phase recognition cues,
+guide explains the reference convention, location/sticker or slot-orientation recognition cues,
 stage progress, complete case tables, shared algorithm definitions and physical
 move sequences.
 A cap stop produces an incomplete report rather than a claimed solution.
 This guide is a computational baseline. For visual recognition cases, use the
 repertoire guide described below. Human review is separate from coverage.
 
-`orient_slots` recognition reads the complete phase pattern at the named
+`orient_slots` recognition reads the complete orientation pattern at the named
 slots, independently of the occupants' identities and placements. These
 features work with method application, algorithm improvement, shared-template
 policies and portable method/repertoire loading. Loading rechecks the invariant
@@ -507,8 +507,8 @@ search limits do not change completed/certified method coverage.
 
 Both backends also propose anonymous orientation targets from the
 available algorithm actions. Discovery identifies invariant slot regions under the
-entire current subgroup, joins regions whose phases an algorithm changes
-together, and searches their full reachable phase patterns. A target records
+entire current subgroup, joins regions whose orientations an algorithm changes
+together, and searches their full reachable orientation patterns. A target records
 the available algorithms that preserve its solved condition as well as the
 forward recipes that repair its cases. Missing cases have no finite stage
 mean; observation limits discard oversized targets without truncating them.
@@ -810,7 +810,7 @@ the same whole-correction boundary convention still applies.
 Recognition compression retains the complete observation cases as its source
 of truth. Grouped inverse, power and repeated-action rules are accepted only
 after their expansion has been checked against all cases they replace. The
-compressed guide still gives concrete footprint and sticker cues and identifies
+compressed guide still gives concrete location and sticker cues and identifies
 the complete correction to execute. A shorter rule list does not remove
 reachable observations from the domain or imply that recognition itself has
 become easier for a person. Kernels are not assumed central, and corrections
@@ -873,9 +873,12 @@ repertoire.write_guide("method.md", diagram_mode=diagram_mode, face_colors=face_
 ```
 
 `DiagramMode.OPPOSITE_CORNERS` gives opaque orthographic views from UFR and BLD.
+`DiagramMode.SINGLE_CORNER` keeps only the UFR view, the first view from
+opposite-corner mode. Orient the input bandage so UFR is the most useful corner
+to see.
 `DiagramMode.TRANSPARENT` uses an orthographic camera looking along the UFR
 diagonal. Face centers and solved grey stickers remain opaque; unfinished
-non-target stickers stay white and transparent. Both modes embed
+non-target stickers stay white and transparent. All modes embed
 standalone PNGs for every exact case, including the already-correct case.
 Placement-only cases group all attainable orientations under one instruction.
 Their skip case means already placed; the sticker orientation can still require
@@ -890,13 +893,13 @@ physical block identity through its current placement, rather than whatever
 looks solved in one example. Current-stage consequences join the appropriate
 solved set in the following stage.
 
-For an `orient_slots` target, blue marks one intrinsic reference facet of each
-occupant; the remaining selected facets have a neutral shade. The guide names
-the reference marker stickers and prints each slot's phase for the case. The
-marker position distinguishes every cyclic phase, including order four, while
+For an `orient_slots` target, blue marks one intrinsic reference sticker of each
+occupant; the remaining selected stickers have a neutral shade. The guide names
+the reference stickers and prints each slot's orientation for the case. The
+sticker position distinguishes every cyclic orientation, including order four, while
 the rest of the occupant's colors and its identity remain hidden. Every
-compatible occupant uses the same canonical-template marker, so equal slot
-phase patterns have equal marker pictures even when the pieces are permuted.
+compatible occupant uses the same canonical-template reference sticker, so equal slot
+orientation patterns produce identical diagrams even when the pieces are permuted.
 The convention remains the declared inventory frame.
 
 `face_colors` accepts a mapping from U/R/F/D/L/B to Matplotlib colors; omitted
@@ -918,9 +921,9 @@ Recipes with incompatible nested frames receive their own algorithm definition
 with an exact expanded word, keeping every definition in **Algorithms**.
 
 The **Algorithms** section appears before the stages as a table with **Turn
-sequence**, **Block action**, and **Structure** columns. Identifiers appear
+sequence**, **Block action**, and **Algorithm** columns. Identifiers appear
 beside their expanded turns. The guide goes directly into the stages, without
-preparation or recognition-color sections or repeated footprint instructions.
+preparation or recognition-color sections or repeated location instructions.
 Physical structured notation uses `S^A` to mean
 A⁻¹ S A, `[A, B]` means A B A⁻¹ B⁻¹, and `(A)n` repeats A. Compound exponents
 are parenthesized, as in `S^(X Y Z)`. For example,
@@ -1147,7 +1150,7 @@ The portable artifact retains those entry certificates; application refuses
 states outside the declared domain before executing any correction.
 
 Guides name the used execution vocabulary `A`, `B`, `C`, and so on. The
-Algorithms table's Structure column gives each correction as calls to those
+Algorithm column gives each correction as calls to those
 names, read from left to right: `B⁻¹ C⁻¹` calls the two inverses, and `A⁻³`
 repeats the inverse of A three times. Setup recipes use `[B: A]` for B, A,
 then undo B. These display names leave the stored teaching IDs and physical
@@ -1197,7 +1200,7 @@ cost convention. This is a suffix method, with F2L already solved.
 
 `discover_palette_profiles(inventory, palette, ambient_group=...)` examines
 the complete recipes' endpoint actions. Its immutable records describe fixed
-poses, fixed placements, zero phases, invariant slot sets, shared protected
+poses, fixed placements, zero orientations, invariant slot sets, shared protected
 regions and candidate goals. Ambient certification excludes components already
 fixed throughout the reference group from the common workspace. Profiles
 suggest a starting condition; they do not establish a way to reach it.
@@ -1430,25 +1433,25 @@ Derived powers and restoring compositions are profiled before stage selection.
 expresses full-pose completion up to a small residual physical action subgroup.
 The supplied family must be a complete group of endpoint permutations, preserve
 the named region and belong to the entire preceding subgroup. Its transported
-pose-set observer includes orientation, so it can express equal relative phase
-without requiring zero phase. Duplicate projected families share one proposal.
+pose-set observer includes orientation, so it can express equal relative orientation
+without requiring zero orientation. Duplicate projected families share one proposal.
 
 The guide derives certified conditional instructions from complete observation
-fibers. Visible placement and phase readings choose a complete operation;
+fibers. Visible placement and orientation readings choose a complete operation;
 repetition and re-observation strictly decrease a finite progress rank. The
 renderer keeps original body names A, B, C… and displays exact Block action
-definitions and Structure in letters, inverses and powers. Phase marker tables
-give physical facet positions for the readings. These rules retain the saved
+definitions and an Algorithm column using letters, inverses and powers. Reference sticker tables
+give physical sticker positions for the readings. These rules retain the saved
 policy's original-body calls; instruction boundaries can lose turn cancellation,
 so commanded and fully simplified physical costs are reported separately.
 
 On Alcatraz, automatic discovery now finds the unseeded ladder
 **324 → 54 → 6 → 3 → 1**, with **6, 9, 2, 3** observations. It places the three
-fused pairs (their footprint fixes their full pose), prepares the singleton
-corners at home with equal phase, orients the singleton edges using A⁻¹, then
-finishes the common corner phase with A² or A⁻². This keeps five learned bodies.
+fused pairs (their location fixes their full pose), prepares the singleton
+corners at home with equal orientation, orients the singleton edges using A⁻¹, then
+finishes the common corner orientation with A² or A⁻². This keeps five learned bodies.
 The alternative order uses A⁻¹ while the corners still have a common residual
-phase, then a power of A that preserves the finished edges. No Alcatraz piece
+orientation, then a power of A that preserves the finished edges. No Alcatraz piece
 identities, goals, ordering or cases are supplied to production discovery.
 
 The [compact-method validation script](../v2/research/validate_compact_automatic_methods.py)
@@ -1461,7 +1464,7 @@ The notebooks keep only bandage input and guide generation; experiments live
 in research scripts.
 
 The largest Alcatraz stage has nine observations. Its preparation instructions
-use a 3×3 grid of one corner's current footprint and one relative-phase reading;
+use a 3×3 grid of one corner's current location and one relative-orientation reading;
 the full method has ten distinct instruction forms across four stages.
 Exhaustive complete-word cost averages 43.24 HTM with worst 79. Stored-stage
 cost before cancellation between stages averages 47.56 HTM with worst 80;
@@ -1536,6 +1539,38 @@ The guide describes workspace entry, available operations and the complete
 continuation cases. First discovery can take several minutes; later calls
 reuse the revalidated local cache. Native scramble experiments and detailed
 performance measurements remain in the research probes and acceptance reports.
+
+Use `method.write_guide(recognition_diagrams=True)` to add a **Diagrammatic guide:**
+at the bottom of each stage. Numbered recognition cases are tried in order,
+starting with Ready. Each case lists the same Algorithm as the written guide,
+with its full physical turn sequence for convenience. Earlier cases encode
+otherwise branches, so later cases need only show their positive conditions.
+This ordering is checked against every certified observation. A simple condition
+such as one piece occupying a slot gets one diagram, covering all its matching
+configurations. Grid cases retain the written grid's coordinates and order.
+Opaque opposite-corner UFR and BLD views expose all exterior stickers and retain
+fused-block boundaries.
+
+Fully colored pieces specify an exact pose, or a location that uniquely fixes
+orientation. Small colored squares on grey stickers identify pieces with an
+ignored orientation. Anonymous and relative orientations color only the reference
+stickers; their piece or slot labels include the pictured orientation readings.
+The diagram's upfront condition determines what to compare, without referring
+back to orientation tables. Relative cases show their equivalent common-orientation
+arrangements together in one picture. There are no footnotes beneath pictures.
+Region outlines express collective occupancy, and explicit equivalent arrangements
+show cases defined by more general remaining action families. Unobserved sticker
+colors are hidden; darker grey indicates full poses guaranteed by the earlier stages.
+
+The default scheme is U yellow, R red, F blue, D white, L orange and B green.
+Use `face_colors` to override it. The mapping accepts any URFDLB subset and
+uses the default for other faces; it changes every sticker layer consistently.
+
+The stage instructions, certificates, learned bodies and correction costs are
+unchanged. Omit the flag to return to the same guide without pictures. The optional
+`plots` dependencies are needed only when drawing diagrams, and the Markdown embeds
+standalone PNGs. Constructive workspace entry keeps its existing computational
+coverage qualification; diagrams cover its certified continuation.
 
 ## Later deliveries
 

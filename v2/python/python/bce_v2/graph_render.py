@@ -227,8 +227,7 @@ def _palette_rgb(face_colors):
     from matplotlib.colors import to_rgb
     palette = {face: to_rgb(color) for face, color in _palette(face_colors).items()}
     # Face stickers and edges share the same white-to-black graph palette.
-    white = {(1., 1., 1.), to_rgb(_palette(None)["U"])}
-    edges = {face: (0., 0., 0.) if rgb in white else rgb
+    edges = {face: (0., 0., 0.) if max(rgb) - min(rgb) < .01 and min(rgb) >= .94 else rgb
              for face, rgb in palette.items()}
     return edges, edges
 
@@ -493,8 +492,9 @@ def draw_bandage_graph(value, *, layout="symmetry", show_shapes=False,
     can be overridden independently. Arbitrary blocks are white. Exterior
     stickers of blocks containing fixed face centers use the displayed face's palette,
     with white face colors rendered black to match their edges.
-    ``diagram_mode`` selects two opposite corners or one transparent view.
-    Face colors also color edges; white (including the default near-white U)
+    ``diagram_mode`` selects two opaque opposite corners, one opaque UFR
+    corner (``single-corner``), or one transparent view.
+    Face colors also color edges; white (including the default near-white D)
     becomes black. ``edge_labels=True`` adds black Singmaster letters. ``pos`` accepts
     precomputed/manual coordinates for every full-view vertex, or just the
     selected local vertices. Partial explorations are clearly titled.

@@ -126,7 +126,11 @@ class PaletteRenderTests(unittest.TestCase):
         procedure, = certified_procedure(method)
         self.assertEqual(procedure.rule_count, 2)
         guide = palette_method_guide(method)
-        self.assertIn("phase of", guide)
+        self.assertIn("orientation of", guide)
+        self.assertIn("Reference orientation stickers:", guide)
+        self.assertIn("listed reference sticker", guide)
+        self.assertIn("Orientation 0", guide)
+        self.assertNotRegex(guide, r"(?i)\b(?:footprints?|phases?|markers?|facets?|structure|commit to)\b")
         self.assertIn("A⁻¹", guide)
         self.assertEqual(max(procedure.htm_costs), 2)
 
@@ -149,7 +153,7 @@ class PaletteRenderTests(unittest.TestCase):
 
     def test_partial_phase_family_cue_retains_the_common_phase_coset(self):
         from bce_v2.human_chains import _observation, _resolve_feature
-        from bce_v2.human_render import _feature_cue
+        from bce_v2.human_render import _feature_cue, recognition_wording
 
         inventory = self.analysis.block_inventory
         block = next(block for block in inventory.blocks if block.orientation_order == 4)
@@ -161,13 +165,13 @@ class PaletteRenderTests(unittest.TestCase):
         goal = _observation(inventory.identity(), handle, feature.kind)
         other = _observation(inventory.action(c.State(self.reference).apply("U")), handle, feature.kind)
         self.assertNotEqual(goal, other)
-        goal_cue = _feature_cue(feature, goal, inventory)
-        other_cue = _feature_cue(feature, other, inventory)
+        goal_cue = recognition_wording(_feature_cue(feature, goal, inventory))
+        other_cue = recognition_wording(_feature_cue(feature, other, inventory))
         self.assertNotEqual(goal_cue, other_cue)
-        self.assertIn("phase 0", goal_cue)
-        self.assertIn("phase 2", goal_cue)
-        self.assertIn("phase 1", other_cue)
-        self.assertIn("phase 3", other_cue)
+        self.assertIn("orientation 0", goal_cue)
+        self.assertIn("orientation 2", goal_cue)
+        self.assertIn("orientation 1", other_cue)
+        self.assertIn("orientation 3", other_cue)
 
     def test_phase_frame_table_matches_native_marker_positions(self):
         from bce_v2.human_diagrams import _orientation_marker_points

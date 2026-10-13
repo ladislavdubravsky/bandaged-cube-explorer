@@ -271,7 +271,8 @@ class HumanRepertoire:
         ``face_colors`` maps U/R/F/D/L/B to Matplotlib colors and affects
         diagrams only. Omitted faces retain the standard palette. Leave
         ``diagram_mode`` unset for a text guide without plotting dependencies,
-        or choose ``DiagramMode.OPPOSITE_CORNERS`` / ``DiagramMode.TRANSPARENT``.
+        or choose ``DiagramMode.OPPOSITE_CORNERS``, ``DiagramMode.SINGLE_CORNER``
+        (opaque UFR only), or ``DiagramMode.TRANSPARENT``.
         """
         from .human_repertoire_render import repertoire_guide
         guide = repertoire_guide(self, diagram_mode=diagram_mode, face_colors=face_colors)

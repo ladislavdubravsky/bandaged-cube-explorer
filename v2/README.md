@@ -16,6 +16,19 @@ The [example index](examples/README.md) separates the original
 bandage-to-guide workflow; optimal colored search reports complete distance
 statistics for small puzzles.
 
+For diagrams of the recognition cases in an action-family guide, call
+`method.write_guide(recognition_diagrams=True)`. A **Diagrammatic guide:** at the
+bottom of each stage lists numbered recognition cases in order, including Ready.
+Each case gives its Algorithm and full turn sequence, then opposite-corner 3D views.
+A simple condition gets one diagram covering all of its certified configurations.
+Full colors identify exact poses and pieces whose location fixes their orientation;
+small colored squares identify pieces with an ignored orientation. Reference
+stickers carry orientation readings directly. The default scheme is U yellow,
+R red, F blue, D white, L orange and B green; `face_colors` overrides any face.
+The stage instructions stay the same. Omit the flag for the compact
+text guide. Workspace methods illustrate their certified continuation; shape and
+workspace entry keep their computational coverage qualifications.
+
 Open [Alcatraz.ipynb](examples/stabilizer-chain-methods/Alcatraz.ipynb) in VS Code for an interactive
 research session with inline galleries. The workspace settings select
 `v2/.venv` and activate terminals automatically. Install the recommended Python
@@ -27,10 +40,13 @@ with shared algorithm pieces, symmetry regrips and recognition diagrams. It
 calls `c.template_human_repertoire(analysis)`, selecting stage policies in the
 vocabulary actually taught. Set `preference` to `"memory"`, `"execution"` or
 `"recognition"` to compare tradeoffs; set `diagram_mode` to
-`c.DiagramMode.OPPOSITE_CORNERS` or `c.DiagramMode.TRANSPARENT` and edit
+`c.DiagramMode.OPPOSITE_CORNERS`, `c.DiagramMode.SINGLE_CORNER` or
+`c.DiagramMode.TRANSPARENT` and edit
 `face_colors` before evaluating the cell. Face colors accept names such as
 `"blue"` and `"orange"`. Solved blocks are dark grey, with face-center stickers
-and the current target in the full selected face colors. Transparent mode looks
+and the current target in the full selected face colors. Single-corner mode
+shows only the opaque orthographic UFR view from opposite-corner mode; orient
+the input bandage so UFR is the most useful corner to see. Transparent mode looks
 along the UFR diagonal and makes unfinished non-target stickers faint white.
 The guide teaches complete templates and shared piece recipes before the stages, then
 shows each case recipe in its required grip. No renderer-refresh call is needed

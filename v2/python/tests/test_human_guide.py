@@ -26,14 +26,14 @@ class HumanGuideTests(unittest.TestCase):
         self.assertEqual(guide.count("## Algorithms\n"), 1)
         self.assertLess(guide.index("## Algorithms\n"), guide.index("## Stage 1:"))
         definitions = guide[:guide.index("## Stage 1:")]
-        self.assertEqual(definitions.count("| Turn sequence | Block action | Structure |"), 1)
+        self.assertEqual(definitions.count("| Turn sequence | Block action | Algorithm |"), 1)
         for algorithm in algorithms:
             self.assertIn(f"| `{algorithm.id}: {algorithm.turn_sequence}` | "
                           f"`{algorithm.block_action.notation}` | "
                           f"`{c.structured_move_notation(algorithm.turn_sequence)}` |", definitions)
         for removed in ("HTM", "QTM", "Witness provenance", "Original loop definitions",
                         "Expression:", "Shared master definitions", "Shared correction algorithms",
-                        "Before starting", "Recognition colors", "Match the footprint",
+                        "Before starting", "Recognition colors", "Match the location",
                         "Restore the reference bandage shape first", "Hold the cube as pictured"):
             self.assertNotIn(removed, guide)
 

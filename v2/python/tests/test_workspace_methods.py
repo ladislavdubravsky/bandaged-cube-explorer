@@ -118,7 +118,7 @@ class WorkspaceMethodTests(unittest.TestCase):
         with patch("subprocess.run", side_effect=AssertionError("guide rendering is offline")):
             guide = self.method.write_guide()
         self.assertEqual(guide.count("## Execution vocabulary"), 1)
-        self.assertIn("| Structure | Turn sequence | Block action |", guide)
+        self.assertIn("| Algorithm | Turn sequence | Block action |", guide)
         self.assertIn(f"| `A` | `{self.action.turn_sequence}` | `{self.action.block_action.notation}` |", guide)
         self.assertNotIn("palette:", guide)
         self.assertNotIn("clockwise", guide)

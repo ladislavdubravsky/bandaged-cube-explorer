@@ -2,7 +2,8 @@
 
 from .block_actions import _CELL_POINTS
 from .human_render import (_algorithm_table, _feature_name, _orientation_cue,
-                           _orientation_explanation, _recognition_cue, _sticker)
+                           _orientation_explanation, _recognition_cue, _sticker,
+                           recognition_wording)
 from .human_diagram_modes import DiagramMode
 from .human_instruction_render import instruction_presentation
 
@@ -293,7 +294,7 @@ def repertoire_guide(repertoire, path=None, *, diagram_mode: DiagramMode | None 
                       + "; ".join(_feature_name(feature, inventory) for feature in method.skipped_features) + ".", ""])
     lines.extend(["After the final stage every modeled corner and edge sticker is solved. "
                   "Unmarked center spin and independent virtual-core spin are outside this model.", ""])
-    guide = "\n".join(lines)
+    guide = recognition_wording("\n".join(lines))
     if path is not None:
         Path(path).write_text(guide, encoding="utf-8")
     return guide

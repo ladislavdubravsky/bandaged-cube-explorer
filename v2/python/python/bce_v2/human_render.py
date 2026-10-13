@@ -1,11 +1,47 @@
 """A concrete initial guide for certified computational human-method baselines."""
 
+import re
+
 from .block_actions import _CELL_POINTS, _POINTS, cell_name
 from .human_move_notation import structured_move_notation
 
 
 _FACES = {(0, 0, 1): "U", (1, 0, 0): "R", (0, -1, 0): "F",
           (0, 0, -1): "D", (-1, 0, 0): "L", (0, 1, 0): "B"}
+
+
+def recognition_wording(text):
+    """Use familiar reader terms without changing policy selection or image bytes.
+
+    Internal observer labels retain their existing lengths: they participate in
+    the certified procedure's deterministic tie-breaking. Only presentation is
+    translated, including code-styled recognition cues. Native API identifiers
+    containing underscores and embedded image data remain intact.
+    """
+    words = {"footprint": "location", "footprints": "locations",
+             "phase": "orientation", "phases": "orientations",
+             "structure": "algorithm", "marker": "sticker", "markers": "stickers",
+             "facet": "sticker", "facets": "stickers"}
+
+    def replace(match):
+        word = match.group()
+        replacement = words[word.lower()]
+        if word.isupper():
+            return replacement.upper()
+        return replacement.capitalize() if word[0].isupper() else replacement
+
+    def reader_text(part):
+        part = re.sub(r"\bCommit to\s+([a-z])", lambda match: match[1].upper(), part)
+        # Both terms name the same sticker; translating them separately would
+        # produce the redundant expression "sticker stickers".
+        part = re.sub(r"\b(phase|orientation)-marker facets?\b", r"\1 stickers", part)
+        part = re.sub(r"\b(?:marker facets?|facet markers?)\b", "stickers", part)
+        return re.sub(r"\b(?:footprints?|phases?|structure|markers?|facets?)\b",
+                      replace, part, flags=re.IGNORECASE)
+
+    sections = re.split(r"(data:image/[^\s;,]+;base64,[A-Za-z0-9+/=]+)", text)
+    return "".join(part if index % 2 else reader_text(part)
+                   for index, part in enumerate(sections))
 
 
 def _sticker(point):
@@ -142,7 +178,7 @@ def method_guide(method, *, domain_features=None, algorithm_structures=None):
                       f"{method.group_order:,}; the requested element limit is "
                       f"{method.max_group_elements}.", "",
                       "This artifact has no correction algorithms or case-coverage claim.", ""])
-        return "\n".join(lines)
+        return recognition_wording("\n".join(lines))
     inventory = method.inventory
     scope = (f"This computational baseline covers all **{method.group_order:,} reachable colored states** "
              "whose bandage shape is already the declared reference shape.")
@@ -184,7 +220,7 @@ def method_guide(method, *, domain_features=None, algorithm_structures=None):
     if not method.stages:
         lines.extend(["The reference group is trivial: every reachable colored state in this "
                       "reference shape is already solved. No algorithms are needed.", ""])
-        return "\n".join(lines)
+        return recognition_wording("\n".join(lines))
     for stage in method.stages:
         orientation = stage.feature.kind == "orient_slots"
         general = bool(stage.recognition_features) or stage.feature.kind in (
@@ -256,4 +292,4 @@ def method_guide(method, *, domain_features=None, algorithm_structures=None):
                                                for feature in method.skipped_features) + ".", ""])
     lines.extend(["After the final stage, every modeled corner and edge sticker is solved. "
                   "Unmarked center spin and independent virtual-core spin are outside this model.", ""])
-    return "\n".join(lines)
+    return recognition_wording("\n".join(lines))

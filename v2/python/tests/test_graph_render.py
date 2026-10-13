@@ -405,6 +405,16 @@ class BandageGraphRenderTests(unittest.TestCase):
             self.assertEqual(tuple(edges[f"bandage-edge-0-0-{face}"].get_edgecolor()), expected)
         self.assertEqual(palette["U"], "white", "drawing must preserve the caller's mapping")
 
+    def test_default_graph_colors_blacken_white_down_without_changing_other_faces(self):
+        from matplotlib.colors import to_rgba
+        expected = {"U": "#ffd43b", "R": "#d62828", "F": "#2463d4",
+                    "D": "black", "L": "#ff8c22", "B": "#2a9d45"}
+        figure = c.draw_bandage_graph(c.Shape(), edge_labels=True)
+        edges = self.artists(figure, "bandage-edge-")
+        for face, color in expected.items():
+            self.assertEqual(tuple(edges[f"bandage-edge-0-0-{face}"].get_edgecolor()),
+                             to_rgba(color))
+
     def test_center_block_diagrams_color_displayed_faces_and_other_blocks_white(self):
         from matplotlib.colors import to_rgb
         palette = dict(zip("URFDLB", ("magenta", "cyan", "lime", "gold", "orange", "navy")))
@@ -428,6 +438,42 @@ class BandageGraphRenderTests(unittest.TestCase):
         self.assertEqual(fused_colors[to_rgb(palette["U"])], plain_colors[to_rgb(palette["U"])] + 1)
         self.assertEqual(fused_colors[to_rgb(palette["F"])], plain_colors[to_rgb(palette["F"])] + 1)
         self.assertEqual(fused_colors[(1., 1., 1.)], 46)
+
+    def test_single_corner_matches_first_opposite_view_and_is_opaque(self):
+        import numpy as np
+        from matplotlib.colors import to_rgb
+        palette = dict(zip("URFDLB", ("magenta", "cyan", "lime", "gold", "orange", "navy")))
+        opposite = c.draw_bandage_graph(c.Shape(), show_shapes=True, face_colors=palette)
+        reference = self.artists(opposite, "bandage-shape-0-UFR-")
+
+        def normalized(points):
+            points = np.asarray(points)
+            low, high = points.reshape(-1, 2).min(axis=0), points.reshape(-1, 2).max(axis=0)
+            return (points - (low + high) / 2) / (high[0] - low[0])
+
+        for mode in (c.DiagramMode.SINGLE_CORNER, "single-corner"):
+            with self.subTest(mode=mode):
+                figure = c.draw_bandage_graph(c.Shape(), show_shapes=True,
+                                              face_colors=palette, diagram_mode=mode)
+                artists = self.artists(figure, "bandage-shape-")
+                self.assertEqual(set(artists), {
+                    "bandage-shape-0-UFR-surface", "bandage-shape-0-UFR-outline"})
+                surface = artists["bandage-shape-0-UFR-surface"]
+                outline = artists["bandage-shape-0-UFR-outline"]
+                self.assertEqual(len(surface.get_paths()), 27)
+                self.assertEqual(set(map(tuple, surface.get_facecolor()[:, :3])),
+                                 {to_rgb(palette[face]) for face in "UFR"} | {(1., 1., 1.)})
+                np.testing.assert_array_equal(surface.get_facecolor()[:, 3], 1.)
+                self.assertEqual(outline.get_alpha(), 1.)
+                np.testing.assert_allclose(surface.get_facecolor(),
+                                           reference[surface.get_gid()].get_facecolor())
+                np.testing.assert_allclose(
+                    normalized([path.vertices for path in surface.get_paths()]),
+                    normalized([path.vertices for path in
+                                reference[surface.get_gid()].get_paths()]), atol=1e-12)
+                np.testing.assert_allclose(normalized(outline.get_segments()),
+                                           normalized(reference[outline.get_gid()].get_segments()),
+                                           atol=1e-12)
 
     def test_partial_graphs_have_explicit_partial_title(self):
         graph = c.explore(POCKET, max_vertices=12)

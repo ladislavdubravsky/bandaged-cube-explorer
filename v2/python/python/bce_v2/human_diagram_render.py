@@ -20,8 +20,8 @@ def validate_diagram_mode(mode):
     try:
         return DiagramMode(mode)
     except (TypeError, ValueError):
-        raise ValueError("diagram_mode must be DiagramMode.TRANSPARENT or "
-                         "DiagramMode.OPPOSITE_CORNERS") from None
+        raise ValueError("diagram_mode must be " + ", ".join(
+            f"DiagramMode.{member.name}" for member in DiagramMode)) from None
 
 
 def validate_face_colors(face_colors=None):
@@ -121,6 +121,7 @@ def recognition_diagram_figure(diagrams, *, diagram_mode: DiagramMode = DiagramM
     other stickers are faint white.
     Interior block surfaces are omitted to preserve their color contrast.
     Opposite-corner mode gives opaque orthographic UFR and BLD views.
+    Single-corner mode gives only the opaque orthographic UFR view.
     rotation changes the pictured starting grip, keeping physical sticker
     hues and block roles while face labels name turns in the pictured frame.
     """
@@ -132,14 +133,15 @@ def recognition_diagram_figure(diagrams, *, diagram_mode: DiagramMode = DiagramM
         raise ValueError("a recognition picture must contain one case")
     palette = validate_face_colors(face_colors)
     transparent = diagram_mode is DiagramMode.TRANSPARENT
-    views = ("UFR",) if transparent else ("UFR", "BLD")
+    views = ("UFR", "BLD") if diagram_mode is DiagramMode.OPPOSITE_CORNERS else ("UFR",)
+    columns = 2 if len(views) == 2 else min(3, len(diagrams))
     overrides = tuple(recognition_diagram_colors(d, face_colors=palette,
                                                 diagram_mode=diagram_mode) for d in diagrams)
     figure = draw_cubes([d.state for d in diagrams],
         sticker_colors=overrides[0] if len(diagrams) == 1 else overrides,
         alpha=0.48 if transparent else 1, exterior_only=True,
         views=views, size=3.0, linewidth=1.6,
-        ncol=min(3, len(diagrams)) if transparent else 2, rotation=rotation)
+        ncol=columns, rotation=rotation)
     for index, axis in enumerate(figure.axes):
         if transparent:
             _style_transparent_axis(axis, diagrams[index], index, overrides[index], rotation)
@@ -154,7 +156,6 @@ def recognition_diagram_figure(diagrams, *, diagram_mode: DiagramMode = DiagramM
         if len(diagrams) > 1:
             label = f"Orientation {index // len(views) + 1} · {label}"
         axis.set_title(label, fontsize=10, pad=0)
-    columns = min(3, len(diagrams)) if transparent else 2
     rows = (len(figure.axes) + columns - 1) // columns
     if rows > 1:
         # Cube galleries otherwise have no row gap. Leave room for each next
@@ -163,7 +164,8 @@ def recognition_diagram_figure(diagrams, *, diagram_mode: DiagramMode = DiagramM
         figure.set_size_inches(width, height + 0.6 * (rows - 1))
         figure.subplots_adjust(hspace=0.2)
     from .human_diagram_stripes import add_white_sticker_stripes
-    add_white_sticker_stripes(figure, diagrams, palette, rotation=rotation, transparent=transparent)
+    add_white_sticker_stripes(figure, diagrams, palette, rotation=rotation,
+                             transparent=transparent, views=views)
     return figure
 
 

@@ -78,7 +78,8 @@ class HumanDiagramRenderTests(unittest.TestCase):
         self.assertTrue(fused_solved_center, "check centers within larger solved blocks")
         self.assertEqual(len(set(_SOLVED_COLOR)), 1, "solved stickers must be neutral grey")
         self.assertLess(_SOLVED_COLOR[0], 1., "solved grey must differ from unfinished white")
-        self.assertEqual(normal["U"], to_rgb("#f7f7f7"))
+        self.assertEqual(normal["U"], to_rgb("#ffd43b"))
+        self.assertEqual(normal["D"], to_rgb("#f7f7f7"))
 
     def test_custom_face_palette_changes_only_displayed_physical_sticker_colors(self):
         from matplotlib.colors import to_rgb
@@ -119,12 +120,13 @@ class HumanDiagramRenderTests(unittest.TestCase):
 
     def test_diagram_mode_enum_lists_choices_and_preserves_string_compatibility(self):
         self.assertEqual(list(c.DiagramMode), [c.DiagramMode.TRANSPARENT,
-                                             c.DiagramMode.OPPOSITE_CORNERS])
+                                             c.DiagramMode.OPPOSITE_CORNERS,
+                                             c.DiagramMode.SINGLE_CORNER])
         for mode in c.DiagramMode:
             self.assertIs(validate_diagram_mode(mode), mode)
             self.assertIs(validate_diagram_mode(mode.value), mode)
             figure = recognition_diagram_figure(self.diagram, diagram_mode=mode)
-            self.assertEqual(len(figure.axes), 1 if mode is c.DiagramMode.TRANSPARENT else 2)
+            self.assertEqual(len(figure.axes), 2 if mode is c.DiagramMode.OPPOSITE_CORNERS else 1)
         for mode in ([], {}, 1, "net"):
             with self.assertRaisesRegex(ValueError, "DiagramMode.TRANSPARENT"):
                 validate_diagram_mode(mode)
@@ -310,6 +312,34 @@ class HumanDiagramRenderTests(unittest.TestCase):
         self.assertTrue(all(collection.get_alpha() == 1
                             for axis in figure.axes for collection in axis.collections))
 
+    def test_single_corner_matches_the_first_opaque_opposite_corner_view(self):
+        from mpl_toolkits.mplot3d.art3d import Line3DCollection
+        palette = {"U": "purple", "R": "pink", "F": "cyan"}
+        for mode in (c.DiagramMode.SINGLE_CORNER, "single-corner"):
+            for rotation in ("", "x y'"):
+                with self.subTest(mode=mode, rotation=rotation):
+                    reference = recognition_diagram_figure(
+                        self.diagram, face_colors=palette, rotation=rotation)
+                    figure = recognition_diagram_figure(
+                        self.diagram, diagram_mode=mode, face_colors=palette, rotation=rotation)
+                    self.assertEqual(len(figure.axes), 1)
+                    axis = figure.axes[0]
+                    front = reference.axes[0]
+                    self.assertEqual((axis.elev, axis.azim, axis.roll, axis._focal_length),
+                                     (front.elev, front.azim, front.roll, float("inf")))
+                    self.assertEqual(axis.get_title(), "UFR")
+                    self.assertEqual({text.get_text() for text in axis.texts}, set("UFR"))
+                    self.assertEqual(len(self.face_colors(axis)), 27)
+                    self.assertEqual(Counter(self.face_colors(axis)), Counter(self.face_colors(front)))
+                    self.assertTrue(all(collection.get_alpha() == 1 for collection in axis.collections))
+                    outlines = lambda view: [
+                        tuple(tuple(tuple(point) for point in segment)
+                              for segment in collection._segments3d)
+                        for collection in view.collections if isinstance(collection, Line3DCollection)]
+                    self.assertEqual(outlines(axis), outlines(front))
+        image = recognition_diagram_image(self.diagram, diagram_mode="single-corner")
+        self.assertTrue(base64.b64decode(image.split(",", 1)[1]).startswith(b"\x89PNG\r\n\x1a\n"))
+
     def test_transparent_view_keeps_solved_grey_and_full_centers_with_diagonal_projection(self):
         from math import atan, degrees, sqrt
         from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -360,6 +390,23 @@ class HumanDiagramRenderTests(unittest.TestCase):
             self.assertEqual(axis.get_title(),
                              f"Orientation {index // 2 + 1} · {('UFR', 'BLD')[index % 2]}")
 
+    def test_single_corner_orientation_gallery_uses_one_ufr_view_per_variant(self):
+        variants = next(variants for stage in self.recognition.method.stages
+                        if stage.feature.kind == "place_block"
+                        for variants in recognition_stage_diagrams(self.recognition, stage.number).values()
+                        if len(variants) > 1)
+        # Exercise a second gallery row as well as multiple distinct phases.
+        variants = (variants * 4)[:4]
+        reference = recognition_diagram_figure(variants)
+        figure = recognition_diagram_figure(variants, diagram_mode=c.DiagramMode.SINGLE_CORNER)
+        self.assertEqual(len(figure.axes), len(variants))
+        for index, axis in enumerate(figure.axes):
+            self.assertEqual(axis.get_title(), f"Orientation {index + 1} · UFR")
+            self.assertEqual(Counter(self.face_colors(axis)),
+                             Counter(self.face_colors(reference.axes[2 * index])))
+            self.assertEqual(axis.get_subplotspec().get_gridspec().ncols, 3)
+        self.assertGreater(figure.subplotpars.hspace, 0)
+
     def test_placement_skip_keeps_both_visibly_distinct_edge_flips(self):
         stage = self.template_pocket.method.stages[0]
         self.assertEqual((stage.feature.kind, stage.block_name), ("place_block", "Edge DL"))
@@ -379,7 +426,7 @@ class HumanDiagramRenderTests(unittest.TestCase):
         figure = recognition_diagram_figure(variants)
         self.assertEqual(len(figure.axes), 4, "each valid edge flip keeps both views")
 
-    def test_fused_pairs_have_no_sticker_seams_in_either_diagram_mode(self):
+    def test_fused_pairs_have_no_sticker_seams_in_any_diagram_mode(self):
         from mpl_toolkits.mplot3d.art3d import Line3DCollection, Poly3DCollection
 
         stage = self.template_pocket.method.stages[0]
@@ -484,8 +531,8 @@ class HumanDiagramRenderTests(unittest.TestCase):
             self.assertNotIn("then inspect again", guide)
             self.assertNotIn("## Before starting", guide)
             self.assertNotIn("## Recognition colors", guide)
-            self.assertNotIn("Match footprint", guide)
-            self.assertIn("| Turn sequence | Block action | Structure |", guide)
+            self.assertNotIn("Match location", guide)
+            self.assertIn("| Turn sequence | Block action | Algorithm |", guide)
             definitions = re.findall(r"^\| `(?:M|A)\d+: [^`]+` \| `[^`]+` \| `[^`]+` \|$",
                                      guide, re.MULTILINE)
             self.assertGreaterEqual(len(definitions), len(repertoire.macros))
@@ -497,7 +544,7 @@ class HumanDiagramRenderTests(unittest.TestCase):
         self.assertIn("### Complete cue lookup", text)
         self.assertNotIn("![Stage ", text)
         import re
-        self.assertIn("| Turn sequence | Block action | Structure |", text)
+        self.assertIn("| Turn sequence | Block action | Algorithm |", text)
         definitions = re.findall(r"^\| `(?:M|A)\d+: [^`]+` \| `[^`]+` \| `[^`]+` \|$",
                                  text, re.MULTILINE)
         self.assertGreaterEqual(len(definitions), len(self.pocket.macros))

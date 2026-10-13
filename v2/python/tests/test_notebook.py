@@ -28,7 +28,7 @@ class NotebookRendererRefreshTests(unittest.TestCase):
 
         refresh_renderers()
         guide = self.repertoire.write_guide()
-        self.assertIn("| Turn sequence | Block action | Structure |", guide)
+        self.assertIn("| Turn sequence | Block action | Algorithm |", guide)
         self.assertNotIn("Before starting", guide)
         self.assertNotIn("Recognition colors", guide)
 
