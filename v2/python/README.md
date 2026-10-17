@@ -10,10 +10,12 @@ add a **Diagrammatic guide:** at the bottom of each stage. Numbered recognition
 cases are tried in order, starting with Ready. Each gives its Algorithm and turn
 sequence, followed by opaque UFR and BLD 3D views. A simple condition can cover
 several certified observations with one diagram showing just the pieces being read.
-Exact poses and pieces whose location fixes orientation use full colors. Pieces
-with an ignored orientation use small colored squares on grey stickers. Anonymous
-and relative orientations show reference stickers with labeled readings directly
-on the cube. Region outlines and equivalent arrangements handle other observers.
+Concrete pieces with orientation readings use full colors, including each
+equivalent relative orientation and slot occupants identified by earlier stages.
+Their reference stickers keep labeled readings directly on the cube. Pieces
+with an ignored orientation use small colored squares on grey stickers; truly
+anonymous occupants show only their reference stickers in color. Region outlines
+and equivalent arrangements handle other observers.
 The default scheme is U yellow, R red, F blue, D white, L orange and B green.
 Pass `face_colors` alongside the flag to override any URFDLB face with a
 Matplotlib color.

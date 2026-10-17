@@ -27,9 +27,10 @@ class StageDiagramVariant:
     Block IDs name physical source identities. Sticker IDs name *current*
     positions in URFDLB's 54-facelet order. Slot labels name destination block
     indices, and each region is a tuple of current reference cell indices.
-    Fully colored blocks have observed poses; inset colors identify blocks
-    whose orientation is ignored. A reference sticker alone reads orientation
-    without exposing the occupant's other sticker colors.
+    Fully colored blocks have concrete identities and illustrated poses;
+    inset colors identify blocks whose orientation is ignored. Reference
+    stickers retain their readings on fully colored pieces. An anonymous
+    occupant exposes only its reference sticker.
     """
 
     state: State
@@ -119,12 +120,13 @@ def _uniform_relative(feature, indices, observation, inventory):
     return set(shifts) == set(range(order))
 
 
-def _fixed_blocks(inventory, group):
-    """Subgroup generators prove every displayed earlier full-pose guarantee."""
+def _fixed_blocks(inventory, group, *, orientation=True):
+    """Prove earlier full-pose or placement guarantees from subgroup generators."""
     actions = tuple(inventory.action(generator.permutation)
                     for generator in group.strong_generators)
     return tuple(index for index in range(len(inventory.blocks))
-                 if all(action.destinations[index] == index and not action.phases[index]
+                 if all(action.destinations[index] == index
+                        and (not orientation or not action.phases[index])
                         for action in actions))
 
 
@@ -133,10 +135,11 @@ def _reference_sticker(inventory, permutation, source):
     return _facelet(permutation[point])
 
 
-def _variant(method, permutation, records, solved):
+def _variant(method, permutation, records, solved, fixed_locations):
     inventory = method.inventory
     action = inventory.action(permutation)
     full, location, stickers, pieces, slots, regions, readings = set(), set(), set(), {}, {}, set(), {}
+    oriented = set()
     for feature, indices, observation in records:
         kind = feature.kind
         if kind in ("solve_block", "solve_blocks"):
@@ -145,11 +148,14 @@ def _variant(method, permutation, records, solved):
         elif kind == "orient_slots":
             sources = {destination: source for source, destination in enumerate(action.destinations)}
             for slot in indices:
-                sticker = _reference_sticker(inventory, permutation, sources[slot])
+                source = sources[slot]
+                oriented.add(source)
+                sticker = _reference_sticker(inventory, permutation, source)
                 stickers.add(sticker)
-                readings[sticker] = str(action.phases[sources[slot]])
+                readings[sticker] = str(action.phases[source])
                 slots[slot] = inventory.blocks[slot].compact_name
         elif _uniform_relative(feature, indices, observation, inventory):
+            full.update(indices)
             for index in indices:
                 sticker = _reference_sticker(inventory, permutation, index)
                 stickers.add(sticker)
@@ -167,8 +173,9 @@ def _variant(method, permutation, records, solved):
                 # outline would introduce a second, unlabeled meaning.
                 regions.add(tuple(sorted(cell for index in indices
                                          for cell in inventory.blocks[action.destinations[index]].cells)))
-    # Finer independent observations retain all information they actually read.
-    # An exact pose therefore takes precedence over a placement-only display.
+    # An orientation reading can name a concrete occupant through a separate
+    # placement observation or a location fixed by the preceding stages.
+    full.update(oriented & (location | set(fixed_locations)))
     location.difference_update(full)
     return StageDiagramVariant(
         _state_for_permutation(method.reference_shape, permutation),
@@ -251,9 +258,10 @@ def _coupled_background(records, inventory):
 def stage_case_diagrams(method, stage_number):
     """Return one physical pattern per certified observation, without search.
 
-    Exact poses are fully colored. Placement-only pieces use inset colors.
-    Anonymous and relative orientations expose only intrinsic reference
-    stickers. General small residual families supply explicit alternatives,
+    Concrete poses, including named relative orientations, are fully colored.
+    Placement-only pieces use inset colors. Anonymous orientations expose only
+    intrinsic reference stickers unless earlier stages identify the occupant.
+    General small residual families supply explicit alternatives,
     filtered against the *complete joint observation* and preceding subgroup.
     """
     from .coarse_methods import CoarseMethod
@@ -268,6 +276,7 @@ def stage_case_diagrams(method, stage_number):
     chain = method.ambient_method._symbolic_chain
     group = chain.stages[method.prefix_stage_count + stage_number - 1].group_before
     inventory, solved, result = method.inventory, _fixed_blocks(method.inventory, group), []
+    fixed_locations = _fixed_blocks(inventory, group, orientation=False)
     identity = inventory.action(_IDENTITY)
     goal = _observation(identity, stage.block_index, stage.feature.kind)
     for case in stage.cases:
@@ -296,7 +305,7 @@ def stage_case_diagrams(method, stage_number):
                 continue
             if _stage_observation(inventory.action(candidate), stage, inventory) != case.observation:
                 continue
-            variant = _variant(method, candidate, records, solved)
+            variant = _variant(method, candidate, records, solved, fixed_locations)
             key = _visible_key(variant, inventory)
             if key not in seen:
                 variants.append(variant)
@@ -373,10 +382,10 @@ def _ordered_partition(conditions, recipes, catalog, observations, ready, expect
     return tuple(masks), tuple(tuple(row) for row in assigned)
 
 
-def _masked_variant(variant, fields, inventory):
+def _masked_variant(variant, fields, inventory, fixed_locations):
     """Expose only positive tested coordinates, hiding the rest of the goal."""
     action, permutation = inventory.action(variant.state), variant.state.sticker_permutation
-    full, location, absolute, relative, stickers = set(), set(), set(), set(), set()
+    full, location, oriented, stickers = set(), set(), set(), set()
     pieces, slots, regions, readings = {}, {}, set(), {}
     by_destination = {destination: source for source, destination in enumerate(action.destinations)}
     for field in fields:
@@ -397,7 +406,7 @@ def _masked_variant(variant, fields, inventory):
                     slots[index] = inventory.blocks[index].compact_name
                 else:
                     pieces[source] = inventory.blocks[source].compact_name
-                (relative if kind == "relative_phase" else absolute).add(source)
+                oriented.add(source)
         elif kind == "bool":
             # Membership names a home location in an unordered occupied
             # region. Show its current occupant only when it is actually in
@@ -409,9 +418,11 @@ def _masked_variant(variant, fields, inventory):
                 if source in dict(variant.piece_labels):
                     (full if inventory.blocks[source].orientation_order == 1 else location).add(source)
                     pieces[source] = inventory.blocks[source].compact_name
-    # A tested location and absolute orientation jointly determine the pose.
-    full.update(location & absolute)
-    location.difference_update(full | relative)
+    # Named pieces and occupants identified by earlier placement guarantees
+    # retain their full colors, including in each relative-orientation variant.
+    # A slot reading alone must not reveal an arbitrary occupant's identity.
+    full.update(oriented & (set(pieces) | set(fixed_locations)))
+    location.difference_update(full)
     return replace(variant, full_blocks=tuple(sorted(full)), location_blocks=tuple(sorted(location)),
                    reference_stickers=tuple(sorted(stickers)), piece_labels=tuple(sorted(pieces.items())),
                    slot_labels=tuple(sorted(slots.items())), regions=tuple(sorted(regions)),
@@ -439,6 +450,7 @@ def _presentation_record(method, stage, exact, observations, recipe, cue, condit
     inventory = method.inventory
     group = method.ambient_method._symbolic_chain.stages[
         method.prefix_stage_count + stage.number - 1].group_before
+    fixed_locations = _fixed_blocks(inventory, group, orientation=False)
     variants, seen = [], set()
     for observation in observations:
         representative = exact[observation]
@@ -453,9 +465,10 @@ def _presentation_record(method, stage, exact, observations, recipe, cue, condit
             if permutation not in group or _stage_observation(
                     inventory.action(permutation), stage, inventory) != observation:
                 continue
-            variant = _variant(method, permutation, records, representative.variants[0].solved_blocks)
+            variant = _variant(method, permutation, records,
+                               representative.variants[0].solved_blocks, fixed_locations)
             if fields is not None:
-                variant = _masked_variant(variant, fields, inventory)
+                variant = _masked_variant(variant, fields, inventory, fixed_locations)
             key = _visible_key(variant, inventory)
             if key not in seen:
                 variants.append(variant)

@@ -235,7 +235,7 @@ class StageDiagramsTests(unittest.TestCase):
             self.assertEqual(set(variant.full_blocks), named)
             self.assertFalse(variant.location_blocks)
 
-    def test_relative_orientation_erases_common_absolute_orientation(self):
+    def test_named_relative_orientation_colors_concrete_pieces_and_retains_readings(self):
         for method in self.methods[:2]:
             for stage in method.stages:
                 if stage.feature.kind != "solve_blocks_up_to_actions":
@@ -246,7 +246,7 @@ class StageDiagramsTests(unittest.TestCase):
                     expected = {POINTS[variant.state.sticker_permutation[point]]
                                 for point in _orientation_marker_points(method.inventory, indices)}
                     self.assertEqual(set(variant.reference_stickers), expected)
-                    self.assertFalse(variant.full_blocks)
+                    self.assertEqual(set(variant.full_blocks), set(indices))
                     self.assertFalse(variant.location_blocks)
                     self.assertEqual({index for index, _ in variant.piece_labels}, set(indices))
                     self.assertFalse(variant.slot_labels)
@@ -257,8 +257,8 @@ class StageDiagramsTests(unittest.TestCase):
                     self.assertEqual(_stage_observation(method.inventory.action(alternative),
                                                         stage, method.inventory),
                                      picture.observation)
-                    # Shared reference-sticker colors cannot identify these
-                    # corners; source labels keep their identities explicit.
+                    # The readings still identify the reference stickers even
+                    # though the concrete pieces now show every sticker color.
                     self.assertEqual({method.inventory.blocks[index].compact_name
                                       for index in indices},
                                      {name for _, name in variant.piece_labels})
@@ -348,6 +348,29 @@ class StageDiagramsTests(unittest.TestCase):
             self.assertFalse(variant.location_blocks)
         self.assertTrue(saw_permuted_occupant)
 
+    @unittest.skipUnless(HAS_PLOTS, "optional plots extra")
+    def test_anonymous_orientation_keeps_nonreference_stickers_grey(self):
+        from bce_v2.stage_diagram_render import (_OBSERVED_GREY, _facelet_cell,
+                                                _variant_colors)
+
+        method = self.recognition_adapter(c.BlockFeature("orient_slots", self.corner_cells()),
+                                          moved_occupants=True)
+        slots = _feature_indices(method.inventory, method.stages[0].feature)
+        variants = (picture.variants[0] for picture in stage_case_diagrams(method, 1))
+        variant = next(variant for variant in variants
+                       if any(method.inventory.action(variant.state).destinations.index(slot) != slot
+                              for slot in slots))
+        action = method.inventory.action(variant.state)
+        source_at = {cell: source for source, destination in enumerate(action.destinations)
+                     for cell in method.inventory.blocks[destination].cells}
+        anonymous = {action.destinations.index(slot) for slot in slots}
+        colors = _variant_colors(variant, method.inventory)
+        hidden = [sticker for sticker in POINTS
+                  if source_at[_facelet_cell(sticker)] in anonymous
+                  and sticker not in variant.reference_stickers]
+        self.assertTrue(hidden)
+        self.assertTrue(all(colors[sticker] == _OBSERVED_GREY for sticker in hidden))
+
     def test_independent_observers_combine_complete_patterns(self):
         corner = next(block for block in self.alcatraz.inventory.blocks
                       if block.orientation_order == 3)
@@ -363,6 +386,19 @@ class StageDiagramsTests(unittest.TestCase):
             variant, = picture.variants
             self.assertEqual(set(variant.full_blocks), (locations - varying) | {extra_index})
             self.assertEqual(set(variant.location_blocks), varying)
+
+    def test_joint_placement_and_slot_orientation_color_identified_occupants(self):
+        placement = c.BlockFeature("place_blocks", self.corner_cells())
+        orientation = c.BlockFeature("orient_slots", self.corner_cells())
+        method = self.recognition_adapter(placement, (placement, orientation),
+                                          moved_occupants=True)
+        named = set(_feature_indices(method.inventory, placement))
+        for picture in stage_case_diagrams(method, 1):
+            variant, = picture.variants
+            self.assertEqual(set(variant.full_blocks), named)
+            self.assertFalse(variant.location_blocks)
+            self.assertEqual({index for index, _ in variant.piece_labels}, named)
+            self.assertEqual(len(variant.reference_stickers), len(named))
 
     def test_regions_and_general_equivalent_arrangements_keep_exact_observations(self):
         inventory = self.alcatraz.inventory
@@ -647,7 +683,7 @@ print(json.dumps({'lazy': True}))
         import matplotlib.pyplot as plt
         from bce_v2.stage_diagram_render import stage_case_figure
 
-        for number in (2, 4):
+        for number in (2, 3, 4):
             row = stage_recognition_diagrams(self.alcatraz, number)[1]
             variant = row.diagram.variants[0]
             self.assertTrue(variant.orientation_labels)
@@ -658,10 +694,38 @@ print(json.dumps({'lazy': True}))
                 for _, reading in variant.orientation_labels:
                     self.assertTrue(any(text == reading or text.endswith(": " + reading)
                                         for text in texts))
+                borders = {sticker for axis in figure.axes for collection in axis.collections
+                           if collection.get_gid().endswith("-reference-sticker-borders")
+                           for sticker in collection.stage_facelet_indices}
+                self.assertTrue(set(variant.reference_stickers).issubset(borders))
                 self.assertFalse(any("This relative" in text or "Read the stickers" in text
                                      for text in texts))
             finally:
                 plt.close(figure)
+
+    @unittest.skipUnless(HAS_PLOTS, "optional plots extra")
+    def test_procedural_known_piece_orientations_color_every_sticker(self):
+        from matplotlib.colors import to_rgb
+        from bce_v2.graphics import _palette
+        from bce_v2.stage_diagram_render import _facelet_cell, _variant_colors
+
+        face_colors = {"U": "yellow", "D": "white", "R": "#cc2211"}
+        palette = {face: to_rgb(color) for face, color in _palette(face_colors).items()}
+        inventory = self.alcatraz.inventory
+        for number in (2, 3, 4):
+            for row in stage_recognition_diagrams(self.alcatraz, number):
+                for variant in row.diagram.variants:
+                    action = inventory.action(variant.state)
+                    source_at = {cell: source for source, destination in enumerate(action.destinations)
+                                 for cell in inventory.blocks[destination].cells}
+                    references = {source_at[_facelet_cell(sticker)]
+                                  for sticker in variant.reference_stickers}
+                    self.assertTrue(references)
+                    self.assertTrue(references.issubset(variant.full_blocks))
+                    colors = _variant_colors(variant, inventory, face_colors=face_colors)
+                    for sticker in POINTS:
+                        if source_at[_facelet_cell(sticker)] in references:
+                            self.assertEqual(colors[sticker], palette[variant.state.facelets[sticker]])
 
     @unittest.skipUnless(HAS_PLOTS, "optional plots extra")
     def test_sticker_masks_hide_unobserved_colors_and_preserve_actual_pose_colors(self):

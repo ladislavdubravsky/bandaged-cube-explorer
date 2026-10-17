@@ -1551,10 +1551,11 @@ configurations. Grid cases retain the written grid's coordinates and order.
 Opaque opposite-corner UFR and BLD views expose all exterior stickers and retain
 fused-block boundaries.
 
-Fully colored pieces specify an exact pose, or a location that uniquely fixes
-orientation. Small colored squares on grey stickers identify pieces with an
-ignored orientation. Anonymous and relative orientations color only the reference
-stickers; their piece or slot labels include the pictured orientation readings.
+Concrete pieces with orientation readings are fully colored, including named
+relative orientations and slot occupants whose identities are guaranteed by
+earlier stages. Their reference stickers keep the pictured orientation readings.
+Small colored squares on grey stickers identify pieces with an ignored
+orientation. Truly anonymous slot occupants color only their reference stickers.
 The diagram's upfront condition determines what to compare, without referring
 back to orientation tables. Relative cases show their equivalent common-orientation
 arrangements together in one picture. There are no footnotes beneath pictures.

@@ -2,8 +2,9 @@
 
 Rendering uses the case's explicit observation masks, never incidental sticker
 colors in its representative. Small colored squares identify pieces whose
-orientations are irrelevant; full stickers describe required poses or the
-reference stickers used to read orientation. Plotting remains optional.
+orientations are irrelevant; concrete pieces with orientation readings use full
+colors and keep their reference labels. Anonymous occupants expose only their
+reference stickers. Plotting remains optional.
 """
 
 import base64
