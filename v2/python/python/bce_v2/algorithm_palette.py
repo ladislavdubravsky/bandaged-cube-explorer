@@ -17,6 +17,8 @@ from ._moves import _simplified_moves
 from .human_methods import _expression_bound
 from .loop_algorithms import (AlgorithmLibrary, LoopAlgorithm, LoopExpression,
                               _loops_from_records, _then)
+from .loop_rotations import (normalize_rotation, rotate_moves, rotate_permutation,
+                             _CANONICAL_WORDS)
 
 
 def _identifier(value, name):
@@ -59,6 +61,28 @@ class AlgorithmPaletteSetup:
             raise TypeError("setup/adjustment must be a witnessed LoopAlgorithm")
 
 
+@dataclass(frozen=True)
+class AlgorithmPaletteRegrip:
+    """A physically certified use of a declared body in another cube grip.
+
+    The executable face word has its own original-loop witness. Its teaching
+    dependency remains ``body_id``; a regrip never grants an inverse call.
+    """
+
+    body_id: str
+    rotation: str
+    algorithm: LoopAlgorithm
+
+    def __post_init__(self):
+        _identifier(self.body_id, "regrip body ID")
+        rotation = normalize_rotation(self.rotation)
+        if not rotation:
+            raise ValueError("a regrip must use a nonidentity rotation")
+        object.__setattr__(self, "rotation", rotation)
+        if not isinstance(self.algorithm, LoopAlgorithm):
+            raise TypeError("regrip algorithm must be a witnessed LoopAlgorithm")
+
+
 def _signatures(generators):
     return tuple((g.id, tuple(g.permutation), g.turn_sequence) for g in generators)
 
@@ -80,6 +104,7 @@ class AlgorithmPalette:
     max_derived_power: int = 1
     max_derived_composition_length: int = 1
     max_derived_recipes: int = 0
+    regrips: tuple[AlgorithmPaletteRegrip, ...] = ()
 
     def __post_init__(self):
         for name, cls in (("bodies", AlgorithmPaletteBody),
@@ -91,6 +116,14 @@ class AlgorithmPalette:
             if len({value.id for value in values}) != len(values):
                 raise ValueError(f"{name} IDs must be unique")
             object.__setattr__(self, name, values)
+        regrips = tuple(self.regrips)
+        if any(not isinstance(value, AlgorithmPaletteRegrip) for value in regrips):
+            raise TypeError("regrips must contain AlgorithmPaletteRegrip instances")
+        if len({(value.body_id, value.rotation) for value in regrips}) != len(regrips):
+            raise ValueError("regrip body/rotation pairs must be unique")
+        if any(value.body_id not in {body.id for body in self.bodies} for value in regrips):
+            raise ValueError("regrips must refer to a declared body ID")
+        object.__setattr__(self, "regrips", regrips)
         for name in ("max_derived_power", "max_derived_composition_length", "max_derived_recipes"):
             value = getattr(self, name)
             if type(value) is not int:
@@ -119,6 +152,60 @@ class AlgorithmPalette:
                        max_derived_composition_length=max_composition_length,
                        max_derived_recipes=max_derived_recipes)
 
+    def with_rotated_bodies(self, initial=None, *, rotations=None,
+                            max_proof_moves=1_000_000):
+        """Admit legal, root-closing rotated calls with no new taught bodies.
+
+        By default all 24 cube grips are considered. Exact bandage symmetry
+        is sufficient but unnecessary: each transferred word is replayed on
+        the reference shape and certified in its original-loop alphabet.
+        Identical physical words for one body retain one deterministic grip.
+        Native graph paths are needed only while creating these witnesses;
+        the resulting declarations validate and execute offline.
+        """
+        from . import BlockedMoveError, State
+
+        if type(max_proof_moves) is not int:
+            raise TypeError("max_proof_moves must be an integer")
+        if max_proof_moves < 0:
+            raise ValueError("max_proof_moves must be nonnegative")
+        if isinstance(rotations, str):
+            raise TypeError("rotations must be a sequence of rotation words")
+        rotations = tuple(dict.fromkeys(normalize_rotation(word) for word in
+                          (_CANONICAL_WORDS.values() if rotations is None else rotations)))
+        if not self.bodies:
+            return self
+        loops = _loops_from_records(self.generators if initial is None else initial)
+        if (loops.root_shape != self.reference_shape or
+                _signatures(loops.generators) != _signatures(self.generators)):
+            raise ValueError("regrip witnesses require the palette's original-loop alphabet")
+        builder = AlgorithmLibrary(loops, (), (), ())
+        initial_state = State(self.reference_shape)
+        regrips = list(self.regrips)
+        existing = {(value.body_id, value.rotation) for value in regrips}
+        seen = {(body.id, body.algorithm.turn_sequence) for body in self.bodies}
+        seen.update((value.body_id, value.algorithm.turn_sequence) for value in regrips)
+        for body in self.bodies:
+            for rotation in rotations:
+                if not rotation or (body.id, rotation) in existing:
+                    continue
+                word = rotate_moves(body.algorithm.turn_sequence, rotation)
+                if (body.id, word) in seen:
+                    continue
+                try:
+                    replay = initial_state.apply(word)
+                except BlockedMoveError:
+                    continue
+                if replay.shape != self.reference_shape:
+                    continue
+                expression = loops.certified_root_turns(word, max_proof_moves=max_proof_moves)
+                algorithm = replace(builder.build_algorithm(expression,
+                    max_expanded_moves=max(1, len(word.split()))),
+                    id="regrip:" + json.dumps([body.id, rotation], separators=(",", ":")))
+                regrips.append(AlgorithmPaletteRegrip(body.id, rotation, algorithm))
+                seen.add((body.id, word))
+        return replace(self, regrips=tuple(regrips))
+
     @classmethod
     def from_algorithms(cls, bodies, *, setups=(), adjustments=(), allow_inverse=True):
         """Use supplied algorithm IDs as stable names in each declaration."""
@@ -133,7 +220,8 @@ class AlgorithmPalette:
 
     @property
     def _declared_algorithms(self):
-        return tuple(value.algorithm for value in (*self.bodies, *self.setups, *self.adjustments))
+        return tuple(value.algorithm for value in
+                     (*self.bodies, *self.setups, *self.adjustments, *self.regrips))
 
     @property
     def reference_shape(self):
@@ -158,6 +246,13 @@ class AlgorithmPalette:
             raise ValueError("palette refers to a different reference shape")
         if _signatures(expected) != _signatures(self.generators):
             raise ValueError("palette refers to a different original-loop alphabet")
+        bodies = {body.id: body.algorithm for body in self.bodies}
+        for regrip in self.regrips:
+            body = bodies[regrip.body_id]
+            if regrip.algorithm.turn_sequence != rotate_moves(body.turn_sequence, regrip.rotation):
+                raise ValueError("regrip physical body differs from its declared rotated body")
+            if regrip.algorithm.permutation != rotate_permutation(body.permutation, regrip.rotation):
+                raise ValueError("regrip action differs from its declared rotated body")
         loops = _loops_from_records(self.generators)
         builder = AlgorithmLibrary(loops, (), (), ())
         records, initial = {g.id: g for g in expected}, State(root)
@@ -187,10 +282,13 @@ class AlgorithmPalette:
         roots = {g.id: g for g in self.generators}
         recipes, records = [], []
 
-        def add(kind, identifier, setup, exponent, expression, additive_htm):
+        def add(kind, identifier, setup, exponent, expression, additive_htm, rotation=""):
             # IDs depend only on the declarations, not dictionary discovery,
             # effect deduplication, input order, or template canonicalization.
-            recipe_id = "palette:" + json.dumps([kind, identifier, setup, exponent],
+            identity = [kind, identifier, setup, exponent]
+            if rotation:
+                identity.append(rotation)
+            recipe_id = "palette:" + json.dumps(identity,
                                                 separators=(",", ":"))
             bound = max(1, _expression_bound(expression, roots))
             algorithm = replace(builder.build_algorithm(expression, max_expanded_moves=bound),
@@ -199,6 +297,7 @@ class AlgorithmPalette:
             records.append(dict(id=recipe_id, body_id=identifier if kind == "body" else None,
                                 adjustment_id=identifier if kind == "adjustment" else None,
                                 setup_id=setup, exponent=exponent,
+                                rotation=rotation,
                                 body_calls=1 if kind == "body" else 0,
                                 setup_calls=1 if setup is not None else 0,
                                 body_ids=(identifier,) if kind == "body" else (),
@@ -214,18 +313,21 @@ class AlgorithmPalette:
             # Keep the declared body as an expression boundary. Joining recipes
             # must not flatten its internal turns into anonymous loop leaves,
             # because later factorization needs to recognize the taught body.
-            body_expression = LoopExpression.turns(body.algorithm.turn_sequence,
-                                                   body.algorithm.expression)
-            for exponent in (1, -1) if body.allow_inverse else (1,):
-                expression = (body_expression if exponent == 1 else
-                              LoopExpression.power(body_expression, -1))
-                add("body", body.id, None, exponent, expression, body.algorithm.htm_length)
-                for setup in self.setups:
-                    # A setup may disrupt earlier goals temporarily. Preserve
-                    # the complete setup/body/undo word for endpoint filtering.
-                    add("body", body.id, setup.id, exponent,
-                        LoopExpression.conjugate(setup.algorithm.expression, expression),
-                        2 * setup.algorithm.htm_length + body.algorithm.htm_length)
+            variants = (("", body.algorithm), *( (value.rotation, value.algorithm)
+                        for value in self.regrips if value.body_id == body.id))
+            for rotation, algorithm in variants:
+                body_expression = LoopExpression.turns(algorithm.turn_sequence,
+                                                       algorithm.expression)
+                for exponent in (1, -1) if body.allow_inverse else (1,):
+                    expression = (body_expression if exponent == 1 else
+                                  LoopExpression.power(body_expression, -1))
+                    add("body", body.id, None, exponent, expression, algorithm.htm_length, rotation)
+                    for setup in self.setups:
+                        # A setup may disrupt earlier goals temporarily. Preserve
+                        # the complete setup/body/undo word for endpoint filtering.
+                        add("body", body.id, setup.id, exponent,
+                            LoopExpression.conjugate(setup.algorithm.expression, expression),
+                            2 * setup.algorithm.htm_length + algorithm.htm_length, rotation)
         return tuple(recipes), tuple(records)
 
     @cached_property
@@ -344,6 +446,9 @@ class AlgorithmPalette:
                 "inverse_body_ids": [body.id for body in self.bodies if body.allow_inverse],
                 "setup_ids": [setup.id for setup in self.setups],
                 "adjustment_ids": [adjustment.id for adjustment in self.adjustments],
+                "regrip_count": len(self.regrips),
+                "regrips": [{"body_id": value.body_id, "rotation": value.rotation,
+                              "algorithm_id": value.algorithm.id} for value in self.regrips],
                 "recipe_count": len(self.recipes), "recipes": list(self.recipe_records),
                 "derived_recipe_count": len(self.recipes) - len(self._base_compiled[0]),
                 "derivation_settings": self.derivation_settings,

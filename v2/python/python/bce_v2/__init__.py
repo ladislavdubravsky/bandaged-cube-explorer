@@ -510,7 +510,9 @@ from .symbolic_chains import SymbolicStagePlan  # noqa: E402
 from .symbolic_dictionary import (  # noqa: E402
     SymbolicAlgorithmDictionary, discover_symbolic_dictionary,
 )
-from .algorithm_palette import AlgorithmPalette, AlgorithmPaletteBody, AlgorithmPaletteSetup  # noqa: E402
+from .algorithm_palette import (  # noqa: E402
+    AlgorithmPalette, AlgorithmPaletteBody, AlgorithmPaletteRegrip, AlgorithmPaletteSetup,
+)
 from .coarse_methods import CoarseMethod, compile_coarse_method, load_coarse_method  # noqa: E402
 from .algorithm_profiles import (  # noqa: E402
     AlgorithmPreservationProfile, PaletteWorkspaceCandidate, PaletteGoalCandidate,
@@ -623,7 +625,7 @@ __all__ = [
     "HumanChainCandidate", "HumanChainSearch", "select_human_chain",
     "AlgorithmTarget", "discover_algorithm_targets",
     "SymbolicAlgorithmDictionary", "discover_symbolic_dictionary",
-    "AlgorithmPalette", "AlgorithmPaletteBody", "AlgorithmPaletteSetup",
+    "AlgorithmPalette", "AlgorithmPaletteBody", "AlgorithmPaletteRegrip", "AlgorithmPaletteSetup",
     "CoarseMethod", "compile_coarse_method", "load_coarse_method",
     "AlgorithmPreservationProfile", "PaletteWorkspaceCandidate", "PaletteGoalCandidate",
     "PaletteProfileDiscovery", "discover_palette_profiles", "propose_palette_goals",

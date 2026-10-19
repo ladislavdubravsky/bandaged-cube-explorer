@@ -42,7 +42,16 @@ def _merge_palettes(first, second):
             else:
                 found[declaration.id] = declaration
         return tuple(found[key] for key in sorted(found))
-    return AlgorithmPalette(merge("bodies"), merge("setups"), merge("adjustments"))
+    regrips = {}
+    for item in (*first.regrips, *second.regrips):
+        key = item.body_id, item.rotation
+        prior = regrips.get(key)
+        if prior is not None and (prior.algorithm.turn_sequence != item.algorithm.turn_sequence or
+                                  prior.algorithm.permutation != item.algorithm.permutation):
+            raise ValueError("entry and suffix disagree on a shared regrip")
+        regrips[key] = item
+    return AlgorithmPalette(merge("bodies"), merge("setups"), merge("adjustments"),
+                            regrips=tuple(regrips[key] for key in sorted(regrips)))
 
 
 @dataclass(frozen=True)

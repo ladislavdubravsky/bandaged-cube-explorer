@@ -90,7 +90,10 @@ def _workspace_entry_palette(suffix, candidates, budget):
             continue
         reserved.add(candidate.id)
         bodies.append(candidate)
-    return AlgorithmPalette(tuple(bodies), adjustments=candidates.adjustments)
+    admitted = {body.id for body in bodies}
+    return AlgorithmPalette(tuple(bodies), adjustments=candidates.adjustments,
+                            regrips=tuple(item for item in candidates.regrips
+                                          if item.body_id in admitted))
 
 
 @dataclass(frozen=True)
@@ -227,6 +230,9 @@ def discover_method(initial, *, max_taught_bodies=7, max_shapes=10_000,
     completely certified joint-pose repair policy in the same strict palette
     machinery, with its potentially larger recognition table reported.
     Shape restoration is automatic for both routes and ignores move history.
+    For small groups, if the initial staged search fails to cover the reference
+    group, legally replayed whole-cube regrips reuse the same taught bodies in a
+    second bounded search. Regrips add no face-turn cost or learned definitions.
     ``timeout`` bounds each GAP operation, not total discovery wall time.
     Set ``cache_dir=None`` to disable the revalidated continuation cache.
     """
@@ -288,15 +294,37 @@ def discover_method(initial, *, max_taught_bodies=7, max_shapes=10_000,
         options = dict(max_taught_bodies=max_taught_bodies, beam_width=1,
                        max_expansions=6, max_stages=6, max_candidates=8,
                        max_observations=128, preference="recognition", timeout=timeout)
-        if directory is None:
-            search = discover_coarse_method(analysis, palette=automatic.palette, **options)
-            suffix, search_record = search.method, search.to_dict(include_method=False)
-            metadata["cache"] = {"cache_status": "disabled", "cache_hit": False}
-        else:
-            cached = cached_coarse_method(analysis, automatic.palette, directory,
+        def search_palette(palette):
+            if directory is None:
+                search = discover_coarse_method(analysis, palette=palette, **options)
+                return (search.method, search.to_dict(include_method=False),
+                        {"cache_status": "disabled", "cache_hit": False})
+            cached = cached_coarse_method(analysis, palette, directory,
                                          force=force, **options)
-            suffix, search_record = cached.method, cached.search_record
-            metadata["cache"] = cached.metadata
+            return cached.method, cached.search_record, cached.metadata
+
+        suffix, search_record, metadata["cache"] = search_palette(automatic.palette)
+        if analysis.group_order <= _JOINT_POLICY_LIMIT and (
+                suffix is None or suffix.group_order != analysis.group_order):
+            try:
+                rotated = automatic.palette.with_rotated_bodies(analysis, max_proof_moves=100_000)
+            except ValueError as error:
+                if "max_proof_moves" not in str(error):
+                    raise
+                # A bounded optional retry cannot prevent the existing
+                # workspace or small-group joint fallback from being used.
+                rotated = automatic.palette
+                metadata["attempts"].append("regrip preparation reached its witness limit: " + str(error))
+            metadata["regrip_search"] = {"additional_action_count": len(rotated.regrips),
+                "extra_taught_definitions": 0, "extra_face_turn_htm": 0,
+                "rotation_scope": "all_24_frames_with_independent_legality_and_root_closure_checks"}
+            if rotated.regrips:
+                alternative, record, cache = search_palette(rotated)
+                metadata["regrip_search"].update(coarse_search=record, cache=cache)
+                if alternative is not None and (suffix is None or
+                                                 alternative.group_order == analysis.group_order):
+                    metadata["coarse_search_without_regrips"] = search_record
+                    suffix, search_record, metadata["cache"] = alternative, record, cache
         metadata["coarse_search"] = search_record
         entry = _entry_palette(analysis)
         if suffix is not None and suffix.group_order == analysis.group_order:

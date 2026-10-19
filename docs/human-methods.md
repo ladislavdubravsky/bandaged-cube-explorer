@@ -1131,8 +1131,16 @@ permission. `AlgorithmPaletteSetup` permits setup/body/undo recipes; standalone
 adjustments are declared separately. Complete recipes are built before their
 endpoint preservation is checked, so a useful conjugate survives even when
 its setup alone disrupts a protected goal. Repetition and permitted inverse
-calls retain the same taught ID. This initial palette API uses witnessed
-fixed-frame turns; no additional rotation permission is inferred.
+calls retain the same taught ID. Additional rotation permission is explicit:
+`palette.with_rotated_bodies(analysis)` tests all 24 whole-cube frames and
+retains each useful rotated body only after legal physical replay, exact root
+closure, and an original-loop witness. `rotations=("x", "y2")` restricts the
+frames to test. Exact bandage symmetries are sufficient but not necessary: a
+different rotated partition may still admit the same word. Accepted variants
+are `AlgorithmPaletteRegrip` declarations and retain the original body's ID
+and inverse permission. They add neither taught definitions nor face-turn HTM.
+The guide writes `x (A) x'` for a regrip, the learned body A, and a return to
+the reference frame. The executable certificate contains face turns only.
 
 Pass `palette=` to `select_human_chain` or `template_human_repertoire` with
 the symbolic backend (or an automatic backend that routes there). The prepared
@@ -1485,11 +1493,29 @@ finite. The ordinary cube automatically selects the existing four bodies and
 U adjustments and can reuse the ordinary notebook's continuation cache.
 
 For exact reference groups of at most 512 elements, a failed or vacuous staged
-search can instead compile one joint full-pose correction stage over the whole
-group. Its cases use the same witnessed palette machinery and teaching budget.
+search first retries the same bounded stage discovery with checked regrips of
+its existing bodies. It keeps the original teaching budget and stage limits;
+successful existing methods do not need this additional search. If that does
+not produce a usable continuation, discovery can instead compile one joint
+full-pose correction stage over the whole group. Its cases use the same
+witnessed palette machinery and teaching budget.
 This establishes complete computational coverage, at the cost of a potentially
 large recognition table. It does not claim to discover a compact CFOP-like
 method for those bandages.
+
+For BandagedPocketCube, this retry admits six regripped calls of the three
+native bodies, using the exact shape symmetries `x y` and `x' z'`. The default
+search finds **432 → 108 → 54 → 18 → 6 → 3 → 1**, with **4, 2, 3, 3, 2, 3**
+observations and eleven nontrivial instructions across six stages. The other
+rotations of these particular bodies are blocked. The
+[regrip probe](../v2/research/probe_pocket_regrips.py) checks all 432
+reference-shape states, every observation fiber, preservation of earlier
+commitments, offline portability, and changed-shape restoration samples.
+The [report](../v2/research-results/pocket-regrips.json),
+[guide](../v2/research-results/pocket-regrips.md), and
+[portable method](../v2/research-results/pocket-regrips.method.json) retain the
+result. The [notebook](../v2/examples/action-family-methods/BandagedPocketCube.ipynb)
+still supplies only the bandage and calls `discover_method(bandage)`.
 
 The returned `AutomaticMethod.apply(state)` observes the current shape and
 restores the exact reference shape through its retained complete shape graph

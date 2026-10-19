@@ -1,4 +1,5 @@
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import bce_v2 as c
@@ -84,6 +85,18 @@ class AutomaticMethodTests(unittest.TestCase):
         self.assertEqual(result.status, "no_method_found")
         self.assertIsNone(result.method)
         self.assertEqual(result.metadata["automatic_palette"]["selected_body_ids"], [])
+
+    def test_regrip_witness_limit_keeps_joint_fallback_available(self):
+        search = SimpleNamespace(method=None,
+            to_dict=lambda **kwargs: {"status": "no_method_found"})
+        with patch.object(automatic, "discover_coarse_method", return_value=search), patch.object(
+                c.AlgorithmPalette, "with_rotated_bodies",
+                side_effect=ValueError("root proof exceeds max_proof_moves")):
+            result = c.discover_method([1] * 9 + [2] * 18, cache_dir=None)
+        self.assertEqual(result.status, "completed")
+        self.assertEqual(result.metadata["route"], "palette_joint_policy")
+        self.assertIn("witness limit", result.metadata["attempts"][0])
+        self.assertTrue(result.apply(c.State(result.method.reference_shape).apply("U")).state.is_solved)
 
     def test_wrong_reference_and_input_type_are_explicit(self):
         solution = self.fused.apply(c.State([1] * 27))

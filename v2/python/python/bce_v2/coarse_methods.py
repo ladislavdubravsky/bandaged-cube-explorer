@@ -17,7 +17,8 @@ import json
 from pathlib import Path
 
 from . import State
-from .algorithm_palette import AlgorithmPalette, AlgorithmPaletteBody, AlgorithmPaletteSetup
+from .algorithm_palette import (AlgorithmPalette, AlgorithmPaletteBody,
+                                AlgorithmPaletteRegrip, AlgorithmPaletteSetup)
 from .computation import checkpoint
 from .human_chains import BlockFeature, _feature_successor, _observation, _resolve_feature
 from .human_methods import (HumanMethod, HumanMethodApplication, HumanMethodCase,
@@ -108,15 +109,20 @@ def _palette_record(palette):
                             for adjustment in palette.adjustments]}
     if palette.max_derived_recipes:
         record["derivation"] = palette.derivation_settings
+    if palette.regrips:
+        record["regrips"] = [{"body_id": item.body_id, "rotation": item.rotation,
+                              "algorithm": _algorithm_record(item.algorithm)}
+                             for item in palette.regrips]
     return record
 
 
 def _load_palette(record, method):
     from .human_method_io import _expression, _fields, _list, _string
     _fields(record, {"bodies", "setups", "adjustments"} |
-            ({"derivation"} if "derivation" in record else set()), "coarse palette")
+            ({"derivation"} if "derivation" in record else set()) |
+            ({"regrips"} if "regrips" in record else set()), "coarse palette")
     if not method.generators:
-        if any(record[name] for name in ("bodies", "setups", "adjustments")):
+        if any(record.get(name) for name in ("bodies", "setups", "adjustments", "regrips")):
             raise ValueError("a palette without original witnesses must be empty")
         return AlgorithmPalette((), **record.get("derivation", {}))
     loops = _loops_from_records(method.generators)
@@ -145,8 +151,13 @@ def _load_palette(record, method):
             _fields(setup, {"id", "algorithm"}, "coarse palette setup")
             result.append(AlgorithmPaletteSetup(setup["id"], algorithm(setup["algorithm"])))
         return tuple(result)
+    regrips = []
+    for item in _list(record.get("regrips", []), "coarse palette regrips"):
+        _fields(item, {"body_id", "rotation", "algorithm"}, "coarse palette regrip")
+        regrips.append(AlgorithmPaletteRegrip(item["body_id"], item["rotation"],
+                                            algorithm(item["algorithm"])))
     return AlgorithmPalette(tuple(bodies), setups("setups"), setups("adjustments"),
-                            **record.get("derivation", {}))
+                            regrips=tuple(regrips), **record.get("derivation", {}))
 
 
 @dataclass(frozen=True)

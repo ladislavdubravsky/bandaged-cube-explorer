@@ -34,7 +34,7 @@ _CORE_SOURCES = (
     "_moves.py", "algorithm_palette.py", "algorithm_profiles.py", "block_actions.py",
     "coarse_methods.py", "coarse_search.py", "gap_backend.py", "human_chains.py",
     "human_method_io.py", "human_methods.py", "isotropy.py", "loop_algorithms.py",
-    "notebook_methods.py", "palette_policies.py", "preparation.py",
+    "notebook_methods.py", "palette_policies.py", "preparation.py", "loop_rotations.py",
     "symbolic_chains.py", "symbolic_groups.py",
 )
 
@@ -108,13 +108,18 @@ def _execution_palette(palette):
         return {"id": value.id, "turn_sequence": value.turn_sequence,
                 "permutation": list(value.permutation), "htm_length": value.htm_length,
                 "qtm_length": value.qtm_length}
-    return {"bodies": [{"id": body.id, "allow_inverse": body.allow_inverse,
+    record = {"bodies": [{"id": body.id, "allow_inverse": body.allow_inverse,
                          "algorithm": algorithm(body.algorithm)} for body in palette.bodies],
             "setups": [{"id": item.id, "algorithm": algorithm(item.algorithm)}
                        for item in palette.setups],
             "adjustments": [{"id": item.id, "algorithm": algorithm(item.algorithm)}
                             for item in palette.adjustments],
             "derivation": palette.derivation_settings}
+    if palette.regrips:
+        record["regrips"] = [{"body_id": item.body_id, "rotation": item.rotation,
+                              "algorithm": algorithm(item.algorithm)}
+                             for item in palette.regrips]
+    return record
 
 
 def _source_fingerprint():

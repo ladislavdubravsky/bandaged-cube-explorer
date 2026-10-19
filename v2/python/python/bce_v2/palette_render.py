@@ -76,6 +76,8 @@ def recipe_structure(palette, path, aliases):
         exponent = record["exponent"]
         setup = record["setup_id"]
         body = HumanMacroRecipe.power(HumanMacroRecipe.macro(name), exponent)
+        if record.get("rotation"):
+            body = HumanMacroRecipe.rotated(record["rotation"], body)
         if setup is not None:
             call = HumanMacroRecipe.power(HumanMacroRecipe.conjugate(
                 HumanMacroRecipe.macro(aliases['setup_id', setup]), body), count)
@@ -111,9 +113,12 @@ def recipe_structure(palette, path, aliases):
         if recipe.kind == "conjugate":
             setup, body = recipe.children
             return f"[{render(setup)}: {render(body)}]"
+        if recipe.kind == "rotated":
+            from .loop_rotations import inverse_rotation
+            return f"{recipe.rotation} ({render(recipe.children[0])}) {inverse_rotation(recipe.rotation)}"
         child, = recipe.children
         body = render(child)
-        if child.kind == "sequence":
+        if child.kind in ("sequence", "rotated"):
             body = "(" + body + ")"
         return body + str(recipe.exponent).translate(_SUPERSCRIPT)
     return " ".join(render(call) for call in factored) or "(no moves)"
@@ -676,6 +681,12 @@ def palette_method_guide(method, *, declarations=None, aliases=None, include_voc
              "Every complete operation restores earlier commitments at its endpoint.", ""]
     if include_vocabulary:
         lines.extend(execution_vocabulary_lines(declarations))
+    if method.palette.regrips:
+        lines.extend(["Whole-cube rotations such as `x`, `y`, and `z` are regrips. "
+                      "`x (A) x'` means regrip, execute the same learned body A, then restore "
+                      "the frame. Regrips add no learned bodies or face-turn HTM. "
+                      "Every admitted rotated sequence has been checked for legal moves and "
+                      "a return to the reference bandage shape.", ""])
     for stage, procedure in zip(method.stages, procedures):
         title = (f"Stage {stage.number}: Prepare {stage.block_name} for the remaining actions"
                  if stage.feature.kind == "solve_blocks_up_to_actions" else _stage_title(stage))
